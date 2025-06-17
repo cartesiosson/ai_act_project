@@ -1,0 +1,76 @@
+@prefix ai: <http://ai-act.eu/vocab#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ai:EndUser a owl:Class ;
+    rdfs:label "End User"@en,
+        "End User"@es ;
+    rdfs:comment "End user who interacts with the artificial intelligence system without being involved in its development, configuration, or integration."@en,
+        "Usuario final que interactúa con el sistema de inteligencia artificial sin intervenir en su desarrollo, configuración ni integración."@es ;
+    rdfs:subClassOf ai:User .
+
+ai:ProfessionalUser a owl:Class ;
+    rdfs:label "Professional User"@en,
+        "Professional User"@es ;
+    rdfs:comment "User who employs an artificial intelligence system in the exercise of their profession or institutional functions. Subject to specific obligations according to the AI Act."@en,
+        "Usuario que emplea un sistema de inteligencia artificial en el ejercicio de su profesión o funciones institucionales. Está sujeto a obligaciones específicas según el AI Act."@es ;
+    rdfs:subClassOf ai:User .
+
+ai:deploysSystem a owl:ObjectProperty ;
+    rdfs:comment "Relates an actor of type 'Deployer' with the artificial intelligence system that they implement or put into use."@en,
+        "Relaciona un actor del tipo 'Deployer' con el sistema de inteligencia artificial que implanta o pone en uso."@es ;
+    rdfs:domain ai:Deployer ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:distributesSystem a owl:ObjectProperty ;
+    rdfs:comment "Relates an actor of type 'Distributor' with the artificial intelligence system that they make available on the market."@en,
+        "Relaciona un actor del tipo 'Distributor' con el sistema de inteligencia artificial que pone a disposición en el mercado."@es ;
+    rdfs:domain ai:Distributor ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:importsSystem a owl:ObjectProperty ;
+    rdfs:comment "Relates an actor of type 'Importer' with the artificial intelligence system that has been introduced into the European Union."@en,
+        "Relaciona un actor del tipo 'Importer' con el sistema de inteligencia artificial que ha introducido en la Unión Europea."@es ;
+    rdfs:domain ai:Importer ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:providesSystem a owl:ObjectProperty ;
+    rdfs:comment "Relates an actor of type 'Provider' with the artificial intelligence system that they have developed or placed on the market."@en,
+        "Relaciona un actor del tipo 'Provider' con el sistema de inteligencia artificial que ha desarrollado o puesto en el mercado."@es ;
+    rdfs:domain ai:Provider ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:usesSystem a owl:ObjectProperty ;
+    rdfs:comment "Relates an actor of type 'User' with the artificial intelligence system that they use in their professional activity."@en,
+        "Relaciona un actor del tipo 'User' con el sistema de inteligencia artificial que utiliza en su actividad profesional."@es ;
+    rdfs:domain ai:User ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:Deployer a owl:Class ;
+    rdfs:comment "Actor who implements or integrates an artificial intelligence system in a real use environment, as part of a solution or operational process."@en,
+        "Actor que implanta o integra un sistema de inteligencia artificial en un entorno real de uso, como parte de una solución o proceso operativo."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Distributor a owl:Class ;
+    rdfs:comment "Actor who makes available or markets an artificial intelligence system in the European Union market, without being the original provider."@en,
+        "Actor que pone a disposición o comercializa un sistema de inteligencia artificial en el mercado de la Unión Europea, sin ser el proveedor original."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Importer a owl:Class ;
+    rdfs:comment "Actor who introduces an artificial intelligence system from a third country into the European Union market."@en,
+        "Actor que introduce un sistema de inteligencia artificial desde un tercer país en el mercado de la Unión Europea."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Provider a owl:Class ;
+    rdfs:comment "Actor who develops, designs, or manufactures an artificial intelligence system, or who places it on the market under their name or brand."@en,
+        "Actor que desarrolla, diseña o fabrica un sistema de inteligencia artificial, o que lo pone en el mercado bajo su nombre o marca."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:User a owl:Class ;
+    rdfs:comment "Professional actor who uses an artificial intelligence system in the exercise of their activity or function."@en,
+        "Actor profesional que utiliza un sistema de inteligencia artificial en el ejercicio de su actividad o función."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Actor a owl:Class ;
+    rdfs:comment "Entity that participates in the life cycle of an artificial intelligence system, either by developing, implementing, distributing, importing, or using it."@en,
+        "Entidad que participa en el ciclo de vida de un sistema de inteligencia artificial, ya sea desarrollándolo, implantándolo, distribuyéndolo, importándolo o utilizándolo."@es .

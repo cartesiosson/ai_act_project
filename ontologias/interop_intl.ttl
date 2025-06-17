@@ -1,0 +1,19 @@
+@prefix ai: <http://ai-act.eu/ontology#> .
+@prefix int: <http://ai-act.eu/ontology/interop#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+int:hasInterface a owl:ObjectProperty ;
+    rdfs:label "has interface"@en,
+        "has interface"@es ;
+    rdfs:comment "Relaciona un sistema de IA con la especificación de interfaz que implementa."@en,
+        "Relaciona un sistema de IA con la especificación de interfaz que implementa."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range int:InterfaceSpec .
+
+int:InterfaceSpec a owl:Class ;
+    rdfs:label "Interface Specification"@en,
+        "Interface Specification"@es ;
+    rdfs:comment "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@en,
+        "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@es .
+

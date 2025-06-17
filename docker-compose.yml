@@ -1,0 +1,69 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - FUSEKI_ENDPOINT=http://fuseki:3030/ai-act
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB_NAME=ai_act
+    depends_on:
+      - fuseki
+      - mongo
+
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - "3000:3000"
+  #   stdin_open: true
+  #   tty: true
+  #   depends_on:
+  #     - backend
+
+  fuseki:
+    image: stain/jena-fuseki
+    ports:
+      - "3030:3030"
+    environment:
+      - ADMIN_PASSWORD=admin
+    volumes:
+      - fuseki_data:/fuseki
+
+  mongo:
+    image: mongo:6
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  init_mongo:
+    build: ./init_mongo
+    depends_on:
+      mongo:
+        condition: service_started
+      fuseki:
+        condition: service_started
+      init_fuseki:
+        condition: service_completed_successfully
+
+    environment:
+      - FUSEKI_BASE=http://fuseki:3030
+      - FUSEKI_DATASET=ds
+      - FUSEKI_GRAPH=http://ai-act.eu/data/ai-data
+      - MONGO_URI=mongodb://mongo:27017
+
+  init_fuseki:
+    build: ./init_fuseki
+    depends_on:
+      - fuseki
+    environment:
+      - FUSEKI_ENDPOINT=http://fuseki:3030
+      - FUSEKI_USER=admin
+      - FUSEKI_PASSWORD=admin
+    volumes:
+      - ./ontologias:/app/ontologias
+
+volumes:
+  fuseki_data:
+  mongo_data:

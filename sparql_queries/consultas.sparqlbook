@@ -1,0 +1,8 @@
+[
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "\n### Consulta 1: Obtener los primeros 10 triples ###\nSELECT * WHERE {\n  ?s ?p ?o\n}\nLIMIT 10",
+    "metadata": {}
+  }
+]
