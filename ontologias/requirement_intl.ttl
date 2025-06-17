@@ -1,4 +1,4 @@
-@prefix ai: <http://ai-act.eu/ontology#> .
+@prefix ai2: <http://ai-act.eu/ontology#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix req: <http://ai-act.eu/ontology/requirement#> .
@@ -8,7 +8,7 @@ req:hasTechnicalRequirement a owl:ObjectProperty ;
         "has technical requirement"@es ;
     rdfs:comment "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@en,
         "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@es ;
-    rdfs:domain ai:IntelligentSystem ;
+    rdfs:domain ai2:IntelligentSystem ;
     rdfs:range req:TechnicalRequirement .
 
 req:TechnicalRequirement a owl:Class ;

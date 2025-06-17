@@ -5,6 +5,6 @@ from db import get_database
 
 router = APIRouter()
 
-@router.get("/criteria", response_model=list[RiskCriterion])
+@router.get("/", response_model=list[RiskCriterion])
 async def get_criteria(db: AsyncIOMotorClient = Depends(get_database)):
     return list(await db["criteria"].find().to_list(length=None))

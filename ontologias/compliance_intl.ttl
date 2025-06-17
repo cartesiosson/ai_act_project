@@ -1,4 +1,4 @@
-@prefix ai: <http://ai-act.eu/vocab#> .
+@prefix ai1: <http://ai-act.eu/vocab#> .
 @prefix comp: <http://ai-act.eu/ontology/compliance#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -36,12 +36,12 @@ comp:hasRequirement a owl:ObjectProperty ;
     rdfs:domain <http://ai-act.eu/ontology#IntelligentSystem> ;
     rdfs:range comp:ComplianceRequirement .
 
-ai:requiresCompliance a owl:ObjectProperty ;
+ai1:requiresCompliance a owl:ObjectProperty ;
     rdfs:label "requires compliance"@en,
         "requiere cumplimiento"@es ;
     rdfs:comment "Compliance requirements arising from the system's risk assessment."@en,
         "Requisitos de cumplimiento derivados de la evaluación de riesgo del sistema."@es ;
-    rdfs:domain ai:RiskAssessment ;
+    rdfs:domain ai1:RiskAssessment ;
     rdfs:range comp:ComplianceRequirement .
 
 comp:ComplianceRequirement a owl:Class ;

@@ -5,6 +5,6 @@ from db import get_database
 
 router = APIRouter()
 
-@router.get("/purposes", response_model=list[Purpose])
+@router.get("/", response_model=list[Purpose])
 async def get_purposes(db: AsyncIOMotorClient = Depends(get_database)):
     return list(await db["purposes"].find().to_list(length=None))

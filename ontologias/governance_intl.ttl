@@ -1,4 +1,4 @@
-@prefix ai: <http://ai-act.eu/ontology#> .
+@prefix ai2: <http://ai-act.eu/ontology#> .
 @prefix gov: <http://ai-act.eu/ontology/governance#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -8,7 +8,7 @@ gov:isMonitoredBy a owl:ObjectProperty ;
         "is monitored by"@es ;
     rdfs:comment "Relaciona un sistema de IA con la entidad responsable de su supervisión."@en,
         "Relaciona un sistema de IA con la entidad responsable de su supervisión."@es ;
-    rdfs:domain ai:IntelligentSystem ;
+    rdfs:domain ai2:IntelligentSystem ;
     rdfs:range gov:OversightBody .
 
 gov:OversightBody a owl:Class ;
