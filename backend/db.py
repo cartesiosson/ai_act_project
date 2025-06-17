@@ -1,12 +1,10 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import ASCENDING
-import os
+from fastapi import Depends
+from functools import lru_cache
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongo:27017")
-MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "ai_act")
+@lru_cache()
+def get_client():
+    return AsyncIOMotorClient("mongodb://mongo:27017")
 
-client = AsyncIOMotorClient(MONGO_URI)
-db = client[MONGO_DB_NAME]
-
-def get_database():
-    return db
+async def get_database(client=Depends(get_client)):
+    return client["ai_act_db"]

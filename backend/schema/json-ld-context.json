@@ -1,0 +1,12 @@
+{
+  "@context": {
+    "ai": "http://ai-act.eu/ai#",
+    "hasName": "ai:hasName",
+    "hasPurpose": "ai:hasPurpose",
+    "hasRiskLevel": "ai:hasRiskLevel",
+    "hasDeploymentContext": "ai:hasDeploymentContext",
+    "hasTrainingDataOrigin": "ai:hasTrainingDataOrigin",
+    "hasVersion": "ai:hasVersion",
+    "IntelligentSystem": "ai:IntelligentSystem"
+  }
+}
