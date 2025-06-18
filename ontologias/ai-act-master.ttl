@@ -1,0 +1,23 @@
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xml:  <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Ontología AI-Act “maestra” que importa todos tus módulos TTL  #
+#################################################################
+<http://ai-act.eu/ai> 
+    a             owl:Ontology ;
+
+    # IMPORTA CADA UNO DE TUS FICHEROS .ttl
+    owl:imports  
+        <actors_intl.ttl>,
+        <compliance_intl.ttl>,
+        <core_intl.ttl>,
+        <governance_intl.ttl>,
+        <identifiers_intl.ttl>,
+        <interop_intl.ttl>,
+        <purpose_intl.ttl>,
+        <requirement_intl.ttl>,
+        <risk-assessment_intl.ttl>,
+        <risk_intl.ttl> 
+    .

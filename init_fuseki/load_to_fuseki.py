@@ -78,6 +78,9 @@ ttl_files = list(ontologies_path.glob("*.ttl"))
 if not ttl_files:
     print("No se encontraron archivos TTL en /app/ontologias.")
 else:
+    print("Archivos TTL encontrados:")
+    for ttl_file in ttl_files:
+        print(f" - {ttl_file.name}")
     if graph_has_data():
                 print("ℹ️ El grafo ya contiene datos. No se realizará la carga.")
     else:
