@@ -1,0 +1,37 @@
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ai:   <http://ai-act.eu/ai#> .
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################################
+# URN canónico para cualquier recurso identificable de la ontología
+#################################################################
+ai:hasUrn
+    a            owl:DatatypeProperty ;
+    rdfs:label    "hasUrn"@en,
+                  "tieneUrn"@es ;
+    rdfs:comment  "Persistent, unique URN identifier for any resource in the ontology."@en,
+                  "Identificador URN persistente y único para cualquier recurso de la ontología."@es .
+
+#################################################################
+# HTTP IRI dereferenciable para cualquier recurso identificable
+#################################################################
+ai:hasHttpIri
+    a            owl:DatatypeProperty ;
+    rdfs:range    xsd:anyURI ;
+    rdfs:label    "hasHttpIri"@en,
+                  "tieneHttpIri"@es ;
+    rdfs:comment  "Dereferenceable HTTP IRI of any ontology resource."@en,
+                  "URI HTTP dereferenciable de cualquier recurso de la ontología."@es .

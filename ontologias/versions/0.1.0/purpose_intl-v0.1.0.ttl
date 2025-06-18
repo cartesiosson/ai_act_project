@@ -1,6 +1,19 @@
-@prefix ai: <http://ai-act.eu/vocab#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ai: <http://ai-act.eu/vocab#> .
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ai:BiometricIdentification a ai:Purpose,
         owl:NamedIndividual ;
@@ -70,4 +83,3 @@ ai:Purpose a owl:Class ;
         "Purpose"@es ;
     rdfs:comment "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@en,
         "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@es .
-

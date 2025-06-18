@@ -1,0 +1,76 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ai: <http://ai-act.eu/ai#> .
+
+
+
+
+
+
+
+
+
+
+
+
+
+ai:hasDeploymentContext a owl:ObjectProperty ;
+    rdfs:comment "Entorno o dominio en el que se despliega el sistema (educación, salud, transporte, etc.)."@en,
+        "Entorno o dominio en el que se despliega el sistema (educación, salud, transporte, etc.)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:DeploymentContext .
+
+ai:hasName a owl:DatatypeProperty ;
+    rdfs:comment "Nombre del sistema de inteligencia artificial."@en,
+        "Nombre del sistema de inteligencia artificial."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:hasPurpose a owl:ObjectProperty ;
+    rdfs:comment "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@en,
+        "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Purpose .
+
+ai:hasRiskLevel a owl:ObjectProperty ;
+    rdfs:comment "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@en,
+        "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:RiskLevel .
+
+ai:hasTrainingDataOrigin a owl:ObjectProperty ;
+    rdfs:comment "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@en,
+        "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:TrainingDataOrigin .
+
+ai:hasVersion a owl:DatatypeProperty ;
+    rdfs:comment "Versión o identificación técnica del sistema."@en,
+        "Versión o identificación técnica del sistema."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:IntelligentSystem a owl:Class ;
+    rdfs:comment "AI-based system that may be subject to provision, deployment, use, import or distribution in the market."@en,
+                 "Sistema basado en inteligencia artificial que puede ser objeto de provisión, despliegue, uso, importación o distribución en el mercado."@es ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasHttpIri ;
+        owl:allValuesFrom xsd:anyURI
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasHttpIri ;
+        owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasUrn ;
+        owl:allValuesFrom xsd:anyURI
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasUrn ;
+        owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] .

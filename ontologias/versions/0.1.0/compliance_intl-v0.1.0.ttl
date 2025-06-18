@@ -1,7 +1,19 @@
-@prefix ai: <http://ai-act.eu/vocab#> .
-@prefix comp: <http://ai-act.eu/ontology/compliance#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ai: <http://ai-act.eu/vocab#> .
+@prefix comp: <http://ai-act.eu/ontology/compliance#> .
+
+
+
+
+
+
+
+
+
+
+
+
 
 comp:AccuracyEvaluationRequirement a comp:ComplianceRequirement,
         owl:NamedIndividual ;
@@ -49,4 +61,3 @@ comp:ComplianceRequirement a owl:Class ;
         "Compliance Requirement"@es ;
     rdfs:comment "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@en,
         "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@es .
-

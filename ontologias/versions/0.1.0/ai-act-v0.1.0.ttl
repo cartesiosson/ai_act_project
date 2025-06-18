@@ -1,0 +1,33 @@
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://ai-act.eu/ai-act>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/ai-act/0.1.0> ;
+    owl:versionInfo "Versión 0.1.0 publicada el 2025-06-18"@es ,
+                    "Version 0.1.0 released on 2025-06-18"@en ;
+    rdfs:comment "Ontología del AI Act modularizada para representar sistemas inteligentes, actores regulados, niveles de riesgo y requisitos normativos bajo el marco legal europeo."@es ,
+                 "Modular ontology for representing intelligent systems, regulated actors, risk levels, and compliance requirements under the European AI Act."@en ;
+    dcterms:created "2025-06-18"^^xsd:date ;
+
+#################################################################
+# Ontología AI-Act “maestra” que importa todos tus módulos TTL  #
+#################################################################
+
+    # IMPORTA CADA UNO DE TUS FICHEROS .ttl
+    owl:imports  
+        <file:actors_intl-v0.1.0.ttl>,
+        <file:compliance_intl-v0.1.0.ttl>,
+        <file:core_intl-v0.1.0.ttl>,
+        <file:governance_intl-v0.1.0.ttl>,
+        <file:identifiers_intl-v0.1.0.ttl>,
+        <file:interop_intl-v0.1.0.ttl>,
+        <file:purpose_intl-v0.1.0.ttl>,
+        <file:requirement_intl-v0.1.0.ttl>,
+        <file:risk-assessment_intl-v0.1.0.ttl>,
+        <file:risk_intl-v0.1.0.ttl> 
+    .
+
+

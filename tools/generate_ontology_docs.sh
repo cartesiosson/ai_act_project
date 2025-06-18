@@ -6,13 +6,13 @@ set -euo pipefail
 # ----------------------------------------------------------------
 
 # Ruta al JAR de Widoco (asegúrate de que coincida con el nombre real)
-WIDOCO_JAR="tools/widoco/Widoco-1.4.25-jar-with-dependencies_JDK-17.jar"
+WIDOCO_JAR="widoco/Widoco-1.4.25-jar-with-dependencies_JDK-17.jar"
 
 # Fichero “master” que importa todos tus TTL
-MASTER_TTL="ontologias/ai-act-master.ttl"
+MASTER_TTL="../ontologias/ai-act-master.ttl"
 
 # Carpeta donde se volcará la doc generada
-OUT_FOLDER="docs/ontology"
+OUT_FOLDER="../docs/ontology"
 
 # Idiomas de la documentación (en Widoco se separan con “-”)
 LANGUAGES="es-en"

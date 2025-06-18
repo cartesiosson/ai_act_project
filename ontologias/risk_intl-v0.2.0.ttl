@@ -1,8 +1,21 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ai: <http://ai-act.eu/vocab#> .
 @prefix comp: <http://ai-act.eu/ontology/compliance#> .
 @prefix ex: <http://example.org/instances#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ai:AutonomousWithoutExplanation a ai:TechnicalCriterion,
         owl:NamedIndividual ;
@@ -229,4 +242,3 @@ ai:NormativeCriterion a owl:Class ;
     rdfs:comment "Criterio derivado directamente del texto legal del AI Act."@en,
         "Criterio derivado directamente del texto legal del AI Act."@es ;
     rdfs:subClassOf ai:RiskCriterion .
-
