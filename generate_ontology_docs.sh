@@ -25,6 +25,7 @@ EXTRA_OPTS=(
   "-rewriteAll"
   "-includeImportedOntologies"
   "-uniteSections"
+  "-oops"
 )
 
 echo "Generando documentación de la ontología a partir de ${MASTER_TTL}..."

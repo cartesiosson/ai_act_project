@@ -1,0 +1,109 @@
+#!/bin/bash
+
+set -e
+
+# === Configuración ===
+ENV_FILE="ontologias.env"
+ONTOLOGY_DIR="ontologias"
+VERSION_DIR="$ONTOLOGY_DIR/versions"
+CHANGELOG="CHANGELOG.md"
+
+# === Funciones auxiliares ===
+
+increment_version() {
+    local version=$1
+    local mode=$2
+
+    IFS='.' read -r major minor patch <<< "$version"
+    case "$mode" in
+        major)
+            ((major++)); minor=0; patch=0 ;;
+        minor)
+            ((minor++)); patch=0 ;;
+        patch)
+            ((patch++)) ;;
+        *)
+            echo "Error: modo de release inválido '$mode'"
+            exit 1 ;;
+    esac
+
+    echo "$major.$minor.$patch"
+}
+
+generate_ontology_header() {
+    local filename=$1
+    local base_iri=$2
+    local version=$3
+    local today=$(date +%Y-%m-%d)
+
+    cat <<EOF
+<${base_iri}>
+    a owl:Ontology ;
+    owl:versionIRI <${base_iri}/${version}> ;
+    owl:versionInfo "Versión ${version} publicada el ${today}"@es ,
+                    "Version ${version} released on ${today}"@en ;
+    rdfs:comment "Ontología del AI Act modularizada para representar sistemas inteligentes, actores regulados y requisitos normativos bajo el marco legal europeo."@es ,
+                 "Modular ontology for representing intelligent systems, regulated actors, and compliance requirements under the European AI Act."@en ;
+    dcterms:created "${today}"^^xsd:date .
+EOF
+}
+
+# === Validación de argumentos ===
+if [[ $# -ne 2 || "$1" != "--release" || ! "$2" =~ ^(minor|major|patch)$ ]]; then
+    echo "Uso: ./create_release --release minor|major|patch"
+    exit 1
+fi
+
+# === Leer versión actual ===
+if [[ ! -f "$ENV_FILE" ]]; then
+    echo "Error: archivo $ENV_FILE no encontrado"
+    exit 1
+fi
+
+source "$ENV_FILE"
+CURRENT_VERSION="$CURRENT_RELEASE"
+NEW_VERSION=$(increment_version "$CURRENT_VERSION" "$2")
+
+echo "Generando nueva versión: $NEW_VERSION (desde $CURRENT_VERSION)"
+echo "Actualizando archivos TTL en: $ONTOLOGY_DIR"
+
+mkdir -p "$VERSION_DIR"
+
+# === Cambiar encabezado y generar copias versionadas ===
+for ttl_file in "$ONTOLOGY_DIR"/*.ttl; do
+    filename=$(basename "$ttl_file")
+    name="${filename%.ttl}"
+    versioned_file="${VERSION_DIR}/${name}-v${NEW_VERSION}.ttl"
+
+    base_iri="http://ai-act.eu/${name}"
+
+    {
+        echo "@prefix owl: <http://www.w3.org/2002/07/owl#> ."
+        echo "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
+        echo "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> ."
+        echo "@prefix dcterms: <http://purl.org/dc/terms/> ."
+        echo ""
+        generate_ontology_header "$filename" "$base_iri" "$NEW_VERSION"
+        echo ""
+        awk '!/^<http:\/\/ai-act.eu\/.*> a owl:Ontology/' "$ttl_file"
+    } > "$versioned_file"
+
+    echo "✔ Archivo versionado: $versioned_file"
+done
+
+# === Calcular diff y generar entrada en el changelog ===
+echo -e "\n📝 Generando CHANGELOG.md"
+{
+    echo "## Versión $NEW_VERSION – $(date +%Y-%m-%d)"
+    echo ""
+    echo "**Cambios desde $CURRENT_VERSION:**"
+    echo ""
+    git diff --minimal "$ONTOLOGY_DIR" | sed 's/^/    /'
+    echo ""
+    echo "---"
+    echo ""
+} >> "$CHANGELOG"
+
+# === Actualizar ontologias.env ===
+echo "CURRENT_RELEASE=$NEW_VERSION" > "$ENV_FILE"
+echo "Versión actualizada a $NEW_VERSION"

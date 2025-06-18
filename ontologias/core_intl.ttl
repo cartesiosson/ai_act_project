@@ -39,22 +39,26 @@ ai:hasVersion a owl:DatatypeProperty ;
     rdfs:domain ai:IntelligentSystem ;
     rdfs:range xsd:string .
 
-
-#################################################################
-# hasUrn es opcional pero, si existe, solo una vez por sujeto   #
-#################################################################
-ai:hasUrn
-    a       owl:DatatypeProperty ,
-            owl:FunctionalProperty .
-
-#################################################################
-# hasHttpIri es opcional pero, si existe, solo una vez por sujeto
-#################################################################
-ai:hasHttpIri
-    a       owl:DatatypeProperty ,
-            owl:FunctionalProperty .
-
 ai:IntelligentSystem a owl:Class ;
     rdfs:comment "AI-based system that may be subject to provision, deployment, use, import or distribution in the market."@en,
-        "Sistema basado en inteligencia artificial que puede ser objeto de provisión, despliegue, uso, importación o distribución en el mercado."@es .
-
+                 "Sistema basado en inteligencia artificial que puede ser objeto de provisión, despliegue, uso, importación o distribución en el mercado."@es ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasHttpIri ;
+        owl:allValuesFrom xsd:anyURI
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasHttpIri ;
+        owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasUrn ;
+        owl:allValuesFrom xsd:anyURI
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty ai:hasUrn ;
+        owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] .

@@ -8,19 +8,6 @@
 #################################################################
 ai:hasUrn
     a            owl:DatatypeProperty ;
-    rdfs:domain   ai:IntelligentSystem,
-                  ai:Actor,
-                  ai:OversightBody,
-                  ai:Purpose,
-                  ai:RiskLevel,
-                  ai:DeploymentContext,
-                  ai:TrainingDataOrigin,
-                  ai:Version,
-                  ai:ComplianceRequirement,
-                  ai:InterfaceSpecification,
-                  ai:TechnicalRequirement,
-                  ai:RiskCriterion ;
-    rdfs:range    xsd:string ;
     rdfs:label    "hasUrn"@en,
                   "tieneUrn"@es ;
     rdfs:comment  "Persistent, unique URN identifier for any resource in the ontology."@en,
@@ -31,18 +18,6 @@ ai:hasUrn
 #################################################################
 ai:hasHttpIri
     a            owl:DatatypeProperty ;
-    rdfs:domain   ai:IntelligentSystem,
-                  ai:Actor,
-                  ai:OversightBody,
-                  ai:Purpose,
-                  ai:RiskLevel,
-                  ai:DeploymentContext,
-                  ai:TrainingDataOrigin,
-                  ai:Version,
-                  ai:ComplianceRequirement,
-                  ai:InterfaceSpecification,
-                  ai:TechnicalRequirement,
-                  ai:RiskCriterion ;
     rdfs:range    xsd:anyURI ;
     rdfs:label    "hasHttpIri"@en,
                   "tieneHttpIri"@es ;
