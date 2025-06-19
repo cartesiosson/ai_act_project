@@ -5,7 +5,7 @@
 
 <http://ai-act.eu/ai-act>
     a owl:Ontology ;
-    owl:versionIRI <http://ai-act.eu/ai-act/0.2.0> ;
+    #owl:versionIRI <http://ai-act.eu/ai-act/0.2.0> ;
     owl:versionInfo "Versión 0.2.0 publicada el 2025-06-18"@es ,
                     "Version 0.2.0 released on 2025-06-18"@en ;
     rdfs:comment "Ontología del AI Act modularizada para representar sistemas inteligentes, actores regulados, niveles de riesgo y requisitos normativos bajo el marco legal europeo."@es ,

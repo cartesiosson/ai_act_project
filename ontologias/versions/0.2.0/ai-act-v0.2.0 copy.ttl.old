@@ -12,9 +12,16 @@
                  "Modular ontology for representing intelligent systems, regulated actors, risk levels, and compliance requirements under the European AI Act."@en ;
     dcterms:created "2025-06-18"^^xsd:date ;
     owl:imports  
-        <http://localhost:8080/actors_intl-v0.2.0.ttl>,
-        <http://localhost:8080/core_intl-vo.2.0.ttl>
-
+        <http://ai-act.eu/actors_intl>,
+        <http://ai-act.eu/compliance_intl>,
+        <http://ai-act.eu/core_intl>,
+        <http://ai-act.eu/governance_intl>,
+        <http://ai-act.eu/identifiers_intl>,
+        <http://ai-act.eu/interop_intl>,
+        <http://ai-act.eu/purpose_intl>,
+        <http://ai-act.eu/requirement_intl>,
+        <http://ai-act.eu/risk-assessment_intl>,
+        <http://ai-act.eu/risk_intl> 
     .
 
 

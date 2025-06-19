@@ -1,19 +1,15 @@
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix ai: <http://ai-act.eu/ai#> .
 
-
-
-
-
-
-
-
-
-
-
-
+<http://ai-act.eu/core_intl>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/core_intl/0.2.0> ;
+    rdfs:comment "Ontología del módulo core del AI Act."@es ,
+                 "Core module of the AI Act ontology."@en ;
+    dcterms:created "2025-06-18"^^xsd:date .
 
 
 ai:hasDeploymentContext a owl:ObjectProperty ;

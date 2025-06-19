@@ -3,36 +3,44 @@ set -euo pipefail
 
 # ----------------------------------------------------------------
 # Script para generar documentación HTML de la ontología con Widoco
+# Levanta un servidor local para usar -ontURI y lo apaga al terminar
 # ----------------------------------------------------------------
 
-# Ruta al JAR de Widoco (asegúrate de que coincida con el nombre real)
 WIDOCO_JAR="widoco/Widoco-1.4.25-jar-with-dependencies_JDK-17.jar"
 
-# Fichero “master” que importa todos tus TTL
-MASTER_TTL="../ontologias/ai-act-master.ttl"
-
-# Carpeta donde se volcará la doc generada
+# Cargar versión actual desde entorno
+source "../tools/ontologias.env"
+VERSION="$CURRENT_RELEASE"
+ONTOLOGY_DIR="../ontologias/versions/${VERSION}"
+TTL_FILE="ai-act-v${VERSION}.ttl"
+TTL_URI="http://localhost:8080/${TTL_FILE}"
 OUT_FOLDER="../docs/ontology"
-
-# Idiomas de la documentación (en Widoco se separan con “-”)
 LANGUAGES="es-en"
 
-# Opciones extra de Widoco:
-#  -rewriteAll: fuerza regeneración completa
-#  -includeImportedOntologies: documenta también cada ontología importada
-#  -uniteSections: (opcional) genera un único HTML con todas las secciones
-EXTRA_OPTS=(
-  "-rewriteAll"
-  "-includeImportedOntologies"
-  "-uniteSections"
-  "-oops"
-)
+# Lanzar servidor HTTP en segundo plano
+cd "$ONTOLOGY_DIR"
+echo "🌐 Lanzando servidor local para servir ${TTL_FILE}..."
+python3 -m http.server 8080 > /dev/null 2>&1 &
+SERVER_PID=$!
 
-echo "Generando documentación de la ontología a partir de ${MASTER_TTL}..."
+# Esperar unos segundos a que arranque el servidor
+sleep 3
+
+# Volver al directorio original del script
+cd - > /dev/null
+
+echo "📄 Generando documentación desde $TTL_URI ..."
 java -jar "${WIDOCO_JAR}" \
-  -ontFile "${MASTER_TTL}" \
+  -ontURI "$TTL_URI" \
   -outFolder "${OUT_FOLDER}" \
   -lang "${LANGUAGES}" \
-  "${EXTRA_OPTS[@]}"
+  -rewriteAll \
+  -includeImportedOntologies \
+  -uniteSections \
+  -oops
 
-echo "¡Documentación generada en ${OUT_FOLDER}/index.html!"
+# Detener servidor local
+echo "🛑 Apagando servidor local (PID $SERVER_PID)..."
+kill "$SERVER_PID"
+
+echo "✅ ¡Documentación generada en ${OUT_FOLDER}/index.html!"
