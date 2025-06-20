@@ -1,0 +1,28 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+
+
+<http://ai-act.eu/ai-act>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/ai-act/0.32.0> ;
+    owl:versionInfo "Versión 0.32.0 publicada el 2025-06-20"@es ,
+                    "Version 0.32.0 released on 2025-06-20"@en ;
+    rdfs:comment "Ontología del módulo ai-act del AI Act."@es ,
+                 "Ai-act module of the AI Act ontology."@en ;
+    dcterms:created "2025-06-20"^^xsd:date .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/actors_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/compliance_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/core_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/governance_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/identifiers_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/interop_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/purpose_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/requirement_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/risk-assessment_intl-v0.32.0.ttl> .
+        <http://ai-act.eu/ai-act> owl:imports <http://localhost:8080/risk_intl-v0.32.0.ttl> .
+
+

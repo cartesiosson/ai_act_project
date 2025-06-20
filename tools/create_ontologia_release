@@ -10,7 +10,22 @@ ENV_FILE="$SCRIPT_DIR/ontologias.env"
 ONTOLOGY_DIR="$PROJECT_DIR/ontologias"
 VERSION_ROOT="$ONTOLOGY_DIR/versions"
 
-# === Funciones auxiliares ===
+if [ ! -f "$ENV_FILE" ]; then
+    echo "❌ No se encuentra el fichero de configuración $ENV_FILE"
+    exit 1
+fi
+
+source "$ENV_FILE"
+
+if ! command -v docker &> /dev/null; then
+    echo "❌ Docker no está instalado o no está en el PATH"
+    exit 1
+fi
+
+# === Leer versión actual ===
+CURRENT_VERSION="$CURRENT_RELEASE"
+VERSION_FILE="$ENV_FILE"
+
 increment_version() {
     local version=$1
     local mode=$2
@@ -19,150 +34,100 @@ increment_version() {
         major) ((major++)); minor=0; patch=0 ;;
         minor) ((minor++)); patch=0 ;;
         patch) ((patch++)) ;;
-        *) echo "Error: modo de release inválido '$mode'" ; exit 1 ;;
+        *) echo "❌ Modo de versión inválido: $mode"; exit 1 ;;
     esac
     echo "$major.$minor.$patch"
 }
 
-generate_ontology_header() {
-    local base_iri=$1
-    local version=$2
-    local today=$(date +%Y-%m-%d)
-
-    cat <<EOF
-<${base_iri}>
-    a owl:Ontology ;
-    owl:versionIRI <${base_iri}/${version}> ;
-    owl:versionInfo "Versión ${version} publicada el ${today}"@es ,
-                    "Version ${version} released on ${today}"@en ;
-    rdfs:comment "Ontología del AI Act modularizada para representar sistemas inteligentes, actores regulados, niveles de riesgo y requisitos normativos bajo el marco legal europeo."@es ,
-                 "Modular ontology for representing intelligent systems, regulated actors, risk levels, and compliance requirements under the European AI Act."@en ;
-    dcterms:created "${today}"^^xsd:date ;
-EOF
-}
-
-generate_master_imports() {
-    local version=$1
-    cat <<EOF
-
-#################################################################
-# Ontología AI-Act “maestra” que importa todos tus módulos TTL  #
-#################################################################
-
-    # IMPORTA CADA UNO DE TUS FICHEROS .ttl
-    owl:imports  
-        <file:actors_intl-v${version}.ttl>,
-        <file:compliance_intl-v${version}.ttl>,
-        <file:core_intl-v${version}.ttl>,
-        <file:governance_intl-v${version}.ttl>,
-        <file:identifiers_intl-v${version}.ttl>,
-        <file:interop_intl-v${version}.ttl>,
-        <file:purpose_intl-v${version}.ttl>,
-        <file:requirement_intl-v${version}.ttl>,
-        <file:risk-assessment_intl-v${version}.ttl>,
-        <file:risk_intl-v${version}.ttl> 
-    .
-EOF
-}
-
-# === Validación de argumentos ===
-if [[ "$1" != "--release" || ! "$2" =~ ^(minor|major|patch)$ ]]; then
-    echo "Uso: ./create_ontologia_release --release minor|major|patch [--ok]"
+# === Parámetros ===
+if [[ "$1" != "--release" || -z "$2" ]]; then
+    echo "Uso: $0 --release [major|minor|patch] [--ok]"
     exit 1
 fi
 
-# === Leer versión actual ===
-if [[ ! -f "$ENV_FILE" ]]; then
-    echo "Error: archivo $ENV_FILE no encontrado en $SCRIPT_DIR"
-    exit 1
+MODE="$2"
+OK_MODE=false
+if [[ "$3" == "--ok" ]]; then
+    OK_MODE=true
 fi
 
-source "$ENV_FILE"
-CURRENT_VERSION="$CURRENT_RELEASE"
-NEW_VERSION=$(increment_version "$CURRENT_VERSION" "$2")
-
+NEW_VERSION=$(increment_version "$CURRENT_VERSION" "$MODE")
 echo "Generando nueva versión: $NEW_VERSION (desde $CURRENT_VERSION)"
 
-# === Crear subcarpeta para la nueva versión ===
-VERSION_DIR="$VERSION_ROOT/$NEW_VERSION"
-mkdir -p "$VERSION_DIR"
+# === Procesar ficheros TTL ===
+mkdir -p "$VERSION_ROOT/$NEW_VERSION"
 
-echo "Guardando archivos TTL versionados en: $VERSION_DIR"
+for file in "$ONTOLOGY_DIR"/*-v$CURRENT_VERSION.ttl; do
+    filename=$(basename -- "$file")
+    basename_noext="${filename%-v$CURRENT_VERSION.ttl}"
+    versioned_file="$VERSION_ROOT/$NEW_VERSION/${basename_noext}-v$NEW_VERSION.ttl"
 
-# === Procesar cada archivo TTL ===
-UPDATED_FILES=()
-for ttl_file in "$ONTOLOGY_DIR"/*.ttl; do
-    filename=$(basename "$ttl_file")
-    basename_raw="${filename%.ttl}"
-    basename=$(echo "$basename_raw" | sed -E 's/(-v[0-9]+\.[0-9]+\.[0-9]+)+$//')
-    versioned_file="${VERSION_DIR}/${basename}-v${NEW_VERSION}.ttl"
-    base_iri="http://ai-act.eu/${basename}"
+    # === Extraer cabecera y cuerpo ===
+    header=$(awk '/^<http:\/\/ai-act.eu\// {exit} {print}' "$file")
+    body=$(awk '/^<http:\/\/ai-act.eu\// {found=1} found' "$file")
 
-    # Leer contenido
-    ttl_content=$(<"$ttl_file")
+    ontology_uri="http://ai-act.eu/${basename_noext}"
+    today=$(date +%F)
 
-    # Extraer prefijos únicos y ordenarlos
-    prefix_block=$(echo "$ttl_content" | grep '^@prefix' | sort -u)
-
-    # Añadir obligatorios si faltan (solo en ai-act-master.ttl)
-    if [[ "$basename" == "ai-act" ]]; then
-        [[ "$prefix_block" != *"@prefix rdfs:"* ]] && prefix_block="$prefix_block
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
-        [[ "$prefix_block" != *"@prefix dcterms:"* ]] && prefix_block="$prefix_block
-@prefix dcterms: <http://purl.org/dc/terms/> ."
-        [[ "$prefix_block" != *"@prefix xsd:"* ]] && prefix_block="$prefix_block
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> ."
-    fi
-
-    # Ordenar los prefijos
-    prefix_block=$(echo "$prefix_block" | awk '
-        /@prefix owl:/ {print "01 "$0; next}
-        /@prefix rdf:/ {print "02 "$0; next}
-        /@prefix rdfs:/ {print "03 "$0; next}
-        /@prefix xsd:/ {print "04 "$0; next}
-        /@prefix dcterms:/ {print "05 "$0; next}
-        {print "10 "$0}' | sort | cut -d' ' -f2-)
-
-    # Extraer cuerpo sin prefijos ni definición previa de Ontology (solo ai-act-master)
-    body_block=$(echo "$ttl_content" | awk '!/^@prefix/')
-    if [[  "$basename" == "ai-act" ]]; then
-        # clean_body=$(echo "$body_block" | awk -v iri="<http://ai-act.eu/ai-act-master>" '
-        #     $0 ~ "^" iri "[[:space:]]+a[[:space:]]+owl:Ontology" {skip=1; next}
-        #     skip && /^\s*\./ {skip=0; next}
-        #     !skip')
+    # === Construir clean_body y owl:imports ===
+    if [[ "$basename_noext" == "ai-act" ]]; then
         clean_body=""
+        imports_block=""
+        for imported in "$ONTOLOGY_DIR"/*-v$CURRENT_VERSION.ttl; do
+            imp_name=$(basename -- "$imported")
+            if [[ "$imp_name" != ai-act-* ]]; then
+                mod_name="${imp_name%%-v*}"
+                imports_block="${imports_block}
+        <${ontology_uri}> owl:imports <$BASE_IMPORT_IRI/${mod_name}-v${NEW_VERSION}.ttl> ."
+            fi
+        done
     else
-        clean_body=$(echo "$body_block" | awk 'BEGIN{skip=0} 
-            /a owl:Ontology/ {skip=1} 
-            skip && /^\s*\./ {skip=0; next} 
-            !skip')
+        if grep -q '^ai:' <<< "$body"; then
+            clean_body=$(awk '/^ai:/ {found=1} found' <<< "$body")
+        else
+            clean_body="$body"
+        fi
+        imports_block=""
     fi
 
-    # Generar contenido final
-    {
-        echo "$prefix_block"
-        echo ""
-        if [[  "$basename" == "ai-act" ]]; then
-            generate_ontology_header "$base_iri" "$NEW_VERSION"
-            generate_master_imports "$NEW_VERSION"
-            echo ""
-        fi
-        echo "$clean_body"
-    } > "$versioned_file"
+    # === Nueva cabecera y metadatos ===
+    new_header="@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> ."
 
-    echo "✔ Archivo versionado: $versioned_file"
-    UPDATED_FILES+=("$filename")
+    metadata_block="
+<${ontology_uri}>
+    a owl:Ontology ;
+    owl:versionIRI <${ontology_uri}/${NEW_VERSION}> ;
+    owl:versionInfo \"Versión $NEW_VERSION publicada el $today\"@es ,
+                    \"Version $NEW_VERSION released on $today\"@en ;
+    rdfs:comment \"Ontología del módulo ${basename_noext} del AI Act.\"@es ,
+                 \"${basename_noext^} module of the AI Act ontology.\"@en ;
+    dcterms:created \"$today\"^^xsd:date ."
 
-    # Sustituir fichero original por su versión si se solicita --ok
-    if [[ "$3" == "--ok" ]]; then
-        target_path="$ONTOLOGY_DIR/$filename"
-        rm -f "$target_path"
+    # === Escritura final del archivo versionado ===
+    echo -e "$new_header\n\n$metadata_block$imports_block\n\n$clean_body" > "$versioned_file"
+
+    docker run --rm -v "$VERSION_ROOT/$NEW_VERSION:/data" stain/jena riot "/data/$(basename "$versioned_file")" &> /dev/null && \
+        echo "✔ Validado RDF con riot: $versioned_file" || \
+        echo "❌ Error RDF en $versioned_file"
+
+    if $OK_MODE; then
         cp "$versioned_file" "$ONTOLOGY_DIR"
         echo "🔁 Sustituido $filename con versión $NEW_VERSION"
     fi
-
 done
 
-# === Actualizar ontologias.env ===
-echo "CURRENT_RELEASE=$NEW_VERSION" > "$ENV_FILE"
-echo "✅ Versión actualizada a $NEW_VERSION"
+# === Borrar versiones anteriores si --ok ===
+if $OK_MODE; then
+    for oldfile in "$ONTOLOGY_DIR"/*-v$CURRENT_VERSION.ttl; do
+        [ -f "$oldfile" ] && rm -f "$oldfile"
+    done
+fi
+
+# === Actualizar versión actual ===
+sed -i "s/^CURRENT_RELEASE=.*/CURRENT_RELEASE=$NEW_VERSION/" "$VERSION_FILE"
+echo "✅ Versión actualizada a $NEW_VERSION en $VERSION_FILE"
