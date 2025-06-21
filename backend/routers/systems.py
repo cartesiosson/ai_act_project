@@ -1,126 +1,55 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Request
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from rdflib import Graph
-from pathlib import Path
-import json
-
+from fastapi import APIRouter, Depends, HTTPException
+from rdflib import Graph, URIRef, Literal
+from rdflib.namespace import RDF
 from models.system import IntelligentSystem
 from db import get_database
+import uuid
+import json
+from bson import ObjectId
 
 router = APIRouter(prefix="/systems", tags=["systems"])
 
-@router.get("/", response_model=list[IntelligentSystem])
-async def get_systems(db: AsyncIOMotorDatabase = Depends(get_database)):
-    docs = await db["systems"].find().to_list(length=None)
-    return [IntelligentSystem(**doc) for doc in docs]
+@router.post("", status_code=201)
+async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
+    # Convertimos a dict
+    json_ld = json_ld.dict(by_alias=True)
 
-@router.post(
-    "/",
-    response_model=IntelligentSystem,
-    status_code=status.HTTP_201_CREATED,
-    summary="Create a new IntelligentSystem from JSON-LD",
-    openapi_extra={
-        "requestBody": {
-            "content": {
-                "application/ld+json": {
-                    "schema": {"$ref": "#/components/schemas/IntelligentSystem"},
-                    "example": {
-                        "@context": "http://localhost:8000/static/json-ld-context.json",
-                        "@type": "ai:IntelligentSystem",
-                        "hasName": "Sim-01",
-                        "hasPurpose": "ai:ForEducation",
-                        "hasRiskLevel": "ai:HighRisk",
-                        "hasDeploymentContext": "ai:Education",
-                        "hasTrainingDataOrigin": "ai:InternalDataset",
-                        "hasVersion": "1.0.0"
-                    }
-                }
-            }
-        }
-    }
-)
-async def create_system(
-    raw_body: dict = Body(..., media_type="application/ld+json"),
-    db: AsyncIOMotorDatabase = Depends(get_database)
-):
-    # 1) Leemos el JSON-LD bruto
-    data = raw_body
+    # Generamos un URN único
+    urn = f"urn:uuid:{uuid.uuid4()}"
+    json_ld["ai:hasUrn"] = urn
+    json_ld["@id"] = urn  # <= Añade esto
 
-    # 2) Si "@context" es una URL, la reemplazamos por el JSON local para evitar fetch externo
-    ctx = data.get("@context")
-    if isinstance(ctx, str):
-        try:
-            context_file = Path("schema/json-ld-context.json")
-            full = json.loads(context_file.read_text(encoding="utf-8"))
-            data["@context"] = full["@context"]
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"No pude cargar el contexto JSON-LD: {e}"
-            )
+    # Guardamos en MongoDB
+    result = await db.systems.insert_one(json_ld)
 
-    # 3) Parseamos el JSON-LD ya completo
-    try:
-        inst_graph = Graph().parse(data=json.dumps(data), format="json-ld")
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"JSON-LD inválido: {e}"
-        )
+    # Eliminamos _id antes de RDFLib
+    json_ld.pop("_id", None)
 
-    # 4) Validación SPARQL ASK para asegurar el tipo
-    ask_q = """
-    PREFIX ai: <http://ai-act.eu/ai#>
-    ASK { ?s a ai:IntelligentSystem }
-    """
-    if not inst_graph.query(ask_q).askAnswer:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Falta rdf:type ai:IntelligentSystem"
-        )
+    # Convertimos a tripletas RDF
+    g = Graph()
+    g.parse(data=json.dumps(json_ld), format="json-ld", context=json_ld["@context"])
 
-    # 5) Extracción de propiedades mediante SPARQL SELECT
-    select_q = """
-    PREFIX ai: <http://ai-act.eu/ai#>
-    SELECT ?name ?purpose ?risk ?depCtx ?trainOrig ?ver WHERE {
-      ?s a ai:IntelligentSystem ;
-         ai:hasName               ?name ;
-         ai:hasPurpose            ?purpose ;
-         ai:hasRiskLevel          ?risk ;
-         ai:hasDeploymentContext  ?depCtx ;
-         ai:hasTrainingDataOrigin ?trainOrig ;
-         ai:hasVersion            ?ver .
-    }
-    """
-    res = inst_graph.query(select_q)
-    rows = list(res)
-    if not rows:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Faltan propiedades requeridas para ai:IntelligentSystem"
-        )
-    row = rows[0]
+    # Aquí podrías subir el grafo a Fuseki si lo deseas
 
-    payload = {
-        "hasName": str(row.name),
-        "hasPurpose": str(row.purpose),
-        "hasRiskLevel": str(row.risk),
-        "hasDeploymentContext": str(row.depCtx),
-        "hasTrainingDataOrigin": str(row.trainOrig),
-        "hasVersion": str(row.ver)
-    }
+    return {"inserted_id": str(result.inserted_id), "urn": urn}
 
-    # 6) Validación Pydantic
-    system = IntelligentSystem(**payload)
+from bson import ObjectId
 
-    # 7) Serialización a str e inserción en MongoDB
-    doc = { field: str(value) for field, value in system.dict(by_alias=True).items() }
-    result = await db["systems"].insert_one(doc)
-    if not result.inserted_id:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="No se pudo insertar el IntelligentSystem en la base de datos"
-        )
+def fix_mongo_ids(doc):
+    doc["_id"] = str(doc["_id"])
+    return doc
 
-    return system
+@router.get("", response_model=list[dict])
+async def list_systems(db=Depends(get_database)):
+    systems_cursor = db.systems.find()
+    systems = []
+    async for doc in systems_cursor:
+        systems.append(fix_mongo_ids(doc))
+    return systems
 
+@router.get("/{urn}")
+async def get_system_by_urn(urn: str, db=Depends(get_database)):
+    doc = await db.systems.find_one({"ai:hasUrn": urn})
+    if doc:
+        return fix_mongo_ids(doc)
+    raise HTTPException(status_code=404, detail="System not found")

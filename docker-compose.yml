@@ -44,6 +44,11 @@ services:
     volumes:
       - ./ontologias:/app/ontologias    # para cargar TTL al iniciar
 
+  ontologias:
+    build: ./ontologias          
+    ports:
+      - "80:80"
+
 volumes:
   fuseki_data:
   mongo_data:

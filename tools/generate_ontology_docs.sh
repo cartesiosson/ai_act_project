@@ -11,16 +11,18 @@ WIDOCO_JAR="widoco/Widoco-1.4.25-jar-with-dependencies_JDK-17.jar"
 # Cargar versión actual desde entorno
 source "../tools/ontologias.env"
 VERSION="$CURRENT_RELEASE"
-ONTOLOGY_DIR="../ontologias/versions/${VERSION}"
+#ONTOLOGY_DIR="../ontologias/versions/${VERSION}"
+ONTOLOGY_DIR="../ontologias"
 TTL_FILE="ai-act-v${VERSION}.ttl"
-TTL_URI="http://localhost:8080/${TTL_FILE}"
-OUT_FOLDER="../docs/ontology"
+TTL_URI="http://localhost/${TTL_FILE}"
+OUT_FOLDER="../ontologias/docs"
 LANGUAGES="es-en"
 
 # Lanzar servidor HTTP en segundo plano
 cd "$ONTOLOGY_DIR"
+echo "📂 Usando directorio de ontología: ${ONTOLOGY_DIR}"
 echo "🌐 Lanzando servidor local para servir ${TTL_FILE}..."
-python3 -m http.server 8080 > /dev/null 2>&1 &
+python3 -m http.server 80 > /dev/null 2>&1 &
 SERVER_PID=$!
 
 # Esperar unos segundos a que arranque el servidor
@@ -40,7 +42,12 @@ java -jar "${WIDOCO_JAR}" \
   -oops
 
 # Detener servidor local
-echo "🛑 Apagando servidor local (PID $SERVER_PID)..."
+echo "🛑 Apagando servidor local..."
 kill "$SERVER_PID"
 
+
 echo "✅ ¡Documentación generada en ${OUT_FOLDER}/index.html!"
+source ./venv/bin/activate
+echo "Generando context.jsonld para JSON-LD..."
+python3 generate_context.py
+deactivate

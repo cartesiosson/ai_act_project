@@ -17,6 +17,9 @@ fi
 
 source "$ENV_FILE"
 
+BASE_IMPORT_IRI="${BASE_IMPORT_HOST}:${BACKEND_SERVER_PORT}"
+
+
 if ! command -v docker &> /dev/null; then
     echo "❌ Docker no está instalado o no está en el PATH"
     exit 1

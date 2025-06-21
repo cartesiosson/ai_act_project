@@ -5,7 +5,7 @@ import requests
 
 FUSEKI_ENDPOINT = os.getenv("FUSEKI_ENDPOINT", "http://fuseki:3030")
 DATASET = "ds"
-GRAPH_URI = "http://ai-act.eu/data/ai-data"
+GRAPH_URI = "http://ai-act.eu/ontoglogy"
 ONTOLOGY_PATH = "/app/ontologias"
 
 # Esperar a que Fuseki esté disponible

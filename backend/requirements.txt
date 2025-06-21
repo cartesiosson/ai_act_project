@@ -3,3 +3,4 @@ uvicorn[standard]
 motor
 rdflib
 requests
+pymongo

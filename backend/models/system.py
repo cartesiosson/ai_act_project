@@ -1,13 +1,32 @@
-from pydantic import BaseModel, AnyUrl, Field
+from pydantic import BaseModel, Field
+from typing import Optional
 
 class IntelligentSystem(BaseModel):
-    name: str = Field(..., alias="hasName")
-    purpose: AnyUrl = Field(..., alias="hasPurpose")
-    risk_level: AnyUrl = Field(..., alias="hasRiskLevel")
-    deployment_context: AnyUrl = Field(..., alias="hasDeploymentContext")
-    training_data_origin: AnyUrl = Field(..., alias="hasTrainingDataOrigin")
-    version: str = Field(..., alias="hasVersion")
+    id: Optional[str] = Field(default=None, alias="@id")
+    type: str = Field(alias="@type", example="ai:IntelligentSystem")
+    context: Optional[str] = Field(
+        default="http://localhost/docs/ontologias.jsonld",
+        alias="@context"
+    )
+    
+    hasName: str = Field(..., example="Sim-01")
+    hasPurpose: str = Field(..., example="ai:ForEducation")
+    hasRiskLevel: str = Field(..., example="ai:HighRisk")
+    hasDeploymentContext: str = Field(..., example="ai:Education")
+    hasTrainingDataOrigin: str = Field(..., example="ai:InternalDataset")
+    hasVersion: str = Field(..., example="1.0.0")
 
     class Config:
-        # Permite usar los aliases (hasName, hasPurpose, etc.) al instanciar con .dict(by_alias=True)
         allow_population_by_field_name = True
+        schema_extra = {
+            "example": {
+                "@context": "http://ontologias/docs/ontology.jsonld",
+                "@type": "ai:IntelligentSystem",
+                "hasName": "Sim-01",
+                "hasPurpose": "ai:ForEducation",
+                "hasRiskLevel": "ai:HighRisk",
+                "hasDeploymentContext": "ai:Education",
+                "hasTrainingDataOrigin": "ai:InternalDataset",
+                "hasVersion": "1.0.0"
+            }
+        }

@@ -1,0 +1,765 @@
+@prefix : <http://ai-act.eu/ai-act#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://ai-act.eu/ai-act#> .
+
+<http://ai-act.eu/ai-act> rdf:type owl:Ontology ;
+                           owl:versionIRI <http://ai-act.eu/ai-act/0.34.0> ;
+                           owl:imports <http://localhost:80/actors_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/compliance_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/core_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/governance_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/identifiers_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/interop_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/purpose_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/requirement_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/risk-assessment_intl-v0.34.0.ttl> ,
+                                       <http://localhost:80/risk_intl-v0.34.0.ttl> ;
+                           <http://purl.org/dc/terms/created> "2025-06-20"^^xsd:date ;
+                           rdfs:comment "Ai-act module of the AI Act ontology."@en ,
+                                        "Ontología del módulo ai-act del AI Act."@es ;
+                           owl:versionInfo "Version 0.34.0 released on 2025-06-20"@en ,
+                                           "Versión 0.34.0 publicada el 2025-06-20"@es .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://ai-act.eu/ai#activatesCriterion
+<http://ai-act.eu/ai#activatesCriterion> rdf:type owl:ObjectProperty ;
+                                         rdfs:domain <http://ai-act.eu/ai#Purpose> ;
+                                         rdfs:range <http://ai-act.eu/ai#RiskCriterion> ;
+                                         rdfs:comment "El propósito funcional activa este criterio de riesgo normativo, técnico o contextual."@en ,
+                                                      "El propósito funcional activa este criterio de riesgo normativo, técnico o contextual."@es ;
+                                         rdfs:label "activates criterion"@en ,
+                                                    "activates criterion"@es .
+
+
+###  http://ai-act.eu/ai#assessedSystem
+<http://ai-act.eu/ai#assessedSystem> rdf:type owl:ObjectProperty ;
+                                     rdfs:domain <http://ai-act.eu/ai#RiskAssessment> ;
+                                     rdfs:range <http://ai-act.eu/ai#IntelligentSystem> ;
+                                     rdfs:comment "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@en ,
+                                                  "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@es ;
+                                     rdfs:label "assessed system"@en ,
+                                                "assessed system"@es .
+
+
+###  http://ai-act.eu/ai#assignedRiskLevel
+<http://ai-act.eu/ai#assignedRiskLevel> rdf:type owl:ObjectProperty ;
+                                        rdfs:domain <http://ai-act.eu/ai#RiskAssessment> ;
+                                        rdfs:range <http://ai-act.eu/ai#RiskLevel> ;
+                                        rdfs:comment "Nivel de riesgo determinado al finalizar el proceso de evaluación."@en ,
+                                                     "Nivel de riesgo determinado al finalizar el proceso de evaluación."@es ;
+                                        rdfs:label "assigned risk level"@en ,
+                                                   "assigned risk level"@es .
+
+
+###  http://ai-act.eu/ai#considersCriterion
+<http://ai-act.eu/ai#considersCriterion> rdf:type owl:ObjectProperty ;
+                                         rdfs:domain <http://ai-act.eu/ai#RiskAssessment> ;
+                                         rdfs:range <http://ai-act.eu/ai#RiskCriterion> ;
+                                         rdfs:comment "Criterio considerado en la evaluación del sistema."@en ,
+                                                      "Criterio considerado en la evaluación del sistema."@es ;
+                                         rdfs:label "considers criterion"@en ,
+                                                    "considers criterion"@es .
+
+
+###  http://ai-act.eu/ai#deploysSystem
+<http://ai-act.eu/ai#deploysSystem> rdf:type owl:ObjectProperty ;
+                                    rdfs:domain <http://ai-act.eu/ai#Deployer> ;
+                                    rdfs:range <http://ai-act.eu/ai#IntelligentSystem> ;
+                                    rdfs:comment "Relaciona un actor del tipo 'Deployer' con el sistema de IA correspondiente."@es ,
+                                                 "Relates an actor of type 'Deployer' with the corresponding AI system."@en .
+
+
+###  http://ai-act.eu/ai#distributesSystem
+<http://ai-act.eu/ai#distributesSystem> rdf:type owl:ObjectProperty ;
+                                        rdfs:domain <http://ai-act.eu/ai#Distributor> ;
+                                        rdfs:range <http://ai-act.eu/ai#IntelligentSystem> ;
+                                        rdfs:comment "Relaciona un actor del tipo 'Distributor' con el sistema de IA correspondiente."@es ,
+                                                     "Relates an actor of type 'Distributor' with the corresponding AI system."@en .
+
+
+###  http://ai-act.eu/ai#expectedRiskLevel
+<http://ai-act.eu/ai#expectedRiskLevel> rdf:type owl:ObjectProperty ;
+                                        rdfs:domain <http://ai-act.eu/ai#Purpose> ;
+                                        rdfs:range <http://ai-act.eu/ai#RiskLevel> ;
+                                        rdfs:comment "Nivel de riesgo esperado para un sistema que tiene este propósito, conforme al AI Act."@en ,
+                                                     "Nivel de riesgo esperado para un sistema que tiene este propósito, conforme al AI Act."@es ;
+                                        rdfs:label "expected risk level"@en ,
+                                                   "expected risk level"@es .
+
+
+###  http://ai-act.eu/ai#hasDeclaredPurpose
+<http://ai-act.eu/ai#hasDeclaredPurpose> rdf:type owl:ObjectProperty ;
+                                         rdfs:domain <http://ai-act.eu/ai#RiskAssessment> ;
+                                         rdfs:range <http://ai-act.eu/ai#Purpose> ;
+                                         rdfs:comment "Propósito funcional declarado por el proveedor del sistema."@en ,
+                                                      "Propósito funcional declarado por el proveedor del sistema."@es ;
+                                         rdfs:label "has declared purpose"@en ,
+                                                    "has declared purpose"@es .
+
+
+###  http://ai-act.eu/ai#hasDeploymentContext
+<http://ai-act.eu/ai#hasDeploymentContext> rdf:type owl:ObjectProperty ;
+                                           rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                           rdfs:range <http://ai-act.eu/ai#DeploymentContext> ;
+                                           rdfs:comment "Entorno o dominio en el que se despliega el sistema (educación, salud, transporte, etc.)."@en ,
+                                                        "Entorno o dominio en el que se despliega el sistema (educación, salud, transporte, etc.)."@es .
+
+
+###  http://ai-act.eu/ai#hasInterface
+<http://ai-act.eu/ai#hasInterface> rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                   rdfs:range <http://ai-act.eu/ai#InterfaceSpec> .
+
+
+###  http://ai-act.eu/ai#hasPurpose
+<http://ai-act.eu/ai#hasPurpose> rdf:type owl:ObjectProperty ;
+                                 rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                 rdfs:range <http://ai-act.eu/ai#Purpose> ;
+                                 rdfs:comment "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@en ,
+                                              "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@es .
+
+
+###  http://ai-act.eu/ai#hasRequirement
+<http://ai-act.eu/ai#hasRequirement> rdf:type owl:ObjectProperty ;
+                                     rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                     rdfs:range <http://ai-act.eu/ai#ComplianceRequirement> ;
+                                     rdfs:comment "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@en ,
+                                                  "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@es ;
+                                     rdfs:label "has compliance requirement"@en ,
+                                                "has compliance requirement"@es .
+
+
+###  http://ai-act.eu/ai#hasRiskLevel
+<http://ai-act.eu/ai#hasRiskLevel> rdf:type owl:ObjectProperty ;
+                                   rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                   rdfs:range <http://ai-act.eu/ai#RiskLevel> ;
+                                   rdfs:comment "Asocia un sistema de inteligencia artificial con su nivel de riesgo conforme al AI Act."@en ,
+                                                "Asocia un sistema de inteligencia artificial con su nivel de riesgo conforme al AI Act."@es ,
+                                                "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@en ,
+                                                "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@es ;
+                                   rdfs:label "has risk level"@en ,
+                                              "has risk level"@es .
+
+
+###  http://ai-act.eu/ai#hasTechnicalRequirement
+<http://ai-act.eu/ai#hasTechnicalRequirement> rdf:type owl:ObjectProperty ;
+                                              rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                              rdfs:range <http://ai-act.eu/ai#TechnicalRequirement> ;
+                                              rdfs:comment "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@en ,
+                                                           "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@es ;
+                                              rdfs:label "has technical requirement"@en ,
+                                                         "has technical requirement"@es .
+
+
+###  http://ai-act.eu/ai#hasTrainingDataOrigin
+<http://ai-act.eu/ai#hasTrainingDataOrigin> rdf:type owl:ObjectProperty ;
+                                            rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                            rdfs:range <http://ai-act.eu/ai#TrainingDataOrigin> ;
+                                            rdfs:comment "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@en ,
+                                                         "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@es .
+
+
+###  http://ai-act.eu/ai#importsSystem
+<http://ai-act.eu/ai#importsSystem> rdf:type owl:ObjectProperty ;
+                                    rdfs:domain <http://ai-act.eu/ai#Importer> ;
+                                    rdfs:range <http://ai-act.eu/ai#IntelligentSystem> ;
+                                    rdfs:comment "Relaciona un actor del tipo 'Importer' con el sistema de IA correspondiente."@es ,
+                                                 "Relates an actor of type 'Importer' with the corresponding AI system."@en .
+
+
+###  http://ai-act.eu/ai#isMonitoredBy
+<http://ai-act.eu/ai#isMonitoredBy> rdf:type owl:ObjectProperty ;
+                                    rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                    rdfs:range <http://ai-act.eu/ai#OversightBody> ;
+                                    rdfs:comment "Relaciona un sistema de IA con la entidad responsable de su supervisión."@en ,
+                                                 "Relaciona un sistema de IA con la entidad responsable de su supervisión."@es ;
+                                    rdfs:label "is monitored by"@en ,
+                                               "is monitored by"@es .
+
+
+###  http://ai-act.eu/ai#justifiedByCriterion
+<http://ai-act.eu/ai#justifiedByCriterion> rdf:type owl:ObjectProperty ;
+                                           rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                           rdfs:range <http://ai-act.eu/ai#RiskCriterion> ;
+                                           rdfs:comment "Indica los criterios que justifican la asignación del nivel de riesgo al sistema."@en ,
+                                                        "Indica los criterios que justifican la asignación del nivel de riesgo al sistema."@es ;
+                                           rdfs:label "justified by criterion"@en ,
+                                                      "justified by criterion"@es .
+
+
+###  http://ai-act.eu/ai#providesSystem
+<http://ai-act.eu/ai#providesSystem> rdf:type owl:ObjectProperty ;
+                                     rdfs:domain <http://ai-act.eu/ai#Provider> ;
+                                     rdfs:range <http://ai-act.eu/ai#IntelligentSystem> ;
+                                     rdfs:comment "Relaciona un actor del tipo 'Provider' con el sistema de IA correspondiente."@es ,
+                                                  "Relates an actor of type 'Provider' with the corresponding AI system."@en .
+
+
+###  http://ai-act.eu/ai#requiresCompliance
+<http://ai-act.eu/ai#requiresCompliance> rdf:type owl:ObjectProperty ;
+                                         rdfs:domain <http://ai-act.eu/ai#RiskAssessment> ;
+                                         rdfs:range <http://ai-act.eu/ai#ComplianceRequirement> ;
+                                         rdfs:comment "Compliance requirements arising from the system's risk assessment."@en ,
+                                                      "Requisitos de cumplimiento derivados de la evaluación de riesgo del sistema."@es ;
+                                         rdfs:label "requiere cumplimiento"@es ,
+                                                    "requires compliance"@en .
+
+
+###  http://ai-act.eu/ai#triggersailianceRequirement
+<http://ai-act.eu/ai#triggersailianceRequirement> rdf:type owl:ObjectProperty ;
+                                                  rdfs:domain <http://ai-act.eu/ai#RiskCriterion> ;
+                                                  rdfs:range <http://ai-act.eu/ai#ailianceRequirement> ;
+                                                  rdfs:comment "Indica que un criterio de riesgo genera la necesidad de un requisito de cumplimiento específico."@en ,
+                                                               "Indica que un criterio de riesgo genera la necesidad de un requisito de cumplimiento específico."@es ;
+                                                  rdfs:label "activa requisito de cumplimiento"@es ,
+                                                             "triggers ailiance requirement"@en .
+
+
+###  http://ai-act.eu/ai#usesSystem
+<http://ai-act.eu/ai#usesSystem> rdf:type owl:ObjectProperty ;
+                                 rdfs:domain <http://ai-act.eu/ai#User> ;
+                                 rdfs:range <http://ai-act.eu/ai#IntelligentSystem> ;
+                                 rdfs:comment "Relaciona un actor del tipo 'User' con el sistema de IA correspondiente."@es ,
+                                              "Relates an actor of type 'User' with the corresponding AI system."@en .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://ai-act.eu/ai#hasHttpIri
+<http://ai-act.eu/ai#hasHttpIri> rdf:type owl:DatatypeProperty ;
+                                 rdfs:range xsd:anyURI ;
+                                 rdfs:comment "Dereferenceable HTTP IRI of any ontology resource."@en ,
+                                              "URI HTTP dereferenciable de cualquier recurso de la ontología."@es ;
+                                 rdfs:label "hasHttpIri"@en ,
+                                            "tieneHttpIri"@es .
+
+
+###  http://ai-act.eu/ai#hasName
+<http://ai-act.eu/ai#hasName> rdf:type owl:DatatypeProperty ;
+                              rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                              rdfs:range xsd:string ;
+                              rdfs:comment "Nombre del sistema de inteligencia artificial."@en ,
+                                           "Nombre del sistema de inteligencia artificial."@es .
+
+
+###  http://ai-act.eu/ai#hasUrn
+<http://ai-act.eu/ai#hasUrn> rdf:type owl:DatatypeProperty ;
+                             rdfs:comment "Identificador URN persistente y único para cualquier recurso de la ontología."@es ,
+                                          "Persistent, unique URN identifier for any resource in the ontology."@en ;
+                             rdfs:label "hasUrn"@en ,
+                                        "tieneUrn"@es .
+
+
+###  http://ai-act.eu/ai#hasVersion
+<http://ai-act.eu/ai#hasVersion> rdf:type owl:DatatypeProperty ;
+                                 rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
+                                 rdfs:range xsd:string ;
+                                 rdfs:comment "Versión o identificación técnica del sistema."@en ,
+                                              "Versión o identificación técnica del sistema."@es .
+
+
+###  http://ai-act.eu/ai#justificationNote
+<http://ai-act.eu/ai#justificationNote> rdf:type owl:DatatypeProperty ;
+                                        rdfs:domain <http://ai-act.eu/ai#RiskAssessment> ;
+                                        rdfs:range xsd:string ;
+                                        rdfs:comment "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@en ,
+                                                     "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@es ;
+                                        rdfs:label "justification note"@en ,
+                                                   "justification note"@es .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://ai-act.eu/ai#ComplianceRequirement
+<http://ai-act.eu/ai#ComplianceRequirement> rdf:type owl:Class ;
+                                            rdfs:comment "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@en ,
+                                                         "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@es ;
+                                            rdfs:label "Compliance Requirement"@en ,
+                                                       "Compliance Requirement"@es .
+
+
+###  http://ai-act.eu/ai#ContextualCriterion
+<http://ai-act.eu/ai#ContextualCriterion> rdf:type owl:Class ;
+                                          rdfs:subClassOf <http://ai-act.eu/ai#RiskCriterion> ;
+                                          rdfs:comment "Criterio basado en el entorno, propósito o consecuencias del uso del sistema."@en ,
+                                                       "Criterio basado en el entorno, propósito o consecuencias del uso del sistema."@es ;
+                                          rdfs:label "Contextual Criterion"@en ,
+                                                     "Contextual Criterion"@es .
+
+
+###  http://ai-act.eu/ai#Deployer
+<http://ai-act.eu/ai#Deployer> rdf:type owl:Class ;
+                               rdfs:comment "Entidad que integra o pone en uso un sistema de IA."@en ,
+                                            "Entidad que integra o pone en uso un sistema de IA."@es ;
+                               rdfs:label "Deployer"@en ,
+                                          "Deployer"@es .
+
+
+###  http://ai-act.eu/ai#Distributor
+<http://ai-act.eu/ai#Distributor> rdf:type owl:Class ;
+                                  rdfs:comment "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en ,
+                                               "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@es ;
+                                  rdfs:label "Distributor"@en ,
+                                             "Distributor"@es .
+
+
+###  http://ai-act.eu/ai#EndUser
+<http://ai-act.eu/ai#EndUser> rdf:type owl:Class ;
+                              rdfs:subClassOf <http://ai-act.eu/ai#User> ;
+                              rdfs:comment "Usuario final que interactúa con el sistema sin intervenir en su desarrollo ni despliegue."@en ,
+                                           "Usuario final que interactúa con el sistema sin intervenir en su desarrollo ni despliegue."@es ;
+                              rdfs:label "EndUser"@en ,
+                                         "EndUser"@es .
+
+
+###  http://ai-act.eu/ai#Importer
+<http://ai-act.eu/ai#Importer> rdf:type owl:Class ;
+                               rdfs:comment "Entidad que introduce en la UE un sistema de IA desde un tercer país."@en ,
+                                            "Entidad que introduce en la UE un sistema de IA desde un tercer país."@es ;
+                               rdfs:label "Importer"@en ,
+                                          "Importer"@es .
+
+
+###  http://ai-act.eu/ai#IntelligentSystem
+<http://ai-act.eu/ai#IntelligentSystem> rdf:type owl:Class ;
+                                        rdfs:subClassOf <http://org.semanticweb.owlapi/error#Error1> ,
+                                                        <http://org.semanticweb.owlapi/error#Error2> ,
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty <http://ai-act.eu/ai#hasHttpIri> ;
+                                                          owl:allValuesFrom xsd:anyURI
+                                                        ] ,
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty <http://ai-act.eu/ai#hasUrn> ;
+                                                          owl:allValuesFrom xsd:anyURI
+                                                        ] ;
+                                        rdfs:comment "AI-based system that may be subject to provision, deployment, use, import or distribution in the market."@en ,
+                                                     "Sistema basado en inteligencia artificial que puede ser objeto de provisión, despliegue, uso, importación o distribución en el mercado."@es .
+
+
+###  http://ai-act.eu/ai#InterfaceSpec
+<http://ai-act.eu/ai#InterfaceSpec> rdf:type owl:Class ;
+                                    rdfs:comment "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@en ,
+                                                 "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@es ;
+                                    rdfs:label "Interface Specification"@en ,
+                                               "Interface Specification"@es .
+
+
+###  http://ai-act.eu/ai#NormativeCriterion
+<http://ai-act.eu/ai#NormativeCriterion> rdf:type owl:Class ;
+                                         rdfs:subClassOf <http://ai-act.eu/ai#RiskCriterion> ;
+                                         rdfs:comment "Criterio derivado directamente del texto legal del AI Act."@en ,
+                                                      "Criterio derivado directamente del texto legal del AI Act."@es ;
+                                         rdfs:label "Normative Criterion"@en ,
+                                                    "Normative Criterion"@es .
+
+
+###  http://ai-act.eu/ai#OversightBody
+<http://ai-act.eu/ai#OversightBody> rdf:type owl:Class ;
+                                    rdfs:comment "Entidad responsable de la supervisión y control de un sistema de inteligencia artificial, conforme a los mecanismos de gobernanza del AI Act."@en ,
+                                                 "Entidad responsable de la supervisión y control de un sistema de inteligencia artificial, conforme a los mecanismos de gobernanza del AI Act."@es ;
+                                    rdfs:label "Oversight Body"@en ,
+                                               "Oversight Body"@es .
+
+
+###  http://ai-act.eu/ai#ProfessionalUser
+<http://ai-act.eu/ai#ProfessionalUser> rdf:type owl:Class ;
+                                       rdfs:subClassOf <http://ai-act.eu/ai#User> ;
+                                       rdfs:comment "Usuario profesional que utiliza el sistema en el ejercicio de su profesión."@en ,
+                                                    "Usuario profesional que utiliza el sistema en el ejercicio de su profesión."@es ;
+                                       rdfs:label "ProfessionalUser"@en ,
+                                                  "ProfessionalUser"@es .
+
+
+###  http://ai-act.eu/ai#Provider
+<http://ai-act.eu/ai#Provider> rdf:type owl:Class ;
+                               rdfs:comment "Entidad que desarrolla o pone en el mercado un sistema de IA."@en ,
+                                            "Entidad que desarrolla o pone en el mercado un sistema de IA."@es ;
+                               rdfs:label "Provider"@en ,
+                                          "Provider"@es .
+
+
+###  http://ai-act.eu/ai#Purpose
+<http://ai-act.eu/ai#Purpose> rdf:type owl:Class ;
+                              rdfs:comment "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@en ,
+                                           "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@es ;
+                              rdfs:label "Purpose"@en ,
+                                         "Purpose"@es .
+
+
+###  http://ai-act.eu/ai#RiskAssessment
+<http://ai-act.eu/ai#RiskAssessment> rdf:type owl:Class ;
+                                     rdfs:comment "Proceso estructurado para evaluar el nivel de riesgo de un sistema de IA conforme al AI Act."@en ,
+                                                  "Proceso estructurado para evaluar el nivel de riesgo de un sistema de IA conforme al AI Act."@es ;
+                                     rdfs:label "Risk Assessment"@en ,
+                                                "Risk Assessment"@es .
+
+
+###  http://ai-act.eu/ai#RiskCriterion
+<http://ai-act.eu/ai#RiskCriterion> rdf:type owl:Class ;
+                                    rdfs:comment "Criterio normativo, técnico o contextual utilizado para clasificar el riesgo de un sistema de inteligencia artificial."@en ,
+                                                 "Criterio normativo, técnico o contextual utilizado para clasificar el riesgo de un sistema de inteligencia artificial."@es ;
+                                    rdfs:label "Risk Criterion"@en ,
+                                               "Risk Criterion"@es .
+
+
+###  http://ai-act.eu/ai#RiskLevel
+<http://ai-act.eu/ai#RiskLevel> rdf:type owl:Class ;
+                                rdfs:comment "Nivel de riesgo de un sistema de inteligencia artificial según la clasificación establecida por el Reglamento Europeo de IA."@en ,
+                                             "Nivel de riesgo de un sistema de inteligencia artificial según la clasificación establecida por el Reglamento Europeo de IA."@es ;
+                                rdfs:label "Risk Level"@en ,
+                                           "Risk Level"@es .
+
+
+###  http://ai-act.eu/ai#TechnicalCriterion
+<http://ai-act.eu/ai#TechnicalCriterion> rdf:type owl:Class ;
+                                         rdfs:subClassOf <http://ai-act.eu/ai#RiskCriterion> ;
+                                         rdfs:comment "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@en ,
+                                                      "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@es ;
+                                         rdfs:label "Technical Criterion"@en ,
+                                                    "Technical Criterion"@es .
+
+
+###  http://ai-act.eu/ai#TechnicalRequirement
+<http://ai-act.eu/ai#TechnicalRequirement> rdf:type owl:Class ;
+                                           rdfs:comment "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@en ,
+                                                        "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@es ;
+                                           rdfs:label "Technical Requirement"@en ,
+                                                      "Technical Requirement"@es .
+
+
+###  http://ai-act.eu/ai#User
+<http://ai-act.eu/ai#User> rdf:type owl:Class ;
+                           rdfs:comment "Actor que utiliza un sistema de inteligencia artificial."@en ,
+                                        "Actor que utiliza un sistema de inteligencia artificial."@es ;
+                           rdfs:label "User"@en ,
+                                      "User"@es .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://ai-act.eu/ai#AccuracyEvaluationRequirement
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> rdf:type owl:NamedIndividual ,
+                                                             <http://ai-act.eu/ai#ComplianceRequirement> ;
+                                                    rdfs:label "Accuracy Evaluation Requirement"@en ,
+                                                               "Requisito de evaluación de precisión"@es .
+
+
+###  http://ai-act.eu/ai#AutonomousWithoutExplanation
+<http://ai-act.eu/ai#AutonomousWithoutExplanation> rdf:type owl:NamedIndividual ,
+                                                            <http://ai-act.eu/ai#TechnicalCriterion> ;
+                                                   rdfs:label "Autonomous Without Explanation"@en ,
+                                                              "Autonomous Without Explanation"@es .
+
+
+###  http://ai-act.eu/ai#AutonomousWithoutExplanationCriterion
+<http://ai-act.eu/ai#AutonomousWithoutExplanationCriterion> <http://ai-act.eu/ai#triggersailianceRequirement> <http://ai-act.eu/ai#TransparencyRequirement> .
+
+
+###  http://ai-act.eu/ai#BiometricIdentification
+<http://ai-act.eu/ai#BiometricIdentification> rdf:type owl:NamedIndividual ,
+                                                       <http://ai-act.eu/ai#Purpose> ;
+                                              <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#BiometricIdentificationCriterion> ,
+                                                                                       <http://ai-act.eu/ai#LacksHumanOversightCriterion> ,
+                                                                                       <http://ai-act.eu/ai#UsesBiometricIdentification> ;
+                                              <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> ;
+                                              rdfs:comment "Identificación biométrica remota de individuos."@en ,
+                                                           "Identificación biométrica remota de individuos."@es ;
+                                              rdfs:label "Biometric Identification"@en ,
+                                                         "Biometric Identification"@es .
+
+
+###  http://ai-act.eu/ai#BiometricIdentificationCriterion
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> rdf:type owl:NamedIndividual ,
+                                                                <http://ai-act.eu/ai#NormativeCriterion> ;
+                                                       rdfs:comment "El sistema realiza identificación biométrica remota o categorización de personas, conforme al punto 1 del Anexo III del AI Act."@en ,
+                                                                    "El sistema realiza identificación biométrica remota o categorización de personas, conforme al punto 1 del Anexo III del AI Act."@es ;
+                                                       rdfs:label "Biometric Identification or Categorization"@en ,
+                                                                  "Biometric Identification or Categorization"@es .
+
+
+###  http://ai-act.eu/ai#Chatbot
+<http://ai-act.eu/ai#Chatbot> rdf:type owl:NamedIndividual ,
+                                       <http://ai-act.eu/ai#Purpose> ;
+                              <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#LacksHumanOversightCriterion> ;
+                              <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#LimitedRisk> ;
+                              rdfs:comment "Sistema conversacional que interactúa con humanos mediante lenguaje natural."@en ,
+                                           "Sistema conversacional que interactúa con humanos mediante lenguaje natural."@es ;
+                              rdfs:label "Chatbot"@en ,
+                                         "Chatbot"@es .
+
+
+###  http://ai-act.eu/ai#CreditScoring
+<http://ai-act.eu/ai#CreditScoring> rdf:type owl:NamedIndividual ,
+                                             <http://ai-act.eu/ai#Purpose> ;
+                                    <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#CreditScoringUsageCriterion> ,
+                                                                             <http://ai-act.eu/ai#EssentialServicesAccessCriterion> ,
+                                                                             <http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion> ;
+                                    <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> ;
+                                    rdfs:comment "Uso del sistema para evaluar la solvencia crediticia de personas físicas."@en ,
+                                                 "Uso del sistema para evaluar la solvencia crediticia de personas físicas."@es ;
+                                    rdfs:label "Credit Scoring"@en ,
+                                               "Credit Scoring"@es .
+
+
+###  http://ai-act.eu/ai#CriticalInfrastructureCriterion
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> rdf:type owl:NamedIndividual ,
+                                                               <http://ai-act.eu/ai#NormativeCriterion> ;
+                                                      rdfs:comment "El sistema se utiliza para la gestión y operación de infraestructuras críticas como energía, agua, transporte o telecomunicaciones."@en ,
+                                                                   "El sistema se utiliza para la gestión y operación de infraestructuras críticas como energía, agua, transporte o telecomunicaciones."@es ;
+                                                      rdfs:label "Management of Critical Infrastructure"@en ,
+                                                                 "Management of Critical Infrastructure"@es .
+
+
+###  http://ai-act.eu/ai#DataGovernanceRequirement
+<http://ai-act.eu/ai#DataGovernanceRequirement> rdf:type owl:NamedIndividual ,
+                                                         <http://ai-act.eu/ai#ComplianceRequirement> ;
+                                                rdfs:label "Data Governance Requirement"@en ,
+                                                           "Gobernanza de datos"@es .
+
+
+###  http://ai-act.eu/ai#DeepfakeGenerator
+<http://ai-act.eu/ai#DeepfakeGenerator> rdf:type owl:NamedIndividual ,
+                                                 <http://ai-act.eu/ai#Purpose> ;
+                                        <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#LimitedRisk> ;
+                                        rdfs:comment "Generación sintética de imágenes, vídeo o audio que imitan a personas reales."@en ,
+                                                     "Generación sintética de imágenes, vídeo o audio que imitan a personas reales."@es ;
+                                        rdfs:label "Deepfake Generator"@en ,
+                                                   "Deepfake Generator"@es .
+
+
+###  http://ai-act.eu/ai#EducationAccess
+<http://ai-act.eu/ai#EducationAccess> rdf:type owl:NamedIndividual ,
+                                               <http://ai-act.eu/ai#Purpose> ;
+                                      <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#EducationEvaluationCriterion> ,
+                                                                               <http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion> ;
+                                      <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> ;
+                                      rdfs:comment "Evaluación para el acceso a educación o formación."@en ,
+                                                   "Evaluación para el acceso a educación o formación."@es ;
+                                      rdfs:label "Education Access"@en ,
+                                                 "Education Access"@es .
+
+
+###  http://ai-act.eu/ai#EducationEvaluationCriterion
+<http://ai-act.eu/ai#EducationEvaluationCriterion> rdf:type owl:NamedIndividual ,
+                                                            <http://ai-act.eu/ai#NormativeCriterion> ;
+                                                   <http://ai-act.eu/ai#triggersailianceRequirement> <http://ai-act.eu/ai#DataGovernanceRequirement> ;
+                                                   rdfs:comment "El sistema se utiliza para evaluar estudiantes o decidir su acceso a instituciones educativas o formativas."@en ,
+                                                                "El sistema se utiliza para evaluar estudiantes o decidir su acceso a instituciones educativas o formativas."@es ;
+                                                   rdfs:label "Education or Vocational Training Evaluation"@en ,
+                                                              "Education or Vocational Training Evaluation"@es .
+
+
+###  http://ai-act.eu/ai#EssentialServicesAccessCriterion
+<http://ai-act.eu/ai#EssentialServicesAccessCriterion> rdf:type owl:NamedIndividual ,
+                                                                <http://ai-act.eu/ai#NormativeCriterion> ;
+                                                       <http://ai-act.eu/ai#triggersailianceRequirement> <http://ai-act.eu/ai#TraceabilityRequirement> ;
+                                                       rdfs:comment "El sistema se utiliza para determinar el acceso de personas a servicios esenciales como vivienda, sanidad, crédito o educación."@en ,
+                                                                    "El sistema se utiliza para determinar el acceso de personas a servicios esenciales como vivienda, sanidad, crédito o educación."@es ;
+                                                       rdfs:label "Access to Essential Services"@en ,
+                                                                  "Access to Essential Services"@es .
+
+
+###  http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> rdf:type owl:NamedIndividual ,
+                                                                      <http://ai-act.eu/ai#ComplianceRequirement> ;
+                                                             rdfs:label "Evaluación de derechos fundamentales"@es ,
+                                                                        "Fundamental Rights Assessment Requirement"@en .
+
+
+###  http://ai-act.eu/ai#HighRisk
+<http://ai-act.eu/ai#HighRisk> rdf:type owl:NamedIndividual ,
+                                        <http://ai-act.eu/ai#RiskLevel> ;
+                               rdfs:comment "Sistemas con alto impacto en derechos fundamentales, sujetos a requisitos estrictos de cumplimiento y gobernanza."@en ,
+                                            "Sistemas con alto impacto en derechos fundamentales, sujetos a requisitos estrictos de cumplimiento y gobernanza."@es ;
+                               rdfs:label "High Risk"@en ,
+                                          "High Risk"@es .
+
+
+###  http://ai-act.eu/ai#HumanOversightRequirement
+<http://ai-act.eu/ai#HumanOversightRequirement> rdf:type owl:NamedIndividual ,
+                                                         <http://ai-act.eu/ai#ComplianceRequirement> ;
+                                                rdfs:label "Human Oversight Requirement"@en ,
+                                                           "Supervisión humana"@es .
+
+
+###  http://ai-act.eu/ai#ImpactsFundamentalRights
+<http://ai-act.eu/ai#ImpactsFundamentalRights> rdf:type owl:NamedIndividual ,
+                                                        <http://ai-act.eu/ai#ContextualCriterion> ;
+                                               rdfs:label "Impacts Fundamental Rights"@en ,
+                                                          "Impacts Fundamental Rights"@es .
+
+
+###  http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion
+<http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion> <http://ai-act.eu/ai#triggersailianceRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
+
+
+###  http://ai-act.eu/ai#JudicialSupportCriterion
+<http://ai-act.eu/ai#JudicialSupportCriterion> rdf:type owl:NamedIndividual ,
+                                                        <http://ai-act.eu/ai#NormativeCriterion> ;
+                                               rdfs:comment "El sistema asiste en la interpretación de hechos o derecho en procedimientos judiciales o administrativos."@en ,
+                                                            "El sistema asiste en la interpretación de hechos o derecho en procedimientos judiciales o administrativos."@es ;
+                                               rdfs:label "Judicial and Democratic Processes Support"@en ,
+                                                          "Judicial and Democratic Processes Support"@es .
+
+
+###  http://ai-act.eu/ai#LacksHumanOversight
+<http://ai-act.eu/ai#LacksHumanOversight> rdf:type owl:NamedIndividual ,
+                                                   <http://ai-act.eu/ai#TechnicalCriterion> ;
+                                          rdfs:label "Lacks Human Oversight"@en ,
+                                                     "Lacks Human Oversight"@es .
+
+
+###  http://ai-act.eu/ai#LacksHumanOversightCriterion
+<http://ai-act.eu/ai#LacksHumanOversightCriterion> <http://ai-act.eu/ai#triggersailianceRequirement> <http://ai-act.eu/ai#HumanOversightRequirement> .
+
+
+###  http://ai-act.eu/ai#LawEnforcementCriterion
+<http://ai-act.eu/ai#LawEnforcementCriterion> rdf:type owl:NamedIndividual ,
+                                                       <http://ai-act.eu/ai#NormativeCriterion> ;
+                                              rdfs:comment "El sistema se utiliza en contextos policiales, evaluación de riesgo delictivo o análisis de pruebas."@en ,
+                                                           "El sistema se utiliza en contextos policiales, evaluación de riesgo delictivo o análisis de pruebas."@es ;
+                                              rdfs:label "Law Enforcement and Risk Assessment"@en ,
+                                                         "Law Enforcement and Risk Assessment"@es .
+
+
+###  http://ai-act.eu/ai#LimitedRisk
+<http://ai-act.eu/ai#LimitedRisk> rdf:type owl:NamedIndividual ,
+                                           <http://ai-act.eu/ai#RiskLevel> ;
+                                  rdfs:comment "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@en ,
+                                               "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es ;
+                                  rdfs:label "Limited Risk"@en ,
+                                             "Limited Risk"@es .
+
+
+###  http://ai-act.eu/ai#MigrationBorderCriterion
+<http://ai-act.eu/ai#MigrationBorderCriterion> rdf:type owl:NamedIndividual ,
+                                                        <http://ai-act.eu/ai#NormativeCriterion> ;
+                                               rdfs:comment "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@en ,
+                                                            "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@es ;
+                                               rdfs:label "Migration, Asylum and Border Control"@en ,
+                                                          "Migration, Asylum and Border Control"@es .
+
+
+###  http://ai-act.eu/ai#MigrationControl
+<http://ai-act.eu/ai#MigrationControl> rdf:type owl:NamedIndividual ,
+                                                <http://ai-act.eu/ai#Purpose> ;
+                                       <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion> ,
+                                                                                <http://ai-act.eu/ai#MigrationBorderCriterion> ;
+                                       <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> ;
+                                       rdfs:comment "Gestión de migración, asilo y control fronterizo."@en ,
+                                                    "Gestión de migración, asilo y control fronterizo."@es ;
+                                       rdfs:label "Migration Control"@en ,
+                                                  "Migration Control"@es .
+
+
+###  http://ai-act.eu/ai#MinimalRisk
+<http://ai-act.eu/ai#MinimalRisk> rdf:type owl:NamedIndividual ,
+                                           <http://ai-act.eu/ai#RiskLevel> ;
+                                  rdfs:comment "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@en ,
+                                               "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es ;
+                                  rdfs:label "Minimal Risk"@en ,
+                                             "Minimal Risk"@es .
+
+
+###  http://ai-act.eu/ai#PublicServiceAllocation
+<http://ai-act.eu/ai#PublicServiceAllocation> rdf:type owl:NamedIndividual ,
+                                                       <http://ai-act.eu/ai#Purpose> ;
+                                              <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> ,
+                                                                                       <http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion> ;
+                                              <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> ;
+                                              rdfs:comment "Determinación de acceso a servicios públicos esenciales."@en ,
+                                                           "Determinación de acceso a servicios públicos esenciales."@es ;
+                                              rdfs:label "Public Service Allocation"@en ,
+                                                         "Public Service Allocation"@es .
+
+
+###  http://ai-act.eu/ai#RecruitmentEmploymentCriterion
+<http://ai-act.eu/ai#RecruitmentEmploymentCriterion> rdf:type owl:NamedIndividual ,
+                                                              <http://ai-act.eu/ai#NormativeCriterion> ;
+                                                     rdfs:comment "El sistema se utiliza para procesos de contratación, evaluación de desempeño o decisiones de empleo."@en ,
+                                                                  "El sistema se utiliza para procesos de contratación, evaluación de desempeño o decisiones de empleo."@es ;
+                                                     rdfs:label "Recruitment and Employment Management"@en ,
+                                                                "Recruitment and Employment Management"@es .
+
+
+###  http://ai-act.eu/ai#SocialScoring
+<http://ai-act.eu/ai#SocialScoring> rdf:type owl:NamedIndividual ,
+                                             <http://ai-act.eu/ai#Purpose> ;
+                                    <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#UnacceptableRisk> ;
+                                    rdfs:comment "Clasificación o evaluación de personas basada en su comportamiento social o antecedentes."@en ,
+                                                 "Clasificación o evaluación de personas basada en su comportamiento social o antecedentes."@es ;
+                                    rdfs:label "Social Scoring"@en ,
+                                               "Social Scoring"@es .
+
+
+###  http://ai-act.eu/ai#SubliminalManipulation
+<http://ai-act.eu/ai#SubliminalManipulation> rdf:type owl:NamedIndividual ,
+                                                      <http://ai-act.eu/ai#Purpose> ;
+                                             <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#AutonomousWithoutExplanationCriterion> ;
+                                             <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#UnacceptableRisk> ;
+                                             rdfs:comment "Uso de técnicas subliminales para influir en el comportamiento o decisiones de personas."@en ,
+                                                          "Uso de técnicas subliminales para influir en el comportamiento o decisiones de personas."@es ;
+                                             rdfs:label "Subliminal Manipulation"@en ,
+                                                        "Subliminal Manipulation"@es .
+
+
+###  http://ai-act.eu/ai#TraceabilityRequirement
+<http://ai-act.eu/ai#TraceabilityRequirement> rdf:type owl:NamedIndividual ,
+                                                       <http://ai-act.eu/ai#ComplianceRequirement> ;
+                                              rdfs:label "Traceability Requirement"@en ,
+                                                         "Trazabilidad"@es .
+
+
+###  http://ai-act.eu/ai#UnacceptableRisk
+<http://ai-act.eu/ai#UnacceptableRisk> rdf:type owl:NamedIndividual ,
+                                                <http://ai-act.eu/ai#RiskLevel> ;
+                                       rdfs:comment "Sistemas que están prohibidos en la UE por representar una amenaza clara para la seguridad o los derechos."@en ,
+                                                    "Sistemas que están prohibidos en la UE por representar una amenaza clara para la seguridad o los derechos."@es ;
+                                       rdfs:label "Unacceptable Risk"@en ,
+                                                  "Unacceptable Risk"@es .
+
+
+###  http://ai-act.eu/ai#UsesBiometricIdentification
+<http://ai-act.eu/ai#UsesBiometricIdentification> rdf:type owl:NamedIndividual ,
+                                                           <http://ai-act.eu/ai#NormativeCriterion> ;
+                                                  rdfs:label "Uses Biometric Identification"@en ,
+                                                             "Uses Biometric Identification"@es .
+
+
+###  http://ai-act.eu/ai#hasInterface
+<http://ai-act.eu/ai#hasInterface> rdf:type <http://ai-act.eu/ai#ObjectProperty> .
+
+
+[ owl:maxCardinality "1"^^xsd:nonNegativeInteger
+] .
+
+[ owl:maxCardinality "1"^^xsd:nonNegativeInteger
+ ] .
+
+#################################################################
+#    Annotations
+#################################################################
+
+<http://ai-act.eu/ai#UsesBiometricIdentificationCriterion> <http://ai-act.eu/ai#triggersComplianceRequirement> <http://ai-act.eu/ai#AccuracyEvaluationRequirement> ,
+                                                                                                                <http://ai-act.eu/ai#DataGovernanceRequirement> .
+
+
+<http://ai-act.eu/ai#hasInterface> rdfs:comment "Relaciona un sistema de IA con la especificación de interfaz que implementa."@en ,
+                                                "Relaciona un sistema de IA con la especificación de interfaz que implementa."@es ;
+                                   rdfs:label "has interface"@en ,
+                                              "has interface"@es .
+
+
+###  Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/

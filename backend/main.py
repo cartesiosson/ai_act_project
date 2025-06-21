@@ -7,13 +7,14 @@ from rdflib import Graph
 from models.system import IntelligentSystem
 from db import get_database
 import os, json
+from routers.systems import router as systems_router
+
 
 app = FastAPI(title="AI Act Backend")
 
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok"}
-
 
 
 # Montar estáticos y cargar ontologías igual que antes...
@@ -24,11 +25,8 @@ for ttl in os.listdir("ontologias"):
         ont.parse(f"ontologias/{ttl}", format="turtle")
 
 # Tu router importado
-from routers.systems import router as systems_router
 app.include_router(systems_router)
 
-
-from fastapi.openapi.utils import get_openapi
 
 def custom_openapi():
     if app.openapi_schema:
@@ -62,7 +60,7 @@ def custom_openapi():
                 "application/ld+json": {
                     "schema": {"$ref": "#/components/schemas/IntelligentSystem"},
                     "example": {
-                        "@context": "http://localhost:8000/static/json-ld-context.json",
+                        "@context": "http://ontologias/docs/context.jsonld",
                         "@type": "ai:IntelligentSystem",
                         "hasName": "Sim-01",
                         "hasPurpose": "ai:ForEducation",
@@ -80,6 +78,3 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-
-# Finalmente, sobrescribimos la función
-app.openapi = custom_openapi
