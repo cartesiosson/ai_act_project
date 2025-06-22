@@ -7,7 +7,7 @@ import uuid
 import json
 import requests
 import os
-
+from pymongo.errors import DuplicateKeyError
 
 user = os.getenv("FUSEKI_USER", "admin")
 password = os.getenv("FUSEKI_PASSWORD", "admin")
@@ -19,23 +19,19 @@ router = APIRouter(prefix="/systems", tags=["systems"])
 
 @router.post("", status_code=201)
 async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
-    # Convertimos a dict
     json_ld = json_ld.dict(by_alias=True)
-
-    # Generamos un URN único
     urn = f"urn:uuid:{uuid.uuid4()}"
     json_ld["ai:hasUrn"] = urn
-    json_ld["@id"] = urn  # <= Añade esto
+    json_ld["@id"] = urn
 
-    # Guardamos en MongoDB
-    result = await db.systems.insert_one(json_ld)
+    try:
+        result = await db.systems.insert_one(json_ld)
+    except DuplicateKeyError:
+        raise HTTPException(status_code=409, detail="System with same URN already exists")
 
-    # Eliminamos _id antes de RDFLib
     json_ld.pop("_id", None)
-
     print(f"Insertando en MongoDB: {json.dumps(json_ld)})")
 
-    # Convertimos a tripletas RDF
     g = Graph()
     mapped = {}
     for k, v in json_ld.items():
@@ -43,24 +39,23 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
             mapped[f"ai:{k}"] = v
         else:
             mapped[k] = v
-
     g.parse(data=json.dumps(mapped), format="json-ld")
 
-    # Subir a Fuseki
     fuseki_url = f"{end_point}/{dataset}/data?graph={graph_data}"
     headers = {
         "Content-Type": "application/n-triples"
     }
     nt_data = g.serialize(format="nt")
-    print(f"Subiendo a Fuseki: {fuseki_url} con datos: {nt_data}")  # Solo muestra los primeros 100 caracteres
+    print(f"Subiendo a Fuseki: {fuseki_url} con datos: {nt_data}")
+
     try:
-        res = requests.post(fuseki_url, data=nt_data, headers=headers,auth=(user, password))
+        res = requests.post(fuseki_url, data=nt_data, headers=headers, auth=(user, password))
         res.raise_for_status()
     except requests.exceptions.RequestException as e:
+        await db.systems.delete_one({"ai:hasUrn": urn})  # rollback si falla
         raise HTTPException(status_code=500, detail=f"Error al subir a Fuseki: {str(e)}")
 
     return {"inserted_id": str(result.inserted_id), "urn": urn}
-
 
 
 def fix_mongo_ids(doc):

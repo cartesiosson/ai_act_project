@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 from rdflib import Graph
 from models.system import IntelligentSystem
-from db import get_database
+from db import get_database,ensure_indexes
 import os, json
 from routers.systems import router as systems_router
 from routers.systems_fuseki import router as fuseki_router
@@ -16,6 +16,10 @@ app = FastAPI(title="AI Act Backend")
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok"}
+
+@app.on_event("startup")
+async def startup_event():
+    await ensure_indexes()
 
 
 # Montar estáticos y cargar ontologías igual que antes...

@@ -8,3 +8,8 @@ def get_client():
 async def get_database():
     client = get_client()
     return client["ai_act_db"]
+
+async def ensure_indexes():
+    db = await get_database()
+    collection = db["intelligent_systems"]
+    await collection.create_index("hasUrn", unique=True)
