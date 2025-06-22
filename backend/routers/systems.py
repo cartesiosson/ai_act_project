@@ -5,7 +5,15 @@ from models.system import IntelligentSystem
 from db import get_database
 import uuid
 import json
-from bson import ObjectId
+import requests
+import os
+
+
+user = os.getenv("FUSEKI_USER", "admin")
+password = os.getenv("FUSEKI_PASSWORD", "admin")
+dataset =  os.getenv("FUSEKI_DATASET", "ds")
+end_point = os.getenv("FUSEKI_ENDPOINT", "http://fuseki:3030")
+graph_data= os.getenv("FUSEKI_GRAPH_DATA", "http://ai-act.eu/ontology/data")
 
 router = APIRouter(prefix="/systems", tags=["systems"])
 
@@ -25,15 +33,35 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
     # Eliminamos _id antes de RDFLib
     json_ld.pop("_id", None)
 
+    print(f"Insertando en MongoDB: {json.dumps(json_ld)})")
+
     # Convertimos a tripletas RDF
     g = Graph()
-    g.parse(data=json.dumps(json_ld), format="json-ld", context=json_ld["@context"])
+    mapped = {}
+    for k, v in json_ld.items():
+        if not k.startswith("ai:") and k not in ["@id", "@type", "@context"]:
+            mapped[f"ai:{k}"] = v
+        else:
+            mapped[k] = v
 
-    # Aquí podrías subir el grafo a Fuseki si lo deseas
+    g.parse(data=json.dumps(mapped), format="json-ld")
+
+    # Subir a Fuseki
+    fuseki_url = f"{end_point}/{dataset}/data?graph={graph_data}"
+    headers = {
+        "Content-Type": "application/n-triples"
+    }
+    nt_data = g.serialize(format="nt")
+    print(f"Subiendo a Fuseki: {fuseki_url} con datos: {nt_data}")  # Solo muestra los primeros 100 caracteres
+    try:
+        res = requests.post(fuseki_url, data=nt_data, headers=headers,auth=(user, password))
+        res.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Error al subir a Fuseki: {str(e)}")
 
     return {"inserted_id": str(result.inserted_id), "urn": urn}
 
-from bson import ObjectId
+
 
 def fix_mongo_ids(doc):
     doc["_id"] = str(doc["_id"])

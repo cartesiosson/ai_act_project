@@ -8,6 +8,7 @@ from models.system import IntelligentSystem
 from db import get_database
 import os, json
 from routers.systems import router as systems_router
+from routers.systems_fuseki import router as fuseki_router
 
 
 app = FastAPI(title="AI Act Backend")
@@ -75,6 +76,8 @@ def custom_openapi():
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
+
+app.include_router(fuseki_router)
 
 app.openapi = custom_openapi
 

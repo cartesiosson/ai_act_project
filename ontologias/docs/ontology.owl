@@ -9,22 +9,22 @@
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:terms="http://purl.org/dc/terms/">
     <owl:Ontology rdf:about="http://ai-act.eu/ai-act">
-        <owl:versionIRI rdf:resource="http://ai-act.eu/ai-act/0.34.0"/>
-        <owl:imports rdf:resource="http://localhost:80/actors_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/compliance_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/core_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/governance_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/identifiers_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/interop_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/purpose_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/requirement_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/risk-assessment_intl-v0.34.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/risk_intl-v0.34.0.ttl"/>
-        <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2025-06-20</terms:created>
+        <owl:versionIRI rdf:resource="http://ai-act.eu/ai-act/0.35.0"/>
+        <owl:imports rdf:resource="http://localhost:80/actors_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/compliance_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/core_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/governance_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/identifiers_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/interop_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/purpose_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/requirement_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/risk-assessment_intl-v0.35.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/risk_intl-v0.35.0.ttl"/>
+        <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2025-06-21</terms:created>
         <rdfs:comment xml:lang="en">Ai-act module of the AI Act ontology.</rdfs:comment>
         <rdfs:comment xml:lang="es">Ontología del módulo ai-act del AI Act.</rdfs:comment>
-        <owl:versionInfo xml:lang="en">Version 0.34.0 released on 2025-06-20</owl:versionInfo>
-        <owl:versionInfo xml:lang="es">Versión 0.34.0 publicada el 2025-06-20</owl:versionInfo>
+        <owl:versionInfo xml:lang="en">Version 0.35.0 released on 2025-06-21</owl:versionInfo>
+        <owl:versionInfo xml:lang="es">Versión 0.35.0 publicada el 2025-06-21</owl:versionInfo>
     </owl:Ontology>
     
 
@@ -347,8 +347,11 @@
 
 
     <owl:DatatypeProperty rdf:about="http://ai-act.eu/ai#hasHttpIri">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#IntelligentSystem"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
         <rdfs:comment xml:lang="en">Dereferenceable HTTP IRI of any ontology resource.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Identificador HTTP único del sistema inteligente (IRI resolvible).</rdfs:comment>
+        <rdfs:comment xml:lang="es">Identificador HTTP único del sistema inteligente (IRI resolvible).</rdfs:comment>
         <rdfs:comment xml:lang="es">URI HTTP dereferenciable de cualquier recurso de la ontología.</rdfs:comment>
         <rdfs:label xml:lang="en">hasHttpIri</rdfs:label>
         <rdfs:label xml:lang="es">tieneHttpIri</rdfs:label>
@@ -497,7 +500,6 @@
 
     <owl:Class rdf:about="http://ai-act.eu/ai#IntelligentSystem">
         <rdfs:subClassOf rdf:resource="http://org.semanticweb.owlapi/error#Error1"/>
-        <rdfs:subClassOf rdf:resource="http://org.semanticweb.owlapi/error#Error2"/>
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://ai-act.eu/ai#hasHttpIri"/>
@@ -508,6 +510,12 @@
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://ai-act.eu/ai#hasUrn"/>
                 <owl:allValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ai-act.eu/ai#hasHttpIri"/>
+                <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment xml:lang="en">AI-based system that may be subject to provision, deployment, use, import or distribution in the market.</rdfs:comment>
@@ -1104,9 +1112,6 @@
 
     <rdf:Description rdf:about="http://ai-act.eu/ai#hasInterface">
         <rdf:type rdf:resource="http://ai-act.eu/ai#ObjectProperty"/>
-    </rdf:Description>
-    <rdf:Description>
-        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
     </rdf:Description>
     <rdf:Description>
         <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>

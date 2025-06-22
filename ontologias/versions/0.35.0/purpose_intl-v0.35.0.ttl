@@ -1,0 +1,85 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+
+
+<http://ai-act.eu/purpose_intl>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/purpose_intl/0.35.0> ;
+    owl:versionInfo "Versión 0.35.0 publicada el 2025-06-21"@es ,
+                    "Version 0.35.0 released on 2025-06-21"@en ;
+    rdfs:comment "Ontología del módulo purpose_intl del AI Act."@es ,
+                 "Purpose_intl module of the AI Act ontology."@en ;
+    dcterms:created "2025-06-21"^^xsd:date .
+
+ai:Purpose a owl:Class ;
+    rdfs:label "Purpose"@en,
+        "Purpose"@es ;
+    rdfs:comment "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@en,
+        "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@es .
+
+ai:BiometricIdentification a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Biometric Identification"@en,
+        "Biometric Identification"@es ;
+    rdfs:comment "Identificación biométrica remota de individuos."@en,
+        "Identificación biométrica remota de individuos."@es .
+
+ai:Chatbot a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Chatbot"@en,
+        "Chatbot"@es ;
+    rdfs:comment "Sistema conversacional que interactúa con humanos mediante lenguaje natural."@en,
+        "Sistema conversacional que interactúa con humanos mediante lenguaje natural."@es .
+
+ai:CreditScoring a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Credit Scoring"@en,
+        "Credit Scoring"@es ;
+    rdfs:comment "Uso del sistema para evaluar la solvencia crediticia de personas físicas."@en,
+        "Uso del sistema para evaluar la solvencia crediticia de personas físicas."@es .
+
+ai:DeepfakeGenerator a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Deepfake Generator"@en,
+        "Deepfake Generator"@es ;
+    rdfs:comment "Generación sintética de imágenes, vídeo o audio que imitan a personas reales."@en,
+        "Generación sintética de imágenes, vídeo o audio que imitan a personas reales."@es .
+
+ai:EducationAccess a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Education Access"@en,
+        "Education Access"@es ;
+    rdfs:comment "Evaluación para el acceso a educación o formación."@en,
+        "Evaluación para el acceso a educación o formación."@es .
+
+ai:MigrationControl a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Migration Control"@en,
+        "Migration Control"@es ;
+    rdfs:comment "Gestión de migración, asilo y control fronterizo."@en,
+        "Gestión de migración, asilo y control fronterizo."@es .
+
+ai:PublicServiceAllocation a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Public Service Allocation"@en,
+        "Public Service Allocation"@es ;
+    rdfs:comment "Determinación de acceso a servicios públicos esenciales."@en,
+        "Determinación de acceso a servicios públicos esenciales."@es .
+
+ai:SocialScoring a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Social Scoring"@en,
+        "Social Scoring"@es ;
+    rdfs:comment "Clasificación o evaluación de personas basada en su comportamiento social o antecedentes."@en,
+        "Clasificación o evaluación de personas basada en su comportamiento social o antecedentes."@es .
+
+ai:SubliminalManipulation a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Subliminal Manipulation"@en,
+        "Subliminal Manipulation"@es ;
+    rdfs:comment "Uso de técnicas subliminales para influir en el comportamiento o decisiones de personas."@en,
+        "Uso de técnicas subliminales para influir en el comportamiento o decisiones de personas."@es .

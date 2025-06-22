@@ -1,0 +1,63 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+
+
+<http://ai-act.eu/compliance_intl>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/compliance_intl/0.35.0> ;
+    owl:versionInfo "Versión 0.35.0 publicada el 2025-06-21"@es ,
+                    "Version 0.35.0 released on 2025-06-21"@en ;
+    rdfs:comment "Ontología del módulo compliance_intl del AI Act."@es ,
+                 "Compliance_intl module of the AI Act ontology."@en ;
+    dcterms:created "2025-06-21"^^xsd:date .
+
+ai:ComplianceRequirement a owl:Class ;
+    rdfs:label "Compliance Requirement"@en ,
+               "Compliance Requirement"@es ;
+    rdfs:comment "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@en ,
+                 "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@es .
+
+ai:AccuracyEvaluationRequirement a owl:NamedIndividual ;
+    rdf:type ai:ComplianceRequirement ;
+    rdfs:label "Accuracy Evaluation Requirement"@en ,
+               "Requisito de evaluación de precisión"@es .
+
+ai:DataGovernanceRequirement a owl:NamedIndividual ;
+    rdf:type ai:ComplianceRequirement ;
+    rdfs:label "Data Governance Requirement"@en ,
+               "Gobernanza de datos"@es .
+
+ai:FundamentalRightsAssessmentRequirement a owl:NamedIndividual ;
+    rdf:type ai:ComplianceRequirement ;
+    rdfs:label "Fundamental Rights Assessment Requirement"@en ,
+               "Evaluación de derechos fundamentales"@es .
+
+ai:HumanOversightRequirement a owl:NamedIndividual ;
+    rdf:type ai:ComplianceRequirement ;
+    rdfs:label "Human Oversight Requirement"@en ,
+               "Supervisión humana"@es .
+
+ai:TraceabilityRequirement a owl:NamedIndividual ;
+    rdf:type ai:ComplianceRequirement ;
+    rdfs:label "Traceability Requirement"@en ,
+               "Trazabilidad"@es .
+
+ai:hasRequirement a owl:ObjectProperty ;
+    rdfs:label "has compliance requirement"@en ,
+               "has compliance requirement"@es ;
+    rdfs:comment "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@en ,
+                 "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:requiresCompliance a owl:ObjectProperty ;
+    rdfs:label "requires compliance"@en ,
+               "requiere cumplimiento"@es ;
+    rdfs:comment "Compliance requirements arising from the system's risk assessment."@en ,
+                 "Requisitos de cumplimiento derivados de la evaluación de riesgo del sistema."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:ComplianceRequirement .

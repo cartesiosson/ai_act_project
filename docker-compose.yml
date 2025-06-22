@@ -19,7 +19,7 @@ services:
       - FUSEKI_USER=admin
       - FUSEKI_PASSWORD=admin
       - FUSEKI_DATASET=ds
-      - FUSEKI_GRAPH=http://ai-act.eu/data/ai-data
+      - FUSEKI_GRAPH=http://ai-act.eu/ontology
     volumes:
       - ./ontologias:/app/ontologias
 
@@ -39,6 +39,12 @@ services:
     environment:
       - MONGO_URL=mongodb://mongo:27017
       - FUSEKI_ENDPOINT=http://fuseki:3030
+      - FUSEKI_USER=admin
+      - FUSEKI_PASSWORD=admin
+      - FUSEKI_GRAPH=http://ai-act.eu/ontology
+      - FUSEKI_DATASET=ds
+      - FUSEKI_GRAPH_DATA=http://ai-act.eu/ontology/data
+
     ports:
       - "8000:8000"
     volumes:

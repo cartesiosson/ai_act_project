@@ -1,20 +1,20 @@
 <http://ai-act.eu/ai-act> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionIRI> <http://ai-act.eu/ai-act/0.34.0> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/actors_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/compliance_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/core_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/governance_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/identifiers_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/interop_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/purpose_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/requirement_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk-assessment_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk_intl-v0.34.0.ttl> .
-<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/created> "2025-06-20"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionIRI> <http://ai-act.eu/ai-act/0.35.0> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/actors_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/compliance_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/core_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/governance_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/identifiers_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/interop_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/purpose_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/requirement_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk-assessment_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk_intl-v0.35.0.ttl> .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/created> "2025-06-21"^^<http://www.w3.org/2001/XMLSchema#date> .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Ai-act module of the AI Act ontology."@en .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Ontología del módulo ai-act del AI Act."@es .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.34.0 released on 2025-06-20"@en .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.34.0 publicada el 2025-06-20"@es .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.35.0 released on 2025-06-21"@en .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.35.0 publicada el 2025-06-21"@es .
 # 
 # 
 # #################################################################
@@ -214,8 +214,11 @@
 # 
 # http://ai-act.eu/ai#hasHttpIri
 <http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
 <http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#anyURI> .
 <http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#comment> "Dereferenceable HTTP IRI of any ontology resource."@en .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#comment> "Identificador HTTP único del sistema inteligente (IRI resolvible)."@en .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#comment> "Identificador HTTP único del sistema inteligente (IRI resolvible)."@es .
 <http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#comment> "URI HTTP dereferenciable de cualquier recurso de la ontología."@es .
 <http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#label> "hasHttpIri"@en .
 <http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#label> "tieneHttpIri"@es .
@@ -306,7 +309,6 @@
 # http://ai-act.eu/ai#IntelligentSystem
 <http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://org.semanticweb.owlapi/error#Error1> .
-<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://org.semanticweb.owlapi/error#Error2> .
 <http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#subClassOf> _:genid1 .
 _:genid1 <http://www.w3.org/2002/07/owl#allValuesFrom> <http://www.w3.org/2001/XMLSchema#anyURI> .
 _:genid1 <http://www.w3.org/2002/07/owl#onProperty> <http://ai-act.eu/ai#hasHttpIri> .
@@ -315,6 +317,10 @@ _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 _:genid2 <http://www.w3.org/2002/07/owl#allValuesFrom> <http://www.w3.org/2001/XMLSchema#anyURI> .
 _:genid2 <http://www.w3.org/2002/07/owl#onProperty> <http://ai-act.eu/ai#hasUrn> .
 _:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#subClassOf> _:genid3 .
+_:genid3 <http://www.w3.org/2002/07/owl#maxCardinality> "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
+_:genid3 <http://www.w3.org/2002/07/owl#onProperty> <http://ai-act.eu/ai#hasHttpIri> .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
 <http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "AI-based system that may be subject to provision, deployment, use, import or distribution in the market."@en .
 <http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistema basado en inteligencia artificial que puede ser objeto de provisión, despliegue, uso, importación o distribución en el mercado."@es .
 # 
@@ -673,7 +679,6 @@ _:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 # http://ai-act.eu/ai#hasInterface
 <http://ai-act.eu/ai#hasInterface> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ObjectProperty> .
 # 
-_:genid3 <http://www.w3.org/2002/07/owl#maxCardinality> "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
 _:genid4 <http://www.w3.org/2002/07/owl#maxCardinality> "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
 # 
 # 

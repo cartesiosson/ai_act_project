@@ -8,12 +8,12 @@
 
 <http://ai-act.eu/identifiers_intl>
     a owl:Ontology ;
-    owl:versionIRI <http://ai-act.eu/identifiers_intl/0.34.0> ;
-    owl:versionInfo "Versión 0.34.0 publicada el 2025-06-20"@es ,
-                    "Version 0.34.0 released on 2025-06-20"@en ;
+    owl:versionIRI <http://ai-act.eu/identifiers_intl/0.35.0> ;
+    owl:versionInfo "Versión 0.35.0 publicada el 2025-06-21"@es ,
+                    "Version 0.35.0 released on 2025-06-21"@en ;
     rdfs:comment "Ontología del módulo identifiers_intl del AI Act."@es ,
                  "Identifiers_intl module of the AI Act ontology."@en ;
-    dcterms:created "2025-06-20"^^xsd:date .
+    dcterms:created "2025-06-21"^^xsd:date .
 
 ai:hasUrn
     a owl:DatatypeProperty ;

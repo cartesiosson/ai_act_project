@@ -18,9 +18,13 @@
   } ]
 }, {
   "@id" : "_:genid3",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Restriction" ],
   "http://www.w3.org/2002/07/owl#maxCardinality" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
     "@value" : "1"
+  } ],
+  "http://www.w3.org/2002/07/owl#onProperty" : [ {
+    "@id" : "http://ai-act.eu/ai#hasHttpIri"
   } ]
 }, {
   "@id" : "_:genid4",
@@ -480,11 +484,11 @@
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
     "@id" : "http://org.semanticweb.owlapi/error#Error1"
   }, {
-    "@id" : "http://org.semanticweb.owlapi/error#Error2"
-  }, {
     "@id" : "_:genid1"
   }, {
     "@id" : "_:genid2"
+  }, {
+    "@id" : "_:genid3"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#InterfaceSpec",
@@ -1188,8 +1192,17 @@
     "@language" : "en",
     "@value" : "Dereferenceable HTTP IRI of any ontology resource."
   }, {
+    "@language" : "en",
+    "@value" : "Identificador HTTP único del sistema inteligente (IRI resolvible)."
+  }, {
+    "@language" : "es",
+    "@value" : "Identificador HTTP único del sistema inteligente (IRI resolvible)."
+  }, {
     "@language" : "es",
     "@value" : "URI HTTP dereferenciable de cualquier recurso de la ontología."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "http://ai-act.eu/ai#IntelligentSystem"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "en",
@@ -1548,7 +1561,7 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Ontology" ],
   "http://purl.org/dc/terms/created" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#date",
-    "@value" : "2025-06-20"
+    "@value" : "2025-06-21"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
@@ -1558,34 +1571,34 @@
     "@value" : "Ontología del módulo ai-act del AI Act."
   } ],
   "http://www.w3.org/2002/07/owl#imports" : [ {
-    "@id" : "http://localhost:80/actors_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/actors_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/compliance_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/compliance_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/core_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/core_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/governance_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/governance_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/identifiers_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/identifiers_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/interop_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/interop_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/purpose_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/purpose_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/requirement_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/requirement_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/risk-assessment_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/risk-assessment_intl-v0.35.0.ttl"
   }, {
-    "@id" : "http://localhost:80/risk_intl-v0.34.0.ttl"
+    "@id" : "http://localhost:80/risk_intl-v0.35.0.ttl"
   } ],
   "http://www.w3.org/2002/07/owl#versionIRI" : [ {
-    "@id" : "http://ai-act.eu/ai-act/0.34.0"
+    "@id" : "http://ai-act.eu/ai-act/0.35.0"
   } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
     "@language" : "en",
-    "@value" : "Version 0.34.0 released on 2025-06-20"
+    "@value" : "Version 0.35.0 released on 2025-06-21"
   }, {
     "@language" : "es",
-    "@value" : "Versión 0.34.0 publicada el 2025-06-20"
+    "@value" : "Versión 0.35.0 publicada el 2025-06-21"
   } ]
 } ]

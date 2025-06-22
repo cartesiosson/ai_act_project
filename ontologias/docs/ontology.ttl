@@ -7,22 +7,22 @@
 @base <http://ai-act.eu/ai-act#> .
 
 <http://ai-act.eu/ai-act> rdf:type owl:Ontology ;
-                           owl:versionIRI <http://ai-act.eu/ai-act/0.34.0> ;
-                           owl:imports <http://localhost:80/actors_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/compliance_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/core_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/governance_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/identifiers_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/interop_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/purpose_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/requirement_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/risk-assessment_intl-v0.34.0.ttl> ,
-                                       <http://localhost:80/risk_intl-v0.34.0.ttl> ;
-                           <http://purl.org/dc/terms/created> "2025-06-20"^^xsd:date ;
+                           owl:versionIRI <http://ai-act.eu/ai-act/0.35.0> ;
+                           owl:imports <http://localhost:80/actors_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/compliance_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/core_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/governance_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/identifiers_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/interop_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/purpose_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/requirement_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/risk-assessment_intl-v0.35.0.ttl> ,
+                                       <http://localhost:80/risk_intl-v0.35.0.ttl> ;
+                           <http://purl.org/dc/terms/created> "2025-06-21"^^xsd:date ;
                            rdfs:comment "Ai-act module of the AI Act ontology."@en ,
                                         "Ontología del módulo ai-act del AI Act."@es ;
-                           owl:versionInfo "Version 0.34.0 released on 2025-06-20"@en ,
-                                           "Versión 0.34.0 publicada el 2025-06-20"@es .
+                           owl:versionInfo "Version 0.35.0 released on 2025-06-21"@en ,
+                                           "Versión 0.35.0 publicada el 2025-06-21"@es .
 
 #################################################################
 #    Object Properties
@@ -235,8 +235,11 @@
 
 ###  http://ai-act.eu/ai#hasHttpIri
 <http://ai-act.eu/ai#hasHttpIri> rdf:type owl:DatatypeProperty ;
+                                 rdfs:domain <http://ai-act.eu/ai#IntelligentSystem> ;
                                  rdfs:range xsd:anyURI ;
                                  rdfs:comment "Dereferenceable HTTP IRI of any ontology resource."@en ,
+                                              "Identificador HTTP único del sistema inteligente (IRI resolvible)."@en ,
+                                              "Identificador HTTP único del sistema inteligente (IRI resolvible)."@es ,
                                               "URI HTTP dereferenciable de cualquier recurso de la ontología."@es ;
                                  rdfs:label "hasHttpIri"@en ,
                                             "tieneHttpIri"@es .
@@ -333,7 +336,6 @@
 ###  http://ai-act.eu/ai#IntelligentSystem
 <http://ai-act.eu/ai#IntelligentSystem> rdf:type owl:Class ;
                                         rdfs:subClassOf <http://org.semanticweb.owlapi/error#Error1> ,
-                                                        <http://org.semanticweb.owlapi/error#Error2> ,
                                                         [ rdf:type owl:Restriction ;
                                                           owl:onProperty <http://ai-act.eu/ai#hasHttpIri> ;
                                                           owl:allValuesFrom xsd:anyURI
@@ -341,6 +343,10 @@
                                                         [ rdf:type owl:Restriction ;
                                                           owl:onProperty <http://ai-act.eu/ai#hasUrn> ;
                                                           owl:allValuesFrom xsd:anyURI
+                                                        ] ,
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty <http://ai-act.eu/ai#hasHttpIri> ;
+                                                          owl:maxCardinality "1"^^xsd:nonNegativeInteger
                                                         ] ;
                                         rdfs:comment "AI-based system that may be subject to provision, deployment, use, import or distribution in the market."@en ,
                                                      "Sistema basado en inteligencia artificial que puede ser objeto de provisión, despliegue, uso, importación o distribución en el mercado."@es .
@@ -744,9 +750,6 @@
 
 [ owl:maxCardinality "1"^^xsd:nonNegativeInteger
 ] .
-
-[ owl:maxCardinality "1"^^xsd:nonNegativeInteger
- ] .
 
 #################################################################
 #    Annotations
