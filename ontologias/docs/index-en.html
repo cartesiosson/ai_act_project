@@ -17,7 +17,7 @@
 
 
 <!-- SCHEMA.ORG METADATA -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"http://ai-act.eu/ai-act","image":"http://vowl.visualdataweb.org/webvowl/#iri=http://ai-act.eu/ai-act","name":"http://ai-act.eu/ai-act", "headline":"Document describing the ontology http://ai-act.eu/ai-act", "dateReleased":"2025-06-21", "version":"Versión 0.35.0 publicada el 2025-06-21"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"http://ai-act.eu/ai-act","image":"http://vowl.visualdataweb.org/webvowl/#iri=http://ai-act.eu/ai-act","name":"http://ai-act.eu/ai-act", "headline":"Document describing the ontology http://ai-act.eu/ai-act", "dateReleased":"2025-06-22", "version":"Versión 0.36.0 publicada el 2025-06-22"}</script>
 
 <script src="resources/jquery.js"></script> 
 <script src="resources/marked.min.js"></script> 
@@ -65,20 +65,20 @@ $(function(){
 <div class="container">
 <div class="head">
 <div style="float:right">language <a href="index-en.html"><b>en</b></a> <a href="index-es.html"><b>es</b></a> </div>
-<h2>Release: 2025-06-21</h2>
+<h2>Release: 2025-06-22</h2>
 
 
 <dl>
 <dt>This version:</dt>
-<dd><a href="http://ai-act.eu/ai-act/0.35.0">http://ai-act.eu/ai-act/0.35.0</a></dd>
+<dd><a href="http://ai-act.eu/ai-act/0.36.0">http://ai-act.eu/ai-act/0.36.0</a></dd>
 <dt>Revision:</dt>
-<dd>Versión 0.35.0 publicada el 2025-06-21</dd>
+<dd>Versión 0.36.0 publicada el 2025-06-22</dd>
 <dt>Imported Ontologies:</dt>
-<dd><a href="http://ai-act.eu/actors_intl">actors_intl</a></dd><dd><a href="http://ai-act.eu/compliance_intl">compliance_intl</a></dd><dd><a href="http://ai-act.eu/core_intl">core_intl</a></dd><dd><a href="http://ai-act.eu/governance_intl">governance_intl</a></dd><dd><a href="http://ai-act.eu/identifiers_intl">identifiers_intl</a></dd><dd><a href="http://ai-act.eu/interop_intl">interop_intl</a></dd><dd><a href="http://ai-act.eu/purpose_intl">purpose_intl</a></dd><dd><a href="http://ai-act.eu/requirement_intl">requirement_intl</a></dd><dd><a href="http://ai-act.eu/risk-assessment_intl">risk-assessment_intl</a></dd><dd><a href="http://ai-act.eu/risk_intl">risk_intl</a></dd>
+<dd><a href="http://ai-act.eu/actors_intl">actors_intl</a></dd><dd><a href="http://ai-act.eu/compliance_intl">compliance_intl</a></dd><dd><a href="http://ai-act.eu/context_intl">context_intl</a></dd><dd><a href="http://ai-act.eu/core_intl">core_intl</a></dd><dd><a href="http://ai-act.eu/governance_intl">governance_intl</a></dd><dd><a href="http://ai-act.eu/identifiers_intl">identifiers_intl</a></dd><dd><a href="http://ai-act.eu/interop_intl">interop_intl</a></dd><dd><a href="http://ai-act.eu/purpose_intl">purpose_intl</a></dd><dd><a href="http://ai-act.eu/requirement_intl">requirement_intl</a></dd><dd><a href="http://ai-act.eu/risk-assessment_intl">risk-assessment_intl</a></dd><dd><a href="http://ai-act.eu/risk_intl">risk_intl</a></dd><dd><a href="http://ai-act.eu/training_intl">training_intl</a></dd>
 
 <dt>Download serialization:</dt><dd><span><a href="ontology.jsonld" target="_blank"><img src="https://img.shields.io/badge/Format-JSON_LD-blue.svg" alt="JSON-LD" /></a> </span><span><a href="ontology.owl" target="_blank"><img src="https://img.shields.io/badge/Format-RDF/XML-blue.svg" alt="RDF/XML" /></a> </span><span><a href="ontology.nt" target="_blank"><img src="https://img.shields.io/badge/Format-N_Triples-blue.svg" alt="N-Triples" /></a> </span><span><a href="ontology.ttl" target="_blank"><img src="https://img.shields.io/badge/Format-TTL-blue.svg" alt="TTL" /></a> </span></dd><dt>License:</dt><dd><a href="http://insertlicenseURIhere.example.org" target="_blank"><img src="https://img.shields.io/badge/License-license%20name%20goes%20here-blue.svg" alt="http://insertlicenseURIhere.example.org" /></a>
 </dd><dt>Evaluation:</dt><dd><a href="OOPSevaluation/oopsEval.html#" target="_blank"><img src="https://img.shields.io/badge/Evaluate_with-OOPS! (OntOlogy Pitfall Scanner!)-blue.svg" alt="Evaluate with OOPS!" /></a></dd><dt>Cite as:</dt>
-<dd> Revision: Versión 0.35.0 publicada el 2025-06-21. Retrieved from: http://ai-act.eu/ai-act/0.35.0</dd>
+<dd> Revision: Versión 0.36.0 publicada el 2025-06-22. Retrieved from: http://ai-act.eu/ai-act/0.36.0</dd>
 </dl>
 
 <a href="provenance/provenance-en.html" target="_blank">Provenance of this page</a><hr/>
@@ -115,6 +115,9 @@ This ontology has the following classes and properties.</span>
    </li>
    <li>
       <a href="#http://ai-act.eu/ai#Deployer" title="http://ai-act.eu/ai#Deployer">Deployer</a>
+   </li>
+   <li>
+      <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Deployment Context</a>
    </li>
    <li>
       <a href="#http://ai-act.eu/ai#Distributor" title="http://ai-act.eu/ai#Distributor">Distributor</a>
@@ -162,6 +165,9 @@ This ontology has the following classes and properties.</span>
    </li>
    <li>
       <a href="#http://ai-act.eu/ai#TechnicalRequirement" title="http://ai-act.eu/ai#TechnicalRequirement">Technical Requirement</a>
+   </li>
+   <li>
+      <a href="#http://ai-act.eu/ai#TrainingDataOrigin" title="http://ai-act.eu/ai#TrainingDataOrigin">Training Data Origin</a>
    </li>
    <li>
       <a href="#http://ai-act.eu/ai#User" title="http://ai-act.eu/ai#User">User</a>
@@ -389,6 +395,7 @@ This section provides details for each class and property defined by [Ontology N
   <li><a href="#http://ai-act.eu/ai#ComplianceRequirement" title="http://ai-act.eu/ai#ComplianceRequirement">Compliance Requirement</a></li>
   <li><a href="#http://ai-act.eu/ai#ContextualCriterion" title="http://ai-act.eu/ai#ContextualCriterion">Contextual Criterion</a></li>
   <li><a href="#http://ai-act.eu/ai#Deployer" title="http://ai-act.eu/ai#Deployer">Deployer</a></li>
+  <li><a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Deployment Context</a></li>
   <li><a href="#http://ai-act.eu/ai#Distributor" title="http://ai-act.eu/ai#Distributor">Distributor</a></li>
   <li><a href="#http://ai-act.eu/ai#EndUser" title="http://ai-act.eu/ai#EndUser">EndUser</a></li>
   <li><a href="#http://ai-act.eu/ai#Importer" title="http://ai-act.eu/ai#Importer">Importer</a></li>
@@ -404,6 +411,7 @@ This section provides details for each class and property defined by [Ontology N
   <li><a href="#http://ai-act.eu/ai#RiskLevel" title="http://ai-act.eu/ai#RiskLevel">Risk Level</a></li>
   <li><a href="#http://ai-act.eu/ai#TechnicalCriterion" title="http://ai-act.eu/ai#TechnicalCriterion">Technical Criterion</a></li>
   <li><a href="#http://ai-act.eu/ai#TechnicalRequirement" title="http://ai-act.eu/ai#TechnicalRequirement">Technical Requirement</a></li>
+  <li><a href="#http://ai-act.eu/ai#TrainingDataOrigin" title="http://ai-act.eu/ai#TrainingDataOrigin">Training Data Origin</a></li>
   <li><a href="#http://ai-act.eu/ai#User" title="http://ai-act.eu/ai#User">User</a></li>
  </ul>
  <div class="entity" id="http://ai-act.eu/ai#ComplianceRequirement">
@@ -460,6 +468,18 @@ This section provides details for each class and property defined by [Ontology N
    </dt>
    <dd>
     <a href="#http://ai-act.eu/ai#deploysSystem" title="http://ai-act.eu/ai#deploysSystem">deploys System</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://ai-act.eu/ai#DeploymentContext">
+  <h3>Deployment Context<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://ai-act.eu/ai#DeploymentContext</p>
+  <dl class="description">
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#hasDeploymentContext" title="http://ai-act.eu/ai#hasDeploymentContext">has Deployment Context</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
@@ -734,6 +754,18 @@ This section provides details for each class and property defined by [Ontology N
    </dd>
   </dl>
  </div>
+ <div class="entity" id="http://ai-act.eu/ai#TrainingDataOrigin">
+  <h3>Training Data Origin<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://ai-act.eu/ai#TrainingDataOrigin</p>
+  <dl class="description">
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#hasTrainingDataOrigin" title="http://ai-act.eu/ai#hasTrainingDataOrigin">has Training Data Origin</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+  </dl>
+ </div>
  <div class="entity" id="http://ai-act.eu/ai#User">
   <h3>User<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
   <p><strong>IRI:</strong> http://ai-act.eu/ai#User</p>
@@ -1005,7 +1037,7 @@ This section provides details for each class and property defined by [Ontology N
      has range
     </dt>
     <dd>
-     <a href="http://ai-act.eu/ai#DeploymentContext" target="_blank" title="http://ai-act.eu/ai#DeploymentContext">Deployment Context</a> <sup class="type-c" title="class">c</sup>
+     <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Deployment Context</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
@@ -1097,7 +1129,7 @@ This section provides details for each class and property defined by [Ontology N
      has range
     </dt>
     <dd>
-     <a href="http://ai-act.eu/ai#TrainingDataOrigin" target="_blank" title="http://ai-act.eu/ai#TrainingDataOrigin">Training Data Origin</a> <sup class="type-c" title="class">c</sup>
+     <a href="#http://ai-act.eu/ai#TrainingDataOrigin" title="http://ai-act.eu/ai#TrainingDataOrigin">Training Data Origin</a> <sup class="type-c" title="class">c</sup>
     </dd>
    </dl>
   </div>
@@ -1470,7 +1502,7 @@ This section provides details for each class and property defined by [Ontology N
     <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#BiometricIdentificationCriterion" title="http://ai-act.eu/ai#BiometricIdentificationCriterion">Biometric Identification or Categorization</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
-    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1309" title="http://ai-act.eu/ai#LacksHumanOversightCriterion">Lacks Human Oversight Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
+    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1390" title="http://ai-act.eu/ai#LacksHumanOversightCriterion">Lacks Human Oversight Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
     <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#UsesBiometricIdentification" title="http://ai-act.eu/ai#UsesBiometricIdentification">Uses Biometric Identification</a> <sup class="type-ni" title="named individual">ni</sup>
@@ -1512,7 +1544,7 @@ This section provides details for each class and property defined by [Ontology N
     has facts
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1309" title="http://ai-act.eu/ai#LacksHumanOversightCriterion">Lacks Human Oversight Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
+    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1390" title="http://ai-act.eu/ai#LacksHumanOversightCriterion">Lacks Human Oversight Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
     <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#LimitedRisk" title="http://ai-act.eu/ai#LimitedRisk">Limited Risk</a> <sup class="type-ni" title="named individual">ni</sup>
@@ -1542,7 +1574,7 @@ This section provides details for each class and property defined by [Ontology N
     <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#EssentialServicesAccessCriterion" title="http://ai-act.eu/ai#EssentialServicesAccessCriterion">Access to Essential Services</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
-    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1269" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
+    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1337" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
     <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#HighRisk" title="http://ai-act.eu/ai#HighRisk">High Risk</a> <sup class="type-ni" title="named individual">ni</sup>
@@ -1602,7 +1634,7 @@ This section provides details for each class and property defined by [Ontology N
     <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#EducationEvaluationCriterion" title="http://ai-act.eu/ai#EducationEvaluationCriterion">Education or Vocational Training Evaluation</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
-    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1269" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
+    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1337" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
     <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#HighRisk" title="http://ai-act.eu/ai#HighRisk">High Risk</a> <sup class="type-ni" title="named individual">ni</sup>
@@ -1770,7 +1802,7 @@ This section provides details for each class and property defined by [Ontology N
     has facts
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1269" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
+    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1337" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
     <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#MigrationBorderCriterion" title="http://ai-act.eu/ai#MigrationBorderCriterion">Migration, Asylum and Border Control</a> <sup class="type-ni" title="named individual">ni</sup>
@@ -1830,7 +1862,7 @@ This section provides details for each class and property defined by [Ontology N
     <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#EssentialServicesAccessCriterion" title="http://ai-act.eu/ai#EssentialServicesAccessCriterion">Access to Essential Services</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
-    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1269" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
+    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1337" title="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">Impacts Fundamental Rights Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
     <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#HighRisk" title="http://ai-act.eu/ai#HighRisk">High Risk</a> <sup class="type-ni" title="named individual">ni</sup>
@@ -1890,7 +1922,7 @@ This section provides details for each class and property defined by [Ontology N
     has facts
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e976" title="http://ai-act.eu/ai#AutonomousWithoutExplanationCriterion">Autonomous Without Explanation Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
+    <a href="#http://ai-act.eu/ai#activatesCriterion" title="http://ai-act.eu/ai#activatesCriterion">activates criterion</a> <sup class="type-op" title="object property">op</sup> <a href="#d4e1004" title="http://ai-act.eu/ai#AutonomousWithoutExplanationCriterion">Autonomous Without Explanation Criterion</a> <sup class="type-ni" title="named individual">ni</sup>
    </dd>
    <dd>
     <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="object property">op</sup> <a href="#http://ai-act.eu/ai#UnacceptableRisk" title="http://ai-act.eu/ai#UnacceptableRisk">Unacceptable Risk</a> <sup class="type-ni" title="named individual">ni</sup>

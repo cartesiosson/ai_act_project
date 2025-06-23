@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
 class IntelligentSystem(BaseModel):
     id: Optional[str] = Field(default=None, alias="@id")
@@ -10,9 +10,9 @@ class IntelligentSystem(BaseModel):
     )
     
     hasName: str = Field(..., example="Sim-01")
-    hasPurpose: str = Field(..., example="ai:ForEducation")
+    hasPurpose: List[str] = Field(..., example=["ai:ForEducation"])  # <-- CAMBIO
     hasRiskLevel: str = Field(..., example="ai:HighRisk")
-    hasDeploymentContext: str = Field(..., example="ai:Education")
+    hasDeploymentContext: List[str] = Field(..., example=["ai:Education"])  # <-- CAMBIO
     hasTrainingDataOrigin: str = Field(..., example="ai:InternalDataset")
     hasVersion: str = Field(..., example="1.0.0")
 
@@ -23,9 +23,9 @@ class IntelligentSystem(BaseModel):
                 "@context": "http://ontologias/docs/ontology.jsonld",
                 "@type": "ai:IntelligentSystem",
                 "hasName": "Sim-01",
-                "hasPurpose": "ai:ForEducation",
+                "hasPurpose": ["ai:ForEducation"],
                 "hasRiskLevel": "ai:HighRisk",
-                "hasDeploymentContext": "ai:Education",
+                "hasDeploymentContext": ["ai:Education"],
                 "hasTrainingDataOrigin": "ai:InternalDataset",
                 "hasVersion": "1.0.0"
             }

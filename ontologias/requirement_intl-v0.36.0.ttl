@@ -1,0 +1,30 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+
+
+<http://ai-act.eu/requirement_intl>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/requirement_intl/0.36.0> ;
+    owl:versionInfo "Versión 0.36.0 publicada el 2025-06-22"@es ,
+                    "Version 0.36.0 released on 2025-06-22"@en ;
+    rdfs:comment "Ontología del módulo requirement_intl del AI Act."@es ,
+                 "Requirement_intl module of the AI Act ontology."@en ;
+    dcterms:created "2025-06-22"^^xsd:date .
+
+ai:TechnicalRequirement a owl:Class ;
+    rdfs:label "Technical Requirement"@en,
+        "Technical Requirement"@es ;
+    rdfs:comment "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@en,
+        "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@es .
+
+ai:hasTechnicalRequirement a owl:ObjectProperty ;
+    rdfs:label "has technical requirement"@en,
+        "has technical requirement"@es ;
+    rdfs:comment "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@en,
+        "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:TechnicalRequirement .

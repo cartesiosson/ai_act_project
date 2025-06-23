@@ -9,22 +9,24 @@
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:terms="http://purl.org/dc/terms/">
     <owl:Ontology rdf:about="http://ai-act.eu/ai-act">
-        <owl:versionIRI rdf:resource="http://ai-act.eu/ai-act/0.35.0"/>
-        <owl:imports rdf:resource="http://localhost:80/actors_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/compliance_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/core_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/governance_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/identifiers_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/interop_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/purpose_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/requirement_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/risk-assessment_intl-v0.35.0.ttl"/>
-        <owl:imports rdf:resource="http://localhost:80/risk_intl-v0.35.0.ttl"/>
-        <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2025-06-21</terms:created>
+        <owl:versionIRI rdf:resource="http://ai-act.eu/ai-act/0.36.0"/>
+        <owl:imports rdf:resource="http://localhost:80/actors_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/compliance_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/context_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/core_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/governance_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/identifiers_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/interop_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/purpose_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/requirement_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/risk-assessment_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/risk_intl-v0.36.0.ttl"/>
+        <owl:imports rdf:resource="http://localhost:80/training_intl-v0.36.0.ttl"/>
+        <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2025-06-22</terms:created>
         <rdfs:comment xml:lang="en">Ai-act module of the AI Act ontology.</rdfs:comment>
         <rdfs:comment xml:lang="es">Ontología del módulo ai-act del AI Act.</rdfs:comment>
-        <owl:versionInfo xml:lang="en">Version 0.35.0 released on 2025-06-21</owl:versionInfo>
-        <owl:versionInfo xml:lang="es">Versión 0.35.0 publicada el 2025-06-21</owl:versionInfo>
+        <owl:versionInfo xml:lang="en">Version 0.36.0 released on 2025-06-22</owl:versionInfo>
+        <owl:versionInfo xml:lang="es">Versión 0.36.0 publicada el 2025-06-22</owl:versionInfo>
     </owl:Ontology>
     
 
@@ -458,6 +460,16 @@
     
 
 
+    <!-- http://ai-act.eu/ai#DeploymentContext -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#DeploymentContext">
+        <rdfs:label xml:lang="es">Contexto de Despliegue</rdfs:label>
+        <rdfs:label xml:lang="en">Deployment Context</rdfs:label>
+    </owl:Class>
+    
+
+
     <!-- http://ai-act.eu/ai#Distributor -->
 
 
@@ -659,6 +671,16 @@
     
 
 
+    <!-- http://ai-act.eu/ai#TrainingDataOrigin -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#TrainingDataOrigin">
+        <rdfs:label xml:lang="es">Origen de Datos de Entrenamiento</rdfs:label>
+        <rdfs:label xml:lang="en">Training Data Origin</rdfs:label>
+    </owl:Class>
+    
+
+
     <!-- http://ai-act.eu/ai#User -->
 
 
@@ -814,6 +836,17 @@
     
 
 
+    <!-- http://ai-act.eu/ai#Education -->
+
+
+    <rdf:Description rdf:about="http://ai-act.eu/ai#Education">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <rdfs:label xml:lang="es">Educación</rdfs:label>
+        <rdfs:label xml:lang="en">Education</rdfs:label>
+    </rdf:Description>
+    
+
+
     <!-- http://ai-act.eu/ai#EducationAccess -->
 
 
@@ -858,6 +891,17 @@
     
 
 
+    <!-- http://ai-act.eu/ai#ExternalDataset -->
+
+
+    <rdf:Description rdf:about="http://ai-act.eu/ai#ExternalDataset">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#TrainingDataOrigin"/>
+        <rdfs:label xml:lang="es">Datos Externos</rdfs:label>
+        <rdfs:label xml:lang="en">External Dataset</rdfs:label>
+    </rdf:Description>
+    
+
+
     <!-- http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement -->
 
 
@@ -866,6 +910,17 @@
         <rdfs:label xml:lang="es">Evaluación de derechos fundamentales</rdfs:label>
         <rdfs:label xml:lang="en">Fundamental Rights Assessment Requirement</rdfs:label>
     </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#Healthcare -->
+
+
+    <rdf:Description rdf:about="http://ai-act.eu/ai#Healthcare">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <rdfs:label xml:lang="en">Healthcare</rdfs:label>
+        <rdfs:label xml:lang="es">Salud</rdfs:label>
+    </rdf:Description>
     
 
 
@@ -909,6 +964,17 @@
 
     <rdf:Description rdf:about="http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion">
         <ai:triggersailianceRequirement rdf:resource="http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement"/>
+    </rdf:Description>
+    
+
+
+    <!-- http://ai-act.eu/ai#InternalDataset -->
+
+
+    <rdf:Description rdf:about="http://ai-act.eu/ai#InternalDataset">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#TrainingDataOrigin"/>
+        <rdfs:label xml:lang="es">Datos Internos</rdfs:label>
+        <rdfs:label xml:lang="en">Internal Dataset</rdfs:label>
     </rdf:Description>
     
 
@@ -1030,6 +1096,17 @@
     
 
 
+    <!-- http://ai-act.eu/ai#PublicServices -->
+
+
+    <rdf:Description rdf:about="http://ai-act.eu/ai#PublicServices">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <rdfs:label xml:lang="en">Public Services</rdfs:label>
+        <rdfs:label xml:lang="es">Servicios Públicos</rdfs:label>
+    </rdf:Description>
+    
+
+
     <!-- http://ai-act.eu/ai#RecruitmentEmploymentCriterion -->
 
 
@@ -1069,6 +1146,17 @@
         <rdfs:label xml:lang="en">Subliminal Manipulation</rdfs:label>
         <rdfs:label xml:lang="es">Subliminal Manipulation</rdfs:label>
     </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#SyntheticDataset -->
+
+
+    <rdf:Description rdf:about="http://ai-act.eu/ai#SyntheticDataset">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#TrainingDataOrigin"/>
+        <rdfs:label xml:lang="es">Datos Sintéticos</rdfs:label>
+        <rdfs:label xml:lang="en">Synthetic Dataset</rdfs:label>
+    </rdf:Description>
     
 
 

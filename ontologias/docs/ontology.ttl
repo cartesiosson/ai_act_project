@@ -7,22 +7,24 @@
 @base <http://ai-act.eu/ai-act#> .
 
 <http://ai-act.eu/ai-act> rdf:type owl:Ontology ;
-                           owl:versionIRI <http://ai-act.eu/ai-act/0.35.0> ;
-                           owl:imports <http://localhost:80/actors_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/compliance_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/core_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/governance_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/identifiers_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/interop_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/purpose_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/requirement_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/risk-assessment_intl-v0.35.0.ttl> ,
-                                       <http://localhost:80/risk_intl-v0.35.0.ttl> ;
-                           <http://purl.org/dc/terms/created> "2025-06-21"^^xsd:date ;
+                           owl:versionIRI <http://ai-act.eu/ai-act/0.36.0> ;
+                           owl:imports <http://localhost:80/actors_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/compliance_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/context_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/core_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/governance_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/identifiers_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/interop_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/purpose_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/requirement_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/risk-assessment_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/risk_intl-v0.36.0.ttl> ,
+                                       <http://localhost:80/training_intl-v0.36.0.ttl> ;
+                           <http://purl.org/dc/terms/created> "2025-06-22"^^xsd:date ;
                            rdfs:comment "Ai-act module of the AI Act ontology."@en ,
                                         "Ontología del módulo ai-act del AI Act."@es ;
-                           owl:versionInfo "Version 0.35.0 released on 2025-06-21"@en ,
-                                           "Versión 0.35.0 publicada el 2025-06-21"@es .
+                           owl:versionInfo "Version 0.36.0 released on 2025-06-22"@en ,
+                                           "Versión 0.36.0 publicada el 2025-06-22"@es .
 
 #################################################################
 #    Object Properties
@@ -308,6 +310,12 @@
                                           "Deployer"@es .
 
 
+###  http://ai-act.eu/ai#DeploymentContext
+<http://ai-act.eu/ai#DeploymentContext> rdf:type owl:Class ;
+                                        rdfs:label "Contexto de Despliegue"@es ,
+                                                   "Deployment Context"@en .
+
+
 ###  http://ai-act.eu/ai#Distributor
 <http://ai-act.eu/ai#Distributor> rdf:type owl:Class ;
                                   rdfs:comment "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en ,
@@ -443,6 +451,12 @@
                                                       "Technical Requirement"@es .
 
 
+###  http://ai-act.eu/ai#TrainingDataOrigin
+<http://ai-act.eu/ai#TrainingDataOrigin> rdf:type owl:Class ;
+                                         rdfs:label "Origen de Datos de Entrenamiento"@es ,
+                                                    "Training Data Origin"@en .
+
+
 ###  http://ai-act.eu/ai#User
 <http://ai-act.eu/ai#User> rdf:type owl:Class ;
                            rdfs:comment "Actor que utiliza un sistema de inteligencia artificial."@en ,
@@ -545,6 +559,12 @@
                                                    "Deepfake Generator"@es .
 
 
+###  http://ai-act.eu/ai#Education
+<http://ai-act.eu/ai#Education> rdf:type <http://ai-act.eu/ai#DeploymentContext> ;
+                                rdfs:label "Educación"@es ,
+                                           "Education"@en .
+
+
 ###  http://ai-act.eu/ai#EducationAccess
 <http://ai-act.eu/ai#EducationAccess> rdf:type owl:NamedIndividual ,
                                                <http://ai-act.eu/ai#Purpose> ;
@@ -577,11 +597,23 @@
                                                                   "Access to Essential Services"@es .
 
 
+###  http://ai-act.eu/ai#ExternalDataset
+<http://ai-act.eu/ai#ExternalDataset> rdf:type <http://ai-act.eu/ai#TrainingDataOrigin> ;
+                                      rdfs:label "Datos Externos"@es ,
+                                                 "External Dataset"@en .
+
+
 ###  http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement
 <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> rdf:type owl:NamedIndividual ,
                                                                       <http://ai-act.eu/ai#ComplianceRequirement> ;
                                                              rdfs:label "Evaluación de derechos fundamentales"@es ,
                                                                         "Fundamental Rights Assessment Requirement"@en .
+
+
+###  http://ai-act.eu/ai#Healthcare
+<http://ai-act.eu/ai#Healthcare> rdf:type <http://ai-act.eu/ai#DeploymentContext> ;
+                                 rdfs:label "Healthcare"@en ,
+                                            "Salud"@es .
 
 
 ###  http://ai-act.eu/ai#HighRisk
@@ -609,6 +641,12 @@
 
 ###  http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion
 <http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion> <http://ai-act.eu/ai#triggersailianceRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
+
+
+###  http://ai-act.eu/ai#InternalDataset
+<http://ai-act.eu/ai#InternalDataset> rdf:type <http://ai-act.eu/ai#TrainingDataOrigin> ;
+                                      rdfs:label "Datos Internos"@es ,
+                                                 "Internal Dataset"@en .
 
 
 ###  http://ai-act.eu/ai#JudicialSupportCriterion
@@ -691,6 +729,12 @@
                                                          "Public Service Allocation"@es .
 
 
+###  http://ai-act.eu/ai#PublicServices
+<http://ai-act.eu/ai#PublicServices> rdf:type <http://ai-act.eu/ai#DeploymentContext> ;
+                                     rdfs:label "Public Services"@en ,
+                                                "Servicios Públicos"@es .
+
+
 ###  http://ai-act.eu/ai#RecruitmentEmploymentCriterion
 <http://ai-act.eu/ai#RecruitmentEmploymentCriterion> rdf:type owl:NamedIndividual ,
                                                               <http://ai-act.eu/ai#NormativeCriterion> ;
@@ -719,6 +763,12 @@
                                                           "Uso de técnicas subliminales para influir en el comportamiento o decisiones de personas."@es ;
                                              rdfs:label "Subliminal Manipulation"@en ,
                                                         "Subliminal Manipulation"@es .
+
+
+###  http://ai-act.eu/ai#SyntheticDataset
+<http://ai-act.eu/ai#SyntheticDataset> rdf:type <http://ai-act.eu/ai#TrainingDataOrigin> ;
+                                       rdfs:label "Datos Sintéticos"@es ,
+                                                  "Synthetic Dataset"@en .
 
 
 ###  http://ai-act.eu/ai#TraceabilityRequirement

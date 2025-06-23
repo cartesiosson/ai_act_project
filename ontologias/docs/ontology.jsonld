@@ -280,6 +280,16 @@
     "@value" : "Deployer"
   } ]
 }, {
+  "@id" : "http://ai-act.eu/ai#DeploymentContext",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "es",
+    "@value" : "Contexto de Despliegue"
+  }, {
+    "@language" : "en",
+    "@value" : "Deployment Context"
+  } ]
+}, {
   "@id" : "http://ai-act.eu/ai#Distributor",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -295,6 +305,18 @@
   }, {
     "@language" : "es",
     "@value" : "Distributor"
+  } ]
+}, {
+  "@id" : "http://ai-act.eu/ai#Education",
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://ai-act.eu/ai#DeploymentContext"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "es",
+    "@value" : "Educación"
+  }, {
+    "@language" : "en",
+    "@value" : "Education"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#EducationAccess",
@@ -391,6 +413,18 @@
     "@value" : "Access to Essential Services"
   } ]
 }, {
+  "@id" : "http://ai-act.eu/ai#ExternalDataset",
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://ai-act.eu/ai#TrainingDataOrigin"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "es",
+    "@value" : "Datos Externos"
+  }, {
+    "@language" : "en",
+    "@value" : "External Dataset"
+  } ]
+}, {
   "@id" : "http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
@@ -402,6 +436,18 @@
   }, {
     "@language" : "en",
     "@value" : "Fundamental Rights Assessment Requirement"
+  } ]
+}, {
+  "@id" : "http://ai-act.eu/ai#Healthcare",
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://ai-act.eu/ai#DeploymentContext"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Healthcare"
+  }, {
+    "@language" : "es",
+    "@value" : "Salud"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#HighRisk",
@@ -506,6 +552,18 @@
   }, {
     "@language" : "es",
     "@value" : "Interface Specification"
+  } ]
+}, {
+  "@id" : "http://ai-act.eu/ai#InternalDataset",
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://ai-act.eu/ai#TrainingDataOrigin"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "es",
+    "@value" : "Datos Internos"
+  }, {
+    "@language" : "en",
+    "@value" : "Internal Dataset"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#JudicialSupportCriterion",
@@ -756,6 +814,18 @@
     "@value" : "Public Service Allocation"
   } ]
 }, {
+  "@id" : "http://ai-act.eu/ai#PublicServices",
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://ai-act.eu/ai#DeploymentContext"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Public Services"
+  }, {
+    "@language" : "es",
+    "@value" : "Servicios Públicos"
+  } ]
+}, {
   "@id" : "http://ai-act.eu/ai#Purpose",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -893,6 +963,18 @@
     "@value" : "Subliminal Manipulation"
   } ]
 }, {
+  "@id" : "http://ai-act.eu/ai#SyntheticDataset",
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+    "@id" : "http://ai-act.eu/ai#TrainingDataOrigin"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "es",
+    "@value" : "Datos Sintéticos"
+  }, {
+    "@language" : "en",
+    "@value" : "Synthetic Dataset"
+  } ]
+}, {
   "@id" : "http://ai-act.eu/ai#TechnicalCriterion",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -941,6 +1023,16 @@
   }, {
     "@language" : "es",
     "@value" : "Trazabilidad"
+  } ]
+}, {
+  "@id" : "http://ai-act.eu/ai#TrainingDataOrigin",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "es",
+    "@value" : "Origen de Datos de Entrenamiento"
+  }, {
+    "@language" : "en",
+    "@value" : "Training Data Origin"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#UnacceptableRisk",
@@ -1561,7 +1653,7 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Ontology" ],
   "http://purl.org/dc/terms/created" : [ {
     "@type" : "http://www.w3.org/2001/XMLSchema#date",
-    "@value" : "2025-06-21"
+    "@value" : "2025-06-22"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
@@ -1571,34 +1663,38 @@
     "@value" : "Ontología del módulo ai-act del AI Act."
   } ],
   "http://www.w3.org/2002/07/owl#imports" : [ {
-    "@id" : "http://localhost:80/actors_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/actors_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/compliance_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/compliance_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/core_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/context_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/governance_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/core_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/identifiers_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/governance_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/interop_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/identifiers_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/purpose_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/interop_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/requirement_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/purpose_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/risk-assessment_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/requirement_intl-v0.36.0.ttl"
   }, {
-    "@id" : "http://localhost:80/risk_intl-v0.35.0.ttl"
+    "@id" : "http://localhost:80/risk-assessment_intl-v0.36.0.ttl"
+  }, {
+    "@id" : "http://localhost:80/risk_intl-v0.36.0.ttl"
+  }, {
+    "@id" : "http://localhost:80/training_intl-v0.36.0.ttl"
   } ],
   "http://www.w3.org/2002/07/owl#versionIRI" : [ {
-    "@id" : "http://ai-act.eu/ai-act/0.35.0"
+    "@id" : "http://ai-act.eu/ai-act/0.36.0"
   } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
     "@language" : "en",
-    "@value" : "Version 0.35.0 released on 2025-06-21"
+    "@value" : "Version 0.36.0 released on 2025-06-22"
   }, {
     "@language" : "es",
-    "@value" : "Versión 0.35.0 publicada el 2025-06-21"
+    "@value" : "Versión 0.36.0 publicada el 2025-06-22"
   } ]
 } ]

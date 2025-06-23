@@ -39,6 +39,12 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
             mapped[f"ai:{k}"] = v
         else:
             mapped[k] = v
+
+    # Asegurar que los valores múltiples se representen como listas
+    for multivalue_key in ["ai:hasPurpose", "ai:hasDeploymentContext"]:
+        if multivalue_key in mapped and not isinstance(mapped[multivalue_key], list):
+            mapped[multivalue_key] = [mapped[multivalue_key]]
+
     g.parse(data=json.dumps(mapped), format="json-ld")
 
     fuseki_url = f"{end_point}/{dataset}/data?graph={graph_data}"

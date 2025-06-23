@@ -1,20 +1,22 @@
 <http://ai-act.eu/ai-act> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionIRI> <http://ai-act.eu/ai-act/0.35.0> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/actors_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/compliance_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/core_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/governance_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/identifiers_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/interop_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/purpose_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/requirement_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk-assessment_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk_intl-v0.35.0.ttl> .
-<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/created> "2025-06-21"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionIRI> <http://ai-act.eu/ai-act/0.36.0> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/actors_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/compliance_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/context_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/core_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/governance_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/identifiers_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/interop_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/purpose_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/requirement_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk-assessment_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/risk_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <http://localhost:80/training_intl-v0.36.0.ttl> .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/created> "2025-06-22"^^<http://www.w3.org/2001/XMLSchema#date> .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Ai-act module of the AI Act ontology."@en .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Ontología del módulo ai-act del AI Act."@es .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.35.0 released on 2025-06-21"@en .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.35.0 publicada el 2025-06-21"@es .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.36.0 released on 2025-06-22"@en .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.36.0 publicada el 2025-06-22"@es .
 # 
 # 
 # #################################################################
@@ -284,6 +286,11 @@
 <http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#label> "Deployer"@en .
 <http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#label> "Deployer"@es .
 # 
+# http://ai-act.eu/ai#DeploymentContext
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/2000/01/rdf-schema#label> "Contexto de Despliegue"@es .
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/2000/01/rdf-schema#label> "Deployment Context"@en .
+# 
 # http://ai-act.eu/ai#Distributor
 <http://ai-act.eu/ai#Distributor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en .
@@ -404,6 +411,11 @@ _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 <http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Technical Requirement"@en .
 <http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Technical Requirement"@es .
 # 
+# http://ai-act.eu/ai#TrainingDataOrigin
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#label> "Origen de Datos de Entrenamiento"@es .
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#label> "Training Data Origin"@en .
+# 
 # http://ai-act.eu/ai#User
 <http://ai-act.eu/ai#User> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#User> <http://www.w3.org/2000/01/rdf-schema#comment> "Actor que utiliza un sistema de inteligencia artificial."@en .
@@ -500,6 +512,11 @@ _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 <http://ai-act.eu/ai#DeepfakeGenerator> <http://www.w3.org/2000/01/rdf-schema#label> "Deepfake Generator"@en .
 <http://ai-act.eu/ai#DeepfakeGenerator> <http://www.w3.org/2000/01/rdf-schema#label> "Deepfake Generator"@es .
 # 
+# http://ai-act.eu/ai#Education
+<http://ai-act.eu/ai#Education> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#Education> <http://www.w3.org/2000/01/rdf-schema#label> "Educación"@es .
+<http://ai-act.eu/ai#Education> <http://www.w3.org/2000/01/rdf-schema#label> "Education"@en .
+# 
 # http://ai-act.eu/ai#EducationAccess
 <http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
@@ -529,11 +546,21 @@ _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 <http://ai-act.eu/ai#EssentialServicesAccessCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Access to Essential Services"@en .
 <http://ai-act.eu/ai#EssentialServicesAccessCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Access to Essential Services"@es .
 # 
+# http://ai-act.eu/ai#ExternalDataset
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TrainingDataOrigin> .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Datos Externos"@es .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "External Dataset"@en .
+# 
 # http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement
 <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
 <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación de derechos fundamentales"@es .
 <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Fundamental Rights Assessment Requirement"@en .
+# 
+# http://ai-act.eu/ai#Healthcare
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/2000/01/rdf-schema#label> "Healthcare"@en .
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/2000/01/rdf-schema#label> "Salud"@es .
 # 
 # http://ai-act.eu/ai#HighRisk
 <http://ai-act.eu/ai#HighRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -557,6 +584,11 @@ _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 # 
 # http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion
 <http://ai-act.eu/ai#ImpactsFundamentalRightsCriterion> <http://ai-act.eu/ai#triggersailianceRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
+# 
+# http://ai-act.eu/ai#InternalDataset
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TrainingDataOrigin> .
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Datos Internos"@es .
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Internal Dataset"@en .
 # 
 # http://ai-act.eu/ai#JudicialSupportCriterion
 <http://ai-act.eu/ai#JudicialSupportCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -629,6 +661,11 @@ _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 <http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#label> "Public Service Allocation"@en .
 <http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#label> "Public Service Allocation"@es .
 # 
+# http://ai-act.eu/ai#PublicServices
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/2000/01/rdf-schema#label> "Public Services"@en .
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/2000/01/rdf-schema#label> "Servicios Públicos"@es .
+# 
 # http://ai-act.eu/ai#RecruitmentEmploymentCriterion
 <http://ai-act.eu/ai#RecruitmentEmploymentCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#RecruitmentEmploymentCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
@@ -655,6 +692,11 @@ _:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/20
 <http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/2000/01/rdf-schema#comment> "Uso de técnicas subliminales para influir en el comportamiento o decisiones de personas."@es .
 <http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/2000/01/rdf-schema#label> "Subliminal Manipulation"@en .
 <http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/2000/01/rdf-schema#label> "Subliminal Manipulation"@es .
+# 
+# http://ai-act.eu/ai#SyntheticDataset
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TrainingDataOrigin> .
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Datos Sintéticos"@es .
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Synthetic Dataset"@en .
 # 
 # http://ai-act.eu/ai#TraceabilityRequirement
 <http://ai-act.eu/ai#TraceabilityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .

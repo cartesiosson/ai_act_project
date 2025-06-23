@@ -1,0 +1,32 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+
+
+<http://ai-act.eu/context_intl>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/context_intl/0.36.0> ;
+    owl:versionInfo "Versión 0.36.0 publicada el 2025-06-22"@es ,
+                    "Version 0.36.0 released on 2025-06-22"@en ;
+    rdfs:comment "Ontología del módulo context_intl del AI Act."@es ,
+                 "Context_intl module of the AI Act ontology."@en ;
+    dcterms:created "2025-06-22"^^xsd:date .
+
+ai:DeploymentContext a owl:Class ;
+    rdfs:label "Deployment Context"@en ;
+    rdfs:label "Contexto de Despliegue"@es .
+
+ai:Education a ai:DeploymentContext ;
+    rdfs:label "Education"@en ;
+    rdfs:label "Educación"@es .
+
+ai:Healthcare a ai:DeploymentContext ;
+    rdfs:label "Healthcare"@en ;
+    rdfs:label "Salud"@es .
+
+ai:PublicServices a ai:DeploymentContext ;
+    rdfs:label "Public Services"@en ;
+    rdfs:label "Servicios Públicos"@es .
