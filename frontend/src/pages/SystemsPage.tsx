@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchSystems, createSystem, fetchVocabulary } from "../lib/api";
+import SystemCard from "./SystemCard";
 
 type System = {
   _id?: string;
@@ -8,7 +9,7 @@ type System = {
   hasPurpose: string[];
   hasRiskLevel: string;
   hasDeploymentContext: string[];
-  hasTrainingDataOrigin: string;
+  hasTrainingDataOrigin: string[];
   hasVersion: string;
   "ai:hasUrn": string;
 };
@@ -27,121 +28,140 @@ export default function SystemsPage() {
     hasPurpose: [] as string[],
     hasRiskLevel: "",
     hasDeploymentContext: [] as string[],
-    hasTrainingDataOrigin: "",
-    hasVersion: "1.0.0",
+    hasTrainingDataOrigin: [] as string[],
+    hasVersion: "",
   });
-
-  useEffect(() => {
-    fetchSystems()
-      .then((data) => {
-        console.log("Fetched systems:", data);
-        setSystems(data);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-
-    fetchVocabulary("purposes").then(setPurposes).catch(console.error);
-    fetchVocabulary("risks").then(setRisks).catch(console.error);
-    fetchVocabulary("contexts").then(setContexts).catch(console.error);
-    fetchVocabulary("training_origins").then(setOrigins).catch(console.error);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form:", form);
+    await createSystem(form);
+    const data = await fetchSystems();
+    setSystems(data);
+  };
+
+  const handleDelete = async (urn: string) => {
+    const confirmed = confirm(`Are you sure you want to delete system with URN: ${urn}?`);
+    if (!confirmed) return;
+
     try {
-      await createSystem(form);
-      const updated = await fetchSystems();
-      setSystems(updated);
-      setForm({ ...form, hasName: "", hasPurpose: [], hasDeploymentContext: [] });
-    } catch (error) {
-      console.error("Error submitting system:", error);
+      const res = await fetch(`http://localhost:8000/systems/${encodeURIComponent(urn)}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Delete failed");
+
+      setSystems((prev) => prev.filter((s) => s["ai:hasUrn"] !== urn));
+    } catch (err) {
+      console.error("Error deleting system:", err);
+      alert("Failed to delete system");
     }
   };
 
-  const handleMultiChange = (e: React.ChangeEvent<HTMLSelectElement>, field: "hasPurpose" | "hasDeploymentContext") => {
-    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
-    console.log(`Updated ${field}:`, selected);
-    setForm({ ...form, [field]: selected });
-  };
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      const [systemsData, purposesData, risksData, contextsData, originsData] = await Promise.all([
+        fetchSystems(),
+        fetchVocabulary("purposes"),
+        fetchVocabulary("risks"),
+        fetchVocabulary("contexts"),
+        fetchVocabulary("training_origins"),
+      ]);
+      setSystems(systemsData);
+      setPurposes(purposesData);
+      setRisks(risksData);
+      setContexts(contextsData);
+      setOrigins(originsData);
+      setLoading(false);
+    };
+    load();
+  }, []);
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Intelligent Systems</h2>
+    <div className="max-w-4xl mx-auto p-6 text-gray-900 dark:text-white">
+      <h1 className="text-3xl font-bold mb-8">Intelligent Systems</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white dark:bg-gray-800 rounded shadow">
+      <form onSubmit={handleSubmit} className="space-y-6 mb-12">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">System Name</label>
+          <label className="block font-semibold mb-1">System Name</label>
           <input
-            required
-            className="mt-1 block w-full rounded border-gray-300 shadow-sm dark:bg-gray-700 dark:text-white"
+            className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+            placeholder="System Name"
             value={form.hasName}
             onChange={(e) => setForm({ ...form, hasName: e.target.value })}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Purpose</label>
-            <select
-              multiple
-              value={form.hasPurpose}
-              onChange={(e) => handleMultiChange(e, "hasPurpose")}
-              className="mt-1 block w-full rounded border-gray-300 shadow-sm dark:bg-gray-700 dark:text-white"
-            >
-              {purposes.map(({ id, label }) => (
-                <option key={id} value={id}>{label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Risk Level</label>
-            <select
-              value={form.hasRiskLevel}
-              onChange={(e) => setForm({ ...form, hasRiskLevel: e.target.value })}
-              className="mt-1 block w-full rounded border-gray-300 shadow-sm dark:bg-gray-700 dark:text-white"
-            >
-              <option value="">Select...</option>
-              {risks.map(({ id, label }) => (
-                <option key={id} value={id}>{label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Deployment Context</label>
-            <select
-              multiple
-              value={form.hasDeploymentContext}
-              onChange={(e) => handleMultiChange(e, "hasDeploymentContext")}
-              className="mt-1 block w-full rounded border-gray-300 shadow-sm dark:bg-gray-700 dark:text-white"
-            >
-              {contexts.map(({ id, label }) => (
-                <option key={id} value={id}>{label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Training Data Origin</label>
-            <select
-              value={form.hasTrainingDataOrigin}
-              onChange={(e) => setForm({ ...form, hasTrainingDataOrigin: e.target.value })}
-              className="mt-1 block w-full rounded border-gray-300 shadow-sm dark:bg-gray-700 dark:text-white"
-            >
-              <option value="">Select...</option>
-              {origins.map(({ id, label }) => (
-                <option key={id} value={id}>{label}</option>
-              ))}
-            </select>
-          </div>
+        <div>
+          <label className="block font-semibold mb-1">Purpose(s)</label>
+          <select
+            multiple
+            className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+            value={form.hasPurpose}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions, opt => opt.value);
+              setForm({ ...form, hasPurpose: selected });
+            }}
+          >
+            {purposes.map((p) => (
+              <option key={p.id} value={p.id}>{p.label}</option>
+            ))}
+          </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Version</label>
+          <label className="block font-semibold mb-1">Risk Level</label>
+          <select
+            className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+            value={form.hasRiskLevel}
+            onChange={(e) => setForm({ ...form, hasRiskLevel: e.target.value })}
+          >
+            <option value="">Select risk level</option>
+            {risks.map((r) => (
+              <option key={r.id} value={r.id}>{r.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Deployment Context(s)</label>
+          <select
+            multiple
+            className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+            value={form.hasDeploymentContext}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions, opt => opt.value);
+              setForm({ ...form, hasDeploymentContext: selected });
+            }}
+          >
+            {contexts.map((c) => (
+              <option key={c.id} value={c.id}>{c.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Training Data Origin(s)</label>
+          <select
+            multiple
+            className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+            value={form.hasTrainingDataOrigin}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions, opt => opt.value);
+              setForm({ ...form, hasTrainingDataOrigin: selected });
+            }}
+          >
+            {origins.map((o) => (
+              <option key={o.id} value={o.id}>{o.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Version</label>
           <input
-            className="mt-1 block w-full rounded border-gray-300 shadow-sm dark:bg-gray-700 dark:text-white"
+            className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+            placeholder="e.g. 1.0.0"
             value={form.hasVersion}
             onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
           />
@@ -149,38 +169,50 @@ export default function SystemsPage() {
 
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Add System
+          Create System
         </button>
       </form>
 
+      <h2 className="text-xl font-bold mb-4">Registered Systems</h2>
+
       {loading ? (
-        <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-      ) : systems.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">No systems found.</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading...</p>
       ) : (
-        <ul className="space-y-3">
-          {systems.map((system) => (
-            <li
-              key={system["@id"]}
-              className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow space-y-1"
-            >
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-                {system.hasName} — <span className="text-sm">{system.hasVersion}</span>
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                <strong>Purpose:</strong> {Array.isArray(system.hasPurpose) ? system.hasPurpose.map(p => p.replace("ai:", "")).join(", ") : system.hasPurpose}<br />
-                <strong>Risk:</strong> {system.hasRiskLevel.replace("ai:", "")}<br />
-                <strong>Context:</strong> {Array.isArray(system.hasDeploymentContext) ? system.hasDeploymentContext.map(c => c.replace("ai:", "")).join(", ") : system.hasDeploymentContext}<br />
-                <strong>Training:</strong> {system.hasTrainingDataOrigin.replace("ai:", "")}
-              </p>
-              <p className="text-xs text-gray-400 mt-2">
-                <strong>URN:</strong> {system["ai:hasUrn"]}
-              </p>
-            </li>
+        <div className="space-y-2">
+          {systems.map((s) => (
+            <div key={s["@id"]} className="border p-4 rounded shadow bg-white dark:bg-gray-800">
+              <SystemCard
+                name={s.hasName ?? "Unnamed System"}
+                riskLevel={s.hasRiskLevel ?? "N/A"}
+                purpose={
+                  (Array.isArray(s.hasPurpose) ? s.hasPurpose : [s.hasPurpose])
+                    .filter(Boolean)
+                    .join(", ") || "N/A"
+                }
+                deploymentContext={
+                  (Array.isArray(s.hasDeploymentContext) ? s.hasDeploymentContext : [s.hasDeploymentContext])
+                    .filter(Boolean)
+                    .join(", ") || "N/A"
+                }
+                trainingDataOrigin={
+                  (Array.isArray(s.hasTrainingDataOrigin) ? s.hasTrainingDataOrigin : [s.hasTrainingDataOrigin])
+                    .filter(Boolean)
+                    .join(", ") || "N/A"
+                }
+                version={s.hasVersion ?? "N/A"}
+                urn={s["ai:hasUrn"] ?? "N/A"}
+              />
+              <button
+                onClick={() => handleDelete(s["ai:hasUrn"])}
+                className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

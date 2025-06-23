@@ -134,7 +134,7 @@ def custom_openapi():
                         "hasPurpose": ["ai:ForEducation"],
                         "hasRiskLevel": "ai:HighRisk",
                         "hasDeploymentContext": ["ai:Education"],
-                        "hasTrainingDataOrigin": "ai:InternalDataset",
+                        "hasTrainingDataOrigin": ["ai:InternalDataset"],
                         "hasVersion": "1.0.0"
                     }
                 }
@@ -145,3 +145,6 @@ def custom_openapi():
     return app.openapi_schema
 
 app.openapi = custom_openapi
+
+
+

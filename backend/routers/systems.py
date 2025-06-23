@@ -82,3 +82,30 @@ async def get_system_by_urn(urn: str, db=Depends(get_database)):
     if doc:
         return fix_mongo_ids(doc)
     raise HTTPException(status_code=404, detail="System not found")
+
+@router.delete("/{urn}")
+async def delete_system(urn: str, db=Depends(get_database)):
+    # Eliminar de MongoDB
+    result = await db.systems.delete_one({"ai:hasUrn": urn})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="System not found in MongoDB")
+
+    # Eliminar de Fuseki
+    sparql = f"""
+    DELETE WHERE {{
+      GRAPH <http://ai-act.eu/ontology/data> {{
+        <{urn}> ?p ?o .
+      }}
+    }};
+    DELETE WHERE {{
+      GRAPH <http://ai-act.eu/ontology/data> {{
+        ?s ?p <{urn}> .
+      }}
+    }}
+    """
+    headers = {"Content-Type": "application/sparql-update"}
+    res = requests.post(f"{end_point}/{dataset}/update", data=sparql, headers=headers,auth=(user, password))
+    if not res.ok:
+        raise HTTPException(status_code=500, detail="Error deleting from Fuseki")
+
+    return {"status": "deleted", "urn": urn}

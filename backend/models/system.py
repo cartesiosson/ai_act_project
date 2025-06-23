@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
 from typing import Optional, List
+from pydantic import BaseModel, Field
 
 class IntelligentSystem(BaseModel):
     id: Optional[str] = Field(default=None, alias="@id")
@@ -8,12 +8,12 @@ class IntelligentSystem(BaseModel):
         default="http://localhost/docs/ontologias.jsonld",
         alias="@context"
     )
-    
+
     hasName: str = Field(..., example="Sim-01")
-    hasPurpose: List[str] = Field(..., example=["ai:ForEducation"])  # <-- CAMBIO
+    hasPurpose: List[str] = Field(..., example=["ai:ForEducation", "ai:Chatbot"])
     hasRiskLevel: str = Field(..., example="ai:HighRisk")
-    hasDeploymentContext: List[str] = Field(..., example=["ai:Education"])  # <-- CAMBIO
-    hasTrainingDataOrigin: str = Field(..., example="ai:InternalDataset")
+    hasDeploymentContext: List[str] = Field(..., example=["ai:Education"])
+    hasTrainingDataOrigin: List[str] = Field(..., example=["ai:InternalDataset", "ai:ExternalDataset"])
     hasVersion: str = Field(..., example="1.0.0")
 
     class Config:
@@ -23,10 +23,10 @@ class IntelligentSystem(BaseModel):
                 "@context": "http://ontologias/docs/ontology.jsonld",
                 "@type": "ai:IntelligentSystem",
                 "hasName": "Sim-01",
-                "hasPurpose": ["ai:ForEducation"],
+                "hasPurpose": ["ai:ForEducation", "ai:Chatbot"],
                 "hasRiskLevel": "ai:HighRisk",
                 "hasDeploymentContext": ["ai:Education"],
-                "hasTrainingDataOrigin": "ai:InternalDataset",
+                "hasTrainingDataOrigin": ["ai:InternalDataset", "ai:ExternalDataset"],
                 "hasVersion": "1.0.0"
             }
         }
