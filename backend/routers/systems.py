@@ -8,6 +8,7 @@ import json
 import requests
 import os
 from pymongo.errors import DuplicateKeyError
+from fastapi import Query
 
 user = os.getenv("FUSEKI_USER", "admin")
 password = os.getenv("FUSEKI_PASSWORD", "admin")
@@ -68,13 +69,50 @@ def fix_mongo_ids(doc):
     doc["_id"] = str(doc["_id"])
     return doc
 
-@router.get("", response_model=list[dict])
-async def list_systems(db=Depends(get_database)):
-    systems_cursor = db.systems.find()
+@router.get("", response_model=dict)
+async def list_systems(
+    db=Depends(get_database),
+    name: str = Query(None),
+    risk: str = Query(None),
+    purpose: str = Query(None),
+    context: str = Query(None),
+    training_origin: str = Query(None),
+    offset: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1),
+    sort: str = Query("asc", regex="^(asc|desc)$"),
+):
+    query = {}
+    if name:
+        query["hasName"] = {"$regex": name, "$options": "i"}
+    if risk:
+        query["hasRiskLevel"] = risk
+    if purpose:
+        query["hasPurpose"] = purpose
+    if context:
+        query["hasDeploymentContext"] = context
+    if training_origin:
+        query["hasTrainingDataOrigin"] = training_origin
+
+    sort_order = 1 if sort == "asc" else -1
+
+    total = await db.systems.count_documents(query)
+    cursor = (
+        db.systems.find(query)
+        .sort("hasName", sort_order)
+        .skip(offset)
+        .limit(limit)
+    )
+
     systems = []
-    async for doc in systems_cursor:
+    async for doc in cursor:
         systems.append(fix_mongo_ids(doc))
-    return systems
+
+    return {
+        "total": total,
+        "offset": offset,
+        "limit": limit,
+        "items": systems,
+    }
 
 @router.get("/{urn}")
 async def get_system_by_urn(urn: str, db=Depends(get_database)):
