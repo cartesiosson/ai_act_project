@@ -1,0 +1,884 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://ai-act.eu/ai-act> a owl:Ontology ;
+    dct:created "2025-06-22"^^xsd:date ;
+    dct:description "Ontology describing regulated AI systems according to the EU AI Act."@en,
+        "Ontología que describe los sistemas de IA regulados según el AI Act de la UE."@es ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dct:title "AI Act Ontology"@en,
+        "Ontología del AI Act"@es ;
+    rdfs:comment "Ai-act module of the AI Act ontology."@en,
+        "Ontología del módulo ai-act del AI Act."@es ;
+    owl:versionIRI <http://ai-act.eu/ai-act/0.36.0> ;
+    owl:versionInfo "Version 0.36.0 released on 2025-06-22"@en,
+        "Versión 0.36.0 publicada el 2025-06-22"@es .
+
+ai:AccessToEssencialServices rdfs:comment "Referenced in Annex III, point 5."@en .
+
+ai:AffectsFundamentalRightsRecognition a ai:ContextualCriterion ;
+    rdfs:label "Affects fundamental rights recognition"@en,
+        "Afecta el reconocimiento de derechos fundamentales"@es ;
+    rdfs:comment "This criterion reflects situations where an AI system may influence or condition the recognition, access or exercise of fundamental rights, in line with Article 6(2) of the EU AI Act."@en,
+        "Este criterio refleja situaciones en las que un sistema de IA puede influir o condicionar el reconocimiento, acceso o ejercicio de derechos fundamentales, conforme al Artículo 6(2) del AI Act."@es .
+
+ai:BiometricIdentification a ai:Purpose ;
+    rdfs:label "Biometric identification"@en ;
+    ai:activatesCriterion ai:BiometricIdentificationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:BiometricIdentificationCriterion,
+        ai:BiometricIdentificationOrCategorization ;
+    rdfs:comment "Purpose involving biometric identification of individuals in public spaces, referenced in Annex III, point 1."@en .
+
+ai:CriticalInfrastructureOperation a ai:Purpose ;
+    rdfs:label "Critical Infrastructure Operation"@en ;
+    ai:triggersCriterion ai:CriticalInfrastructureCriterion ;
+    rdfs:comment "Referenced in Annex III, point 1(a)."@en .
+
+ai:Education a ai:DeploymentContext ;
+    rdfs:label "Education"@en,
+        "Educación"@es ;
+    ai:triggersCriterion ai:EducationEvaluationCriterion .
+
+ai:EducationAccess a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Education Access"@en,
+        "Acceso a la educación"@es ;
+    ai:activatesCriterion ai:EducationEvaluationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:EducationEvaluationCriterion ;
+    rdfs:comment "Evaluación para el acceso a educación o formación."@en,
+        "Evaluación para el acceso a educación o formación."@es .
+
+ai:EndUser a owl:Class ;
+    rdfs:label "EndUser"@en,
+        "Usuario final"@es ;
+    rdfs:comment "End user who interacts with the system without participating in its development or deployment."@en,
+        "Usuario final que interactúa con el sistema sin intervenir en su desarrollo ni despliegue."@es ;
+    rdfs:subClassOf ai:User .
+
+ai:ExternalDataset a ai:TrainingDataOrigin ;
+    rdfs:label "External Dataset"@en,
+        "Datos Externos"@es .
+
+ai:Healthcare a ai:DeploymentContext ;
+    rdfs:label "Healthcare"@en,
+        "Salud"@es ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion .
+
+ai:InternalDataset a ai:TrainingDataOrigin ;
+    rdfs:label "Internal Dataset"@en,
+        "Datos Internos"@es .
+
+ai:JudicialDecisionSupport a ai:Purpose ;
+    rdfs:label "Judicial Decision Support"@en,
+        "Apoyo a la decisión judicial"@es ;
+    ai:triggersCriterion ai:JudicialSupportCriterion ;
+    rdfs:comment "Referenced in Annex III, point 6."@en,
+        "Referenciado en el Anexo III, punto 6."@es .
+
+ai:LawEnforcementSupport a ai:Purpose ;
+    rdfs:label "Law Enforcement Support"@en,
+        "Apoyo a la aplicación de la ley"@es ;
+    ai:triggersCriterion ai:LawEnforcementCriterion ;
+    rdfs:comment "Referenced in Annex III, point 7."@en,
+        "Referenciado en el Anexo III, punto 7."@es .
+
+ai:LoggingRequirement a owl:Class ;
+    rdfs:label "Logging Requirement"@en,
+        "Requisito de registro de eventos"@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:MigrationControl a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Migration Control"@en,
+        "Control migratorio"@es ;
+    ai:activatesCriterion ai:MigrationBorderCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:MigrationBorderCriterion ;
+    rdfs:comment "Migration, asylum and border control management."@en,
+        "Gestión de migración, asilo y control fronterizo."@es .
+
+ai:PostDeploymentAssessment a owl:Class ;
+    rdfs:label "PostDeployment Assessment"@en,
+        "Evaluación posterior al despliegue"@es ;
+    rdfs:subClassOf ai:RiskAssessment .
+
+ai:PreDeploymentAssessment a owl:Class ;
+    rdfs:label "PreDeployment Assessment"@en,
+        "Evaluación previa al despliegue"@es ;
+    rdfs:subClassOf ai:RiskAssessment .
+
+ai:ProfessionalUser a owl:Class ;
+    rdfs:label "ProfessionalUser"@en,
+        "Usuario profesional"@es ;
+    rdfs:comment "Professional user who uses the system in the exercise of their profession."@en,
+        "Usuario profesional que utiliza el sistema en el ejercicio de su profesión."@es ;
+    rdfs:subClassOf ai:User .
+
+ai:PublicServiceAllocation a ai:Purpose,
+        owl:NamedIndividual ;
+    rdfs:label "Public Service Allocation"@en,
+        "Asignación de servicios públicos"@es ;
+    ai:activatesCriterion ai:EssentialServicesAccessCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion ;
+    rdfs:comment "Determination of access to essential public services."@en,
+        "Determinación de acceso a servicios públicos esenciales."@es .
+
+ai:PublicServices a ai:DeploymentContext ;
+    rdfs:label "Public Services"@en,
+        "Servicios Públicos"@es ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion .
+
+ai:RecruitmentOrEmployment a ai:Purpose ;
+    rdfs:label "Recruitment and Employment"@en,
+        "Reclutamiento y empleo"@es ;
+    ai:triggersCriterion ai:RecruitmentEmploymentCriterion ;
+    rdfs:comment "Referenced in Annex III, point 4."@en,
+        "Referenciado en el Anexo III, punto 4."@es .
+
+ai:RobustnessRequirement a owl:Class ;
+    rdfs:label "Robustness Requirement"@en,
+        "Requisito de robustez"@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:SecurityRequirement a owl:Class ;
+    rdfs:label "Security Requirement"@en,
+        "Requisito de seguridad"@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:SyntheticDataset a ai:TrainingDataOrigin ;
+    rdfs:label "Synthetic Dataset"@en,
+        "Datos Sintéticos"@es .
+
+ai:TransparencyRequirement a owl:Class ;
+    rdfs:label "Transparency Requirement"@en,
+        "Requisito de transparencia"@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:activatesRequirement a owl:ObjectProperty ;
+    rdfs:label "activates requirement"@en,
+        "activa requisito"@es ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:assessedSystem a owl:ObjectProperty ;
+    rdfs:label "assessed system"@en,
+        "assessed system"@es,
+        "sistema evaluado"@es ;
+    rdfs:comment "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@en,
+        "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:assignedRiskLevel a owl:ObjectProperty ;
+    rdfs:label "assigned risk level"@en,
+        "assigned risk level"@es ;
+    rdfs:comment "Nivel de riesgo determinado al finalizar el proceso de evaluación."@en,
+        "Nivel de riesgo determinado al finalizar el proceso de evaluación."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:RiskLevel .
+
+ai:assignsRiskLevel a owl:ObjectProperty ;
+    rdfs:label "assigns risk level"@en,
+        "asigna nivel de riesgo"@es ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:RiskLevel .
+
+ai:considersCriterion a owl:ObjectProperty ;
+    rdfs:label "considers criterion"@en,
+        "considers criterion"@es ;
+    rdfs:comment "Criterio considerado en la evaluación del sistema."@en,
+        "Criterio considerado en la evaluación del sistema."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:Criterion .
+
+ai:deploysSystem a owl:ObjectProperty ;
+    rdfs:label "deploys system"@en,
+        "despliega sistema"@es ;
+    rdfs:comment "Relates an actor of type 'Deployer' with the corresponding AI system."@en,
+        "Relaciona un actor del tipo 'Deployer' con el sistema de IA correspondiente."@es ;
+    rdfs:domain ai:Deployer ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:distributesSystem a owl:ObjectProperty ;
+    rdfs:label "distributes system"@en,
+        "distribuye sistema"@es ;
+    rdfs:comment "Relates an actor of type 'Distributor' with the corresponding AI system."@en,
+        "Relaciona un actor del tipo 'Distributor' con el sistema de IA correspondiente."@es ;
+    rdfs:domain ai:Distributor ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:expectedRiskLevel a owl:ObjectProperty ;
+    rdfs:label "expected risk level"@en,
+        "expected risk level"@es ;
+    rdfs:comment "Nivel de riesgo esperado para un sistema que tiene este propósito, conforme al AI Act."@en,
+        "Nivel de riesgo esperado para un sistema que tiene este propósito, conforme al AI Act."@es ;
+    rdfs:domain ai:Purpose ;
+    rdfs:range ai:RiskLevel .
+
+ai:generatesEvidence a owl:ObjectProperty ;
+    rdfs:label "generates evidence"@en,
+        "genera evidencia"@es ;
+    rdfs:domain ai:Instrument ;
+    rdfs:range ai:Evidence .
+
+ai:hasDeclaredPurpose a owl:ObjectProperty ;
+    rdfs:label "has declared purpose"@en,
+        "has declared purpose"@es,
+        "tiene propósito declarado"@es ;
+    rdfs:comment "Propósito funcional declarado por el proveedor del sistema."@en,
+        "Propósito funcional declarado por el proveedor del sistema."@es ;
+    rdfs:domain ai:IntelligentSystem,
+        ai:RiskAssessment ;
+    rdfs:range ai:Purpose .
+
+ai:hasDeploymentContext a owl:ObjectProperty ;
+    rdfs:label "has deployment context"@en,
+        "tiene contexto de despliegue"@es ;
+    rdfs:comment "Entorno o dominio en el que se despliega el sistema (educación, salud, transporte, etc.)."@en,
+        "Entorno o dominio en el que se despliega el sistema (educación, salud, transporte, etc.)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:DeploymentContext .
+
+ai:hasEndDate a owl:DatatypeProperty ;
+    rdfs:label "has enddate"@en,
+        "tiene fecha de fin"@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range xsd:dateTime .
+
+ai:hasInterface a owl:ObjectProperty ;
+    rdfs:label "has interface"@en,
+        "has interface"@es ;
+    rdfs:comment "Relaciona un sistema de IA con la especificación de interfaz que implementa."@en,
+        "Relaciona un sistema de IA con la especificación de interfaz que implementa."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:InterfaceSpec .
+
+ai:hasName a owl:DatatypeProperty ;
+    rdfs:label "has name"@en,
+        "tiene nombre"@es ;
+    rdfs:comment "Nombre del sistema de inteligencia artificial."@en,
+        "Nombre del sistema de inteligencia artificial."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:hasNormativeCriterion a owl:ObjectProperty ;
+    rdfs:label "has normative criterion"@en,
+        "tiene criterio normativo"@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:NormativeCriterion .
+
+ai:hasPurpose a owl:ObjectProperty ;
+    rdfs:label "has purpose"@en,
+        "tiene propósito"@es ;
+    rdfs:comment "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@en,
+        "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Purpose .
+
+ai:hasRequirement a owl:ObjectProperty ;
+    rdfs:label "has compliance requirement"@en,
+        "has compliance requirement"@es ;
+    rdfs:comment "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@en,
+        "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:hasRiskLevel a owl:ObjectProperty ;
+    rdfs:label "has risk level"@en,
+        "has risk level"@es ;
+    rdfs:comment "Asocia un sistema de inteligencia artificial con su nivel de riesgo conforme al AI Act."@en,
+        "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@en,
+        "Asocia un sistema de inteligencia artificial con su nivel de riesgo conforme al AI Act."@es,
+        "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:RiskLevel .
+
+ai:hasStartDate a owl:DatatypeProperty ;
+    rdfs:label "has startdate"@en,
+        "tiene fecha de inicio"@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range xsd:dateTime .
+
+ai:hasTechnicalCriterion a owl:ObjectProperty ;
+    rdfs:label "has technical criterion"@en,
+        "tiene criterio técnico"@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:TechnicalCriterion .
+
+ai:hasTechnicalRequirement a owl:ObjectProperty ;
+    rdfs:label "has technical requirement"@en,
+        "has technical requirement"@es ;
+    rdfs:comment "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@en,
+        "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:TechnicalRequirement .
+
+ai:hasTrainingDataOrigin a owl:ObjectProperty ;
+    rdfs:label "has training data origin"@en,
+        "tiene origen de datos de entrenamiento"@es ;
+    rdfs:comment "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@en,
+        "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:TrainingDataOrigin .
+
+ai:hasVersion a owl:DatatypeProperty ;
+    rdfs:label "has version"@en,
+        "tiene versión"@es ;
+    rdfs:comment "Versión o identificación técnica del sistema."@en,
+        "Versión o identificación técnica del sistema."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:importsSystem a owl:ObjectProperty ;
+    rdfs:label "imports system"@en,
+        "importa sistema"@es ;
+    rdfs:comment "Relates an actor of type 'Importer' with the corresponding AI system."@en,
+        "Relaciona un actor del tipo 'Importer' con el sistema de IA correspondiente."@es ;
+    rdfs:domain ai:Importer ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:isMonitoredBy a owl:ObjectProperty ;
+    rdfs:label "is monitored by"@en,
+        "is monitored by"@es ;
+    rdfs:comment "Relaciona un sistema de IA con la entidad responsable de su supervisión."@en,
+        "Relaciona un sistema de IA con la entidad responsable de su supervisión."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:OversightBody .
+
+ai:justificationNote a owl:DatatypeProperty ;
+    rdfs:label "justification note"@en,
+        "justification note"@es ;
+    rdfs:comment "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@en,
+        "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range xsd:string .
+
+ai:justifiedByCriterion a owl:ObjectProperty ;
+    rdfs:label "justified by criterion"@en,
+        "justificado por criterio"@es,
+        "justified by criterion"@es ;
+    rdfs:comment "Indica los criterios que justifican la asignación del nivel de riesgo al sistema."@en,
+        "Indica los criterios que justifican la asignación del nivel de riesgo al sistema."@es ;
+    rdfs:domain ai:ComplianceRequirement,
+        ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+ai:providesEvidenceFor a owl:ObjectProperty ;
+    rdfs:label "provides evidence for"@en,
+        "documenta cumplimiento de"@es ;
+    rdfs:domain ai:Evidence ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:providesSystem a owl:ObjectProperty ;
+    rdfs:label "provides system"@en,
+        "provee sistema"@es ;
+    rdfs:comment "Relates an actor of type 'Provider' with the corresponding AI system."@en,
+        "Relaciona un actor del tipo 'Provider' con el sistema de IA correspondiente."@es ;
+    rdfs:domain ai:Provider ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:requiresCompliance a owl:ObjectProperty ;
+    rdfs:label "requires compliance"@en,
+        "requiere cumplimiento"@es ;
+    rdfs:comment "Compliance requirements arising from the system's risk assessment."@en,
+        "Requisitos de cumplimiento derivados de la evaluación de riesgo del sistema."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:triggersComplianceRequirement a owl:ObjectProperty ;
+    rdfs:label "triggers compliance requirement"@en,
+        "activa requisito de cumplimiento"@es ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:triggersCriterion a owl:ObjectProperty ;
+    rdfs:label "triggers criterion"@en,
+        "activa criterio"@es ;
+    rdfs:domain ai:DeploymentContext,
+        ai:Purpose ;
+    rdfs:range ai:Criterion .
+
+ai:usesSystem a owl:ObjectProperty ;
+    rdfs:label "uses system"@en,
+        "usa sistema"@es ;
+    rdfs:comment "Relates an actor of type 'User' with the corresponding AI system."@en,
+        "Relaciona un actor del tipo 'User' con el sistema de IA correspondiente."@es ;
+    rdfs:domain ai:User ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:ContextualCriterion a owl:Class ;
+    rdfs:label "Contextual Criterion"@en,
+        "Contextual Criterion"@es ;
+    rdfs:comment "Criterio basado en el entorno, propósito o consecuencias del uso del sistema."@en,
+        "Criterio basado en el entorno, propósito o consecuencias del uso del sistema."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:Deployer a owl:Class ;
+    rdfs:label "Deployer"@en,
+        "Deployer"@es ;
+    rdfs:comment "Entidad que integra o pone en uso un sistema de IA."@en,
+        "Entidad que integra o pone en uso un sistema de IA."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Distributor a owl:Class ;
+    rdfs:label "Distributor"@en,
+        "Distributor"@es ;
+    rdfs:comment "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en,
+        "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Importer a owl:Class ;
+    rdfs:label "Importer"@en,
+        "Importer"@es ;
+    rdfs:comment "Entidad que introduce en la UE un sistema de IA desde un tercer país."@en,
+        "Entidad que introduce en la UE un sistema de IA desde un tercer país."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Instrument a owl:Class ;
+    rdfs:label "Instrument"@en,
+        "Instrumento"@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:InterfaceSpec a owl:Class ;
+    rdfs:label "Interface Specification"@en,
+        "Interface Specification"@es ;
+    rdfs:comment "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@en,
+        "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:LimitedRisk a ai:RiskLevel,
+        owl:NamedIndividual ;
+    rdfs:label "Limited Risk"@en,
+        "Limited Risk"@es ;
+    rdfs:comment "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@en,
+        "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es .
+
+ai:MinimalRisk a ai:RiskLevel,
+        owl:NamedIndividual ;
+    rdfs:label "Minimal Risk"@en,
+        "Minimal Risk"@es ;
+    rdfs:comment "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@en,
+        "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es .
+
+ai:OversightBody a owl:Class ;
+    rdfs:label "Oversight Body"@en,
+        "Oversight Body"@es ;
+    rdfs:comment "Entidad responsable de la supervisión y control de un sistema de inteligencia artificial, conforme a los mecanismos de gobernanza del AI Act."@en,
+        "Entidad responsable de la supervisión y control de un sistema de inteligencia artificial, conforme a los mecanismos de gobernanza del AI Act."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:Provider a owl:Class ;
+    rdfs:label "Provider"@en,
+        "Provider"@es ;
+    rdfs:comment "Entidad que desarrolla o pone en el mercado un sistema de IA."@en,
+        "Entidad que desarrolla o pone en el mercado un sistema de IA."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:AccuracyEvaluationRequirement a ai:ComplianceRequirement,
+        owl:NamedIndividual ;
+    rdfs:label "Accuracy Evaluation Requirement"@en,
+        "Requisito de evaluación de precisión"@es ;
+    ai:justifiedByCriterion ai:CriticalInfrastructureCriterion,
+        ai:EducationEvaluationCriterion ;
+    rdfs:comment "Article 10 – accuracy and robustness in high-stakes evaluation."@en,
+        "Referenced in Annex IV, point (g)."@en .
+
+ai:BiometricIdentificationCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Biometric Identification or Categorization"@en,
+        "Biometric Identification or Categorization"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "El sistema realiza identificación biométrica remota o categorización de personas, conforme al punto 1 del Anexo III del AI Act."@en,
+        "Referenced in Article 5(1)(d) and Annex III, point 1."@en,
+        "El sistema realiza identificación biométrica remota o categorización de personas, conforme al punto 1 del Anexo III del AI Act."@es .
+
+ai:Evidence a owl:Class ;
+    rdfs:label "Evidence"@en,
+        "Evidencia"@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:SocialScoring a ai:NormativeCriterion ;
+    rdfs:label "Social scoring"@en ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Prohibited under Article 5(1)(c) of the EU AI Act."@en .
+
+ai:SubliminalManipulation a ai:TechnicalCriterion ;
+    rdfs:label "Subliminal manipulation"@en ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Prohibited under Article 5(1)(a) of the EU AI Act."@en .
+
+ai:UnacceptableRisk a ai:RiskLevel,
+        owl:NamedIndividual ;
+    rdfs:label "Unacceptable Risk"@en,
+        "Unacceptable Risk"@es ;
+    rdfs:comment "Sistemas que están prohibidos en la UE por representar una amenaza clara para la seguridad o los derechos."@en,
+        "Sistemas que están prohibidos en la UE por representar una amenaza clara para la seguridad o los derechos."@es .
+
+ai:hasHttpIri a owl:DatatypeProperty ;
+    rdfs:label "hasHttpIri"@en,
+        "tieneHttpIri"@es ;
+    rdfs:comment "Dereferenceable HTTP IRI of any ontology resource."@en,
+        "Identificador HTTP único del sistema inteligente (IRI resolvible)."@en,
+        "Identificador HTTP único del sistema inteligente (IRI resolvible)."@es,
+        "URI HTTP dereferenciable de cualquier recurso de la ontología."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:anyURI .
+
+ai:AutonomousWithoutExplanation a ai:TechnicalCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Autonomous Without Explanation"@en,
+        "Autonomous Without Explanation"@es ;
+    ai:activatesRequirement ai:EventLoggingRequirement,
+        ai:RiskManagementRequirement,
+        ai:TraceabilityRequirement ;
+    ai:assignsRiskLevel ai:MinimalRisk ;
+    rdfs:comment "Referenced in Recital 47 and Annex III, point 2."@en .
+
+ai:ConformityAssessmentRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Conformity assessment requirement"@en,
+        "Requisito de evaluación de conformidad"@es ;
+    ai:justifiedByCriterion ai:BiometricIdentificationOrCategorization,
+        ai:CriticalInfrastructureCriterion,
+        ai:LawEnforcementCriterion ;
+    rdfs:comment "Obligatory conformity assessment for high-risk AI systems before entering the market, under Articles 43–51."@en,
+        "Evaluación de conformidad obligatoria para sistemas de IA de alto riesgo antes de su comercialización, según los Artículos 43–51 del AI Act."@es .
+
+ai:CybersecurityRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Cybersecurity requirement"@en,
+        "Requisito de ciberseguridad"@es ;
+    ai:justifiedByCriterion ai:BiometricIdentificationOrCategorization,
+        ai:CriticalInfrastructureCriterion,
+        ai:DeepfakeGeneration ;
+    rdfs:comment "Mandatory for all high-risk AI systems under Article 15 of the EU AI Act."@en,
+        "Obligatorio para todos los sistemas de IA de alto riesgo según el Artículo 15 del AI Act."@es .
+
+ai:JudicialSupportCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Judicial and Democratic Processes Support"@en,
+        "Judicial and Democratic Processes Support"@es ;
+    ai:activatesRequirement ai:RiskManagementRequirement,
+        ai:TraceabilityRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "El sistema asiste en la interpretación de hechos o derecho en procedimientos judiciales o administrativos."@en,
+        "Referenced in Annex III, point 6."@en,
+        "El sistema asiste en la interpretación de hechos o derecho en procedimientos judiciales o administrativos."@es .
+
+ai:RecruitmentEmploymentCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Recruitment and Employment Management"@en,
+        "Recruitment and Employment Management"@es ;
+    ai:activatesRequirement ai:HumanOversightRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "El sistema se utiliza para procesos de contratación, evaluación de desempeño o decisiones de empleo."@en,
+        "Referenced in Annex III, point 4."@en,
+        "El sistema se utiliza para procesos de contratación, evaluación de desempeño o decisiones de empleo."@es .
+
+ai:User a owl:Class ;
+    rdfs:label "User"@en,
+        "User"@es ;
+    rdfs:comment "Actor que utiliza un sistema de inteligencia artificial."@en,
+        "Actor que utiliza un sistema de inteligencia artificial."@es ;
+    rdfs:subClassOf ai:Actor .
+
+ai:hasUrn a owl:DatatypeProperty ;
+    rdfs:label "hasUrn"@en,
+        "tieneUrn"@es ;
+    rdfs:comment "Persistent, unique URN identifier for any resource in the ontology."@en,
+        "Identificador URN persistente y único para cualquier recurso de la ontología."@es ;
+    rdfs:domain ai:Identifiable ;
+    rdfs:range xsd:string .
+
+ai:DataGovernanceRequirement a ai:ComplianceRequirement,
+        owl:NamedIndividual ;
+    rdfs:label "Data Governance Requirement"@en,
+        "Gobernanza de datos"@es ;
+    ai:justifiedByCriterion ai:BiometricIdentificationOrCategorization,
+        ai:EssentialServicesAccessCriterion,
+        ai:MigrationBorderCriterion ;
+    rdfs:comment "Article 10 – ensure data quality in critical service delivery."@en .
+
+ai:EventLoggingRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Event logging requirement"@en,
+        "Requisito de registro de eventos"@es ;
+    ai:justifiedByCriterion ai:AutonomousWithoutExplanation,
+        ai:BiometricIdentificationOrCategorization,
+        ai:DeepfakeGeneration,
+        ai:LacksHumanOversight ;
+    rdfs:comment "Mandatory for all high-risk AI systems under Article 12 of the EU AI Act."@en,
+        "Obligatorio para todos los sistemas de IA de alto riesgo según el Artículo 12 del AI Act."@es .
+
+ai:FundamentalRightsAssessmentRequirement a ai:ComplianceRequirement,
+        owl:NamedIndividual ;
+    rdfs:label "Fundamental Rights Assessment Requirement"@en,
+        "Evaluación de derechos fundamentales"@es ;
+    ai:justifiedByCriterion ai:EssentialServicesAccessCriterion,
+        ai:LawEnforcementCriterion,
+        ai:SocialScoring,
+        ai:SubliminalManipulation ;
+    rdfs:comment "Article 29 – impact assessment required when affecting fundamental rights."@en .
+
+ai:HumanOversightRequirement a ai:ComplianceRequirement,
+        owl:NamedIndividual ;
+    rdfs:label "Human Oversight Requirement"@en,
+        "Supervisión humana"@es ;
+    ai:justifiedByCriterion ai:EducationEvaluationCriterion,
+        ai:EssentialServicesAccessCriterion,
+        ai:LacksHumanOversight,
+        ai:RecruitmentEmploymentCriterion ;
+    rdfs:comment "Article 14 – ensure human oversight in student evaluations."@en,
+        "Article 14 – human oversight to prevent exclusion or bias."@en .
+
+ai:LacksHumanOversight a ai:TechnicalCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Lacks Human Oversight"@en,
+        "Lacks Human Oversight"@es ;
+    ai:activatesRequirement ai:EventLoggingRequirement,
+        ai:HumanOversightRequirement,
+        ai:PostMarketMonitoringRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Referenced in Recital 47 and Annex III, point 2."@en .
+
+ai:LawEnforcementCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Law Enforcement and Risk Assessment"@en,
+        "Law Enforcement and Risk Assessment"@es ;
+    ai:activatesRequirement ai:ConformityAssessmentRequirement,
+        ai:FundamentalRightsAssessmentRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "El sistema se utiliza en contextos policiales, evaluación de riesgo delictivo o análisis de pruebas."@en,
+        "Referenced in Annex III, point 7."@en,
+        "El sistema se utiliza en contextos policiales, evaluación de riesgo delictivo o análisis de pruebas."@es .
+
+ai:MigrationBorderCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Migration, Asylum and Border Control"@en,
+        "Migration, Asylum and Border Control"@es ;
+    ai:activatesRequirement ai:DataGovernanceRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@en,
+        "Referenced in Annex III, point 8."@en,
+        "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@es .
+
+ai:PostMarketMonitoringRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Post-market monitoring requirement"@en,
+        "Requisito de vigilancia post-comercialización"@es ;
+    ai:justifiedByCriterion ai:BiometricIdentificationOrCategorization,
+        ai:CriticalInfrastructureCriterion,
+        ai:DeepfakeGeneration,
+        ai:LacksHumanOversight ;
+    rdfs:comment "Mandatory post-deployment monitoring under Articles 61 and 62 of the EU AI Act."@en,
+        "Vigilancia obligatoria tras el despliegue según los Artículos 61 y 62 del AI Act."@es .
+
+ai:TrainingDataOrigin a owl:Class ;
+    rdfs:label "Training Data Origin"@en,
+        "Origen de Datos de Entrenamiento"@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:DeepfakeGeneration a ai:TechnicalCriterion ;
+    rdfs:label "Deepfake generation"@en ;
+    ai:activatesRequirement ai:CybersecurityRequirement,
+        ai:EventLoggingRequirement,
+        ai:PostMarketMonitoringRequirement,
+        ai:RiskManagementRequirement,
+        ai:TraceabilityRequirement ;
+    ai:assignsRiskLevel ai:LimitedRisk ;
+    rdfs:comment "Subject to transparency obligations under Article 52 of the EU AI Act."@en .
+
+ai:DeploymentContext a owl:Class ;
+    rdfs:label "Deployment Context"@en,
+        "Contexto de Despliegue"@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:TechnicalRequirement a owl:Class ;
+    rdfs:label "Technical Requirement"@en,
+        "Technical Requirement"@es ;
+    rdfs:comment "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@en,
+        "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+ai:Actor rdfs:subClassOf ai:Identifiable .
+
+ai:CriticalInfrastructureCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Management of Critical Infrastructure"@en,
+        "Management of Critical Infrastructure"@es ;
+    ai:activatesRequirement ai:AccuracyEvaluationRequirement,
+        ai:ConformityAssessmentRequirement,
+        ai:CybersecurityRequirement,
+        ai:PostMarketMonitoringRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "El sistema se utiliza para la gestión y operación de infraestructuras críticas como energía, agua, transporte o telecomunicaciones."@en,
+        "Referenced in Annex III, point 1(a)."@en,
+        "El sistema se utiliza para la gestión y operación de infraestructuras críticas como energía, agua, transporte o telecomunicaciones."@es .
+
+ai:EducationEvaluationCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Education or Vocational Training Evaluation"@en,
+        "Education or Vocational Training Evaluation"@es ;
+    ai:activatesRequirement ai:AccuracyEvaluationRequirement,
+        ai:HumanOversightRequirement,
+        ai:TraceabilityRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:triggersComplianceRequirement ai:DataGovernanceRequirement ;
+    rdfs:comment "El sistema se utiliza para evaluar estudiantes o decidir su acceso a instituciones educativas o formativas."@en,
+        "Referenced in Annex III, point 3."@en,
+        "El sistema se utiliza para evaluar estudiantes o decidir su acceso a instituciones educativas o formativas."@es .
+
+ai:TechnicalCriterion a owl:Class ;
+    rdfs:label "Technical Criterion"@en,
+        "Technical Criterion"@es ;
+    rdfs:comment "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@en,
+        "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:TraceabilityRequirement a ai:ComplianceRequirement,
+        owl:NamedIndividual ;
+    rdfs:label "Traceability Requirement"@en,
+        "Trazabilidad"@es ;
+    ai:justifiedByCriterion ai:AutonomousWithoutExplanation,
+        ai:DeepfakeGeneration,
+        ai:EducationEvaluationCriterion,
+        ai:EssentialServicesAccessCriterion,
+        ai:JudicialSupportCriterion ;
+    rdfs:comment "Article 12 – required to audit decisions on access to services."@en,
+        "Article 12 – traceability of decisions in educational AI systems."@en .
+
+ai:BiometricIdentificationOrCategorization a ai:TechnicalCriterion ;
+    rdfs:label "Biometric identification or categorization"@en ;
+    ai:activatesRequirement ai:ConformityAssessmentRequirement,
+        ai:CybersecurityRequirement,
+        ai:DataGovernanceRequirement,
+        ai:EventLoggingRequirement,
+        ai:PostMarketMonitoringRequirement,
+        ai:RiskManagementRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "This criterion refers to systems that use biometric techniques for identification or classification purposes, as referenced in Annex III, point 1 of the EU AI Act."@en .
+
+ai:EssentialServicesAccessCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Access to Essential Services"@en,
+        "Access to Essential Services"@es ;
+    ai:activatesRequirement ai:DataGovernanceRequirement,
+        ai:FundamentalRightsAssessmentRequirement,
+        ai:HumanOversightRequirement,
+        ai:TraceabilityRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:triggersComplianceRequirement ai:TraceabilityRequirement ;
+    rdfs:comment "El sistema se utiliza para determinar el acceso de personas a servicios esenciales como vivienda, sanidad, crédito o educación."@en,
+        "Referenced in Annex III, point 5."@en,
+        "El sistema se utiliza para determinar el acceso de personas a servicios esenciales como vivienda, sanidad, crédito o educación."@es .
+
+ai:RiskLevel a owl:Class ;
+    rdfs:label "Risk Level"@en,
+        "Risk Level"@es ;
+    rdfs:comment "Nivel de riesgo de un sistema de inteligencia artificial según la clasificación establecida por el Reglamento Europeo de IA."@en,
+        "Nivel de riesgo de un sistema de inteligencia artificial según la clasificación establecida por el Reglamento Europeo de IA."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:Criterion a owl:Class ;
+    rdfs:label "Criterion"@en,
+        "Risk Criterion"@en,
+        "Criterio"@es,
+        "Risk Criterion"@es ;
+    rdfs:comment "Criterio normativo, técnico o contextual utilizado para clasificar el riesgo de un sistema de inteligencia artificial."@en,
+        "Criterio normativo, técnico o contextual utilizado para clasificar el riesgo de un sistema de inteligencia artificial."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:NormativeCriterion a owl:Class ;
+    rdfs:label "Normative Criterion"@en,
+        "Normative Criterion"@es ;
+    rdfs:comment "Criterio derivado directamente del texto legal del AI Act."@en,
+        "Criterio derivado directamente del texto legal del AI Act."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:RiskAssessment a owl:Class ;
+    rdfs:label "Risk Assessment"@en,
+        "Evaluación de riesgos"@es,
+        "Risk Assessment"@es ;
+    rdfs:comment "Proceso estructurado para evaluar el nivel de riesgo de un sistema de IA conforme al AI Act."@en,
+        "Proceso estructurado para evaluar el nivel de riesgo de un sistema de IA conforme al AI Act."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:RiskManagementRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Risk management requirement"@en,
+        "Requisito de gestión de riesgos"@es ;
+    ai:justifiedByCriterion ai:AutonomousWithoutExplanation,
+        ai:BiometricIdentificationOrCategorization,
+        ai:CriticalInfrastructureCriterion,
+        ai:DeepfakeGeneration,
+        ai:JudicialSupportCriterion,
+        ai:LacksHumanOversight,
+        ai:LawEnforcementCriterion,
+        ai:MigrationBorderCriterion,
+        ai:RecruitmentEmploymentCriterion,
+        ai:SocialScoring,
+        ai:SubliminalManipulation ;
+    rdfs:comment "Required for high-risk AI systems under Article 9 of the EU AI Act."@en,
+        "Requerido para sistemas de IA de alto riesgo según el Artículo 9 del AI Act."@es .
+
+ai:Purpose a owl:Class ;
+    rdfs:label "Purpose"@en,
+        "Purpose"@es ;
+    rdfs:comment "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@en,
+        "Clase que agrupa los propósitos funcionales de los sistemas de IA definidos en el AI Act."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:Identifiable a owl:Class ;
+    rdfs:label "Identifiable"@en,
+        "Identificable"@es .
+
+ai:HighRisk a ai:RiskLevel,
+        owl:NamedIndividual ;
+    rdfs:label "High Risk"@en,
+        "High Risk"@es ;
+    rdfs:comment "Sistemas con alto impacto en derechos fundamentales, sujetos a requisitos estrictos de cumplimiento y gobernanza."@en,
+        "Sistemas con alto impacto en derechos fundamentales, sujetos a requisitos estrictos de cumplimiento y gobernanza."@es .
+
+ai:ComplianceRequirement a owl:Class ;
+    rdfs:label "Compliance Requirement"@en,
+        "Compliance Requirement"@es ;
+    rdfs:comment "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@en,
+        "Requisito normativo o técnico que un sistema de inteligencia artificial debe cumplir según el AI Act."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:IntelligentSystem a owl:Class ;
+    rdfs:label "Intelligent System"@en,
+        "Sistema Inteligente"@es ;
+    rdfs:comment "AI-based system that may be subject to provision, deployment, use, import or distribution in the market."@en,
+        "Sistema basado en inteligencia artificial que puede ser objeto de provisión, despliegue, uso, importación o distribución en el mercado."@es ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom xsd:anyURI ;
+            owl:onProperty ai:hasHttpIri ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:anyURI ;
+            owl:onProperty ai:hasUrn ],
+        [ a owl:Restriction ;
+            owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
+            owl:onProperty ai:hasHttpIri ],
+        ai:Identifiable .
+
+[] a sh:NodeShape ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:message "Value must be a valid UUID URN (urn:uuid:...)" ;
+            sh:path ai:hasUrn ;
+            sh:pattern "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" ] ;
+    sh:targetSubjectsOf ai:hasUrn .
+
+
+

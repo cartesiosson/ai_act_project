@@ -85,6 +85,40 @@ def get_contexts(lang: str = Query("en")):
 def get_origins(lang: str = Query("en")):
     return get_options_for_property(ont, "http://ai-act.eu/ai#hasTrainingDataOrigin", lang=lang)
 
+
+@app.get("/vocab/inner_criteria")
+def get_inner_criteria(lang: str = Query("en")):
+    # Encuentra todos los criterios (NormativeCriterion, TechnicalCriterion, ContextualCriterion)
+    # que NO son objeto de ai:activatesCriterion desde ningún Purpose ni Context
+
+    # Tipos de criterios relevantes
+    CRITERION_TYPES = [
+        URIRef("http://ai-act.eu/ai#NormativeCriterion"),
+        URIRef("http://ai-act.eu/ai#TechnicalCriterion"),
+        URIRef("http://ai-act.eu/ai#ContextualCriterion"),
+    ]
+
+    # Criterios activados por algún propósito o contexto
+    activated_criteria = set()
+    activates_predicate = URIRef("http://ai-act.eu/ai#activatesCriterion")
+    for subj, _, obj in ont.triples((None, activates_predicate, None)):
+        activated_criteria.add(obj)
+
+    # Todos los criterios definidos en la ontología
+    all_criteria = set()
+    for t in CRITERION_TYPES:
+        for crit in ont.subjects(RDF.type, t):
+            all_criteria.add(crit)
+
+    # Criterios internos = definidos pero no activados por propósito/contexto
+    inner_criteria = all_criteria - activated_criteria
+
+    # Devuelve como lista de {id, label}
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(inner_criteria, key=lambda x: get_label(ont, x, lang))
+    ]
+
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok"}

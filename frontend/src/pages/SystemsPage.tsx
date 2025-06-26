@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { fetchSystems, createSystem, fetchVocabulary } from "../lib/api";
 import SystemCard from "./SystemCard";
 
-type System = {
+export type System = {
   _id?: string;
   "@id": string;
   hasName: string;
   hasPurpose: string[];
-  hasRiskLevel: string;
   hasDeploymentContext: string[];
   hasTrainingDataOrigin: string[];
+  hasInnerSystemCriteria: string[];
   hasVersion: string;
   "ai:hasUrn": string;
 };
@@ -37,9 +37,9 @@ export default function SystemsPage() {
   const [form, setForm] = useState({
     hasName: "",
     hasPurpose: [] as string[],
-    hasRiskLevel: "",
     hasDeploymentContext: [] as string[],
     hasTrainingDataOrigin: [] as string[],
+    hasInnerSystemCriteria: [] as string[],
     hasVersion: "",
   });
 
@@ -149,20 +149,6 @@ export default function SystemsPage() {
           </div>
 
           <div>
-            <label className="block font-semibold mb-1">Risk Level</label>
-            <select
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasRiskLevel}
-              onChange={(e) => setForm({ ...form, hasRiskLevel: e.target.value })}
-            >
-              <option value="">Select risk level</option>
-              {risks.map((r) => (
-                <option key={r.id} value={r.id}>{r.label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
             <label className="block font-semibold mb-1">Deployment Context(s)</label>
             <select
               multiple
@@ -193,6 +179,18 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
+        </div>
+
+        {/* Añadir input para Inner System Criteria */}
+        <div>
+          <label className="block font-semibold mt-2">Inner System Criteria</label>
+          <input
+            type="text"
+            value={form.hasInnerSystemCriteria.join(",")}
+            onChange={e => setForm(f => ({ ...f, hasInnerSystemCriteria: e.target.value.split(",").map(s => s.trim()).filter(Boolean) }))}
+            placeholder="ai:CustomCriterion1, ai:CustomCriterion2"
+            className="border rounded px-2 py-1 w-full"
+          />
         </div>
 
         <button
@@ -262,7 +260,6 @@ export default function SystemsPage() {
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-700">
               <th className="p-2 text-left w-[25%]">Name</th>
-              <th className="p-2 text-left w-[10%]">Risk</th>
               <th className="p-2 text-left w-[15%]">Purpose</th>
               <th className="p-2 text-left w-[15%]">Context</th>
               <th className="p-2 text-left w-[15%]">Origin</th>
@@ -274,7 +271,6 @@ export default function SystemsPage() {
             {systems.map((s) => (
               <tr key={s["@id"]} className="border-t dark:border-gray-700">
                 <td className="p-2 truncate" title={s.hasName}>{s.hasName}</td>
-                <td className="p-2 truncate" title={s.hasRiskLevel}>{s.hasRiskLevel}</td>
                 <td className="p-2 truncate" title={(s.hasPurpose ?? []).join(", ")}>{(s.hasPurpose ?? []).join(", ")}</td>
                 <td className="p-2 truncate" title={(s.hasDeploymentContext ?? []).join(", ")}>{(s.hasDeploymentContext ?? []).join(", ")}</td>
                 <td className="p-2 truncate" title={(s.hasTrainingDataOrigin ?? []).join(", ")}>{(s.hasTrainingDataOrigin ?? []).join(", ")}</td>

@@ -5,28 +5,30 @@ class IntelligentSystem(BaseModel):
     id: Optional[str] = Field(default=None, alias="@id")
     type: str = Field(alias="@type", example="ai:IntelligentSystem")
     context: Optional[str] = Field(
-        default="http://localhost/docs/ontologias.jsonld",
+        default="http://localhost:8080/ontologias/json-ld-context.json",
         alias="@context"
     )
-
     hasName: str = Field(..., example="Sim-01")
-    hasPurpose: List[str] = Field(..., example=["ai:ForEducation", "ai:Chatbot"])
-    hasRiskLevel: str = Field(..., example="ai:HighRisk")
+    hasPurpose: List[str] = Field(..., example=["ai:BiometricIdentification", "ai:Chatbot"])
     hasDeploymentContext: List[str] = Field(..., example=["ai:Education"])
     hasTrainingDataOrigin: List[str] = Field(..., example=["ai:InternalDataset", "ai:ExternalDataset"])
+    hasInnerSystemCriteria: List[str] = Field(default_factory=list, example=["ai:CustomCriterion1", "ai:CustomCriterion2"])
     hasVersion: str = Field(..., example="1.0.0")
+    hasUrn: Optional[str] = Field(default=None, example="urn:uuid:...")
+    # Puedes agregar más campos según los módulos, por ejemplo, requisitos, actores, etc.
 
     class Config:
         allow_population_by_field_name = True
         schema_extra = {
             "example": {
-                "@context": "http://ontologias/docs/ontology.jsonld",
+                "@context": "http://localhost:8080/ontologias/json-ld-context.json",
                 "@type": "ai:IntelligentSystem",
                 "hasName": "Sim-01",
-                "hasPurpose": ["ai:ForEducation", "ai:Chatbot"],
-                "hasRiskLevel": "ai:HighRisk",
+                "hasPurpose": ["ai:BiometricIdentification", "ai:Chatbot"],
                 "hasDeploymentContext": ["ai:Education"],
                 "hasTrainingDataOrigin": ["ai:InternalDataset", "ai:ExternalDataset"],
-                "hasVersion": "1.0.0"
+                "hasInnerSystemCriteria": ["ai:CustomCriterion1", "ai:CustomCriterion2"],
+                "hasVersion": "1.0.0",
+                "hasUrn": "urn:uuid:..."
             }
         }

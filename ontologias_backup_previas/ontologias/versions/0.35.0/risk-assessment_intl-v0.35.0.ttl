@@ -1,0 +1,70 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+
+
+<http://ai-act.eu/risk-assessment_intl>
+    a owl:Ontology ;
+    owl:versionIRI <http://ai-act.eu/risk-assessment_intl/0.35.0> ;
+    owl:versionInfo "Versión 0.35.0 publicada el 2025-06-21"@es ,
+                    "Version 0.35.0 released on 2025-06-21"@en ;
+    rdfs:comment "Ontología del módulo risk-assessment_intl del AI Act."@es ,
+                 "Risk-assessment_intl module of the AI Act ontology."@en ;
+    dcterms:created "2025-06-21"^^xsd:date .
+
+ai:RiskAssessment a owl:Class ;
+    rdfs:label "Risk Assessment"@en,
+        "Risk Assessment"@es ;
+    rdfs:comment "Proceso estructurado para evaluar el nivel de riesgo de un sistema de IA conforme al AI Act."@en,
+        "Proceso estructurado para evaluar el nivel de riesgo de un sistema de IA conforme al AI Act."@es .
+
+ai:activatesCriterion a owl:ObjectProperty ;
+    rdfs:label "activates criterion"@en,
+        "activates criterion"@es ;
+    rdfs:comment "El propósito funcional activa este criterio de riesgo normativo, técnico o contextual."@en,
+        "El propósito funcional activa este criterio de riesgo normativo, técnico o contextual."@es ;
+    rdfs:domain ai:Purpose ;
+    rdfs:range ai:RiskCriterion .
+
+ai:assessedSystem a owl:ObjectProperty ;
+    rdfs:label "assessed system"@en,
+        "assessed system"@es ;
+    rdfs:comment "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@en,
+        "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:assignedRiskLevel a owl:ObjectProperty ;
+    rdfs:label "assigned risk level"@en,
+        "assigned risk level"@es ;
+    rdfs:comment "Nivel de riesgo determinado al finalizar el proceso de evaluación."@en,
+        "Nivel de riesgo determinado al finalizar el proceso de evaluación."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:RiskLevel .
+
+ai:considersCriterion a owl:ObjectProperty ;
+    rdfs:label "considers criterion"@en,
+        "considers criterion"@es ;
+    rdfs:comment "Criterio considerado en la evaluación del sistema."@en,
+        "Criterio considerado en la evaluación del sistema."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:RiskCriterion .
+
+ai:hasDeclaredPurpose a owl:ObjectProperty ;
+    rdfs:label "has declared purpose"@en,
+        "has declared purpose"@es ;
+    rdfs:comment "Propósito funcional declarado por el proveedor del sistema."@en,
+        "Propósito funcional declarado por el proveedor del sistema."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range ai:Purpose .
+
+ai:justificationNote a owl:DatatypeProperty ;
+    rdfs:label "justification note"@en,
+        "justification note"@es ;
+    rdfs:comment "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@en,
+        "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@es ;
+    rdfs:domain ai:RiskAssessment ;
+    rdfs:range xsd:string .

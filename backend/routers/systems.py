@@ -42,7 +42,9 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
             mapped[k] = v
 
     # Asegurar que los valores múltiples se representen como listas
-    for multivalue_key in ["ai:hasPurpose", "ai:hasDeploymentContext"]:
+    for multivalue_key in [
+        "ai:hasPurpose", "ai:hasDeploymentContext", "ai:hasTrainingDataOrigin"
+    ]:
         if multivalue_key in mapped and not isinstance(mapped[multivalue_key], list):
             mapped[multivalue_key] = [mapped[multivalue_key]]
 
@@ -64,10 +66,6 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
 
     return {"inserted_id": str(result.inserted_id), "urn": urn}
 
-
-def fix_mongo_ids(doc):
-    doc["_id"] = str(doc["_id"])
-    return doc
 
 @router.get("", response_model=dict)
 async def list_systems(
@@ -105,7 +103,8 @@ async def list_systems(
 
     systems = []
     async for doc in cursor:
-        systems.append(fix_mongo_ids(doc))
+        doc["_id"] = str(doc["_id"])
+        systems.append(doc)
 
     return {
         "total": total,
@@ -118,7 +117,8 @@ async def list_systems(
 async def get_system_by_urn(urn: str, db=Depends(get_database)):
     doc = await db.systems.find_one({"ai:hasUrn": urn})
     if doc:
-        return fix_mongo_ids(doc)
+        doc["_id"] = str(doc["_id"])
+        return doc
     raise HTTPException(status_code=404, detail="System not found")
 
 @router.delete("/{urn}")
@@ -147,3 +147,6 @@ async def delete_system(urn: str, db=Depends(get_database)):
         raise HTTPException(status_code=500, detail="Error deleting from Fuseki")
 
     return {"status": "deleted", "urn": urn}
+
+
+

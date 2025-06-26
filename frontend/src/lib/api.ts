@@ -19,14 +19,14 @@ export async function fetchVocabulary(path: string): Promise<{ id: string; label
 
 export async function createSystem(data: {
   hasName: string;
-  hasPurpose: string;
-  hasRiskLevel: string;
-  hasDeploymentContext: string;
-  hasTrainingDataOrigin: string;
+  hasPurpose: string[];
+  hasDeploymentContext: string[];
+  hasTrainingDataOrigin: string[];
+  hasInnerSystemCriteria: string[];
   hasVersion: string;
 }) {
   const payload = {
-    "@context": "http://ontologias/docs/context.jsonld",
+    "@context": "http://localhost:8080/ontologias/json-ld-context.json",
     "@type": "ai:IntelligentSystem",
     ...data,
   };

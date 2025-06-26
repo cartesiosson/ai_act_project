@@ -3,10 +3,18 @@
     "ai": "http://ai-act.eu/ai#",
     "hasName": "ai:hasName",
     "hasPurpose": "ai:hasPurpose",
-    "hasRiskLevel": "ai:hasRiskLevel",
     "hasDeploymentContext": "ai:hasDeploymentContext",
     "hasTrainingDataOrigin": "ai:hasTrainingDataOrigin",
+    "hasInnerSystemCriteria": "ai:hasInnerSystemCriteria",
     "hasVersion": "ai:hasVersion",
-    "IntelligentSystem": "ai:IntelligentSystem"
+    "hasUrn": "ai:hasUrn",
+    "IntelligentSystem": "ai:IntelligentSystem",
+    "Education": "ai:Education",
+    "Healthcare": "ai:Healthcare",
+    "PublicServices": "ai:PublicServices",
+    "BiometricIdentification": "ai:BiometricIdentification",
+    "InternalDataset": "ai:InternalDataset",
+    "ExternalDataset": "ai:ExternalDataset",
+    "SyntheticDataset": "ai:SyntheticDataset"
   }
 }

@@ -1,7 +1,4 @@
+# Dockerfile para servir archivos estáticos de ontologías en el puerto 80
 FROM nginx:alpine
-
-# Copia todos los archivos de versiones al directorio público
-COPY ./*.ttl /usr/share/nginx/html
-COPY ./docs /usr/share/nginx/html/docs
-# Exponer el puerto 80 (innecesario en compose, pero útil para standalone)
+COPY . /usr/share/nginx/html
 EXPOSE 80
