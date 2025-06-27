@@ -5,7 +5,7 @@ class IntelligentSystem(BaseModel):
     id: Optional[str] = Field(default=None, alias="@id")
     type: str = Field(alias="@type", example="ai:IntelligentSystem")
     context: Optional[str] = Field(
-        default="http://localhost:8080/ontologias/json-ld-context.json",
+        default="http://ontologias/json-ld-context.json",
         alias="@context"
     )
     hasName: str = Field(..., example="Sim-01")
@@ -21,7 +21,7 @@ class IntelligentSystem(BaseModel):
         allow_population_by_field_name = True
         schema_extra = {
             "example": {
-                "@context": "http://localhost:8080/ontologias/json-ld-context.json",
+                "@context": "http://ontologias/json-ld-context.json",
                 "@type": "ai:IntelligentSystem",
                 "hasName": "Sim-01",
                 "hasPurpose": ["ai:BiometricIdentification", "ai:Chatbot"],

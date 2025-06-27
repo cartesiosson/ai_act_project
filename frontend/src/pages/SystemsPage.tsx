@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { fetchSystems, createSystem, fetchVocabulary } from "../lib/api";
+import { fetchSystems, fetchVocabulary } from "../lib/api";
 import SystemCard from "./SystemCard";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export type System = {
   _id?: string;
@@ -33,6 +35,7 @@ export default function SystemsPage() {
   const [risks, setRisks] = useState<{ id: string; label: string }[]>([]);
   const [contexts, setContexts] = useState<{ id: string; label: string }[]>([]);
   const [origins, setOrigins] = useState<{ id: string; label: string }[]>([]);
+  const [innerCriteria, setInnerCriteria] = useState<{ id: string; label: string }[]>([]);
 
   const [form, setForm] = useState({
     hasName: "",
@@ -45,8 +48,33 @@ export default function SystemsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createSystem(form);
-    await loadSystems();
+    try {
+      const res = await fetch(`${API_BASE}/systems`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "@context": "http://ontologias/json-ld-context.json",
+          "@type": "ai:IntelligentSystem",
+          ...form,
+        }),
+      });
+      if (!res.ok) throw new Error("Create failed");
+      setForm({
+        hasName: "",
+        hasPurpose: [],
+        hasDeploymentContext: [],
+        hasTrainingDataOrigin: [],
+        hasInnerSystemCriteria: [],
+        hasVersion: "",
+      });
+      await loadSystems(0);
+      setOffset(0);
+    } catch (err) {
+      console.error("Error creating system:", err);
+      alert("Failed to create system");
+    }
   };
 
   const handleDelete = async (urn: string) => {
@@ -54,7 +82,7 @@ export default function SystemsPage() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/systems/${encodeURIComponent(urn)}`, {
+      const res = await fetch(`${API_BASE}/systems/${encodeURIComponent(urn)}`, {
         method: "DELETE",
       });
 
@@ -67,7 +95,7 @@ export default function SystemsPage() {
     }
   };
 
-  const loadSystems = async () => {
+  const loadSystems = async (customOffset?: number) => {
     setLoading(true);
     const query = new URLSearchParams();
     if (filters.name) query.append("name", filters.name);
@@ -75,10 +103,10 @@ export default function SystemsPage() {
     if (filters.purpose) query.append("purpose", filters.purpose);
     if (filters.context) query.append("context", filters.context);
     if (filters.origin) query.append("origin", filters.origin);
-    query.append("offset", offset.toString());
+    query.append("offset", (customOffset !== undefined ? customOffset : offset).toString());
     query.append("limit", limit.toString());
 
-    const res = await fetch(`http://localhost:8000/systems?${query.toString()}`);
+    const res = await fetch(`${API_BASE}/systems?${query.toString()}`);
     const json = await res.json();
     setSystems(json.items);
     setTotal(json.total);
@@ -88,19 +116,27 @@ export default function SystemsPage() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const [purposesData, risksData, contextsData, originsData] = await Promise.all([
+      const [purposesData, risksData, contextsData, originsData, innerCriteriaData] = await Promise.all([
         fetchVocabulary("purposes"),
         fetchVocabulary("risks"),
         fetchVocabulary("contexts"),
         fetchVocabulary("training_origins"),
+        fetchVocabulary("inner_criteria"),
       ]);
       setPurposes(purposesData);
       setRisks(risksData);
       setContexts(contextsData);
       setOrigins(originsData);
-      await loadSystems();
+      setInnerCriteria(innerCriteriaData);
+      
     };
     load();
+  }, []); // Only on mount, not on offset/filters
+
+  useEffect(() => {
+    // Only load on mount and when filters/offset change (not after create)
+    loadSystems();
+    // eslint-disable-next-line
   }, [offset, filters]);
 
   return (
@@ -138,7 +174,7 @@ export default function SystemsPage() {
               multiple
               className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
               value={form.hasPurpose}
-              onChange={(e) =>
+              onChange={e =>
                 setForm({ ...form, hasPurpose: Array.from(e.target.selectedOptions, (opt) => opt.value) })
               }
             >
@@ -154,7 +190,7 @@ export default function SystemsPage() {
               multiple
               className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
               value={form.hasDeploymentContext}
-              onChange={(e) =>
+              onChange={e =>
                 setForm({ ...form, hasDeploymentContext: Array.from(e.target.selectedOptions, (opt) => opt.value) })
               }
             >
@@ -170,7 +206,7 @@ export default function SystemsPage() {
               multiple
               className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
               value={form.hasTrainingDataOrigin}
-              onChange={(e) =>
+              onChange={e =>
                 setForm({ ...form, hasTrainingDataOrigin: Array.from(e.target.selectedOptions, (opt) => opt.value) })
               }
             >
@@ -179,18 +215,22 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
-        </div>
 
-        {/* Añadir input para Inner System Criteria */}
-        <div>
-          <label className="block font-semibold mt-2">Inner System Criteria</label>
-          <input
-            type="text"
-            value={form.hasInnerSystemCriteria.join(",")}
-            onChange={e => setForm(f => ({ ...f, hasInnerSystemCriteria: e.target.value.split(",").map(s => s.trim()).filter(Boolean) }))}
-            placeholder="ai:CustomCriterion1, ai:CustomCriterion2"
-            className="border rounded px-2 py-1 w-full"
-          />
+          <div>
+            <label className="block font-semibold mt-2">Inner System Criteria</label>
+            <select
+              multiple
+              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              value={form.hasInnerSystemCriteria}
+              onChange={e =>
+                setForm({ ...form, hasInnerSystemCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+              }
+            >
+              {innerCriteria.map((c) => (
+                <option key={c.id} value={c.id}>{c.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <button

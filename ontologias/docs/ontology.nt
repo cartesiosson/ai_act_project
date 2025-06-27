@@ -1,0 +1,1246 @@
+<http://ai-act.eu/ai-act> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionIRI> <http://ai-act.eu/ai-act/0.36.0> .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/created> "2025-06-22"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/description> "Ontology describing regulated AI systems according to the EU AI Act."@en .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/description> "Ontología que describe los sistemas de IA regulados según el AI Act de la UE."@es .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/title> "AI Act Ontology"@en .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/title> "Ontología del AI Act"@es .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Ai-act module of the AI Act ontology."@en .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Ontología del módulo ai-act del AI Act."@es .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.36.0 released on 2025-06-22"@en .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.36.0 publicada el 2025-06-22"@es .
+# 
+# 
+# #################################################################
+# #
+# #    Annotation properties
+# #
+# #################################################################
+# 
+# 
+# http://ai-act.eu/ai#activatesCriterion
+<http://ai-act.eu/ai#activatesCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://purl.org/dc/terms/created
+<http://purl.org/dc/terms/created> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://purl.org/dc/terms/description
+<http://purl.org/dc/terms/description> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://purl.org/dc/terms/license
+<http://purl.org/dc/terms/license> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# http://purl.org/dc/terms/title
+<http://purl.org/dc/terms/title> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AnnotationProperty> .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Datatypes
+# #
+# #################################################################
+# 
+# 
+# http://www.w3.org/2001/XMLSchema#date
+<http://www.w3.org/2001/XMLSchema#date> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Object Properties
+# #
+# #################################################################
+# 
+# 
+# http://ai-act.eu/ai#activatesRequirement
+<http://ai-act.eu/ai#activatesRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#activatesRequirement> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#activatesRequirement> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#activatesRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un criterio activa o hace aplicable un requisito de cumplimiento."@es .
+<http://ai-act.eu/ai#activatesRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a criterion activates or makes applicable a compliance requirement."@en .
+<http://ai-act.eu/ai#activatesRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "activa requisito"@es .
+<http://ai-act.eu/ai#activatesRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "activates requirement"@en .
+# 
+# http://ai-act.eu/ai#assessedSystem
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@en .
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistema de inteligencia artificial evaluado en este proceso de evaluación de riesgo."@es .
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/2000/01/rdf-schema#label> "assessed system"@en .
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/2000/01/rdf-schema#label> "assessed system"@es .
+<http://ai-act.eu/ai#assessedSystem> <http://www.w3.org/2000/01/rdf-schema#label> "sistema evaluado"@es .
+# 
+# http://ai-act.eu/ai#assignedRiskLevel
+<http://ai-act.eu/ai#assignedRiskLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#assignedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#assignedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#assignedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Nivel de riesgo determinado al finalizar el proceso de evaluación."@en .
+<http://ai-act.eu/ai#assignedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Nivel de riesgo determinado al finalizar el proceso de evaluación."@es .
+<http://ai-act.eu/ai#assignedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "assigned risk level"@en .
+<http://ai-act.eu/ai#assignedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "assigned risk level"@es .
+# 
+# http://ai-act.eu/ai#assignsRiskLevel
+<http://ai-act.eu/ai#assignsRiskLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#assignsRiskLevel> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#assignsRiskLevel> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#assignsRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Asocia un criterio con el nivel de riesgo que determina para un sistema de IA."@es .
+<http://ai-act.eu/ai#assignsRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Associates a criterion with the risk level it determines for an AI system."@en .
+<http://ai-act.eu/ai#assignsRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "asigna nivel de riesgo"@es .
+<http://ai-act.eu/ai#assignsRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "assigns risk level"@en .
+# 
+# http://ai-act.eu/ai#considersCriterion
+<http://ai-act.eu/ai#considersCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#considersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#considersCriterion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#considersCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio considerado en la evaluación del sistema."@en .
+<http://ai-act.eu/ai#considersCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio considerado en la evaluación del sistema."@es .
+<http://ai-act.eu/ai#considersCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "considers criterion"@en .
+<http://ai-act.eu/ai#considersCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "considers criterion"@es .
+# 
+# http://ai-act.eu/ai#deploysSystem
+<http://ai-act.eu/ai#deploysSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#deploysSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Deployer> .
+<http://ai-act.eu/ai#deploysSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#deploysSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un actor del tipo 'Deployer' con el sistema de IA correspondiente."@es .
+<http://ai-act.eu/ai#deploysSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an actor of type 'Deployer' with the corresponding AI system."@en .
+<http://ai-act.eu/ai#deploysSystem> <http://www.w3.org/2000/01/rdf-schema#label> "deploys system"@en .
+<http://ai-act.eu/ai#deploysSystem> <http://www.w3.org/2000/01/rdf-schema#label> "despliega sistema"@es .
+# 
+# http://ai-act.eu/ai#distributesSystem
+<http://ai-act.eu/ai#distributesSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#distributesSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Distributor> .
+<http://ai-act.eu/ai#distributesSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#distributesSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un actor del tipo 'Distributor' con el sistema de IA correspondiente."@es .
+<http://ai-act.eu/ai#distributesSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an actor of type 'Distributor' with the corresponding AI system."@en .
+<http://ai-act.eu/ai#distributesSystem> <http://www.w3.org/2000/01/rdf-schema#label> "distributes system"@en .
+<http://ai-act.eu/ai#distributesSystem> <http://www.w3.org/2000/01/rdf-schema#label> "distribuye sistema"@es .
+# 
+# http://ai-act.eu/ai#expectedRiskLevel
+<http://ai-act.eu/ai#expectedRiskLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#expectedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#expectedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#expectedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Nivel de riesgo esperado para un sistema que tiene este propósito, conforme al AI Act."@en .
+<http://ai-act.eu/ai#expectedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Nivel de riesgo esperado para un sistema que tiene este propósito, conforme al AI Act."@es .
+<http://ai-act.eu/ai#expectedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "expected risk level"@en .
+<http://ai-act.eu/ai#expectedRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "expected risk level"@es .
+# 
+# http://ai-act.eu/ai#generatesEvidence
+<http://ai-act.eu/ai#generatesEvidence> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#generatesEvidence> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Instrument> .
+<http://ai-act.eu/ai#generatesEvidence> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Evidence> .
+<http://ai-act.eu/ai#generatesEvidence> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un instrumento o proceso produce evidencia para cumplimiento o evaluación."@es .
+<http://ai-act.eu/ai#generatesEvidence> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that an instrument or process produces evidence for compliance or assessment."@en .
+<http://ai-act.eu/ai#generatesEvidence> <http://www.w3.org/2000/01/rdf-schema#label> "genera evidencia"@es .
+<http://ai-act.eu/ai#generatesEvidence> <http://www.w3.org/2000/01/rdf-schema#label> "generates evidence"@en .
+# 
+# http://ai-act.eu/ai#hasDeploymentContext
+<http://ai-act.eu/ai#hasDeploymentContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasDeploymentContext> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasDeploymentContext> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#hasDeploymentContext> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica el contexto o entorno en el que se despliega el sistema de IA (por ejemplo, salud, educación, servicios públicos, etc.)."@es .
+<http://ai-act.eu/ai#hasDeploymentContext> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates the context or environment in which the AI system is deployed (e.g., healthcare, education, public services, etc.)."@en .
+<http://ai-act.eu/ai#hasDeploymentContext> <http://www.w3.org/2000/01/rdf-schema#label> "has deployment context"@en .
+<http://ai-act.eu/ai#hasDeploymentContext> <http://www.w3.org/2000/01/rdf-schema#label> "tiene contexto de despliegue"@es .
+# 
+# http://ai-act.eu/ai#hasNormativeCriterion
+<http://ai-act.eu/ai#hasNormativeCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasNormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasNormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#hasNormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Asocia un sistema de IA con un criterio normativo que le aplica."@es .
+<http://ai-act.eu/ai#hasNormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Associates an AI system with a normative criterion that applies to it."@en .
+<http://ai-act.eu/ai#hasNormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "has normative criterion"@en .
+<http://ai-act.eu/ai#hasNormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "tiene criterio normativo"@es .
+# 
+# http://ai-act.eu/ai#hasPurpose
+<http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#comment> "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@en .
+<http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#comment> "Propósito previsto para el sistema de IA (por ejemplo, identificación biométrica, scoring crediticio, etc.)."@es .
+<http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#label> "has purpose"@en .
+<http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#label> "tiene propósito"@es .
+# 
+# http://ai-act.eu/ai#hasRequirement
+<http://ai-act.eu/ai#hasRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasRequirement> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasRequirement> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#hasRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@en .
+<http://ai-act.eu/ai#hasRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Asocia un sistema de IA con los requisitos de cumplimiento que le son aplicables."@es .
+<http://ai-act.eu/ai#hasRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "has compliance requirement"@en .
+<http://ai-act.eu/ai#hasRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "has compliance requirement"@es .
+# 
+# http://ai-act.eu/ai#hasRiskLevel
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Asocia un sistema de inteligencia artificial con su nivel de riesgo conforme al AI Act."@en .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Asocia un sistema de inteligencia artificial con su nivel de riesgo conforme al AI Act."@es .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@en .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Nivel de riesgo del sistema según la clasificación del AI Act (e.g., prohibited, high-risk, limited-risk, minimal-risk)."@es .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "has risk level"@en .
+<http://ai-act.eu/ai#hasRiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "has risk level"@es .
+# 
+# http://ai-act.eu/ai#hasTechnicalCriterion
+<http://ai-act.eu/ai#hasTechnicalCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasTechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasTechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#hasTechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Asocia un sistema de IA con un criterio técnico que le aplica."@es .
+<http://ai-act.eu/ai#hasTechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Associates an AI system with a technical criterion that applies to it."@en .
+<http://ai-act.eu/ai#hasTechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "has technical criterion"@en .
+<http://ai-act.eu/ai#hasTechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "tiene criterio técnico"@es .
+# 
+# http://ai-act.eu/ai#hasTechnicalRequirement
+<http://ai-act.eu/ai#hasTechnicalRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasTechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasTechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#TechnicalRequirement> .
+<http://ai-act.eu/ai#hasTechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@en .
+<http://ai-act.eu/ai#hasTechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un sistema de IA con uno de los requisitos técnicos exigidos por la regulación."@es .
+<http://ai-act.eu/ai#hasTechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "has technical requirement"@en .
+<http://ai-act.eu/ai#hasTechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "has technical requirement"@es .
+# 
+# http://ai-act.eu/ai#hasTrainingDataOrigin
+<http://ai-act.eu/ai#hasTrainingDataOrigin> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasTrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasTrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#TrainingDataOrigin> .
+<http://ai-act.eu/ai#hasTrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#comment> "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@en .
+<http://ai-act.eu/ai#hasTrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#comment> "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@es .
+<http://ai-act.eu/ai#hasTrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#label> "has training data origin"@en .
+<http://ai-act.eu/ai#hasTrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#label> "tiene origen de datos de entrenamiento"@es .
+# 
+# http://ai-act.eu/ai#importsSystem
+<http://ai-act.eu/ai#importsSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#importsSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Importer> .
+<http://ai-act.eu/ai#importsSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#importsSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un actor del tipo 'Importer' con el sistema de IA correspondiente."@es .
+<http://ai-act.eu/ai#importsSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an actor of type 'Importer' with the corresponding AI system."@en .
+<http://ai-act.eu/ai#importsSystem> <http://www.w3.org/2000/01/rdf-schema#label> "importa sistema"@es .
+<http://ai-act.eu/ai#importsSystem> <http://www.w3.org/2000/01/rdf-schema#label> "imports system"@en .
+# 
+# http://ai-act.eu/ai#isAssessmentOfSystem
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#assessedSystem> .
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of assessedSystem: relates a system to the risk assessment it is subject of."@en .
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de assessedSystem: relaciona un sistema con la evaluación de riesgo de la que es objeto."@es .
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "es evaluación de sistema"@es .
+<http://ai-act.eu/ai#isAssessmentOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "is assessment of system"@en .
+# 
+# http://ai-act.eu/ai#isAssignedRiskLevelOf
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#assignedRiskLevel> .
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of assignedRiskLevel: relates a risk level to the risk assessment it was assigned in."@en .
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de assignedRiskLevel: relaciona un nivel de riesgo con la evaluación de riesgo en la que fue asignado."@es .
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/2000/01/rdf-schema#label> "es nivel de riesgo asignado de"@es .
+<http://ai-act.eu/ai#isAssignedRiskLevelOf> <http://www.w3.org/2000/01/rdf-schema#label> "is assigned risk level of"@en .
+# 
+# http://ai-act.eu/ai#isComplianceRequiredBy
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#requiresCompliance> .
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of requiresCompliance: relates a compliance requirement to the risk assessment that requires it."@en .
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de requiresCompliance: relaciona un requisito de cumplimiento con la evaluación de riesgo que lo requiere."@es .
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/2000/01/rdf-schema#label> "es cumplimiento requerido por"@es .
+<http://ai-act.eu/ai#isComplianceRequiredBy> <http://www.w3.org/2000/01/rdf-schema#label> "is compliance required by"@en .
+# 
+# http://ai-act.eu/ai#isCriterionConsideredBy
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#considersCriterion> .
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of considersCriterion: relates a criterion to the risk assessment that considers it."@en .
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de considersCriterion: relaciona un criterio con la evaluación de riesgo que lo considera."@es .
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/2000/01/rdf-schema#label> "es criterio considerado por"@es .
+<http://ai-act.eu/ai#isCriterionConsideredBy> <http://www.w3.org/2000/01/rdf-schema#label> "is criterion considered by"@en .
+# 
+# http://ai-act.eu/ai#isDeploymentContextOf
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasDeploymentContext> .
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasDeploymentContext: relates a deployment context to the AI system it applies to."@en .
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasDeploymentContext: relaciona un contexto de despliegue con el sistema de IA al que aplica."@es .
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/2000/01/rdf-schema#label> "es contexto de despliegue de"@es .
+<http://ai-act.eu/ai#isDeploymentContextOf> <http://www.w3.org/2000/01/rdf-schema#label> "is deployment context of"@en .
+# 
+# http://ai-act.eu/ai#isEvidenceForRequirement
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#providesEvidenceFor> .
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Evidence> .
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of providesEvidenceFor: relates a compliance requirement to the evidence that documents it."@en .
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de providesEvidenceFor: relaciona un requisito de cumplimiento con la evidencia que lo documenta."@es .
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "es evidencia para requisito"@es .
+<http://ai-act.eu/ai#isEvidenceForRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "is evidence for requirement"@en .
+# 
+# http://ai-act.eu/ai#isEvidenceGeneratedBy
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#generatesEvidence> .
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Evidence> .
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Instrument> .
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of generatesEvidence: relates a piece of evidence to the instrument or process that generated it."@en .
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de generatesEvidence: relaciona una evidencia con el instrumento o proceso que la generó."@es .
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es evidencia generada por"@es .
+<http://ai-act.eu/ai#isEvidenceGeneratedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is evidence generated by"@en .
+# 
+# http://ai-act.eu/ai#isExpectedRiskLevelFor
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#expectedRiskLevel> .
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of expectedRiskLevel: relates a risk level to the purpose for which it is expected."@en .
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de expectedRiskLevel: relaciona un nivel de riesgo con el propósito para el que se espera."@es .
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/2000/01/rdf-schema#label> "es nivel de riesgo esperado para"@es .
+<http://ai-act.eu/ai#isExpectedRiskLevelFor> <http://www.w3.org/2000/01/rdf-schema#label> "is expected risk level for"@en .
+# 
+# http://ai-act.eu/ai#isMonitoredBy
+<http://ai-act.eu/ai#isMonitoredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#OversightBody> .
+<http://ai-act.eu/ai#isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un sistema de IA con la entidad responsable de su supervisión."@en .
+<http://ai-act.eu/ai#isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un sistema de IA con la entidad responsable de su supervisión."@es .
+<http://ai-act.eu/ai#isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#label> "is monitored by"@en .
+<http://ai-act.eu/ai#isMonitoredBy> <http://www.w3.org/2000/01/rdf-schema#label> "is monitored by"@es .
+# 
+# http://ai-act.eu/ai#isNormativeCriterionOf
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasNormativeCriterion> .
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasNormativeCriterion: relates a normative criterion to the AI system it applies to."@en .
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasNormativeCriterion: relaciona un criterio normativo con el sistema de IA al que aplica."@es .
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/2000/01/rdf-schema#label> "es criterio normativo de"@es .
+<http://ai-act.eu/ai#isNormativeCriterionOf> <http://www.w3.org/2000/01/rdf-schema#label> "is normative criterion of"@en .
+# 
+# http://ai-act.eu/ai#isPurposeOfSystem
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasPurpose> .
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasPurpose: relates a purpose to the AI system it is the purpose of."@en .
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasPurpose: relaciona un propósito con el sistema de IA del que es propósito."@es .
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "es propósito de sistema"@es .
+<http://ai-act.eu/ai#isPurposeOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "is purpose of system"@en .
+# 
+# http://ai-act.eu/ai#isRequirementActivatedBy
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#activatesRequirement> .
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of activatesRequirement: relates a compliance requirement to the criterion that activates it."@en .
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de activatesRequirement: relaciona un requisito de cumplimiento con el criterio que lo activa."@es .
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es requisito activado por"@es .
+<http://ai-act.eu/ai#isRequirementActivatedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is requirement activated by"@en .
+# 
+# http://ai-act.eu/ai#isRequirementOfSystem
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasRequirement> .
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasRequirement: relates a compliance requirement to the AI system it applies to."@en .
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasRequirement: relaciona un requisito de cumplimiento con el sistema de IA al que aplica."@es .
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "es requisito de sistema"@es .
+<http://ai-act.eu/ai#isRequirementOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "is requirement of system"@en .
+# 
+# http://ai-act.eu/ai#isRiskLevelAssignedBy
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#assignsRiskLevel> .
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of assignsRiskLevel: relates a risk level to the criterion that assigned it."@en .
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de assignsRiskLevel: relaciona un nivel de riesgo con el criterio que lo asignó."@es .
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es nivel de riesgo asignado por"@es .
+<http://ai-act.eu/ai#isRiskLevelAssignedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is risk level assigned by"@en .
+# 
+# http://ai-act.eu/ai#isRiskLevelOfSystem
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasRiskLevel> .
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasRiskLevel: relates a risk level to the AI system it is assigned to."@en .
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasRiskLevel: relaciona un nivel de riesgo con el sistema de IA al que se asigna."@es .
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "es nivel de riesgo de sistema"@es .
+<http://ai-act.eu/ai#isRiskLevelOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "is risk level of system"@en .
+# 
+# http://ai-act.eu/ai#isSystemDeployedBy
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#deploysSystem> .
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Deployer> .
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of deploysSystem: relates an AI system to its deployer."@en .
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de deploysSystem: relaciona un sistema de IA con su implementador."@es .
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es sistema desplegado por"@es .
+<http://ai-act.eu/ai#isSystemDeployedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is system deployed by"@en .
+# 
+# http://ai-act.eu/ai#isSystemDistributedBy
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#distributesSystem> .
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Distributor> .
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of distributesSystem: relates an AI system to its distributor."@en .
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de distributesSystem: relaciona un sistema de IA con su distribuidor."@es .
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es sistema distribuido por"@es .
+<http://ai-act.eu/ai#isSystemDistributedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is system distributed by"@en .
+# 
+# http://ai-act.eu/ai#isSystemImportedBy
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#importsSystem> .
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Importer> .
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of importsSystem: relates an AI system to its importer."@en .
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de importsSystem: relaciona un sistema de IA con su importador."@es .
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es sistema importado por"@es .
+<http://ai-act.eu/ai#isSystemImportedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is system imported by"@en .
+# 
+# http://ai-act.eu/ai#isSystemProvidedBy
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#providesSystem> .
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Provider> .
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of providesSystem: relates an AI system to its provider."@en .
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de providesSystem: relaciona un sistema de IA con su proveedor."@es .
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es sistema provisto por"@es .
+<http://ai-act.eu/ai#isSystemProvidedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is system provided by"@en .
+# 
+# http://ai-act.eu/ai#isSystemUsedBy
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#usesSystem> .
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#User> .
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of usesSystem: relates an AI system to the user that uses it."@en .
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de usesSystem: relaciona un sistema de IA con el usuario que lo utiliza."@es .
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/2000/01/rdf-schema#label> "es sistema usado por"@es .
+<http://ai-act.eu/ai#isSystemUsedBy> <http://www.w3.org/2000/01/rdf-schema#label> "is system used by"@en .
+# 
+# http://ai-act.eu/ai#isTechnicalCriterionOfSystem
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasTechnicalCriterion> .
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasTechnicalCriterion: relates a technical criterion to the AI system it applies to."@en .
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasTechnicalCriterion: relaciona un criterio técnico con el sistema de IA al que aplica."@es .
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "es criterio técnico de sistema"@es .
+<http://ai-act.eu/ai#isTechnicalCriterionOfSystem> <http://www.w3.org/2000/01/rdf-schema#label> "is technical criterion of system"@en .
+# 
+# http://ai-act.eu/ai#isTechnicalRequirementOf
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasTechnicalRequirement> .
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#TechnicalRequirement> .
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasTechnicalRequirement: relates a technical requirement to the AI system it applies to."@en .
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasTechnicalRequirement: relaciona un requisito técnico con el sistema de IA al que aplica."@es .
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/2000/01/rdf-schema#label> "es requisito técnico de"@es .
+<http://ai-act.eu/ai#isTechnicalRequirementOf> <http://www.w3.org/2000/01/rdf-schema#label> "is technical requirement of"@en .
+# 
+# http://ai-act.eu/ai#isTrainingDataOriginOf
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#hasTrainingDataOrigin> .
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#TrainingDataOrigin> .
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of hasTrainingDataOrigin: relates a training data origin to the AI system that uses it."@en .
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de hasTrainingDataOrigin: relaciona un origen de datos de entrenamiento con el sistema de IA que lo utiliza."@es .
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#label> "es origen de datos de entrenamiento de"@es .
+<http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#label> "is training data origin of"@en .
+# 
+# http://ai-act.eu/ai#justifiedByCriterion
+<http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica los criterios que justifican el requisito de cumplimiento."@es .
+<http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates the criteria that justify the compliance requirement."@en .
+<http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "justificado por criterio"@es .
+<http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "justified by criterion"@en .
+# 
+# http://ai-act.eu/ai#monitorsSystem
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#isMonitoredBy> .
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#OversightBody> .
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Inverse property of isMonitoredBy: relates an oversight body to the AI system it monitors."@en .
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Propiedad inversa de isMonitoredBy: relaciona un organismo de supervisión con el sistema de IA que supervisa."@es .
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/2000/01/rdf-schema#label> "monitors system"@en .
+<http://ai-act.eu/ai#monitorsSystem> <http://www.w3.org/2000/01/rdf-schema#label> "supervisa sistema"@es .
+# 
+# http://ai-act.eu/ai#providesEvidenceFor
+<http://ai-act.eu/ai#providesEvidenceFor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#providesEvidenceFor> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Evidence> .
+<http://ai-act.eu/ai#providesEvidenceFor> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#providesEvidenceFor> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que una evidencia documenta el cumplimiento de un requisito específico."@es .
+<http://ai-act.eu/ai#providesEvidenceFor> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a piece of evidence documents compliance with a specific requirement."@en .
+<http://ai-act.eu/ai#providesEvidenceFor> <http://www.w3.org/2000/01/rdf-schema#label> "documenta cumplimiento de"@es .
+<http://ai-act.eu/ai#providesEvidenceFor> <http://www.w3.org/2000/01/rdf-schema#label> "provides evidence for"@en .
+# 
+# http://ai-act.eu/ai#providesSystem
+<http://ai-act.eu/ai#providesSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#providesSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Provider> .
+<http://ai-act.eu/ai#providesSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#providesSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un actor del tipo 'Provider' con el sistema de IA correspondiente."@es .
+<http://ai-act.eu/ai#providesSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an actor of type 'Provider' with the corresponding AI system."@en .
+<http://ai-act.eu/ai#providesSystem> <http://www.w3.org/2000/01/rdf-schema#label> "provee sistema"@es .
+<http://ai-act.eu/ai#providesSystem> <http://www.w3.org/2000/01/rdf-schema#label> "provides system"@en .
+# 
+# http://ai-act.eu/ai#requiresCompliance
+<http://ai-act.eu/ai#requiresCompliance> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#requiresCompliance> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#requiresCompliance> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#requiresCompliance> <http://www.w3.org/2000/01/rdf-schema#comment> "Compliance requirements arising from the system's risk assessment."@en .
+<http://ai-act.eu/ai#requiresCompliance> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisitos de cumplimiento derivados de la evaluación de riesgo del sistema."@es .
+<http://ai-act.eu/ai#requiresCompliance> <http://www.w3.org/2000/01/rdf-schema#label> "requiere cumplimiento"@es .
+<http://ai-act.eu/ai#requiresCompliance> <http://www.w3.org/2000/01/rdf-schema#label> "requires compliance"@en .
+# 
+# http://ai-act.eu/ai#triggersComplianceRequirement
+<http://ai-act.eu/ai#triggersComplianceRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#triggersComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#triggersComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#triggersComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un criterio activa o dispara un requisito de cumplimiento específico."@es .
+<http://ai-act.eu/ai#triggersComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a criterion activates or triggers a specific compliance requirement."@en .
+<http://ai-act.eu/ai#triggersComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "activa requisito de cumplimiento"@es .
+<http://ai-act.eu/ai#triggersComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "triggers compliance requirement"@en .
+# 
+# http://ai-act.eu/ai#triggersCriterion
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un contexto de despliegue o propósito activa o dispara un criterio específico."@es .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a deployment context or purpose activates or triggers a specific criterion."@en .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "activa criterio"@es .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "triggers criterion"@en .
+# 
+# http://ai-act.eu/ai#usesSystem
+<http://ai-act.eu/ai#usesSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#usesSystem> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#User> .
+<http://ai-act.eu/ai#usesSystem> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#usesSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relaciona un actor del tipo 'User' con el sistema de IA correspondiente."@es .
+<http://ai-act.eu/ai#usesSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Relates an actor of type 'User' with the corresponding AI system."@en .
+<http://ai-act.eu/ai#usesSystem> <http://www.w3.org/2000/01/rdf-schema#label> "usa sistema"@es .
+<http://ai-act.eu/ai#usesSystem> <http://www.w3.org/2000/01/rdf-schema#label> "uses system"@en .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Data properties
+# #
+# #################################################################
+# 
+# 
+# http://ai-act.eu/ai#hasHttpIri
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#comment> "IRI asignado a entidades identificables."@es .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#comment> "IRI identifier assigned to identifiable entities."@en .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#label> "has HttpIri"@en .
+<http://ai-act.eu/ai#hasHttpIri> <http://www.w3.org/2000/01/rdf-schema#label> "tiene HttpIri"@es .
+# 
+# http://ai-act.eu/ai#hasName
+<http://ai-act.eu/ai#hasName> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#comment> "Nombre del sistema de inteligencia artificial."@en .
+<http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#comment> "Nombre del sistema de inteligencia artificial."@es .
+<http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#label> "has name"@en .
+<http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#label> "tiene nombre"@es .
+# 
+# http://ai-act.eu/ai#hasUrn
+<http://ai-act.eu/ai#hasUrn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#hasUrn> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#hasUrn> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#hasUrn> <http://www.w3.org/2000/01/rdf-schema#comment> "URN asignado a entidades identificables."@es .
+<http://ai-act.eu/ai#hasUrn> <http://www.w3.org/2000/01/rdf-schema#comment> "URN identifier assigned to identifiable entities."@en .
+<http://ai-act.eu/ai#hasUrn> <http://www.w3.org/2000/01/rdf-schema#label> "has URN"@en .
+<http://ai-act.eu/ai#hasUrn> <http://www.w3.org/2000/01/rdf-schema#label> "tiene URN"@es .
+# 
+# http://ai-act.eu/ai#hasVersion
+<http://ai-act.eu/ai#hasVersion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#comment> "Versión o identificación técnica del sistema."@en .
+<http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#comment> "Versión o identificación técnica del sistema."@es .
+<http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#label> "has version"@en .
+<http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#label> "tiene versión"@es .
+# 
+# http://ai-act.eu/ai#justificationNote
+<http://ai-act.eu/ai#justificationNote> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#justificationNote> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#justificationNote> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#justificationNote> <http://www.w3.org/2000/01/rdf-schema#comment> "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@en .
+<http://ai-act.eu/ai#justificationNote> <http://www.w3.org/2000/01/rdf-schema#comment> "Justificación textual de la clasificación de riesgo, incluyendo contexto, propósitos y criterios."@es .
+<http://ai-act.eu/ai#justificationNote> <http://www.w3.org/2000/01/rdf-schema#label> "justification note"@en .
+<http://ai-act.eu/ai#justificationNote> <http://www.w3.org/2000/01/rdf-schema#label> "justification note"@es .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Classes
+# #
+# #################################################################
+# 
+# 
+# http://ai-act.eu/ai#Actor
+<http://ai-act.eu/ai#Actor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Actor> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#Actor> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que desempeña un papel en el ciclo de vida del sistema de IA (por ejemplo, proveedor, implementador, usuario, etc.)."@es .
+<http://ai-act.eu/ai#Actor> <http://www.w3.org/2000/01/rdf-schema#comment> "Entity that plays a role in the AI system lifecycle (e.g., provider, deployer, user, etc.)."@en .
+<http://ai-act.eu/ai#Actor> <http://www.w3.org/2000/01/rdf-schema#label> "Actor"@en .
+<http://ai-act.eu/ai#Actor> <http://www.w3.org/2000/01/rdf-schema#label> "Actor"@es .
+# 
+# http://ai-act.eu/ai#ComplianceRequirement
+<http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Obligación o condición que un sistema de IA debe cumplir para ajustarse al AI Act de la UE."@es .
+<http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Obligation or condition that an AI system must fulfill to comply with the EU AI Act."@en .
+<http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Compliance Requirement"@en .
+<http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Cumplimiento"@es .
+# 
+# http://ai-act.eu/ai#ContextualCriterion
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/2002/07/owl#disjointWith> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/2002/07/owl#disjointWith> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio basado en el entorno, propósito o consecuencias del uso del sistema."@en .
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio basado en el entorno, propósito o consecuencias del uso del sistema."@es .
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Contextual Criterion"@en .
+<http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Contextual Criterion"@es .
+# 
+# http://ai-act.eu/ai#Criterion
+<http://ai-act.eu/ai#Criterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Criterion> <http://www.w3.org/2000/01/rdf-schema#comment> "A general criterion used for risk assessment, compliance, or classification of AI systems under the EU AI Act."@en .
+<http://ai-act.eu/ai#Criterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio general utilizado para la evaluación de riesgos, cumplimiento o clasificación de sistemas de IA según el AI Act."@es .
+<http://ai-act.eu/ai#Criterion> <http://www.w3.org/2000/01/rdf-schema#label> "Criterio"@es .
+<http://ai-act.eu/ai#Criterion> <http://www.w3.org/2000/01/rdf-schema#label> "Criterion"@en .
+# 
+# http://ai-act.eu/ai#Deployer
+<http://ai-act.eu/ai#Deployer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
+<http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que integra o pone en uso un sistema de IA."@en .
+<http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que integra o pone en uso un sistema de IA."@es .
+<http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#label> "Deployer"@en .
+<http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#label> "Deployer"@es .
+# 
+# http://ai-act.eu/ai#DeploymentContext
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/2000/01/rdf-schema#comment> "El contexto o entorno en el que se despliega un sistema de IA (por ejemplo, salud, servicios públicos, educación)."@es .
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/2000/01/rdf-schema#comment> "The context or environment in which an AI system is deployed (e.g., healthcare, public services, education)."@en .
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/2000/01/rdf-schema#label> "Contexto de Despliegue"@es .
+<http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/2000/01/rdf-schema#label> "Deployment Context"@en .
+# 
+# http://ai-act.eu/ai#Distributor
+<http://ai-act.eu/ai#Distributor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
+<http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en .
+<http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@es .
+<http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#label> "Distributor"@en .
+<http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#label> "Distributor"@es .
+# 
+# http://ai-act.eu/ai#EndUser
+<http://ai-act.eu/ai#EndUser> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#EndUser> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#User> .
+<http://ai-act.eu/ai#EndUser> <http://www.w3.org/2000/01/rdf-schema#comment> "End user who interacts with the system without participating in its development or deployment."@en .
+<http://ai-act.eu/ai#EndUser> <http://www.w3.org/2000/01/rdf-schema#comment> "Usuario final que interactúa con el sistema sin intervenir en su desarrollo ni despliegue."@es .
+<http://ai-act.eu/ai#EndUser> <http://www.w3.org/2000/01/rdf-schema#label> "EndUser"@en .
+<http://ai-act.eu/ai#EndUser> <http://www.w3.org/2000/01/rdf-schema#label> "Usuario final"@es .
+# 
+# http://ai-act.eu/ai#Evidence
+<http://ai-act.eu/ai#Evidence> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Evidence> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#Evidence> <http://www.w3.org/2000/01/rdf-schema#comment> "A document, record, or artifact that serves as proof of compliance or assessment for an AI system."@en .
+<http://ai-act.eu/ai#Evidence> <http://www.w3.org/2000/01/rdf-schema#comment> "Documento, registro o artefacto que sirve como prueba de cumplimiento o evaluación para un sistema de IA."@es .
+<http://ai-act.eu/ai#Evidence> <http://www.w3.org/2000/01/rdf-schema#label> "Evidence"@en .
+<http://ai-act.eu/ai#Evidence> <http://www.w3.org/2000/01/rdf-schema#label> "Evidencia"@es .
+# 
+# http://ai-act.eu/ai#ExternalDataset
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2002/07/owl#disjointWith> <http://ai-act.eu/ai#InternalDataset> .
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2002/07/owl#disjointWith> <http://ai-act.eu/ai#SyntheticDataset> .
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+# 
+# http://ai-act.eu/ai#Identifiable
+<http://ai-act.eu/ai#Identifiable> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Identifiable> <http://www.w3.org/2000/01/rdf-schema#comment> "Any entity that can be identified by a URN or IRI."@en .
+<http://ai-act.eu/ai#Identifiable> <http://www.w3.org/2000/01/rdf-schema#comment> "Cualquier entidad puede ser identificada por URN o IRI."@es .
+<http://ai-act.eu/ai#Identifiable> <http://www.w3.org/2000/01/rdf-schema#label> "Identifiable"@en .
+<http://ai-act.eu/ai#Identifiable> <http://www.w3.org/2000/01/rdf-schema#label> "Identificable"@es .
+# 
+# http://ai-act.eu/ai#Importer
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que introduce en la UE un sistema de IA desde un tercer país."@en .
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que introduce en la UE un sistema de IA desde un tercer país."@es .
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#label> "Importer"@en .
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#label> "Importer"@es .
+# 
+# http://ai-act.eu/ai#Instrument
+<http://ai-act.eu/ai#Instrument> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Instrument> <http://www.w3.org/2000/01/rdf-schema#comment> "Any tool, document, or mechanism that provides evidence or supports compliance or assessment in the context of the EU AI Act."@en .
+<http://ai-act.eu/ai#Instrument> <http://www.w3.org/2000/01/rdf-schema#comment> "Cualquier herramienta, documento o mecanismo que proporcione evidencia o respalde el cumplimiento o la evaluación en el contexto del AI Act de la UE."@es .
+<http://ai-act.eu/ai#Instrument> <http://www.w3.org/2000/01/rdf-schema#label> "Instrument"@en .
+<http://ai-act.eu/ai#Instrument> <http://www.w3.org/2000/01/rdf-schema#label> "Instrumento"@es .
+# 
+# http://ai-act.eu/ai#IntelligentSystem
+<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Artificial Intelligence system as defined by the EU AI Act: a machine-based system designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, which, for explicit or implicit objectives, infers, recommends, or decides outputs influencing physical or virtual environments."@en .
+<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistema de inteligencia artificial según el AI Act de la UE: sistema basado en máquinas diseñado para operar con distintos niveles de autonomía y que puede mostrar adaptabilidad tras su despliegue, que, para objetivos explícitos o implícitos, infiere, recomienda o decide resultados que influyen en entornos físicos o virtuales."@es .
+<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#label> "Intelligent System"@en .
+<http://ai-act.eu/ai#IntelligentSystem> <http://www.w3.org/2000/01/rdf-schema#label> "Sistema Inteligente"@es .
+# 
+# http://ai-act.eu/ai#InterfaceSpec
+<http://ai-act.eu/ai#InterfaceSpec> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#InterfaceSpec> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#InterfaceSpec> <http://www.w3.org/2000/01/rdf-schema#comment> "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@en .
+<http://ai-act.eu/ai#InterfaceSpec> <http://www.w3.org/2000/01/rdf-schema#comment> "Especificación técnica de una interfaz utilizada por un sistema de inteligencia artificial para comunicarse con otros sistemas o usuarios."@es .
+<http://ai-act.eu/ai#InterfaceSpec> <http://www.w3.org/2000/01/rdf-schema#label> "Interface Specification"@en .
+<http://ai-act.eu/ai#InterfaceSpec> <http://www.w3.org/2000/01/rdf-schema#label> "Interface Specification"@es .
+# 
+# http://ai-act.eu/ai#InternalDataset
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/2002/07/owl#disjointWith> <http://ai-act.eu/ai#SyntheticDataset> .
+# 
+# http://ai-act.eu/ai#LoggingRequirement
+<http://ai-act.eu/ai#LoggingRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#LoggingRequirement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#TechnicalRequirement> .
+<http://ai-act.eu/ai#LoggingRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisito técnico para que los sistemas de IA registren eventos o acciones para trazabilidad y rendición de cuentas."@es .
+<http://ai-act.eu/ai#LoggingRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Technical requirement for AI systems to log events or actions for traceability and accountability."@en .
+<http://ai-act.eu/ai#LoggingRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Logging Requirement"@en .
+<http://ai-act.eu/ai#LoggingRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de registro de eventos"@es .
+# 
+# http://ai-act.eu/ai#NormativeCriterion
+<http://ai-act.eu/ai#NormativeCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#NormativeCriterion> <http://www.w3.org/2002/07/owl#disjointWith> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#NormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio basado en requisitos legales, regulatorios o de políticas aplicables a sistemas de IA según el AI Act de la UE."@es .
+<http://ai-act.eu/ai#NormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterion based on legal, regulatory, or policy requirements applicable to AI systems under the EU AI Act."@en .
+<http://ai-act.eu/ai#NormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Criterio Normativo"@es .
+<http://ai-act.eu/ai#NormativeCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Normative Criterion"@en .
+# 
+# http://ai-act.eu/ai#OversightBody
+<http://ai-act.eu/ai#OversightBody> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#OversightBody> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
+<http://ai-act.eu/ai#OversightBody> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad responsable de la supervisión y control de un sistema de inteligencia artificial, conforme a los mecanismos de gobernanza del AI Act."@en .
+<http://ai-act.eu/ai#OversightBody> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad responsable de la supervisión y control de un sistema de inteligencia artificial, conforme a los mecanismos de gobernanza del AI Act."@es .
+<http://ai-act.eu/ai#OversightBody> <http://www.w3.org/2000/01/rdf-schema#label> "Oversight Body"@en .
+<http://ai-act.eu/ai#OversightBody> <http://www.w3.org/2000/01/rdf-schema#label> "Oversight Body"@es .
+# 
+# http://ai-act.eu/ai#PostDeploymentAssessment
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluación o valoración de riesgos realizada tras el despliegue de un sistema de IA."@es .
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Risk assessment or evaluation performed after the deployment of an AI system."@en .
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación posterior al despliegue"@es .
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "PostDeployment Assessment"@en .
+# 
+# http://ai-act.eu/ai#PreDeploymentAssessment
+<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#RiskAssessment> .
+<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluación o valoración de riesgos realizada antes del despliegue de un sistema de IA."@es .
+<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Risk assessment or evaluation performed before the deployment of an AI system."@en .
+<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación previa al despliegue"@es .
+<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "PreDeployment Assessment"@en .
+# 
+# http://ai-act.eu/ai#ProfessionalUser
+<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#User> .
+<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#comment> "Professional user who uses the system in the exercise of their profession."@en .
+<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#comment> "Usuario profesional que utiliza el sistema en el ejercicio de su profesión."@es .
+<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#label> "ProfessionalUser"@en .
+<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#label> "Usuario profesional"@es .
+# 
+# http://ai-act.eu/ai#Provider
+<http://ai-act.eu/ai#Provider> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
+<http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que desarrolla o pone en el mercado un sistema de IA."@en .
+<http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que desarrolla o pone en el mercado un sistema de IA."@es .
+<http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#label> "Provider"@en .
+<http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#label> "Provider"@es .
+# 
+# http://ai-act.eu/ai#Purpose
+<http://ai-act.eu/ai#Purpose> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#Purpose> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#Purpose> <http://www.w3.org/2000/01/rdf-schema#comment> "Intended purpose for which an AI system is designed or used."@en .
+<http://ai-act.eu/ai#Purpose> <http://www.w3.org/2000/01/rdf-schema#comment> "Propósito previsto para el que se diseña o utiliza un sistema de IA."@es .
+<http://ai-act.eu/ai#Purpose> <http://www.w3.org/2000/01/rdf-schema#label> "Propósito"@es .
+<http://ai-act.eu/ai#Purpose> <http://www.w3.org/2000/01/rdf-schema#label> "Purpose"@en .
+# 
+# http://ai-act.eu/ai#RiskAssessment
+<http://ai-act.eu/ai#RiskAssessment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#RiskAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Proceso o actividad para determinar el nivel de riesgo de un sistema de IA según el AI Act de la UE."@es .
+<http://ai-act.eu/ai#RiskAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Process or activity to determine the risk level of an AI system under the EU AI Act."@en .
+<http://ai-act.eu/ai#RiskAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación de Riesgo"@es .
+<http://ai-act.eu/ai#RiskAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Risk Assessment"@en .
+# 
+# http://ai-act.eu/ai#RiskLevel
+<http://ai-act.eu/ai#RiskLevel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#RiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Clasificación del riesgo asociado a un sistema de IA, como prohibido, alto riesgo, riesgo limitado o riesgo mínimo, según el AI Act de la UE."@es .
+<http://ai-act.eu/ai#RiskLevel> <http://www.w3.org/2000/01/rdf-schema#comment> "Classification of the risk associated with an AI system, such as prohibited, high-risk, limited-risk, or minimal-risk, according to the EU AI Act."@en .
+<http://ai-act.eu/ai#RiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "Nivel de Riesgo"@es .
+<http://ai-act.eu/ai#RiskLevel> <http://www.w3.org/2000/01/rdf-schema#label> "Risk Level"@en .
+# 
+# http://ai-act.eu/ai#RobustnessRequirement
+<http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#TechnicalRequirement> .
+<http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisito técnico para que los sistemas de IA aseguren la robustez, como la resiliencia ante errores o ataques adversarios."@es .
+<http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Technical requirement for AI systems to ensure robustness, such as resilience to errors or adversarial attacks."@en .
+<http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de robustez"@es .
+<http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Robustness Requirement"@en .
+# 
+# http://ai-act.eu/ai#SecurityRequirement
+<http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#TechnicalRequirement> .
+<http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisito técnico para que los sistemas de IA garanticen la seguridad, como la protección contra accesos no autorizados o ataques."@es .
+<http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Technical requirement for AI systems to ensure security, such as protection against unauthorized access or attacks."@en .
+<http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de seguridad"@es .
+<http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Security Requirement"@en .
+# 
+# http://ai-act.eu/ai#SyntheticDataset
+# 
+# http://ai-act.eu/ai#TechnicalCriterion
+<http://ai-act.eu/ai#TechnicalCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#TechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#TechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@en .
+<http://ai-act.eu/ai#TechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@es .
+<http://ai-act.eu/ai#TechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Technical Criterion"@en .
+<http://ai-act.eu/ai#TechnicalCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Technical Criterion"@es .
+# 
+# http://ai-act.eu/ai#TechnicalRequirement
+<http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@en .
+<http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisito técnico que debe cumplir un sistema de inteligencia artificial conforme al AI Act, como robustez, seguridad, trazabilidad o ciberseguridad."@es .
+<http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Technical Requirement"@en .
+<http://ai-act.eu/ai#TechnicalRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Technical Requirement"@es .
+# 
+# http://ai-act.eu/ai#TrainingDataOrigin
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#comment> "Origen de los datos de entrenamiento utilizados por el sistema de IA (por ejemplo, internos, externos, sintéticos)."@es .
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#comment> "Origin of the training data used by an AI system (e.g., internal, external, synthetic)."@en .
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#label> "Origen de Datos de Entrenamiento"@es .
+<http://ai-act.eu/ai#TrainingDataOrigin> <http://www.w3.org/2000/01/rdf-schema#label> "Training Data Origin"@en .
+# 
+# http://ai-act.eu/ai#TransparencyRequirement
+<http://ai-act.eu/ai#TransparencyRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#TransparencyRequirement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#TechnicalRequirement> .
+<http://ai-act.eu/ai#TransparencyRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisito técnico para que los sistemas de IA proporcionen transparencia, como la divulgación del uso de IA o la explicabilidad."@es .
+<http://ai-act.eu/ai#TransparencyRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Technical requirement for AI systems to provide transparency, such as disclosure of AI use or explainability."@en .
+<http://ai-act.eu/ai#TransparencyRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de transparencia"@es .
+<http://ai-act.eu/ai#TransparencyRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Transparency Requirement"@en .
+# 
+# http://ai-act.eu/ai#User
+<http://ai-act.eu/ai#User> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#User> <http://www.w3.org/2000/01/rdf-schema#comment> "Person or entity that uses an AI system, either as an end user or professional user, as defined by the EU AI Act."@en .
+<http://ai-act.eu/ai#User> <http://www.w3.org/2000/01/rdf-schema#comment> "Persona o entidad que utiliza un sistema de IA, ya sea como usuario final o profesional, según el AI Act de la UE."@es .
+<http://ai-act.eu/ai#User> <http://www.w3.org/2000/01/rdf-schema#label> "User"@en .
+<http://ai-act.eu/ai#User> <http://www.w3.org/2000/01/rdf-schema#label> "Usuario"@es .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Individuals
+# #
+# #################################################################
+# 
+# 
+# http://ai-act.eu/ai#AccuracyEvaluationRequirement
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#CriticalInfrastructureCriterion> .
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#EducationEvaluationCriterion> .
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Article 10 – accuracy and robustness in high-stakes evaluation."@en .
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex IV, point (g)."@en .
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Accuracy Evaluation Requirement"@en .
+<http://ai-act.eu/ai#AccuracyEvaluationRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de evaluación de precisión"@es .
+# 
+# http://ai-act.eu/ai#AffectsFundamentalRightsRecognition
+<http://ai-act.eu/ai#AffectsFundamentalRightsRecognition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsRecognition> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ContextualCriterion> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsRecognition> <http://www.w3.org/2000/01/rdf-schema#comment> "Este criterio refleja situaciones en las que un sistema de IA puede influir o condicionar el reconocimiento, acceso o ejercicio de derechos fundamentales, conforme al Artículo 6(2) del AI Act."@es .
+<http://ai-act.eu/ai#AffectsFundamentalRightsRecognition> <http://www.w3.org/2000/01/rdf-schema#comment> "This criterion reflects situations where an AI system may influence or condition the recognition, access or exercise of fundamental rights, in line with Article 6(2) of the EU AI Act."@en .
+<http://ai-act.eu/ai#AffectsFundamentalRightsRecognition> <http://www.w3.org/2000/01/rdf-schema#label> "Afecta el reconocimiento de derechos fundamentales"@es .
+<http://ai-act.eu/ai#AffectsFundamentalRightsRecognition> <http://www.w3.org/2000/01/rdf-schema#label> "Affects fundamental rights recognition"@en .
+# 
+# http://ai-act.eu/ai#BiometricIdentification
+<http://ai-act.eu/ai#BiometricIdentification> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentification> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#BiometricIdentification> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#BiometricIdentification> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#BiometricIdentificationCriterion> .
+<http://ai-act.eu/ai#BiometricIdentification> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#BiometricIdentificationOrCategorization> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentification> <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#BiometricIdentificationCriterion> .
+<http://ai-act.eu/ai#BiometricIdentification> <http://www.w3.org/2000/01/rdf-schema#comment> "Propósito que implica la identificación biométrica de individuos en espacios públicos, referenciado en el Anexo III, punto 1."@es .
+<http://ai-act.eu/ai#BiometricIdentification> <http://www.w3.org/2000/01/rdf-schema#comment> "Purpose involving biometric identification of individuals in public spaces, referenced in Annex III, point 1."@en .
+<http://ai-act.eu/ai#BiometricIdentification> <http://www.w3.org/2000/01/rdf-schema#label> "Biometric identification"@en .
+<http://ai-act.eu/ai#BiometricIdentification> <http://www.w3.org/2000/01/rdf-schema#label> "Identificación biométrica"@es .
+# 
+# http://ai-act.eu/ai#BiometricIdentificationCriterion
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema realiza identificación biométrica remota o categorización de personas, conforme al punto 1 del Anexo III del AI Act."@en .
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema realiza identificación biométrica remota o categorización de personas, conforme al punto 1 del Anexo III del AI Act."@es .
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Article 5(1)(d) and Annex III, point 1."@en .
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Biometric Identification or Categorization"@en .
+<http://ai-act.eu/ai#BiometricIdentificationCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Biometric Identification or Categorization"@es .
+# 
+# http://ai-act.eu/ai#BiometricIdentificationOrCategorization
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#ConformityAssessmentRequirement> .
+<http://ai-act.eu/ai#ConformityAssessmentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#CybersecurityRequirement> .
+<http://ai-act.eu/ai#CybersecurityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#DataGovernanceRequirement> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#EventLoggingRequirement> .
+<http://ai-act.eu/ai#EventLoggingRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#PostMarketMonitoringRequirement> .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#RiskManagementRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://www.w3.org/2000/01/rdf-schema#comment> "Este criterio se refiere a sistemas que utilizan técnicas biométricas para identificación o clasificación, según el Anexo III, punto 1 del AI Act de la UE."@es .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://www.w3.org/2000/01/rdf-schema#comment> "This criterion refers to systems that use biometric techniques for identification or classification purposes, as referenced in Annex III, point 1 of the EU AI Act."@en .
+<http://ai-act.eu/ai#BiometricIdentificationOrCategorization> <http://www.w3.org/2000/01/rdf-schema#label> "Biometric identification or categorization"@en .
+# 
+# http://ai-act.eu/ai#ConformityAssessmentRequirement
+# 
+# http://ai-act.eu/ai#CriticalInfrastructureCriterion
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#AccuracyEvaluationRequirement> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#ConformityAssessmentRequirement> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#CybersecurityRequirement> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#PostMarketMonitoringRequirement> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza para la gestión y operación de infraestructuras críticas como energía, agua, transporte o telecomunicaciones."@en .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza para la gestión y operación de infraestructuras críticas como energía, agua, transporte o telecomunicaciones."@es .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 1(a)."@en .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Management of Critical Infrastructure"@en .
+<http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Management of Critical Infrastructure"@es .
+# 
+# http://ai-act.eu/ai#CriticalInfrastructureOperation
+<http://ai-act.eu/ai#CriticalInfrastructureOperation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#CriticalInfrastructureOperation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#CriticalInfrastructureOperation> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#CriticalInfrastructureCriterion> .
+<http://ai-act.eu/ai#CriticalInfrastructureOperation> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 1(a)."@en .
+<http://ai-act.eu/ai#CriticalInfrastructureOperation> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenciado en el Anexo III, punto 1(a)."@es .
+<http://ai-act.eu/ai#CriticalInfrastructureOperation> <http://www.w3.org/2000/01/rdf-schema#label> "Critical Infrastructure Operation"@en .
+<http://ai-act.eu/ai#CriticalInfrastructureOperation> <http://www.w3.org/2000/01/rdf-schema#label> "Operación de Infraestructura Crítica"@es .
+# 
+# http://ai-act.eu/ai#CybersecurityRequirement
+# 
+# http://ai-act.eu/ai#DataGovernanceRequirement
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#BiometricIdentificationOrCategorization> .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
+<http://ai-act.eu/ai#EssentialServicesAccessCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#MigrationBorderCriterion> .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Article 10 – ensure data quality in critical service delivery."@en .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Artículo 10 – garantizar la calidad de los datos en la prestación de servicios críticos."@es .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Data Governance Requirement"@en .
+<http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Gobernanza de datos"@es .
+# 
+# http://ai-act.eu/ai#DeepfakeGeneration
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#CybersecurityRequirement> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#EventLoggingRequirement> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#PostMarketMonitoringRequirement> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#TraceabilityRequirement> .
+<http://ai-act.eu/ai#TraceabilityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#LimitedRisk> .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://www.w3.org/2000/01/rdf-schema#comment> "Subject to transparency obligations under Article 52 of the EU AI Act."@en .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://www.w3.org/2000/01/rdf-schema#comment> "Sujeto a obligaciones de transparencia según el Artículo 52 del AI Act de la UE."@es .
+<http://ai-act.eu/ai#DeepfakeGeneration> <http://www.w3.org/2000/01/rdf-schema#label> "Deepfake generation"@en .
+# 
+# http://ai-act.eu/ai#Education
+<http://ai-act.eu/ai#Education> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#Education> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#Education> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#EducationEvaluationCriterion> .
+<http://ai-act.eu/ai#Education> <http://www.w3.org/2000/01/rdf-schema#comment> "Contexto de despliegue que involucra educación o formación."@es .
+<http://ai-act.eu/ai#Education> <http://www.w3.org/2000/01/rdf-schema#comment> "Deployment context involving education or training."@en .
+<http://ai-act.eu/ai#Education> <http://www.w3.org/2000/01/rdf-schema#label> "Educación"@es .
+<http://ai-act.eu/ai#Education> <http://www.w3.org/2000/01/rdf-schema#label> "Education"@en .
+# 
+# http://ai-act.eu/ai#EducationAccess
+<http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#EducationAccess> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#EducationAccess> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#EducationEvaluationCriterion> .
+<http://ai-act.eu/ai#EducationAccess> <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#EducationEvaluationCriterion> .
+<http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluación para el acceso a educación o formación."@en .
+<http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluación para el acceso a educación o formación."@es .
+<http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/2000/01/rdf-schema#label> "Acceso a la educación"@es .
+<http://ai-act.eu/ai#EducationAccess> <http://www.w3.org/2000/01/rdf-schema#label> "Education Access"@en .
+# 
+# http://ai-act.eu/ai#EducationEvaluationCriterion
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#AccuracyEvaluationRequirement> .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#HumanOversightRequirement> .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#TraceabilityRequirement> .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://ai-act.eu/ai#triggersComplianceRequirement> <http://ai-act.eu/ai#DataGovernanceRequirement> .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza para evaluar estudiantes o decidir su acceso a instituciones educativas o formativas."@en .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza para evaluar estudiantes o decidir su acceso a instituciones educativas o formativas."@es .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 3."@en .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Education or Vocational Training Evaluation"@en .
+<http://ai-act.eu/ai#EducationEvaluationCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Education or Vocational Training Evaluation"@es .
+# 
+# http://ai-act.eu/ai#EssentialServicesAccessCriterion
+# 
+# http://ai-act.eu/ai#EventLoggingRequirement
+# 
+# http://ai-act.eu/ai#ExternalDataset
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TrainingDataOrigin> .
+# 
+# http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#LawEnforcementCriterion> .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#SocialScoring> .
+<http://ai-act.eu/ai#SocialScoring> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#SubliminalManipulation> .
+<http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Article 29 – impact assessment required when affecting fundamental rights."@en .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Artículo 29 – evaluación de impacto requerida cuando se afectan derechos fundamentales."@es .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación de derechos fundamentales"@es .
+<http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Fundamental Rights Assessment Requirement"@en .
+# 
+# http://ai-act.eu/ai#Healthcare
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#Healthcare> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/2000/01/rdf-schema#comment> "Contexto de despliegue que involucra la salud, servicios médicos o actividades relacionadas con la atención sanitaria. Este contexto es relevante para sistemas de IA utilizados en diagnóstico, tratamiento, gestión de pacientes o administración sanitaria."@es .
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/2000/01/rdf-schema#comment> "Deployment context involving healthcare, medical services, or health-related activities. This context is relevant for AI systems used in diagnosis, treatment, patient management, or healthcare administration."@en .
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/2000/01/rdf-schema#label> "Healthcare"@en .
+<http://ai-act.eu/ai#Healthcare> <http://www.w3.org/2000/01/rdf-schema#label> "Salud"@es .
+# 
+# http://ai-act.eu/ai#HighRisk
+<http://ai-act.eu/ai#HighRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#HighRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#HighRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "AI systems classified as high-risk according to the EU AI Act. These systems are subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights."@en .
+<http://ai-act.eu/ai#HighRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de IA clasificados como de alto riesgo según el AI Act de la UE. Estos sistemas están sujetos a requisitos regulatorios estrictos debido a su posible impacto en la salud, la seguridad o los derechos fundamentales."@es .
+<http://ai-act.eu/ai#HighRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Alto Riesgo"@es .
+<http://ai-act.eu/ai#HighRisk> <http://www.w3.org/2000/01/rdf-schema#label> "High Risk"@en .
+# 
+# http://ai-act.eu/ai#HumanOversightRequirement
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#EducationEvaluationCriterion> .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#LacksHumanOversight> .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#RecruitmentEmploymentCriterion> .
+<http://ai-act.eu/ai#RecruitmentEmploymentCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Article 14 – ensure human oversight in student evaluations."@en .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Article 14 – human oversight to prevent exclusion or bias."@en .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Human Oversight Requirement"@en .
+<http://ai-act.eu/ai#HumanOversightRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Supervisión humana"@es .
+# 
+# http://ai-act.eu/ai#InternalDataset
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TrainingDataOrigin> .
+# 
+# http://ai-act.eu/ai#JudicialDecisionSupport
+<http://ai-act.eu/ai#JudicialDecisionSupport> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#JudicialDecisionSupport> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#JudicialDecisionSupport> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#JudicialSupportCriterion> .
+<http://ai-act.eu/ai#JudicialSupportCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#JudicialDecisionSupport> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 6."@en .
+<http://ai-act.eu/ai#JudicialDecisionSupport> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenciado en el Anexo III, punto 6."@es .
+<http://ai-act.eu/ai#JudicialDecisionSupport> <http://www.w3.org/2000/01/rdf-schema#label> "Apoyo a la decisión judicial"@es .
+<http://ai-act.eu/ai#JudicialDecisionSupport> <http://www.w3.org/2000/01/rdf-schema#label> "Judicial Decision Support"@en .
+# 
+# http://ai-act.eu/ai#JudicialSupportCriterion
+# 
+# http://ai-act.eu/ai#LacksHumanOversight
+<http://ai-act.eu/ai#LacksHumanOversight> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#EventLoggingRequirement> .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#HumanOversightRequirement> .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#PostMarketMonitoringRequirement> .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Recital 47 and Annex III, point 2."@en .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://www.w3.org/2000/01/rdf-schema#label> "Lacks Human Oversight"@en .
+<http://ai-act.eu/ai#LacksHumanOversight> <http://www.w3.org/2000/01/rdf-schema#label> "Lacks Human Oversight"@es .
+# 
+# http://ai-act.eu/ai#LawEnforcementCriterion
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#ConformityAssessmentRequirement> .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza en contextos policiales, evaluación de riesgo delictivo o análisis de pruebas."@en .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza en contextos policiales, evaluación de riesgo delictivo o análisis de pruebas."@es .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 7."@en .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Law Enforcement and Risk Assessment"@en .
+<http://ai-act.eu/ai#LawEnforcementCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Law Enforcement and Risk Assessment"@es .
+# 
+# http://ai-act.eu/ai#LawEnforcementSupport
+<http://ai-act.eu/ai#LawEnforcementSupport> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#LawEnforcementSupport> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#LawEnforcementSupport> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#LawEnforcementCriterion> .
+<http://ai-act.eu/ai#LawEnforcementSupport> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 7."@en .
+<http://ai-act.eu/ai#LawEnforcementSupport> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenciado en el Anexo III, punto 7."@es .
+<http://ai-act.eu/ai#LawEnforcementSupport> <http://www.w3.org/2000/01/rdf-schema#label> "Apoyo a la aplicación de la ley"@es .
+<http://ai-act.eu/ai#LawEnforcementSupport> <http://www.w3.org/2000/01/rdf-schema#label> "Law Enforcement Support"@en .
+# 
+# http://ai-act.eu/ai#LimitedRisk
+<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@en .
+<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es .
+<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Limited Risk"@en .
+<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Limited Risk"@es .
+# 
+# http://ai-act.eu/ai#MigrationBorderCriterion
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#DataGovernanceRequirement> .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@en .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@es .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 8."@en .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Migration, Asylum and Border Control"@en .
+<http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Migration, Asylum and Border Control"@es .
+# 
+# http://ai-act.eu/ai#MigrationControl
+<http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#MigrationControl> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#MigrationControl> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#MigrationBorderCriterion> .
+<http://ai-act.eu/ai#MigrationControl> <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#MigrationBorderCriterion> .
+<http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/2000/01/rdf-schema#comment> "Gestión de migración, asilo y control fronterizo."@es .
+<http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/2000/01/rdf-schema#comment> "Migration, asylum and border control management."@en .
+<http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/2000/01/rdf-schema#label> "Control migratorio"@es .
+<http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/2000/01/rdf-schema#label> "Migration Control"@en .
+# 
+# http://ai-act.eu/ai#MinimalRisk
+<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@en .
+<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es .
+<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Minimal Risk"@en .
+<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Minimal Risk"@es .
+# 
+# http://ai-act.eu/ai#PostMarketMonitoringRequirement
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#BiometricIdentificationOrCategorization> .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#CriticalInfrastructureCriterion> .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#DeepfakeGeneration> .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://ai-act.eu/ai#justifiedByCriterion> <http://ai-act.eu/ai#LacksHumanOversight> .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Mandatory post-deployment monitoring under Articles 61 and 62 of the EU AI Act."@en .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Vigilancia obligatoria tras el despliegue según los Artículos 61 y 62 del AI Act."@es .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Post-market monitoring requirement"@en .
+<http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de vigilancia post-comercialización"@es .
+# 
+# http://ai-act.eu/ai#PublicServiceAllocation
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#comment> "Determinación de acceso a servicios públicos esenciales."@es .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#comment> "Determination of access to essential public services."@en .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#label> "Asignación de servicios públicos"@es .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#label> "Public Service Allocation"@en .
+# 
+# http://ai-act.eu/ai#PublicServices
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#PublicServices> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/2000/01/rdf-schema#comment> "Contexto de despliegue que involucra servicios públicos."@es .
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/2000/01/rdf-schema#comment> "Deployment context involving public services."@en .
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/2000/01/rdf-schema#label> "Public Services"@en .
+<http://ai-act.eu/ai#PublicServices> <http://www.w3.org/2000/01/rdf-schema#label> "Servicios Públicos"@es .
+# 
+# http://ai-act.eu/ai#RecruitmentEmploymentCriterion
+# 
+# http://ai-act.eu/ai#RecruitmentOrEmployment
+<http://ai-act.eu/ai#RecruitmentOrEmployment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#RecruitmentOrEmployment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#RecruitmentOrEmployment> <http://ai-act.eu/ai#triggersCriterion> <http://ai-act.eu/ai#RecruitmentEmploymentCriterion> .
+<http://ai-act.eu/ai#RecruitmentOrEmployment> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 4."@en .
+<http://ai-act.eu/ai#RecruitmentOrEmployment> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenciado en el Anexo III, punto 4."@es .
+<http://ai-act.eu/ai#RecruitmentOrEmployment> <http://www.w3.org/2000/01/rdf-schema#label> "Reclutamiento y empleo"@es .
+<http://ai-act.eu/ai#RecruitmentOrEmployment> <http://www.w3.org/2000/01/rdf-schema#label> "Recruitment and Employment"@en .
+# 
+# http://ai-act.eu/ai#RiskManagementRequirement
+# 
+# http://ai-act.eu/ai#SocialScoring
+<http://ai-act.eu/ai#SocialScoring> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#SocialScoring> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
+<http://ai-act.eu/ai#SocialScoring> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#SocialScoring> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#UnacceptableRisk> .
+<http://ai-act.eu/ai#SocialScoring> <http://www.w3.org/2000/01/rdf-schema#comment> "Prohibido según el Artículo 5(1)(c) del AI Act de la UE."@es .
+<http://ai-act.eu/ai#SocialScoring> <http://www.w3.org/2000/01/rdf-schema#comment> "Prohibited under Article 5(1)(c) of the EU AI Act."@en .
+<http://ai-act.eu/ai#SocialScoring> <http://www.w3.org/2000/01/rdf-schema#label> "Social scoring"@en .
+# 
+# http://ai-act.eu/ai#SubliminalManipulation
+<http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TechnicalCriterion> .
+<http://ai-act.eu/ai#SubliminalManipulation> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
+<http://ai-act.eu/ai#SubliminalManipulation> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#SubliminalManipulation> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#UnacceptableRisk> .
+<http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/2000/01/rdf-schema#comment> "Prohibido según el Artículo 5(1)(a) del AI Act de la UE."@es .
+<http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/2000/01/rdf-schema#comment> "Prohibited under Article 5(1)(a) of the EU AI Act."@en .
+<http://ai-act.eu/ai#SubliminalManipulation> <http://www.w3.org/2000/01/rdf-schema#label> "Subliminal manipulation"@en .
+# 
+# http://ai-act.eu/ai#SyntheticDataset
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TrainingDataOrigin> .
+# 
+# http://ai-act.eu/ai#TraceabilityRequirement
+# 
+# http://ai-act.eu/ai#UnacceptableRisk
+<http://ai-act.eu/ai#UnacceptableRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#UnacceptableRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#RiskLevel> .
+<http://ai-act.eu/ai#UnacceptableRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "AI systems classified as unacceptable risk according to the EU AI Act. These systems are strictly prohibited due to their unacceptable threat to safety, fundamental rights, or democratic values."@en .
+<http://ai-act.eu/ai#UnacceptableRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de IA clasificados como de riesgo inaceptable según el AI Act de la UE. Estos sistemas están estrictamente prohibidos por su amenaza inaceptable a la seguridad, los derechos fundamentales o los valores democráticos."@es .
+<http://ai-act.eu/ai#UnacceptableRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Riesgo Inaceptable"@es .
+<http://ai-act.eu/ai#UnacceptableRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Unacceptable Risk"@en .
+# 
+# 
+# 
+# #################################################################
+# #
+# #    Annotations
+# #
+# #################################################################
+# 
+# 
+<http://ai-act.eu/ai#AccessToEssencialServices> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenced in Annex III, point 5."@en .
+<http://ai-act.eu/ai#AccessToEssencialServices> <http://www.w3.org/2000/01/rdf-schema#comment> "Referenciado en el Anexo III, punto 5."@es .
+<http://ai-act.eu/ai#AccessToEssencialServices> <http://www.w3.org/2000/01/rdf-schema#label> "Acceso a Servicios Esenciales"@es .
+<http://ai-act.eu/ai#AccessToEssencialServices> <http://www.w3.org/2000/01/rdf-schema#label> "Access to Essential Services"@en .
+# 
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2000/01/rdf-schema#comment> "Conjunto de datos originado en fuentes externas."@es .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2000/01/rdf-schema#comment> "Dataset originating from external sources."@en .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Datos Externos"@es .
+<http://ai-act.eu/ai#ExternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "External Dataset"@en .
+# 
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/2000/01/rdf-schema#comment> "Conjunto de datos originado en fuentes internas."@es .
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/2000/01/rdf-schema#comment> "Dataset originating from internal sources."@en .
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Datos Internos"@es .
+<http://ai-act.eu/ai#InternalDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Internal Dataset"@en .
+# 
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/2000/01/rdf-schema#comment> "Conjunto de datos generado sintéticamente."@es .
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/2000/01/rdf-schema#comment> "Dataset generated synthetically."@en .
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Datos Sintéticos"@es .
+<http://ai-act.eu/ai#SyntheticDataset> <http://www.w3.org/2000/01/rdf-schema#label> "Synthetic Dataset"@en .
+# 
+# Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/

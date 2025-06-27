@@ -1,0 +1,32 @@
+{
+  "@context": {
+    "ai": "http://ai-act.eu/ai#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "hasName": {"@id": "ai:hasName", "@type": "xsd:string"},
+    "hasPurpose": {"@id": "ai:hasPurpose", "@type": "@id"},
+    "hasDeploymentContext": {"@id": "ai:hasDeploymentContext", "@type": "@id"},
+    "hasTrainingDataOrigin": {"@id": "ai:hasTrainingDataOrigin", "@type": "@id"},
+    "hasInnerSystemCriteria": {"@id": "ai:hasInnerSystemCriteria", "@type": "@id"},
+    "hasVersion": {"@id": "ai:hasVersion", "@type": "xsd:string"},
+    "hasUrn": {"@id": "ai:hasUrn", "@type": "xsd:anyURI"},
+    "IntelligentSystem": "ai:IntelligentSystem",
+    "Education": "ai:Education",
+    "Healthcare": "ai:Healthcare",
+    "PublicServices": "ai:PublicServices",
+    "BiometricIdentification": "ai:BiometricIdentification",
+    "InternalDataset": "ai:InternalDataset",
+    "ExternalDataset": "ai:ExternalDataset",
+    "SyntheticDataset": "ai:SyntheticDataset",
+    "ComplianceRequirement": "ai:ComplianceRequirement",
+    "NormativeCriterion": "ai:NormativeCriterion",
+    "TechnicalCriterion": "ai:TechnicalCriterion",
+    "Criterion": "ai:Criterion",
+    "Purpose": "ai:Purpose",
+    "RiskLevel": "ai:RiskLevel",
+    "DeploymentContext": "ai:DeploymentContext",
+    "TrainingDataOrigin": "ai:TrainingDataOrigin"
+  }
+}

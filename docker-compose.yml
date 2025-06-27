@@ -1,4 +1,3 @@
-
 services:
 
   fuseki:
@@ -54,6 +53,9 @@ services:
     build: ./ontologias          
     ports:
       - "80:80"
+    volumes:
+      - ./ontologias/json-ld-context.json:/usr/share/nginx/html/json-ld-context.json:ro
+      - ./ontologias/docs:/usr/share/nginx/html/docs:ro
 
   frontend:
     build:

@@ -1,0 +1,171 @@
+{
+  "@context": {
+    "ai": "http://ai-act.eu/ai#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "ai:activatesRequirement": {
+      "@type": "xsd:string"
+    },
+    "ai:assessedSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:assignedRiskLevel": {
+      "@type": "xsd:string"
+    },
+    "ai:assignsRiskLevel": {
+      "@type": "xsd:string"
+    },
+    "ai:considersCriterion": {
+      "@type": "xsd:string"
+    },
+    "ai:deploysSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:distributesSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:expectedRiskLevel": {
+      "@type": "xsd:string"
+    },
+    "ai:generatesEvidence": {
+      "@type": "xsd:string"
+    },
+    "ai:hasDeploymentContext": {
+      "@type": "xsd:string"
+    },
+    "ai:hasNormativeCriterion": {
+      "@type": "xsd:string"
+    },
+    "ai:hasPurpose": {
+      "@type": "xsd:string"
+    },
+    "ai:hasRequirement": {
+      "@type": "xsd:string"
+    },
+    "ai:hasRiskLevel": {
+      "@type": "xsd:string"
+    },
+    "ai:hasTechnicalCriterion": {
+      "@type": "xsd:string"
+    },
+    "ai:hasTechnicalRequirement": {
+      "@type": "xsd:string"
+    },
+    "ai:hasTrainingDataOrigin": {
+      "@type": "xsd:string"
+    },
+    "ai:importsSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:isAssessmentOfSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:isAssignedRiskLevelOf": {
+      "@type": "xsd:string"
+    },
+    "ai:isComplianceRequiredBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isCriterionConsideredBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isDeploymentContextOf": {
+      "@type": "xsd:string"
+    },
+    "ai:isEvidenceForRequirement": {
+      "@type": "xsd:string"
+    },
+    "ai:isEvidenceGeneratedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isExpectedRiskLevelFor": {
+      "@type": "xsd:string"
+    },
+    "ai:isMonitoredBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isNormativeCriterionOf": {
+      "@type": "xsd:string"
+    },
+    "ai:isPurposeOfSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:isRequirementActivatedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isRequirementOfSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:isRiskLevelAssignedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isRiskLevelOfSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:isSystemDeployedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isSystemDistributedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isSystemImportedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isSystemProvidedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isSystemUsedBy": {
+      "@type": "xsd:string"
+    },
+    "ai:isTechnicalCriterionOfSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:isTechnicalRequirementOf": {
+      "@type": "xsd:string"
+    },
+    "ai:isTrainingDataOriginOf": {
+      "@type": "xsd:string"
+    },
+    "ai:justifiedByCriterion": {
+      "@type": "xsd:string"
+    },
+    "ai:monitorsSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:providesEvidenceFor": {
+      "@type": "xsd:string"
+    },
+    "ai:providesSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:requiresCompliance": {
+      "@type": "xsd:string"
+    },
+    "ai:triggersComplianceRequirement": {
+      "@type": "xsd:string"
+    },
+    "ai:triggersCriterion": {
+      "@type": "xsd:string"
+    },
+    "ai:usesSystem": {
+      "@type": "xsd:string"
+    },
+    "ai:hasHttpIri": {
+      "@type": "xsd:string"
+    },
+    "ai:hasName": {
+      "@type": "xsd:string"
+    },
+    "ai:hasUrn": {
+      "@type": "@id"
+    },
+    "ai:hasVersion": {
+      "@type": "xsd:string"
+    },
+    "ai:justificationNote": {
+      "@type": "xsd:string"
+    }
+  }
+}
