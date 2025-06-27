@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+owlready2
+python-multipart
+rdflib

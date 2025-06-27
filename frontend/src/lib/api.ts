@@ -6,7 +6,8 @@ export async function fetchSystems() {
   if (!response.ok) {
     throw new Error("Failed to fetch systems");
   }
-  return response.json();
+  const data = await response.json();
+  return Array.isArray(data.items) ? data.items : [];
 }
 
 export async function fetchVocabulary(path: string): Promise<{ id: string; label: string }[]> {

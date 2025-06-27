@@ -29,10 +29,13 @@ app.add_middleware(
 )
 
 
+# Leer la ruta de la ontología base desde la variable de entorno
+ONTOLOGY_PATH = os.environ.get("ONTOLOGY_PATH")
+if not ONTOLOGY_PATH or not os.path.isfile(ONTOLOGY_PATH):
+    raise RuntimeError(f"No se encontró la ontología base en la ruta especificada por ONTOLOGY_PATH: {ONTOLOGY_PATH}")
+
 ont = Graph()
-for ttl in os.listdir("ontologias"):
-    if ttl.endswith(".ttl"):
-        ont.parse(f"ontologias/{ttl}", format="turtle")
+ont.parse(ONTOLOGY_PATH, format="turtle")
 
 
 def compact_uri(uri: str) -> str:

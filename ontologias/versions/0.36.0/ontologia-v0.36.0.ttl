@@ -120,7 +120,7 @@ ai:Healthcare a ai:DeploymentContext,
     rdfs:comment "Contexto de despliegue que involucra la salud, servicios médicos o actividades relacionadas con la atención sanitaria. Este contexto es relevante para sistemas de IA utilizados en diagnóstico, tratamiento, gestión de pacientes o administración sanitaria."@es ;
     ai:triggersCriterion ai:EssentialServicesAccessCriterion .
 
-ai:InternalDataset a ai:TrainingDataOrigin;
+ai:InternalDataset a ai:TrainingDataOrigin ;
     rdfs:label "Internal Dataset"@en ;
     rdfs:label "Datos Internos"@es ;
     rdfs:comment "Dataset originating from internal sources."@en ;

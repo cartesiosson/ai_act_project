@@ -31,7 +31,7 @@ services:
       - mongo_data:/data/db
 
   backend:
-    build: ./backend           # tu carpeta con Dockerfile para FastAPI
+    build: ./backend
     depends_on:
       - mongo
       - fuseki
@@ -43,11 +43,22 @@ services:
       - FUSEKI_GRAPH=http://ai-act.eu/ontology
       - FUSEKI_DATASET=ds
       - FUSEKI_GRAPH_DATA=http://ai-act.eu/ontology/data
-
+      - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
     ports:
       - "8000:8000"
     volumes:
-      - ./ontologias:/app/ontologias    # para cargar TTL al iniciar
+      - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
+
+  reasoner:
+    build: ./reasoner_service
+    environment:
+      - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
+    volumes:
+      - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
+    ports:
+      - "8001:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    
 
   ontologias:
     build: ./ontologias          
