@@ -493,8 +493,7 @@ xsd:date rdf:type rdfs:Datatype .
 ###  http://ai-act.eu/ai#isTriggeredBy
 <http://ai-act.eu/ai#isTriggeredBy> rdf:type owl:ObjectProperty ;
                                     rdfs:domain <http://ai-act.eu/ai#Criterion> ;
-                                    rdfs:range <http://ai-act.eu/ai#DeploymentContext> ,
-                                               <http://ai-act.eu/ai#Purpose> ;
+                                    rdfs:range <http://ai-act.eu/ai#ContextOrPurpose> ;
                                     rdfs:comment "Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico."@es ,
                                                  "Indicates that a criterion is activated or triggered by a specific deployment context or purpose."@en ;
                                     rdfs:label "es activado por"@es ,
@@ -565,8 +564,7 @@ xsd:date rdf:type rdfs:Datatype .
 ###  http://ai-act.eu/ai#triggersCriterion
 <http://ai-act.eu/ai#triggersCriterion> rdf:type owl:ObjectProperty ;
                                         owl:inverseOf <http://ai-act.eu/ai#isTriggeredBy> ;
-                                        rdfs:domain <http://ai-act.eu/ai#DeploymentContext> ,
-                                                    <http://ai-act.eu/ai#Purpose> ;
+                                        rdfs:domain <http://ai-act.eu/ai#ContextOrPurpose> ;
                                         rdfs:range <http://ai-act.eu/ai#Criterion> ;
                                         rdfs:comment "Indica que un contexto de despliegue o propósito activa o dispara un criterio específico."@es ,
                                                      "Indicates that a deployment context or purpose activates or triggers a specific criterion."@en ;
@@ -657,6 +655,19 @@ xsd:date rdf:type rdfs:Datatype .
                                                          "Obligation or condition that an AI system must fulfill to comply with the EU AI Act."@en ;
                                             rdfs:label "Compliance Requirement"@en ,
                                                        "Requisito de Cumplimiento"@es .
+
+
+###  http://ai-act.eu/ai#ContextOrPurpose
+<http://ai-act.eu/ai#ContextOrPurpose> rdf:type owl:Class ;
+                                       owl:equivalentClass [ rdf:type owl:Class ;
+                                                             owl:unionOf ( <http://ai-act.eu/ai#DeploymentContext>
+                                                                           <http://ai-act.eu/ai#Purpose>
+                                                                         )
+                                                           ] ;
+                                       rdfs:comment "Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios."@es ,
+                                                    "Union class representing either a deployment context or a purpose that can trigger criteria."@en ;
+                                       rdfs:label "Context or Purpose"@en ,
+                                                  "Contexto o Propósito"@es .
 
 
 ###  http://ai-act.eu/ai#ContextualCriterion

@@ -110,6 +110,9 @@ Este es el lugar donde escribir un resumen de la ontolog&iacute;a. Un par de fra
       <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Contexto de Despliegue</a>
    </li>
    <li>
+      <a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Contexto o Propósito</a>
+   </li>
+   <li>
       <a href="#http://ai-act.eu/ai#ContextualCriterion" title="http://ai-act.eu/ai#ContextualCriterion">Contextual Criterion</a>
    </li>
    <li>
@@ -516,6 +519,7 @@ Esta secci&oacute;n introduce m&aacute;s detalles sobre cada clase y propiedad d
  <ul class="hlist">
   <li><a href="#http://ai-act.eu/ai#Actor" title="http://ai-act.eu/ai#Actor">Actor</a></li>
   <li><a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Contexto de Despliegue</a></li>
+  <li><a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Contexto o Propósito</a></li>
   <li><a href="#http://ai-act.eu/ai#ContextualCriterion" title="http://ai-act.eu/ai#ContextualCriterion">Contextual Criterion</a></li>
   <li><a href="#http://ai-act.eu/ai#Criterion" title="http://ai-act.eu/ai#Criterion">Criterio</a></li>
   <li><a href="#http://ai-act.eu/ai#NormativeCriterion" title="http://ai-act.eu/ai#NormativeCriterion">Criterio Normativo</a></li>
@@ -586,19 +590,46 @@ Esta secci&oacute;n introduce m&aacute;s detalles sobre cada clase y propiedad d
     en dominio de
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#triggersCriterion" title="http://ai-act.eu/ai#triggersCriterion">activa criterio</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#isDeploymentContextOf" title="http://ai-act.eu/ai#isDeploymentContextOf">es contexto de despliegue de</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
+    <a href="#http://ai-act.eu/ai#isDeploymentContextOf" title="http://ai-act.eu/ai#isDeploymentContextOf">es contexto de despliegue de</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
    </dd>
    <dt>
     en rango de
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#isTriggeredBy" title="http://ai-act.eu/ai#isTriggeredBy">es activado por</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#hasDeploymentContext" title="http://ai-act.eu/ai#hasDeploymentContext">tiene contexto de despliegue</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
+    <a href="#http://ai-act.eu/ai#hasDeploymentContext" title="http://ai-act.eu/ai#hasDeploymentContext">tiene contexto de despliegue</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
    </dd>
    <dt>
     miembros
    </dt>
    <dd>
     <a href="#http://ai-act.eu/ai#Education" title="http://ai-act.eu/ai#Education">Educación</a> <sup class="type-ni" title="Individuo">ni</sup>, <a href="#http://ai-act.eu/ai#Healthcare" title="http://ai-act.eu/ai#Healthcare">Salud</a> <sup class="type-ni" title="Individuo">ni</sup>, <a href="#http://ai-act.eu/ai#PublicServices" title="http://ai-act.eu/ai#PublicServices">Servicios Públicos</a> <sup class="type-ni" title="Individuo">ni</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://ai-act.eu/ai#ContextOrPurpose">
+  <h3>Contexto o Propósito<sup class="type-c" title="clase">c</sup> <span class="backlink"> Volver a <a href="#toc">índice</a> o <a href="#classes">Índice de clases</a> </span></h3>
+  <p><strong>IRI:</strong> http://ai-act.eu/ai#ContextOrPurpose</p>
+  <div class="comment">
+   <span class="markdown">Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    equivalente a
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Contexto de Despliegue</a> <sup class="type-c" title="clase">c</sup> <span class="logic">or</span> <a href="#http://ai-act.eu/ai#Purpose" title="http://ai-act.eu/ai#Purpose">Propósito</a> <sup class="type-c" title="clase">c</sup>
+   </dd>
+   <dt>
+    en dominio de
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#triggersCriterion" title="http://ai-act.eu/ai#triggersCriterion">activa criterio</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
+   </dd>
+   <dt>
+    en rango de
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#isTriggeredBy" title="http://ai-act.eu/ai#isTriggeredBy">es activado por</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
    </dd>
   </dl>
  </div>
@@ -1051,13 +1082,13 @@ Esta secci&oacute;n introduce m&aacute;s detalles sobre cada clase y propiedad d
     en dominio de
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#triggersCriterion" title="http://ai-act.eu/ai#triggersCriterion">activa criterio</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#isPurposeOfSystem" title="http://ai-act.eu/ai#isPurposeOfSystem">es propósito de sistema</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
+    <a href="#http://ai-act.eu/ai#isPurposeOfSystem" title="http://ai-act.eu/ai#isPurposeOfSystem">es propósito de sistema</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
    </dd>
    <dt>
     en rango de
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#isTriggeredBy" title="http://ai-act.eu/ai#isTriggeredBy">es activado por</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#isExpectedRiskLevelFor" title="http://ai-act.eu/ai#isExpectedRiskLevelFor">es nivel de riesgo esperado para</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#hasPurpose" title="http://ai-act.eu/ai#hasPurpose">tiene propósito</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
+    <a href="#http://ai-act.eu/ai#isExpectedRiskLevelFor" title="http://ai-act.eu/ai#isExpectedRiskLevelFor">es nivel de riesgo esperado para</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>, <a href="#http://ai-act.eu/ai#hasPurpose" title="http://ai-act.eu/ai#hasPurpose">tiene propósito</a> <sup class="type-op" title="Propiedad entre objetos">op</sup>
    </dd>
    <dt>
     miembros
@@ -1409,10 +1440,7 @@ Esta secci&oacute;n introduce m&aacute;s detalles sobre cada clase y propiedad d
      dominio
     </dt>
     <dd>
-     <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Contexto de Despliegue</a> <sup class="type-c" title="clase">c</sup>
-    </dd>
-    <dd>
-     <a href="#http://ai-act.eu/ai#Purpose" title="http://ai-act.eu/ai#Purpose">Propósito</a> <sup class="type-c" title="clase">c</sup>
+     <a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Contexto o Propósito</a> <sup class="type-c" title="clase">c</sup>
     </dd>
     <dt>
      rango
@@ -1702,10 +1730,7 @@ Esta secci&oacute;n introduce m&aacute;s detalles sobre cada clase y propiedad d
      rango
     </dt>
     <dd>
-     <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Contexto de Despliegue</a> <sup class="type-c" title="clase">c</sup>
-    </dd>
-    <dd>
-     <a href="#http://ai-act.eu/ai#Purpose" title="http://ai-act.eu/ai#Purpose">Propósito</a> <sup class="type-c" title="clase">c</sup>
+     <a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Contexto o Propósito</a> <sup class="type-c" title="clase">c</sup>
     </dd>
     <dt>
      inversa de

@@ -472,8 +472,7 @@ ai:triggersCriterion a owl:ObjectProperty ;
         "activa criterio"@es ;
     rdfs:comment "Indicates that a deployment context or purpose activates or triggers a specific criterion."@en ;
     rdfs:comment "Indica que un contexto de despliegue o propósito activa o dispara un criterio específico."@es ;
-    rdfs:domain ai:DeploymentContext,
-        ai:Purpose ;
+    rdfs:domain ai:ContextOrPurpose ;
     rdfs:range ai:Criterion ;
     owl:inverseOf ai:isTriggeredBy .
 
@@ -483,8 +482,7 @@ ai:isTriggeredBy a owl:ObjectProperty ;
     rdfs:comment "Indicates that a criterion is activated or triggered by a specific deployment context or purpose."@en ;
     rdfs:comment "Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico."@es ;
     rdfs:domain ai:Criterion ;
-    rdfs:range ai:DeploymentContext,
-        ai:Purpose ;
+    rdfs:range ai:ContextOrPurpose ;
     owl:inverseOf ai:triggersCriterion .
 
 ai:usesSystem a owl:ObjectProperty ;
@@ -757,6 +755,16 @@ ai:Purpose a owl:Class ;
     rdfs:comment "Intended purpose for which an AI system is designed or used."@en ;
     rdfs:comment "Propósito previsto para el que se diseña o utiliza un sistema de IA."@es ;
     rdfs:subClassOf ai:Identifiable .
+
+ai:ContextOrPurpose a owl:Class ;
+    rdfs:label "Context or Purpose"@en ;
+    rdfs:label "Contexto o Propósito"@es ;
+    rdfs:comment "Union class representing either a deployment context or a purpose that can trigger criteria."@en ;
+    rdfs:comment "Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios."@es ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (ai:DeploymentContext ai:Purpose)
+    ] .
 
 ai:CriticalInfrastructureCriterion a ai:NormativeCriterion,
         owl:NamedIndividual ;

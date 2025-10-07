@@ -706,8 +706,7 @@
 
     <owl:ObjectProperty rdf:about="http://ai-act.eu/ai#isTriggeredBy">
         <rdfs:domain rdf:resource="http://ai-act.eu/ai#Criterion"/>
-        <rdfs:range rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
-        <rdfs:range rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <rdfs:range rdf:resource="http://ai-act.eu/ai#ContextOrPurpose"/>
         <rdfs:comment xml:lang="es">Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico.</rdfs:comment>
         <rdfs:comment xml:lang="en">Indicates that a criterion is activated or triggered by a specific deployment context or purpose.</rdfs:comment>
         <rdfs:label xml:lang="es">es activado por</rdfs:label>
@@ -806,8 +805,7 @@
 
     <owl:ObjectProperty rdf:about="http://ai-act.eu/ai#triggersCriterion">
         <owl:inverseOf rdf:resource="http://ai-act.eu/ai#isTriggeredBy"/>
-        <rdfs:domain rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
-        <rdfs:domain rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#ContextOrPurpose"/>
         <rdfs:range rdf:resource="http://ai-act.eu/ai#Criterion"/>
         <rdfs:comment xml:lang="es">Indica que un contexto de despliegue o propósito activa o dispara un criterio específico.</rdfs:comment>
         <rdfs:comment xml:lang="en">Indicates that a deployment context or purpose activates or triggers a specific criterion.</rdfs:comment>
@@ -946,6 +944,26 @@
         <rdfs:comment xml:lang="en">Obligation or condition that an AI system must fulfill to comply with the EU AI Act.</rdfs:comment>
         <rdfs:label xml:lang="en">Compliance Requirement</rdfs:label>
         <rdfs:label xml:lang="es">Requisito de Cumplimiento</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://ai-act.eu/ai#ContextOrPurpose -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#ContextOrPurpose">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://ai-act.eu/ai#DeploymentContext"/>
+                    <rdf:Description rdf:about="http://ai-act.eu/ai#Purpose"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Union class representing either a deployment context or a purpose that can trigger criteria.</rdfs:comment>
+        <rdfs:label xml:lang="en">Context or Purpose</rdfs:label>
+        <rdfs:label xml:lang="es">Contexto o Propósito</rdfs:label>
     </owl:Class>
     
 

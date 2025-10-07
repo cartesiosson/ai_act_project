@@ -1,4 +1,14 @@
 [ {
+  "@id" : "_:genid1",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2002/07/owl#unionOf" : [ {
+    "@list" : [ {
+      "@id" : "http://ai-act.eu/ai#DeploymentContext"
+    }, {
+      "@id" : "http://ai-act.eu/ai#Purpose"
+    } ]
+  } ]
+}, {
   "@id" : "http://ai-act.eu/ai#AccessToEssencialServices",
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
@@ -189,6 +199,26 @@
 }, {
   "@id" : "http://ai-act.eu/ai#ConformityAssessmentRequirement",
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ]
+}, {
+  "@id" : "http://ai-act.eu/ai#ContextOrPurpose",
+  "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "es",
+    "@value" : "Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios."
+  }, {
+    "@language" : "en",
+    "@value" : "Union class representing either a deployment context or a purpose that can trigger criteria."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "en",
+    "@value" : "Context or Purpose"
+  }, {
+    "@language" : "es",
+    "@value" : "Contexto o Propósito"
+  } ],
+  "http://www.w3.org/2002/07/owl#equivalentClass" : [ {
+    "@id" : "_:genid1"
+  } ]
 }, {
   "@id" : "http://ai-act.eu/ai#ContextualCriterion",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
@@ -2668,9 +2698,7 @@
     "@value" : "is triggered by"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
-    "@id" : "http://ai-act.eu/ai#DeploymentContext"
-  }, {
-    "@id" : "http://ai-act.eu/ai#Purpose"
+    "@id" : "http://ai-act.eu/ai#ContextOrPurpose"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#justificationNote",
@@ -2847,9 +2875,7 @@
     "@value" : "Indicates that a deployment context or purpose activates or triggers a specific criterion."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
-    "@id" : "http://ai-act.eu/ai#DeploymentContext"
-  }, {
-    "@id" : "http://ai-act.eu/ai#Purpose"
+    "@id" : "http://ai-act.eu/ai#ContextOrPurpose"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "es",

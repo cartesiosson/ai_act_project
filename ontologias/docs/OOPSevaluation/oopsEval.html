@@ -67,31 +67,31 @@ P04. Creating unconnected ontology elements<span style="float: right;">3 cases d
 </div>
 <div id="collapse0" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Ontology elements (classes, object properties and datatype properties) are created isolated, with no relation to the rest of the ontology.	</p><p>This pitfall affects to the following ontology elements: </p><ul><li><a href=""http://ai-act.eu/ai#InternalDataset"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#InternalDataset"^^xsd:anyURI</a></li><li><a href=""http://ai-act.eu/ai#SyntheticDataset"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#SyntheticDataset"^^xsd:anyURI</a></li><li><a href=""http://ai-act.eu/ai#ExternalDataset"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#ExternalDataset"^^xsd:anyURI</a></li></ul></div>
+<p>Ontology elements (classes, object properties and datatype properties) are created isolated, with no relation to the rest of the ontology.	</p><p>This pitfall affects to the following ontology elements: </p><ul><li><a href=""http://ai-act.eu/ai#ExternalDataset"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#ExternalDataset"^^xsd:anyURI</a></li><li><a href=""http://ai-act.eu/ai#InternalDataset"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#InternalDataset"^^xsd:anyURI</a></li><li><a href=""http://ai-act.eu/ai#SyntheticDataset"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#SyntheticDataset"^^xsd:anyURI</a></li></ul></div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <h4 class="panel-title">
 <a data-toggle="collapse" href="#collapse1">
-P13. Inverse relationships not explicitly declared<span style="float: right;">2 cases detected. <span class="label label-minor">Minor</span></span></a>
+P07. Merging different concepts in the same class<span style="float: right;">1 case detected. <span class="label label-minor">Minor</span></span></a>
 </h4>
 </div>
 <div id="collapse1" class="panel-collapse collapse">
 <div class="panel-body">
-<p>This pitfall appears when any relationship (except for those that are defined as symmetric properties using owl:SymmetricProperty) does not have an inverse relationship (owl:inverseOf) defined within the ontology.	</p><p>This pitfall affects to the following ontology elements: </p><ul></ul></div>
+<p>A class whose name refers to two or more different concepts is created.	</p><p>This pitfall affects to the following ontology elements: </p><ul><li><a href=""http://ai-act.eu/ai#ContextOrPurpose"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#ContextOrPurpose"^^xsd:anyURI</a></li></ul></div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <h4 class="panel-title">
 <a data-toggle="collapse" href="#collapse2">
-P19. Defining multiple domains or ranges in properties<span style="float: right;">2 cases detected. <span class="label label-danger">Critical</span></span></a>
+P13. Inverse relationships not explicitly declared<span style="float: right;">2 cases detected. <span class="label label-minor">Minor</span></span></a>
 </h4>
 </div>
 <div id="collapse2" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The domain or range (or both) of a property (relationships and attributes) is defined by stating more than one rdfs:domain or rdfs:range statements. In OWL multiple rdfs:domain or rdfs:range axioms are allowed, but they are interpreted as conjunction, being, therefore, equivalent to the construct owl:intersectionOf. This pitfall is related to the common error that appears when defining domains and ranges described in [7].	</p><p>This pitfall affects to the following ontology elements: </p><ul><li><a href=""http://ai-act.eu/ai#isTriggeredBy"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#isTriggeredBy"^^xsd:anyURI</a></li><li><a href=""http://ai-act.eu/ai#triggersCriterion"^^xsd:anyURI" target="_blank">"http://ai-act.eu/ai#triggersCriterion"^^xsd:anyURI</a></li></ul></div>
+<p>This pitfall appears when any relationship (except for those that are defined as symmetric properties using owl:SymmetricProperty) does not have an inverse relationship (owl:inverseOf) defined within the ontology.	</p><p>This pitfall affects to the following ontology elements: </p><ul></ul></div>
 </div>
 </div>
 </div>

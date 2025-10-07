@@ -112,6 +112,9 @@ This ontology has the following classes and properties.</span>
       <a href="#http://ai-act.eu/ai#ComplianceRequirement" title="http://ai-act.eu/ai#ComplianceRequirement">Compliance Requirement</a>
    </li>
    <li>
+      <a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Context or Purpose</a>
+   </li>
+   <li>
       <a href="#http://ai-act.eu/ai#ContextualCriterion" title="http://ai-act.eu/ai#ContextualCriterion">Contextual Criterion</a>
    </li>
    <li>
@@ -518,6 +521,7 @@ This section provides details for each class and property defined by AI Act Onto
  <ul class="hlist">
   <li><a href="#http://ai-act.eu/ai#Actor" title="http://ai-act.eu/ai#Actor">Actor</a></li>
   <li><a href="#http://ai-act.eu/ai#ComplianceRequirement" title="http://ai-act.eu/ai#ComplianceRequirement">Compliance Requirement</a></li>
+  <li><a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Context or Purpose</a></li>
   <li><a href="#http://ai-act.eu/ai#ContextualCriterion" title="http://ai-act.eu/ai#ContextualCriterion">Contextual Criterion</a></li>
   <li><a href="#http://ai-act.eu/ai#Criterion" title="http://ai-act.eu/ai#Criterion">Criterion</a></li>
   <li><a href="#http://ai-act.eu/ai#Deployer" title="http://ai-act.eu/ai#Deployer">Deployer</a></li>
@@ -601,6 +605,33 @@ This section provides details for each class and property defined by AI Act Onto
    </dt>
    <dd>
     <a href="#http://ai-act.eu/ai#AccuracyEvaluationRequirement" title="http://ai-act.eu/ai#AccuracyEvaluationRequirement">Accuracy Evaluation Requirement</a> <sup class="type-ni" title="named individual">ni</sup>, <a href="#http://ai-act.eu/ai#DataGovernanceRequirement" title="http://ai-act.eu/ai#DataGovernanceRequirement">Data Governance Requirement</a> <sup class="type-ni" title="named individual">ni</sup>, <a href="#http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement" title="http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement">Fundamental Rights Assessment Requirement</a> <sup class="type-ni" title="named individual">ni</sup>, <a href="#http://ai-act.eu/ai#HumanOversightRequirement" title="http://ai-act.eu/ai#HumanOversightRequirement">Human Oversight Requirement</a> <sup class="type-ni" title="named individual">ni</sup>, <a href="#http://ai-act.eu/ai#PostMarketMonitoringRequirement" title="http://ai-act.eu/ai#PostMarketMonitoringRequirement">Post-market monitoring requirement</a> <sup class="type-ni" title="named individual">ni</sup>
+   </dd>
+  </dl>
+ </div>
+ <div class="entity" id="http://ai-act.eu/ai#ContextOrPurpose">
+  <h3>Context or Purpose<sup class="type-c" title="class">c</sup> <span class="backlink"> back to <a href="#toc">ToC</a> or <a href="#classes">Class ToC</a> </span></h3>
+  <p><strong>IRI:</strong> http://ai-act.eu/ai#ContextOrPurpose</p>
+  <div class="comment">
+   <span class="markdown">Union class representing either a deployment context or a purpose that can trigger criteria.</span>
+  </div>
+  <dl class="description">
+   <dt>
+    is equivalent to
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Deployment Context</a> <sup class="type-c" title="class">c</sup> <span class="logic">or</span> <a href="#http://ai-act.eu/ai#Purpose" title="http://ai-act.eu/ai#Purpose">Purpose</a> <sup class="type-c" title="class">c</sup>
+   </dd>
+   <dt>
+    is in domain of
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#triggersCriterion" title="http://ai-act.eu/ai#triggersCriterion">triggers criterion</a> <sup class="type-op" title="object property">op</sup>
+   </dd>
+   <dt>
+    is in range of
+   </dt>
+   <dd>
+    <a href="#http://ai-act.eu/ai#isTriggeredBy" title="http://ai-act.eu/ai#isTriggeredBy">is triggered by</a> <sup class="type-op" title="object property">op</sup>
    </dd>
   </dl>
  </div>
@@ -702,13 +733,13 @@ This section provides details for each class and property defined by AI Act Onto
     is in domain of
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#isDeploymentContextOf" title="http://ai-act.eu/ai#isDeploymentContextOf">is deployment context of</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#triggersCriterion" title="http://ai-act.eu/ai#triggersCriterion">triggers criterion</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#http://ai-act.eu/ai#isDeploymentContextOf" title="http://ai-act.eu/ai#isDeploymentContextOf">is deployment context of</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#hasDeploymentContext" title="http://ai-act.eu/ai#hasDeploymentContext">has deployment context</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#isTriggeredBy" title="http://ai-act.eu/ai#isTriggeredBy">is triggered by</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#http://ai-act.eu/ai#hasDeploymentContext" title="http://ai-act.eu/ai#hasDeploymentContext">has deployment context</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     has members
@@ -1098,13 +1129,13 @@ This section provides details for each class and property defined by AI Act Onto
     is in domain of
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#isPurposeOfSystem" title="http://ai-act.eu/ai#isPurposeOfSystem">is purpose of system</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#triggersCriterion" title="http://ai-act.eu/ai#triggersCriterion">triggers criterion</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#http://ai-act.eu/ai#expectedRiskLevel" title="http://ai-act.eu/ai#expectedRiskLevel">expected risk level</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#isPurposeOfSystem" title="http://ai-act.eu/ai#isPurposeOfSystem">is purpose of system</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     is in range of
    </dt>
    <dd>
-    <a href="#http://ai-act.eu/ai#hasPurpose" title="http://ai-act.eu/ai#hasPurpose">has purpose</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#isExpectedRiskLevelFor" title="http://ai-act.eu/ai#isExpectedRiskLevelFor">is expected risk level for</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#isTriggeredBy" title="http://ai-act.eu/ai#isTriggeredBy">is triggered by</a> <sup class="type-op" title="object property">op</sup>
+    <a href="#http://ai-act.eu/ai#hasPurpose" title="http://ai-act.eu/ai#hasPurpose">has purpose</a> <sup class="type-op" title="object property">op</sup>, <a href="#http://ai-act.eu/ai#isExpectedRiskLevelFor" title="http://ai-act.eu/ai#isExpectedRiskLevelFor">is expected risk level for</a> <sup class="type-op" title="object property">op</sup>
    </dd>
    <dt>
     has members
@@ -2606,10 +2637,7 @@ This section provides details for each class and property defined by AI Act Onto
      has range
     </dt>
     <dd>
-     <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Deployment Context</a> <sup class="type-c" title="class">c</sup>
-    </dd>
-    <dd>
-     <a href="#http://ai-act.eu/ai#Purpose" title="http://ai-act.eu/ai#Purpose">Purpose</a> <sup class="type-c" title="class">c</sup>
+     <a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Context or Purpose</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      is inverse of
@@ -2794,10 +2822,7 @@ This section provides details for each class and property defined by AI Act Onto
      has domain
     </dt>
     <dd>
-     <a href="#http://ai-act.eu/ai#DeploymentContext" title="http://ai-act.eu/ai#DeploymentContext">Deployment Context</a> <sup class="type-c" title="class">c</sup>
-    </dd>
-    <dd>
-     <a href="#http://ai-act.eu/ai#Purpose" title="http://ai-act.eu/ai#Purpose">Purpose</a> <sup class="type-c" title="class">c</sup>
+     <a href="#http://ai-act.eu/ai#ContextOrPurpose" title="http://ai-act.eu/ai#ContextOrPurpose">Context or Purpose</a> <sup class="type-c" title="class">c</sup>
     </dd>
     <dt>
      has range

@@ -452,8 +452,7 @@
 # http://ai-act.eu/ai#isTriggeredBy
 <http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Criterion> .
-<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#DeploymentContext> .
-<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ContextOrPurpose> .
 <http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico."@es .
 <http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a criterion is activated or triggered by a specific deployment context or purpose."@en .
 <http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#label> "es activado por"@es .
@@ -517,8 +516,7 @@
 # http://ai-act.eu/ai#triggersCriterion
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#isTriggeredBy> .
-<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#DeploymentContext> .
-<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#ContextOrPurpose> .
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Criterion> .
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un contexto de despliegue o propósito activa o dispara un criterio específico."@es .
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a deployment context or purpose activates or triggers a specific criterion."@en .
@@ -611,6 +609,22 @@
 <http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Obligation or condition that an AI system must fulfill to comply with the EU AI Act."@en .
 <http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Compliance Requirement"@en .
 <http://ai-act.eu/ai#ComplianceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Cumplimiento"@es .
+# 
+# http://ai-act.eu/ai#ContextOrPurpose
+<http://ai-act.eu/ai#ContextOrPurpose> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ContextOrPurpose> <http://www.w3.org/2002/07/owl#equivalentClass> _:genid1 .
+_:genid1 <http://www.w3.org/2002/07/owl#unionOf> _:genid3 .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid2 .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#Purpose> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#DeploymentContext> .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ContextOrPurpose> <http://www.w3.org/2000/01/rdf-schema#comment> "Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios."@es .
+<http://ai-act.eu/ai#ContextOrPurpose> <http://www.w3.org/2000/01/rdf-schema#comment> "Union class representing either a deployment context or a purpose that can trigger criteria."@en .
+<http://ai-act.eu/ai#ContextOrPurpose> <http://www.w3.org/2000/01/rdf-schema#label> "Context or Purpose"@en .
+<http://ai-act.eu/ai#ContextOrPurpose> <http://www.w3.org/2000/01/rdf-schema#label> "Contexto o Propósito"@es .
 # 
 # http://ai-act.eu/ai#ContextualCriterion
 <http://ai-act.eu/ai#ContextualCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
