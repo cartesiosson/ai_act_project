@@ -449,6 +449,16 @@
 <http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#label> "es origen de datos de entrenamiento de"@es .
 <http://ai-act.eu/ai#isTrainingDataOriginOf> <http://www.w3.org/2000/01/rdf-schema#label> "is training data origin of"@en .
 # 
+# http://ai-act.eu/ai#isTriggeredBy
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Criterion> .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico."@es .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a criterion is activated or triggered by a specific deployment context or purpose."@en .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#label> "es activado por"@es .
+<http://ai-act.eu/ai#isTriggeredBy> <http://www.w3.org/2000/01/rdf-schema#label> "is triggered by"@en .
+# 
 # http://ai-act.eu/ai#justifiedByCriterion
 <http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://ai-act.eu/ai#justifiedByCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#ComplianceRequirement> .
@@ -506,6 +516,7 @@
 # 
 # http://ai-act.eu/ai#triggersCriterion
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2002/07/owl#inverseOf> <http://ai-act.eu/ai#isTriggeredBy> .
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#DeploymentContext> .
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Purpose> .
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#Criterion> .
@@ -624,7 +635,7 @@
 <http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que integra o pone en uso un sistema de IA."@en .
 <http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que integra o pone en uso un sistema de IA."@es .
 <http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#label> "Deployer"@en .
-<http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#label> "Implementador"@es .
+<http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#label> "Deployer"@es .
 # 
 # http://ai-act.eu/ai#DeploymentContext
 <http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -639,8 +650,8 @@
 <http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
 <http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en .
 <http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@es .
-<http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#label> "Distribuidor"@es .
 <http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#label> "Distributor"@en .
+<http://ai-act.eu/ai#Distributor> <http://www.w3.org/2000/01/rdf-schema#label> "Distributor"@es .
 # 
 # http://ai-act.eu/ai#EndUser
 <http://ai-act.eu/ai#EndUser> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -675,10 +686,10 @@
 # http://ai-act.eu/ai#Importer
 <http://ai-act.eu/ai#Importer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que introduce en la UE un sistema de IA desde un tercer país."@en .
 <http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que introduce en la UE un sistema de IA desde un tercer país."@es .
-<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#comment> "Entity that places an AI system from a third country on the EU market."@en .
-<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#label> "Importador"@es .
 <http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#label> "Importer"@en .
+<http://ai-act.eu/ai#Importer> <http://www.w3.org/2000/01/rdf-schema#label> "Importer"@es .
 # 
 # http://ai-act.eu/ai#Instrument
 <http://ai-act.eu/ai#Instrument> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -733,9 +744,9 @@
 # http://ai-act.eu/ai#PostDeploymentAssessment
 <http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#RiskAssessment> .
-<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluación o valoración de riesgos realizada después del despliegue de un sistema de IA."@es .
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluación o valoración de riesgos realizada tras el despliegue de un sistema de IA."@es .
 <http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Risk assessment or evaluation performed after the deployment of an AI system."@en .
-<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación Post-Despliegue"@es .
+<http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación posterior al despliegue"@es .
 <http://ai-act.eu/ai#PostDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "PostDeployment Assessment"@en .
 # 
 # http://ai-act.eu/ai#PreDeploymentAssessment
@@ -743,7 +754,7 @@
 <http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#RiskAssessment> .
 <http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Evaluación o valoración de riesgos realizada antes del despliegue de un sistema de IA."@es .
 <http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Risk assessment or evaluation performed before the deployment of an AI system."@en .
-<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación Pre-Despliegue"@es .
+<http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación previa al despliegue"@es .
 <http://ai-act.eu/ai#PreDeploymentAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "PreDeployment Assessment"@en .
 # 
 # http://ai-act.eu/ai#ProfessionalUser
@@ -752,15 +763,15 @@
 <http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#comment> "Professional user who uses the system in the exercise of their profession."@en .
 <http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#comment> "Usuario profesional que utiliza el sistema en el ejercicio de su profesión."@es .
 <http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#label> "ProfessionalUser"@en .
-<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#label> "Usuario Profesional"@es .
+<http://ai-act.eu/ai#ProfessionalUser> <http://www.w3.org/2000/01/rdf-schema#label> "Usuario profesional"@es .
 # 
 # http://ai-act.eu/ai#Provider
 <http://ai-act.eu/ai#Provider> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Actor> .
 <http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que desarrolla o pone en el mercado un sistema de IA."@en .
 <http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#comment> "Entidad que desarrolla o pone en el mercado un sistema de IA."@es .
-<http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#label> "Proveedor"@es .
 <http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#label> "Provider"@en .
+<http://ai-act.eu/ai#Provider> <http://www.w3.org/2000/01/rdf-schema#label> "Provider"@es .
 # 
 # http://ai-act.eu/ai#Purpose
 <http://ai-act.eu/ai#Purpose> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -1105,7 +1116,7 @@
 <http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@en .
 <http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es .
 <http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Limited Risk"@en .
-<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Riesgo Limitado"@es .
+<http://ai-act.eu/ai#LimitedRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Limited Risk"@es .
 # 
 # http://ai-act.eu/ai#MigrationBorderCriterion
 <http://ai-act.eu/ai#MigrationBorderCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -1136,7 +1147,7 @@
 <http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@en .
 <http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es .
 <http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Minimal Risk"@en .
-<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Riesgo Mínimo"@es .
+<http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/2000/01/rdf-schema#label> "Minimal Risk"@es .
 # 
 # http://ai-act.eu/ai#PostMarketMonitoringRequirement
 <http://ai-act.eu/ai#PostMarketMonitoringRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
@@ -1157,7 +1168,7 @@
 <http://ai-act.eu/ai#PublicServiceAllocation> <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> .
 <http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#comment> "Determinación de acceso a servicios públicos esenciales."@es .
 <http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#comment> "Determination of access to essential public services."@en .
-<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#label> "Asignación de Servicios Públicos"@es .
+<http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#label> "Asignación de servicios públicos"@es .
 <http://ai-act.eu/ai#PublicServiceAllocation> <http://www.w3.org/2000/01/rdf-schema#label> "Public Service Allocation"@en .
 # 
 # http://ai-act.eu/ai#PublicServices

@@ -367,7 +367,7 @@
     "@value" : "Deployer"
   }, {
     "@language" : "es",
-    "@value" : "Implementador"
+    "@value" : "Deployer"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
     "@id" : "http://ai-act.eu/ai#Actor"
@@ -403,10 +403,10 @@
     "@value" : "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
-    "@language" : "es",
-    "@value" : "Distribuidor"
-  }, {
     "@language" : "en",
+    "@value" : "Distributor"
+  }, {
+    "@language" : "es",
     "@value" : "Distributor"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
@@ -693,17 +693,17 @@
   "@id" : "http://ai-act.eu/ai#Importer",
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
-    "@language" : "es",
+    "@language" : "en",
     "@value" : "Entidad que introduce en la UE un sistema de IA desde un tercer país."
   }, {
-    "@language" : "en",
-    "@value" : "Entity that places an AI system from a third country on the EU market."
+    "@language" : "es",
+    "@value" : "Entidad que introduce en la UE un sistema de IA desde un tercer país."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
-    "@language" : "es",
-    "@value" : "Importador"
-  }, {
     "@language" : "en",
+    "@value" : "Importer"
+  }, {
+    "@language" : "es",
     "@value" : "Importer"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
@@ -918,7 +918,7 @@
     "@value" : "Limited Risk"
   }, {
     "@language" : "es",
-    "@value" : "Riesgo Limitado"
+    "@value" : "Limited Risk"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#LoggingRequirement",
@@ -1018,7 +1018,7 @@
     "@value" : "Minimal Risk"
   }, {
     "@language" : "es",
-    "@value" : "Riesgo Mínimo"
+    "@value" : "Minimal Risk"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#NormativeCriterion",
@@ -1065,14 +1065,14 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#Class" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "es",
-    "@value" : "Evaluación o valoración de riesgos realizada después del despliegue de un sistema de IA."
+    "@value" : "Evaluación o valoración de riesgos realizada tras el despliegue de un sistema de IA."
   }, {
     "@language" : "en",
     "@value" : "Risk assessment or evaluation performed after the deployment of an AI system."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "es",
-    "@value" : "Evaluación Post-Despliegue"
+    "@value" : "Evaluación posterior al despliegue"
   }, {
     "@language" : "en",
     "@value" : "PostDeployment Assessment"
@@ -1121,7 +1121,7 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "es",
-    "@value" : "Evaluación Pre-Despliegue"
+    "@value" : "Evaluación previa al despliegue"
   }, {
     "@language" : "en",
     "@value" : "PreDeployment Assessment"
@@ -1144,7 +1144,7 @@
     "@value" : "ProfessionalUser"
   }, {
     "@language" : "es",
-    "@value" : "Usuario Profesional"
+    "@value" : "Usuario profesional"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
     "@id" : "http://ai-act.eu/ai#User"
@@ -1160,10 +1160,10 @@
     "@value" : "Entidad que desarrolla o pone en el mercado un sistema de IA."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
-    "@language" : "es",
-    "@value" : "Proveedor"
-  }, {
     "@language" : "en",
+    "@value" : "Provider"
+  }, {
+    "@language" : "es",
     "@value" : "Provider"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#subClassOf" : [ {
@@ -1193,7 +1193,7 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#label" : [ {
     "@language" : "es",
-    "@value" : "Asignación de Servicios Públicos"
+    "@value" : "Asignación de servicios públicos"
   }, {
     "@language" : "en",
     "@value" : "Public Service Allocation"
@@ -2648,6 +2648,31 @@
     "@id" : "http://ai-act.eu/ai#hasTrainingDataOrigin"
   } ]
 }, {
+  "@id" : "http://ai-act.eu/ai#isTriggeredBy",
+  "@type" : [ "http://www.w3.org/2002/07/owl#ObjectProperty" ],
+  "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
+    "@language" : "es",
+    "@value" : "Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico."
+  }, {
+    "@language" : "en",
+    "@value" : "Indicates that a criterion is activated or triggered by a specific deployment context or purpose."
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
+    "@id" : "http://ai-act.eu/ai#Criterion"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#label" : [ {
+    "@language" : "es",
+    "@value" : "es activado por"
+  }, {
+    "@language" : "en",
+    "@value" : "is triggered by"
+  } ],
+  "http://www.w3.org/2000/01/rdf-schema#range" : [ {
+    "@id" : "http://ai-act.eu/ai#DeploymentContext"
+  }, {
+    "@id" : "http://ai-act.eu/ai#Purpose"
+  } ]
+}, {
   "@id" : "http://ai-act.eu/ai#justificationNote",
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
@@ -2835,6 +2860,9 @@
   } ],
   "http://www.w3.org/2000/01/rdf-schema#range" : [ {
     "@id" : "http://ai-act.eu/ai#Criterion"
+  } ],
+  "http://www.w3.org/2002/07/owl#inverseOf" : [ {
+    "@id" : "http://ai-act.eu/ai#isTriggeredBy"
   } ]
 }, {
   "@id" : "http://ai-act.eu/ai#usesSystem",

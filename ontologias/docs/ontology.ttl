@@ -490,6 +490,17 @@ xsd:date rdf:type rdfs:Datatype .
                                                         "is training data origin of"@en .
 
 
+###  http://ai-act.eu/ai#isTriggeredBy
+<http://ai-act.eu/ai#isTriggeredBy> rdf:type owl:ObjectProperty ;
+                                    rdfs:domain <http://ai-act.eu/ai#Criterion> ;
+                                    rdfs:range <http://ai-act.eu/ai#DeploymentContext> ,
+                                               <http://ai-act.eu/ai#Purpose> ;
+                                    rdfs:comment "Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico."@es ,
+                                                 "Indicates that a criterion is activated or triggered by a specific deployment context or purpose."@en ;
+                                    rdfs:label "es activado por"@es ,
+                                               "is triggered by"@en .
+
+
 ###  http://ai-act.eu/ai#justifiedByCriterion
 <http://ai-act.eu/ai#justifiedByCriterion> rdf:type owl:ObjectProperty ;
                                            rdfs:domain <http://ai-act.eu/ai#ComplianceRequirement> ;
@@ -553,6 +564,7 @@ xsd:date rdf:type rdfs:Datatype .
 
 ###  http://ai-act.eu/ai#triggersCriterion
 <http://ai-act.eu/ai#triggersCriterion> rdf:type owl:ObjectProperty ;
+                                        owl:inverseOf <http://ai-act.eu/ai#isTriggeredBy> ;
                                         rdfs:domain <http://ai-act.eu/ai#DeploymentContext> ,
                                                     <http://ai-act.eu/ai#Purpose> ;
                                         rdfs:range <http://ai-act.eu/ai#Criterion> ;
@@ -672,7 +684,7 @@ xsd:date rdf:type rdfs:Datatype .
                                rdfs:comment "Entidad que integra o pone en uso un sistema de IA."@en ,
                                             "Entidad que integra o pone en uso un sistema de IA."@es ;
                                rdfs:label "Deployer"@en ,
-                                          "Implementador"@es .
+                                          "Deployer"@es .
 
 
 ###  http://ai-act.eu/ai#DeploymentContext
@@ -689,8 +701,8 @@ xsd:date rdf:type rdfs:Datatype .
                                   rdfs:subClassOf <http://ai-act.eu/ai#Actor> ;
                                   rdfs:comment "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en ,
                                                "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@es ;
-                                  rdfs:label "Distribuidor"@es ,
-                                             "Distributor"@en .
+                                  rdfs:label "Distributor"@en ,
+                                             "Distributor"@es .
 
 
 ###  http://ai-act.eu/ai#EndUser
@@ -728,10 +740,10 @@ xsd:date rdf:type rdfs:Datatype .
 ###  http://ai-act.eu/ai#Importer
 <http://ai-act.eu/ai#Importer> rdf:type owl:Class ;
                                rdfs:subClassOf <http://ai-act.eu/ai#Actor> ;
-                               rdfs:comment "Entidad que introduce en la UE un sistema de IA desde un tercer país."@es ,
-                                            "Entity that places an AI system from a third country on the EU market."@en ;
-                               rdfs:label "Importador"@es ,
-                                          "Importer"@en .
+                               rdfs:comment "Entidad que introduce en la UE un sistema de IA desde un tercer país."@en ,
+                                            "Entidad que introduce en la UE un sistema de IA desde un tercer país."@es ;
+                               rdfs:label "Importer"@en ,
+                                          "Importer"@es .
 
 
 ###  http://ai-act.eu/ai#Instrument
@@ -795,9 +807,9 @@ xsd:date rdf:type rdfs:Datatype .
 ###  http://ai-act.eu/ai#PostDeploymentAssessment
 <http://ai-act.eu/ai#PostDeploymentAssessment> rdf:type owl:Class ;
                                                rdfs:subClassOf <http://ai-act.eu/ai#RiskAssessment> ;
-                                               rdfs:comment "Evaluación o valoración de riesgos realizada después del despliegue de un sistema de IA."@es ,
+                                               rdfs:comment "Evaluación o valoración de riesgos realizada tras el despliegue de un sistema de IA."@es ,
                                                             "Risk assessment or evaluation performed after the deployment of an AI system."@en ;
-                                               rdfs:label "Evaluación Post-Despliegue"@es ,
+                                               rdfs:label "Evaluación posterior al despliegue"@es ,
                                                           "PostDeployment Assessment"@en .
 
 
@@ -806,7 +818,7 @@ xsd:date rdf:type rdfs:Datatype .
                                               rdfs:subClassOf <http://ai-act.eu/ai#RiskAssessment> ;
                                               rdfs:comment "Evaluación o valoración de riesgos realizada antes del despliegue de un sistema de IA."@es ,
                                                            "Risk assessment or evaluation performed before the deployment of an AI system."@en ;
-                                              rdfs:label "Evaluación Pre-Despliegue"@es ,
+                                              rdfs:label "Evaluación previa al despliegue"@es ,
                                                          "PreDeployment Assessment"@en .
 
 
@@ -816,7 +828,7 @@ xsd:date rdf:type rdfs:Datatype .
                                        rdfs:comment "Professional user who uses the system in the exercise of their profession."@en ,
                                                     "Usuario profesional que utiliza el sistema en el ejercicio de su profesión."@es ;
                                        rdfs:label "ProfessionalUser"@en ,
-                                                  "Usuario Profesional"@es .
+                                                  "Usuario profesional"@es .
 
 
 ###  http://ai-act.eu/ai#Provider
@@ -824,8 +836,8 @@ xsd:date rdf:type rdfs:Datatype .
                                rdfs:subClassOf <http://ai-act.eu/ai#Actor> ;
                                rdfs:comment "Entidad que desarrolla o pone en el mercado un sistema de IA."@en ,
                                             "Entidad que desarrolla o pone en el mercado un sistema de IA."@es ;
-                               rdfs:label "Proveedor"@es ,
-                                          "Provider"@en .
+                               rdfs:label "Provider"@en ,
+                                          "Provider"@es .
 
 
 ###  http://ai-act.eu/ai#Purpose
@@ -1199,7 +1211,7 @@ xsd:date rdf:type rdfs:Datatype .
                                   rdfs:comment "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@en ,
                                                "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es ;
                                   rdfs:label "Limited Risk"@en ,
-                                             "Riesgo Limitado"@es .
+                                             "Limited Risk"@es .
 
 
 ###  http://ai-act.eu/ai#MigrationBorderCriterion
@@ -1233,7 +1245,7 @@ xsd:date rdf:type rdfs:Datatype .
                                   rdfs:comment "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@en ,
                                                "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es ;
                                   rdfs:label "Minimal Risk"@en ,
-                                             "Riesgo Mínimo"@es .
+                                             "Minimal Risk"@es .
 
 
 ###  http://ai-act.eu/ai#PostMarketMonitoringRequirement
@@ -1257,7 +1269,7 @@ xsd:date rdf:type rdfs:Datatype .
                                               <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#EssentialServicesAccessCriterion> ;
                                               rdfs:comment "Determinación de acceso a servicios públicos esenciales."@es ,
                                                            "Determination of access to essential public services."@en ;
-                                              rdfs:label "Asignación de Servicios Públicos"@es ,
+                                              rdfs:label "Asignación de servicios públicos"@es ,
                                                          "Public Service Allocation"@en .
 
 

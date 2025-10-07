@@ -128,6 +128,9 @@
     "ai:isTrainingDataOriginOf": {
       "@type": "xsd:string"
     },
+    "ai:isTriggeredBy": {
+      "@type": "xsd:string"
+    },
     "ai:justifiedByCriterion": {
       "@type": "xsd:string"
     },
