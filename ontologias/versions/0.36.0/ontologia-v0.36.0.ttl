@@ -159,21 +159,21 @@ ai:MigrationControl a ai:Purpose,
 
 ai:PostDeploymentAssessment a owl:Class ;
     rdfs:label "PostDeployment Assessment"@en,
-        "Evaluación posterior al despliegue"@es ;
-    rdfs:comment "Risk assessment or evaluation performed after the deployment of an AI system."@en ;
-    rdfs:comment "Evaluación o valoración de riesgos realizada tras el despliegue de un sistema de IA."@es ;
+        "Evaluación Post-Despliegue"@es ;
+    rdfs:comment "Risk assessment or evaluation performed after the deployment of an AI system."@en,
+        "Evaluación o valoración de riesgos realizada después del despliegue de un sistema de IA."@es ;
     rdfs:subClassOf ai:RiskAssessment .
 
 ai:PreDeploymentAssessment a owl:Class ;
     rdfs:label "PreDeployment Assessment"@en,
-        "Evaluación previa al despliegue"@es ;
-    rdfs:comment "Risk assessment or evaluation performed before the deployment of an AI system."@en ;
-    rdfs:comment "Evaluación o valoración de riesgos realizada antes del despliegue de un sistema de IA."@es ;
+        "Evaluación Pre-Despliegue"@es ;
+    rdfs:comment "Risk assessment or evaluation performed before the deployment of an AI system."@en,
+        "Evaluación o valoración de riesgos realizada antes del despliegue de un sistema de IA."@es ;
     rdfs:subClassOf ai:RiskAssessment .
 
 ai:ProfessionalUser a owl:Class ;
     rdfs:label "ProfessionalUser"@en,
-        "Usuario profesional"@es ;
+        "Usuario Profesional"@es ;
     rdfs:comment "Professional user who uses the system in the exercise of their profession."@en,
         "Usuario profesional que utiliza el sistema en el ejercicio de su profesión."@es ;
     rdfs:subClassOf ai:User .
@@ -181,7 +181,7 @@ ai:ProfessionalUser a owl:Class ;
 ai:PublicServiceAllocation a ai:Purpose,
         owl:NamedIndividual ;
     rdfs:label "Public Service Allocation"@en,
-        "Asignación de servicios públicos"@es ;
+        "Asignación de Servicios Públicos"@es ;
     ai:activatesCriterion ai:EssentialServicesAccessCriterion ;
     ai:expectedRiskLevel ai:HighRisk ;
     ai:triggersCriterion ai:EssentialServicesAccessCriterion ;
@@ -499,22 +499,22 @@ ai:ComplianceRequirement a owl:Class ;
 
 ai:Deployer a owl:Class ;
     rdfs:label "Deployer"@en,
-        "Deployer"@es ;
+        "Implementador"@es ;
     rdfs:comment "Entidad que integra o pone en uso un sistema de IA."@en,
         "Entidad que integra o pone en uso un sistema de IA."@es ;
     rdfs:subClassOf ai:Actor .
 
 ai:Distributor a owl:Class ;
     rdfs:label "Distributor"@en,
-        "Distributor"@es ;
+        "Distribuidor"@es ;
     rdfs:comment "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@en,
         "Entidad que comercializa un sistema de IA en el mercado sin modificarlo."@es ;
     rdfs:subClassOf ai:Actor .
 
 ai:Importer a owl:Class ;
     rdfs:label "Importer"@en,
-        "Importer"@es ;
-    rdfs:comment "Entidad que introduce en la UE un sistema de IA desde un tercer país."@en,
+        "Importador"@es ;
+    rdfs:comment "Entity that places an AI system from a third country on the EU market."@en,
         "Entidad que introduce en la UE un sistema de IA desde un tercer país."@es ;
     rdfs:subClassOf ai:Actor .
 
@@ -529,28 +529,28 @@ ai:InterfaceSpec a owl:Class ;
 ai:LimitedRisk a ai:RiskLevel,
         owl:NamedIndividual ;
     rdfs:label "Limited Risk"@en,
-        "Limited Risk"@es ;
+        "Riesgo Limitado"@es ;
     rdfs:comment "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@en,
         "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es .
 
 ai:MinimalRisk a ai:RiskLevel,
         owl:NamedIndividual ;
     rdfs:label "Minimal Risk"@en,
-        "Minimal Risk"@es ;
+        "Riesgo Mínimo"@es ;
     rdfs:comment "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@en,
         "Sistemas de riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es .
 
 ai:HighRisk a ai:RiskLevel, owl:NamedIndividual ;
     rdfs:label "High Risk"@en,
         "Alto Riesgo"@es ;
-    rdfs:comment "AI systems classified as high-risk according to the EU AI Act. These systems are subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights."@en ;
-    rdfs:comment "Sistemas de IA clasificados como de alto riesgo según el AI Act de la UE. Estos sistemas están sujetos a requisitos regulatorios estrictos debido a su posible impacto en la salud, la seguridad o los derechos fundamentales."@es .
+    rdfs:comment "AI systems classified as high-risk according to the EU AI Act. These systems are subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights."@en,
+        "Sistemas de IA clasificados como de alto riesgo según el AI Act de la UE. Estos sistemas están sujetos a requisitos regulatorios estrictos debido a su posible impacto en la salud, la seguridad o los derechos fundamentales."@es .
 
 ai:UnacceptableRisk a ai:RiskLevel, owl:NamedIndividual ;
     rdfs:label "Unacceptable Risk"@en,
         "Riesgo Inaceptable"@es ;
-    rdfs:comment "AI systems classified as unacceptable risk according to the EU AI Act. These systems are strictly prohibited due to their unacceptable threat to safety, fundamental rights, or democratic values."@en ;
-    rdfs:comment "Sistemas de IA clasificados como de riesgo inaceptable según el AI Act de la UE. Estos sistemas están estrictamente prohibidos por su amenaza inaceptable a la seguridad, los derechos fundamentales o los valores democráticos."@es .
+    rdfs:comment "AI systems classified as unacceptable risk according to the EU AI Act. These systems are strictly prohibited due to their unacceptable threat to safety, fundamental rights, or democratic values."@en,
+        "Sistemas de IA clasificados como de riesgo inaceptable según el AI Act de la UE. Estos sistemas están estrictamente prohibidos por su amenaza inaceptable a la seguridad, los derechos fundamentales o los valores democráticos."@es .
 
 ai:NormativeCriterion a owl:Class ;
     rdfs:label "Normative Criterion"@en ;
@@ -567,7 +567,7 @@ ai:OversightBody a owl:Class ;
 
 ai:Provider a owl:Class ;
     rdfs:label "Provider"@en,
-        "Provider"@es ;
+        "Proveedor"@es ;
     rdfs:comment "Entidad que desarrolla o pone en el mercado un sistema de IA."@en,
         "Entidad que desarrolla o pone en el mercado un sistema de IA."@es ;
     rdfs:subClassOf ai:Actor .
