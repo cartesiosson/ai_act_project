@@ -474,7 +474,18 @@ ai:triggersCriterion a owl:ObjectProperty ;
     rdfs:comment "Indica que un contexto de despliegue o propósito activa o dispara un criterio específico."@es ;
     rdfs:domain ai:DeploymentContext,
         ai:Purpose ;
-    rdfs:range ai:Criterion .
+    rdfs:range ai:Criterion ;
+    owl:inverseOf ai:isTriggeredBy .
+
+ai:isTriggeredBy a owl:ObjectProperty ;
+    rdfs:label "is triggered by"@en,
+        "es activado por"@es ;
+    rdfs:comment "Indicates that a criterion is activated or triggered by a specific deployment context or purpose."@en ;
+    rdfs:comment "Indica que un criterio es activado o disparado por un contexto de despliegue o propósito específico."@es ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:DeploymentContext,
+        ai:Purpose ;
+    owl:inverseOf ai:triggersCriterion .
 
 ai:usesSystem a owl:ObjectProperty ;
     rdfs:label "uses system"@en,

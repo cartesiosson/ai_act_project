@@ -187,27 +187,20 @@ Este script:
 
 ### (ii) Validar la Ontología y Detectar Pitfalls
 
-Para validar la ontología y detectar problemas comunes (pitfalls):
+La validación de la ontología se realiza automáticamente durante el proceso de generación de documentación. El sistema incluye análisis de pitfalls usando OOPS! (OntOlogy Pitfall Scanner) que genera reportes automáticos de calidad.
 
-```bash
-# Validar sintaxis de la ontología
-rapper -c ontologias/ontologia-v0.36.0.ttl
-
-# Ejecutar validación con Pellet (si está instalado)
-pellet consistency ontologias/ontologia-v0.36.0.ttl
-
-# Para detectar pitfalls, usar OOPS! online o generar reporte automático
-cd tools
-python3 validate_ontology.py
-```
-
-**Validaciones incluidas:**
+**Validaciones automáticas incluidas:**
 - ✅ Consistencia lógica
 - ✅ Sintaxis RDF/OWL correcta  
 - ✅ Detección de clases órfanas
 - ✅ Propiedades no utilizadas
 - ✅ Circularidad en jerarquías
 - ✅ Etiquetas y comentarios faltantes
+
+**Revisar reporte de validación:**
+Los resultados de la validación están disponibles en:
+- `/ontologias/docs/OOPSevaluation/oopsEval.html` - Reporte detallado de pitfalls
+- Documentación generada incluye métricas de calidad automáticas
 
 ### (iii) Arrancar la Aplicación
 
