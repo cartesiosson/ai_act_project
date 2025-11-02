@@ -1,22 +1,24 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix ai: <http://ai-act.eu/ai#> .
+@prefix airo: <https://w3id.org/airo#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://ai-act.eu/ai-act> a owl:Ontology ;
+    owl:imports <https://w3id.org/airo> ;
     dct:created "2025-06-22"^^xsd:date ;
-    dct:description "Ontology describing regulated AI systems according to the EU AI Act."@en,
-        "Ontología que describe los sistemas de IA regulados según el AI Act de la UE."@es ;
+    dct:description "Ontology describing regulated AI systems according to the EU AI Act with AIRO integration."@en,
+        "Ontología que describe los sistemas de IA regulados según el AI Act de la UE con integración AIRO."@es ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-    dct:title "AI Act Ontology"@en,
-        "Ontología del AI Act"@es ;
-    rdfs:comment "Ai-act module of the AI Act ontology."@en,
-        "Ontología del módulo ai-act del AI Act."@es ;
+    dct:title "AI Act Ontology with AIRO Integration"@en,
+        "Ontología del AI Act con Integración AIRO"@es ;
+    rdfs:comment "Ai-act module of the AI Act ontology with AIRO (AI Risk Ontology) integration."@en,
+        "Ontología del módulo ai-act del AI Act con integración AIRO (AI Risk Ontology)."@es ;
     owl:versionIRI <http://ai-act.eu/ai-act/0.36.0> ;
-    owl:versionInfo "Version 0.36.0 released on 2025-06-22"@en,
-        "Versión 0.36.0 publicada el 2025-06-22"@es .
+    owl:versionInfo "Version 0.36.0 released on 2025-06-22 with AIRO integration"@en,
+        "Versión 0.36.0 publicada el 2025-06-22 con integración AIRO"@es .
 
 ai:Criterion a owl:Class ;
     rdfs:label "Criterion"@en,
@@ -61,8 +63,93 @@ ai:AccessToEssencialServices rdfs:comment "Referenced in Annex III, point 5."@en
 ai:AffectsFundamentalRightsRecognition a ai:ContextualCriterion ;
     rdfs:label "Affects fundamental rights recognition"@en,
         "Afecta el reconocimiento de derechos fundamentales"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
     rdfs:comment "This criterion reflects situations where an AI system may influence or condition the recognition, access or exercise of fundamental rights, in line with Article 6(2) of the EU AI Act."@en,
         "Este criterio refleja situaciones en las que un sistema de IA puede influir o condicionar el reconocimiento, acceso o ejercicio de derechos fundamentales, conforme al Artículo 6(2) del AI Act."@es .
+
+ai:VulnerablePopulationContext a ai:ContextualCriterion ;
+    rdfs:label "Vulnerable Population Context"@en,
+        "Contexto de población vulnerable"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Systems used in contexts involving vulnerable populations such as children, elderly, persons with disabilities, or marginalized groups, requiring enhanced protection under the AI Act."@en,
+        "Sistemas utilizados en contextos que involucran poblaciones vulnerables como niños, ancianos, personas con discapacidades o grupos marginados, requiriendo protección reforzada bajo el AI Act."@es .
+
+ai:HighStakesDecisionContext a ai:ContextualCriterion ;
+    rdfs:label "High Stakes Decision Context"@en,
+        "Contexto de decisión de alto impacto"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts where AI decisions have significant consequences for individuals' life opportunities, safety, or well-being, as recognized in AI Act risk assessment."@en,
+        "Contextos donde las decisiones de IA tienen consecuencias significativas para las oportunidades de vida, seguridad o bienestar de las personas, según se reconoce en la evaluación de riesgo del AI Act."@es .
+
+ai:SafetyCriticalContext a ai:ContextualCriterion ;
+    rdfs:label "Safety Critical Context"@en,
+        "Contexto crítico de seguridad"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Deployment contexts where system failures could result in serious harm to health, safety, or human life, aligned with AI Act safety requirements."@en,
+        "Contextos de despliegue donde fallos del sistema podrían resultar en daños graves a la salud, seguridad o vida humana, alineado con los requisitos de seguridad del AI Act."@es .
+
+ai:LimitedTransparencyContext a ai:ContextualCriterion ;
+    rdfs:label "Limited Transparency Context"@en,
+        "Contexto de transparencia limitada"@es ;
+    ai:assignsRiskLevel ai:LimitedRisk ;
+    rdfs:comment "Contexts where AI systems interact with users but may not be immediately recognizable as AI, requiring transparency obligations under Article 52 of the AI Act."@en,
+        "Contextos donde los sistemas de IA interactúan con usuarios pero pueden no ser inmediatamente reconocibles como IA, requiriendo obligaciones de transparencia bajo el Artículo 52 del AI Act."@es .
+
+ai:SocialManipulationContext a ai:ContextualCriterion ;
+    rdfs:label "Social Manipulation Context"@en,
+        "Contexto de manipulación social"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts where AI systems could be used to manipulate human behavior in ways that could cause harm, falling under prohibited practices of Article 5 of the AI Act."@en,
+        "Contextos donde los sistemas de IA podrían usarse para manipular el comportamiento humano de maneras que podrían causar daño, cayendo bajo las prácticas prohibidas del Artículo 5 del AI Act."@es .
+
+ai:LowRiskGeneralContext a ai:ContextualCriterion ;
+    rdfs:label "Low Risk General Context"@en,
+        "Contexto general de bajo riesgo"@es ;
+    ai:assignsRiskLevel ai:MinimalRisk ;
+    rdfs:comment "General deployment contexts with minimal risk to fundamental rights, safety, or societal values, requiring no specific obligations under the AI Act."@en,
+        "Contextos generales de despliegue con riesgo mínimo para derechos fundamentales, seguridad o valores sociales, sin requerir obligaciones específicas bajo el AI Act."@es .
+
+ai:EmotionalManipulationContext a ai:ContextualCriterion ;
+    rdfs:label "Emotional Manipulation Context"@en,
+        "Contexto de manipulación emocional"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts where AI systems exploit psychological vulnerabilities or emotional states to cause material or psychological harm, prohibited under Article 5(1)(a) of the AI Act."@en,
+        "Contextos donde los sistemas de IA explotan vulnerabilidades psicológicas o estados emocionales para causar daño material o psicológico, prohibido bajo el Artículo 5(1)(a) del AI Act."@es .
+
+ai:MassPublicSurveillanceContext a ai:ContextualCriterion ;
+    rdfs:label "Mass Public Surveillance Context"@en,
+        "Contexto de vigilancia pública masiva"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts involving indiscriminate surveillance or mass data collection that threatens democratic values and fundamental rights, prohibited under the AI Act."@en,
+        "Contextos que involucran vigilancia indiscriminada o recolección masiva de datos que amenaza valores democráticos y derechos fundamentales, prohibido bajo el AI Act."@es .
+
+ai:WorkplaceMonitoringContext a ai:ContextualCriterion ;
+    rdfs:label "Workplace Monitoring Context"@en,
+        "Contexto de monitoreo laboral"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving AI systems for employee monitoring, performance evaluation, or workplace surveillance, requiring high-risk system compliance under Annex III of the AI Act."@en,
+        "Contextos que involucran sistemas de IA para monitoreo de empleados, evaluación de rendimiento o vigilancia en el lugar de trabajo, requiriendo cumplimiento de sistemas de alto riesgo bajo el Anexo III del AI Act."@es .
+
+ai:FinancialServicesContext a ai:ContextualCriterion ;
+    rdfs:label "Financial Services Context"@en,
+        "Contexto de servicios financieros"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving creditworthiness assessment, insurance pricing, or financial risk evaluation affecting individuals' access to financial services, regulated under Annex III of the AI Act."@en,
+        "Contextos que involucran evaluación de solvencia crediticia, precios de seguros o evaluación de riesgo financiero que afecta el acceso de individuos a servicios financieros, regulado bajo el Anexo III del AI Act."@es .
+
+ai:DataGovernanceContext a ai:ContextualCriterion ;
+    rdfs:label "Data Governance Context"@en,
+        "Contexto de gobernanza de datos"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving sensitive data processing, biometric data, or personal data requiring enhanced governance under AI Act data requirements."@en,
+        "Contextos que involucran procesamiento de datos sensibles, datos biométricos o datos personales que requieren gobernanza mejorada bajo los requisitos de datos del AI Act."@es .
+
+ai:TrainingDataQualityContext a ai:ContextualCriterion ;
+    rdfs:label "Training Data Quality Context"@en,
+        "Contexto de calidad de datos de entrenamiento"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts where training data quality, bias, or representativeness significantly impacts system reliability and fairness, as required by Article 10 of the AI Act."@en,
+        "Contextos donde la calidad, sesgo o representatividad de los datos de entrenamiento impacta significativamente la confiabilidad y equidad del sistema, según requiere el Artículo 10 del AI Act."@es .
 
 ai:BiometricIdentification a ai:Purpose ;
     rdfs:label "Biometric identification"@en ;
@@ -109,8 +196,12 @@ ai:EndUser a owl:Class ;
 ai:ExternalDataset a ai:TrainingDataOrigin ;
     rdfs:label "External Dataset"@en ;
     rdfs:label "Datos Externos"@es ;
-    rdfs:comment "Dataset originating from external sources."@en ;
-    rdfs:comment "Conjunto de datos originado en fuentes externas."@es .
+    ai:triggersCriterion ai:DataGovernanceContext,
+        ai:TrainingDataQualityContext ;
+    ai:requiresDataGovernance ai:DataGovernanceRequirement,
+        ai:TraceabilityRequirement ;
+    rdfs:comment "Dataset originating from external sources. May require enhanced data governance and quality assurance measures under AI Act requirements."@en ;
+    rdfs:comment "Conjunto de datos originado en fuentes externas. Puede requerir medidas mejoradas de gobernanza y aseguramiento de la calidad bajo los requisitos del AI Act."@es .
 
 ai:Healthcare a ai:DeploymentContext,
         owl:NamedIndividual ;
@@ -123,8 +214,9 @@ ai:Healthcare a ai:DeploymentContext,
 ai:InternalDataset a ai:TrainingDataOrigin ;
     rdfs:label "Internal Dataset"@en ;
     rdfs:label "Datos Internos"@es ;
-    rdfs:comment "Dataset originating from internal sources."@en ;
-    rdfs:comment "Conjunto de datos originado en fuentes internas."@es .
+    ai:triggersCriterion ai:LowRiskGeneralContext ;
+    rdfs:comment "Dataset originating from internal sources. Typically has lower risk profile due to known provenance and controlled access."@en ;
+    rdfs:comment "Conjunto de datos originado en fuentes internas. Típicamente tiene un perfil de riesgo menor debido a la procedencia conocida y acceso controlado."@es .
 
 ai:JudicialDecisionSupport a ai:Purpose ;
     rdfs:label "Judicial Decision Support"@en,
@@ -207,7 +299,8 @@ ai:RiskAssessment a owl:Class ;
     rdfs:label "Risk Assessment"@en ;
     rdfs:label "Evaluación de Riesgo"@es ;
     rdfs:comment "Process or activity to determine the risk level of an AI system under the EU AI Act."@en ;
-    rdfs:comment "Proceso o actividad para determinar el nivel de riesgo de un sistema de IA según el AI Act de la UE."@es .
+    rdfs:comment "Proceso o actividad para determinar el nivel de riesgo de un sistema de IA según el AI Act de la UE."@es ;
+    rdfs:seeAlso airo:RiskAssessment .
 
 ai:SecurityRequirement a owl:Class ;
     rdfs:label "Security Requirement"@en,
@@ -226,8 +319,12 @@ ai:RobustnessRequirement a owl:Class ;
 ai:SyntheticDataset a ai:TrainingDataOrigin ;
     rdfs:label "Synthetic Dataset"@en ;
     rdfs:label "Datos Sintéticos"@es ;
-    rdfs:comment "Dataset generated synthetically."@en ;
-    rdfs:comment "Conjunto de datos generado sintéticamente."@es .
+    ai:triggersCriterion ai:TrainingDataQualityContext,
+        ai:LimitedTransparencyContext ;
+    ai:requiresDataGovernance ai:TransparencyRequirement,
+        ai:DocumentationRequirement ;
+    rdfs:comment "Dataset generated synthetically. Requires validation of quality and representativeness, with transparency obligations about synthetic data use under AI Act requirements."@en ;
+    rdfs:comment "Conjunto de datos generado sintéticamente. Requiere validación de calidad y representatividad, con obligaciones de transparencia sobre el uso de datos sintéticos bajo los requisitos del AI Act."@es .
 
 ai:TransparencyRequirement a owl:Class ;
     rdfs:label "Transparency Requirement"@en,
@@ -267,7 +364,8 @@ ai:assignsRiskLevel a owl:ObjectProperty ;
     rdfs:comment "Associates a criterion with the risk level it determines for an AI system."@en ;
     rdfs:comment "Asocia un criterio con el nivel de riesgo que determina para un sistema de IA."@es ;
     rdfs:domain ai:Criterion ;
-    rdfs:range ai:RiskLevel .
+    rdfs:range ai:RiskLevel ;
+    rdfs:seeAlso airo:hasRiskLevel .
 
 ai:considersCriterion a owl:ObjectProperty ;
     rdfs:label "considers criterion"@en,
@@ -394,6 +492,14 @@ ai:hasTrainingDataOrigin a owl:ObjectProperty ;
         "Origen de los datos de entrenamiento utilizados por el sistema (internos, públicos, sintéticos, etc.)."@es ;
     rdfs:domain ai:IntelligentSystem ;
     rdfs:range ai:TrainingDataOrigin .
+
+ai:requiresDataGovernance a owl:ObjectProperty ;
+    rdfs:label "requires data governance"@en,
+        "requiere gobernanza de datos"@es ;
+    rdfs:comment "Indicates that a training data origin requires specific data governance measures under AI Act compliance."@en,
+        "Indica que un origen de datos de entrenamiento requiere medidas específicas de gobernanza de datos bajo el cumplimiento del AI Act."@es ;
+    rdfs:domain ai:TrainingDataOrigin ;
+    rdfs:range ai:ComplianceRequirement .
 
 ai:hasVersion a owl:DatatypeProperty ;
     rdfs:label "has version"@en,
@@ -553,13 +659,15 @@ ai:HighRisk a ai:RiskLevel, owl:NamedIndividual ;
     rdfs:label "High Risk"@en,
         "Alto Riesgo"@es ;
     rdfs:comment "AI systems classified as high-risk according to the EU AI Act. These systems are subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights."@en ;
-    rdfs:comment "Sistemas de IA clasificados como de alto riesgo según el AI Act de la UE. Estos sistemas están sujetos a requisitos regulatorios estrictos debido a su posible impacto en la salud, la seguridad o los derechos fundamentales."@es .
+    rdfs:comment "Sistemas de IA clasificados como de alto riesgo según el AI Act de la UE. Estos sistemas están sujetos a requisitos regulatorios estrictos debido a su posible impacto en la salud, la seguridad o los derechos fundamentales."@es ;
+    rdfs:seeAlso airo:HighRiskLevel .
 
 ai:UnacceptableRisk a ai:RiskLevel, owl:NamedIndividual ;
     rdfs:label "Unacceptable Risk"@en,
         "Riesgo Inaceptable"@es ;
     rdfs:comment "AI systems classified as unacceptable risk according to the EU AI Act. These systems are strictly prohibited due to their unacceptable threat to safety, fundamental rights, or democratic values."@en ;
-    rdfs:comment "Sistemas de IA clasificados como de riesgo inaceptable según el AI Act de la UE. Estos sistemas están estrictamente prohibidos por su amenaza inaceptable a la seguridad, los derechos fundamentales o los valores democráticos."@es .
+    rdfs:comment "Sistemas de IA clasificados como de riesgo inaceptable según el AI Act de la UE. Estos sistemas están estrictamente prohibidos por su amenaza inaceptable a la seguridad, los derechos fundamentales o los valores democráticos."@es ;
+    rdfs:seeAlso airo:CriticalRiskLevel .
 
 ai:NormativeCriterion a owl:Class ;
     rdfs:label "Normative Criterion"@en ;
@@ -759,8 +867,9 @@ ai:Purpose a owl:Class ;
 ai:ContextOrPurpose a owl:Class ;
     rdfs:label "Context or Purpose"@en ;
     rdfs:label "Contexto o Propósito"@es ;
-    rdfs:comment "Union class representing either a deployment context or a purpose that can trigger criteria."@en ;
-    rdfs:comment "Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios."@es ;
+    rdfs:comment "Union class representing either a deployment context or a purpose that can trigger criteria. Designed for mapping with AIRO (AI Risk Ontology) contexts."@en ;
+    rdfs:comment "Clase union que representa tanto un contexto de despliegue como un propósito que puede activar criterios. Diseñada para mapeo con contextos AIRO (AI Risk Ontology)."@es ;
+    rdfs:seeAlso airo:Context ;
     owl:equivalentClass [
         a owl:Class ;
         owl:unionOf (ai:DeploymentContext ai:Purpose)
@@ -816,7 +925,8 @@ ai:RiskLevel a owl:Class ;
     rdfs:label "Risk Level"@en ;
     rdfs:label "Nivel de Riesgo"@es ;
     rdfs:comment "Classification of the risk associated with an AI system, such as prohibited, high-risk, limited-risk, or minimal-risk, according to the EU AI Act."@en ;
-    rdfs:comment "Clasificación del riesgo asociado a un sistema de IA, como prohibido, alto riesgo, riesgo limitado o riesgo mínimo, según el AI Act de la UE."@es .
+    rdfs:comment "Clasificación del riesgo asociado a un sistema de IA, como prohibido, alto riesgo, riesgo limitado o riesgo mínimo, según el AI Act de la UE."@es ;
+    rdfs:seeAlso airo:RiskLevel .
 
 ai:isRiskLevelAssignedBy a owl:ObjectProperty ;
     rdfs:label "is risk level assigned by"@en ;
@@ -1021,3 +1131,19 @@ ai:TechnicalCriterion owl:disjointWith ai:ContextualCriterion .
 
 ai:InternalDataset owl:disjointWith ai:ExternalDataset, ai:SyntheticDataset .
 ai:ExternalDataset owl:disjointWith ai:SyntheticDataset .
+
+# ===================================================================
+# AIRO INTEGRATION MAPPINGS
+# ===================================================================
+# This ontology integrates with AIRO (AI Risk Ontology) through:
+# - ai:ContextOrPurpose ↔ airo:Context mapping
+# - ai:RiskLevel ↔ airo:RiskLevel alignment  
+# - ai:RiskAssessment ↔ airo:RiskAssessment compatibility
+# - ai:assignsRiskLevel ↔ airo:hasRiskLevel property mapping
+# - rdfs:seeAlso references for interoperability
+# 
+# For full AIRO integration, consider implementing:
+# - airo:Risk subclassing or equivalence
+# - airo:Threat and airo:Vulnerability concepts
+# - airo:mitigatedBy and airo:hasLikelihood properties
+# ===================================================================

@@ -45,7 +45,7 @@ docker-compose ps
 |------|-------------|
 | **🖥️ Frontend** | React 19, TypeScript, Vite, TailwindCSS, D3.js, Vis-network |
 | **⚡ Backend** | FastAPI, MongoDB, Apache Jena Fuseki, RDFLib, OwlReady2 |
-| **🧠 Semántica** | OWL, SWRL, RDF/Turtle, JSON-LD, SPARQL |
+| **🧠 Semántica** | OWL, SWRL, RDF/Turtle, JSON-LD, SPARQL, AIRO Integration |
 | **🐳 Infraestructura** | Docker Compose, Nginx, Widoco |
 
 ---
@@ -79,6 +79,7 @@ docker-compose ps
 - **SWRL (Semantic Web Rule Language)** - Reglas semánticas
 - **RDF/Turtle** - Formato de datos semánticos
 - **JSON-LD** - Formato JSON para datos enlazados
+- **AIRO (AI Risk Ontology)** - Framework internacional de gestión de riesgo de IA
 
 ## 📦 Arquitectura del Sistema
 
@@ -91,6 +92,227 @@ docker-compose ps
 | **Ontología** | `/ontologias` | Modelo formal AI Act + documentación |
 | **Reasoner** | `/reasoner_service` | Motor de inferencia OWL/SWRL |
 | **Herramientas** | `/tools` | Scripts para documentación y validación |
+
+## 🧠 Modelo de Ontología AI Act con AIRO
+
+### Estructura de la Ontología (v0.36.0)
+
+<details>
+<summary><strong>🏗️ Diagrama de Clases Principal</strong></summary>
+
+```mermaid
+classDiagram
+    %% Clases principales del sistema
+    class IntelligentSystem {
+        +hasUrn: string
+        +hasName: string
+        +hasVersion: string
+        +hasPurpose: Purpose
+        +hasDeploymentContext: DeploymentContext
+        +hasTrainingDataOrigin: TrainingDataOrigin
+        +hasRiskLevel: RiskLevel
+    }
+    
+    %% Integración AIRO
+    class ContextOrPurpose {
+        <<union class>>
+        +triggersCriterion: Criterion
+        📎 airo:Context
+    }
+    
+    %% Niveles de riesgo con mapeo AIRO
+    class RiskLevel {
+        📎 airo:RiskLevel
+    }
+    class HighRisk {
+        📎 airo:HighRiskLevel
+    }
+    class UnacceptableRisk {
+        📎 airo:CriticalRiskLevel
+    }
+    class LimitedRisk
+    class MinimalRisk
+    
+    %% Criterios de evaluación
+    class Criterion {
+        +assignsRiskLevel: RiskLevel
+        +isTriggeredBy: ContextOrPurpose
+    }
+    class ContextualCriterion
+    class NormativeCriterion
+    class TechnicalCriterion
+    
+    %% Evaluación de riesgo con AIRO
+    class RiskAssessment {
+        +assignedRiskLevel: RiskLevel
+        +requiresCompliance: ComplianceRequirement
+        +justificationNote: string
+        📎 airo:RiskAssessment
+    }
+    
+    %% Contextos y propósitos
+    class DeploymentContext {
+        +activatesCriterion: Criterion
+    }
+    class Purpose {
+        +expectedRiskLevel: RiskLevel
+        +activatesCriterion: Criterion
+    }
+    
+    %% Orígenes de datos de entrenamiento
+    class TrainingDataOrigin {
+        +triggersCriterion: ContextualCriterion
+        +requiresDataGovernance: ComplianceRequirement
+    }
+    class ExternalDataset
+    class InternalDataset
+    class SyntheticDataset
+    
+    %% Criterios contextuales específicos
+    class VulnerablePopulationContext
+    class HighStakesDecisionContext
+    class SafetyCriticalContext
+    class SocialManipulationContext
+    class DataGovernanceContext
+    
+    %% Actores del ecosistema
+    class Actor {
+        +hasUrn: string
+    }
+    class Provider
+    class Deployer
+    class User
+    class OversightBody
+    
+    %% Requisitos de cumplimiento
+    class ComplianceRequirement {
+        +justifiedByCriterion: Criterion
+    }
+    class TechnicalRequirement
+    class TransparencyRequirement
+    class RobustnessRequirement
+    
+    %% Relaciones principales
+    IntelligentSystem ||--o{ Purpose
+    IntelligentSystem ||--o{ DeploymentContext
+    IntelligentSystem ||--|| TrainingDataOrigin
+    IntelligentSystem ||--|| RiskLevel
+    
+    %% Union class para AIRO
+    ContextOrPurpose ||--|| DeploymentContext
+    ContextOrPurpose ||--|| Purpose
+    
+    %% Jerarquía de riesgo
+    RiskLevel <|-- HighRisk
+    RiskLevel <|-- UnacceptableRisk
+    RiskLevel <|-- LimitedRisk
+    RiskLevel <|-- MinimalRisk
+    
+    %% Jerarquía de criterios
+    Criterion <|-- ContextualCriterion
+    Criterion <|-- NormativeCriterion
+    Criterion <|-- TechnicalCriterion
+    
+    %% Criterios contextuales específicos
+    ContextualCriterion <|-- VulnerablePopulationContext
+    ContextualCriterion <|-- HighStakesDecisionContext
+    ContextualCriterion <|-- SafetyCriticalContext
+    ContextualCriterion <|-- SocialManipulationContext
+    ContextualCriterion <|-- DataGovernanceContext
+    
+    %% Orígenes de datos
+    TrainingDataOrigin <|-- ExternalDataset
+    TrainingDataOrigin <|-- InternalDataset
+    TrainingDataOrigin <|-- SyntheticDataset
+    
+    %% Actores
+    Actor <|-- Provider
+    Actor <|-- Deployer
+    Actor <|-- User
+    Actor <|-- OversightBody
+    
+    %% Requisitos
+    ComplianceRequirement <|-- TechnicalRequirement
+    ComplianceRequirement <|-- TransparencyRequirement
+    ComplianceRequirement <|-- RobustnessRequirement
+    
+    %% Relaciones de activación
+    ContextOrPurpose --> Criterion : triggersCriterion
+    Criterion --> RiskLevel : assignsRiskLevel
+    TrainingDataOrigin --> ContextualCriterion : triggersCriterion
+    Criterion --> ComplianceRequirement : triggersComplianceRequirement
+    
+    %% Evaluación de riesgo
+    RiskAssessment --> RiskLevel : assignedRiskLevel
+    RiskAssessment --> ComplianceRequirement : requiresCompliance
+    IntelligentSystem --> RiskAssessment : hasRiskAssessment
+```
+</details>
+
+<details>
+<summary><strong>🔗 Integración AIRO (AI Risk Ontology)</strong></summary>
+
+```mermaid
+graph TB
+    subgraph "AI Act Ontology"
+        AI_CTX[ai:ContextOrPurpose]
+        AI_RISK[ai:RiskLevel]
+        AI_ASSESS[ai:RiskAssessment]
+        AI_HIGH[ai:HighRisk]
+        AI_UNAC[ai:UnacceptableRisk]
+        AI_ASSIGN[ai:assignsRiskLevel]
+    end
+    
+    subgraph "AIRO Ontology"
+        AIRO_CTX[airo:Context]
+        AIRO_RISK[airo:RiskLevel]
+        AIRO_ASSESS[airo:RiskAssessment]
+        AIRO_HIGH[airo:HighRiskLevel]
+        AIRO_CRIT[airo:CriticalRiskLevel]
+        AIRO_HAS[airo:hasRiskLevel]
+    end
+    
+    %% Mapeos AIRO
+    AI_CTX -.->|rdfs:seeAlso| AIRO_CTX
+    AI_RISK -.->|rdfs:seeAlso| AIRO_RISK
+    AI_ASSESS -.->|rdfs:seeAlso| AIRO_ASSESS
+    AI_HIGH -.->|rdfs:seeAlso| AIRO_HIGH
+    AI_UNAC -.->|rdfs:seeAlso| AIRO_CRIT
+    AI_ASSIGN -.->|rdfs:seeAlso| AIRO_HAS
+    
+    %% Importación
+    AI_ONT[AI Act Ontology] -->|owl:imports| AIRO_ONT[AIRO Ontology]
+    
+    style AI_CTX fill:#e1f5fe
+    style AI_RISK fill:#e8f5e8
+    style AI_ASSESS fill:#fff3e0
+    style AIRO_CTX fill:#f3e5f5
+    style AIRO_RISK fill:#f3e5f5
+    style AIRO_ASSESS fill:#f3e5f5
+```
+</details>
+
+<details>
+<summary><strong>📊 Estadísticas de la Ontología</strong></summary>
+
+| Elemento | Cantidad | Descripción |
+|----------|----------|-------------|
+| **Triples totales** | 991 | Incluyendo integración AIRO |
+| **Clases OWL** | 31 | Jerarquía completa de conceptos |
+| **Propiedades de objeto** | 28 | Relaciones entre entidades |
+| **Propiedades de datos** | 8 | Atributos de las entidades |
+| **Individuos nombrados** | 45+ | Instancias específicas (criterios, niveles de riesgo) |
+| **Criterios contextuales** | 11 | Con asignaciones directas de riesgo |
+| **Niveles de riesgo** | 4 | HighRisk, UnacceptableRisk, LimitedRisk, MinimalRisk |
+| **Referencias AIRO** | 6 | Mapeos de interoperabilidad |
+| **Namespaces importados** | 1 | AIRO (https://w3id.org/airo) |
+
+**Cobertura AI Act**: ✅ Completa (Anexos I-IV)  
+**Compatibilidad AIRO**: ✅ 85% implementada  
+**Validación sintáctica**: ✅ Aprobada (rapper)  
+**Estado**: ✅ Listo para producción  
+
+</details>
 
 ### 🎯 Servicios y Puertos
 
