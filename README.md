@@ -193,14 +193,14 @@ classDiagram
     class RobustnessRequirement
     
     %% Relaciones principales
-    IntelligentSystem ||--o{ Purpose
-    IntelligentSystem ||--o{ DeploymentContext
-    IntelligentSystem ||--|| TrainingDataOrigin
-    IntelligentSystem ||--|| RiskLevel
+    IntelligentSystem --> Purpose : hasPurpose
+    IntelligentSystem --> DeploymentContext : hasDeploymentContext
+    IntelligentSystem --> TrainingDataOrigin : hasTrainingDataOrigin
+    IntelligentSystem --> RiskLevel : hasRiskLevel
     
     %% Union class para AIRO
-    ContextOrPurpose ||--|| DeploymentContext
-    ContextOrPurpose ||--|| Purpose
+    ContextOrPurpose --> DeploymentContext : unionOf
+    ContextOrPurpose --> Purpose : unionOf
     
     %% Jerarquía de riesgo
     RiskLevel <|-- HighRisk
