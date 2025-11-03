@@ -93,16 +93,28 @@ docker-compose ps
 | **Reasoner** | `/reasoner_service` | Motor de inferencia OWL/SWRL |
 | **Herramientas** | `/tools` | Scripts para documentación y validación |
 
+### 🎯 Servicios y Puertos
+
+| Servicio | Puerto | URL | Descripción |
+|----------|--------|-----|-------------|
+| **Frontend** | 5173 | http://localhost:5173 | Interfaz web React |
+| **Backend API** | 8000 | http://localhost:8000 | API REST principal |
+| **Reasoner** | 8001 | http://localhost:8001 | Servicio de razonamiento |
+| **Fuseki** | 3030 | http://localhost:3030 | Servidor SPARQL |
+| **MongoDB** | 27017 | mongodb://localhost:27017 | Base de datos documentos |
+| **Docs** | 80 | http://localhost/docs | Documentación HTML |
+
+
 ## 🧠 Modelo de Ontología AI Act con AIRO
 
 ### Estructura de la Ontología (v0.36.0)
 
 <details>
-<summary><strong>🏗️ Diagrama de Clases Principal</strong></summary>
+<summary><strong>🏗️ Diagrama 1: Sistema Central y sus Características</strong></summary>
 
 ```mermaid
 classDiagram
-    %% Clases principales del sistema
+    %% Sistema central como núcleo
     class IntelligentSystem {
         +hasUrn: string
         +hasName: string
@@ -113,11 +125,101 @@ classDiagram
         +hasRiskLevel: RiskLevel
     }
     
-    %% Integración AIRO
+    %% Contextos de despliegue
+    class DeploymentContext {
+        +contextName: string
+        +activatesCriterion: Criterion
+    }
+    class Healthcare
+    class Education
+    class PublicServices
+    class LawEnforcement
+    
+    %% Propósitos del sistema
+    class Purpose {
+        +purposeDescription: string
+        +expectedRiskLevel: RiskLevel
+    }
+    class BiometricIdentification
+    class EmotionalRecognition
+    class RiskAssessmentPurpose
+    
+    %% Orígenes de datos de entrenamiento
+    class TrainingDataOrigin {
+        +dataSource: string
+        +requiresDataGovernance: ComplianceRequirement
+    }
+    class ExternalDataset {
+        +provenance: string
+    }
+    class InternalDataset {
+        +dataQuality: string
+    }
+    class SyntheticDataset {
+        +generationMethod: string
+    }
+    
+    %% Relaciones del sistema central
+    IntelligentSystem --> Purpose : hasPurpose
+    IntelligentSystem --> DeploymentContext : hasDeploymentContext
+    IntelligentSystem --> TrainingDataOrigin : hasTrainingDataOrigin
+    
+    %% Jerarquías
+    DeploymentContext <|-- Healthcare
+    DeploymentContext <|-- Education
+    DeploymentContext <|-- PublicServices
+    DeploymentContext <|-- LawEnforcement
+    
+    Purpose <|-- BiometricIdentification
+    Purpose <|-- EmotionalRecognition
+    Purpose <|-- RiskAssessmentPurpose
+    
+    TrainingDataOrigin <|-- ExternalDataset
+    TrainingDataOrigin <|-- InternalDataset
+    TrainingDataOrigin <|-- SyntheticDataset
+```
+
+</details>
+
+<details>
+<summary><strong>⚠️ Diagrama 2: Evaluación de Riesgo y Criterios</strong></summary>
+
+```mermaid
+classDiagram
+    %% Clase unión para AIRO
     class ContextOrPurpose {
         <<union class>>
         +triggersCriterion: Criterion
         📎 airo:Context
+    }
+    
+    %% Criterios de evaluación
+    class Criterion {
+        +assignsRiskLevel: RiskLevel
+        +isTriggeredBy: ContextOrPurpose
+    }
+    class ContextualCriterion {
+        +contextSpecific: boolean
+    }
+    class NormativeCriterion {
+        +legalBasis: string
+    }
+    class TechnicalCriterion {
+        +technicalStandard: string
+    }
+    
+    %% Criterios contextuales específicos
+    class VulnerablePopulationContext {
+        +populationType: string
+    }
+    class HighStakesDecisionContext {
+        +decisionImpact: string
+    }
+    class SafetyCriticalContext {
+        +safetyLevel: string
+    }
+    class DataGovernanceContext {
+        +governanceRequirements: string
     }
     
     %% Niveles de riesgo con mapeo AIRO
@@ -125,129 +227,259 @@ classDiagram
         📎 airo:RiskLevel
     }
     class HighRisk {
+        +strictRequirements: boolean
         📎 airo:HighRiskLevel
     }
     class UnacceptableRisk {
+        +prohibited: boolean
         📎 airo:CriticalRiskLevel
     }
-    class LimitedRisk
-    class MinimalRisk
-    
-    %% Criterios de evaluación
-    class Criterion {
-        +assignsRiskLevel: RiskLevel
-        +isTriggeredBy: ContextOrPurpose
+    class LimitedRisk {
+        +transparencyRequired: boolean
     }
-    class ContextualCriterion
-    class NormativeCriterion
-    class TechnicalCriterion
+    class MinimalRisk {
+        +basicCompliance: boolean
+    }
     
-    %% Evaluación de riesgo con AIRO
+    %% Evaluación de riesgo
     class RiskAssessment {
         +assignedRiskLevel: RiskLevel
-        +requiresCompliance: ComplianceRequirement
+        +assessmentDate: date
         +justificationNote: string
         📎 airo:RiskAssessment
     }
     
-    %% Contextos y propósitos
-    class DeploymentContext {
-        +activatesCriterion: Criterion
-    }
-    class Purpose {
-        +expectedRiskLevel: RiskLevel
-        +activatesCriterion: Criterion
-    }
-    
-    %% Orígenes de datos de entrenamiento
-    class TrainingDataOrigin {
-        +triggersCriterion: ContextualCriterion
-        +requiresDataGovernance: ComplianceRequirement
-    }
-    class ExternalDataset
-    class InternalDataset
-    class SyntheticDataset
-    
-    %% Criterios contextuales específicos
-    class VulnerablePopulationContext
-    class HighStakesDecisionContext
-    class SafetyCriticalContext
-    class SocialManipulationContext
-    class DataGovernanceContext
-    
-    %% Actores del ecosistema
-    class Actor {
-        +hasUrn: string
-    }
-    class Provider
-    class Deployer
-    class User
-    class OversightBody
-    
-    %% Requisitos de cumplimiento
-    class ComplianceRequirement {
-        +justifiedByCriterion: Criterion
-    }
-    class TechnicalRequirement
-    class TransparencyRequirement
-    class RobustnessRequirement
-    
-    %% Relaciones principales
-    IntelligentSystem --> Purpose : hasPurpose
-    IntelligentSystem --> DeploymentContext : hasDeploymentContext
-    IntelligentSystem --> TrainingDataOrigin : hasTrainingDataOrigin
-    IntelligentSystem --> RiskLevel : hasRiskLevel
-    
     %% Union class para AIRO
     ContextOrPurpose --> DeploymentContext : unionOf
     ContextOrPurpose --> Purpose : unionOf
+    
+    %% Flujo de evaluación
+    ContextOrPurpose --> Criterion : triggersCriterion
+    Criterion --> RiskLevel : assignsRiskLevel
+    RiskAssessment --> RiskLevel : assignedRiskLevel
+    
+    %% Jerarquías de criterios
+    Criterion <|-- ContextualCriterion
+    Criterion <|-- NormativeCriterion
+    Criterion <|-- TechnicalCriterion
+    
+    ContextualCriterion <|-- VulnerablePopulationContext
+    ContextualCriterion <|-- HighStakesDecisionContext
+    ContextualCriterion <|-- SafetyCriticalContext
+    ContextualCriterion <|-- DataGovernanceContext
     
     %% Jerarquía de riesgo
     RiskLevel <|-- HighRisk
     RiskLevel <|-- UnacceptableRisk
     RiskLevel <|-- LimitedRisk
     RiskLevel <|-- MinimalRisk
+```
+
+</details>
+
+<details>
+<summary><strong>📋 Diagrama 3: Cumplimiento y Requisitos</strong></summary>
+
+```mermaid
+classDiagram
+    %% Criterios (entrada del proceso)
+    class Criterion {
+        +assignsRiskLevel: RiskLevel
+        +triggersCompliance: ComplianceRequirement
+    }
     
-    %% Jerarquía de criterios
-    Criterion <|-- ContextualCriterion
-    Criterion <|-- NormativeCriterion
-    Criterion <|-- TechnicalCriterion
+    %% Requisitos de cumplimiento
+    class ComplianceRequirement {
+        +justifiedByCriterion: Criterion
+        +mandatoryCompliance: boolean
+        +deadlineDate: date
+    }
     
-    %% Criterios contextuales específicos
-    ContextualCriterion <|-- VulnerablePopulationContext
-    ContextualCriterion <|-- HighStakesDecisionContext
-    ContextualCriterion <|-- SafetyCriticalContext
-    ContextualCriterion <|-- SocialManipulationContext
-    ContextualCriterion <|-- DataGovernanceContext
+    class TechnicalRequirement {
+        +technicalStandard: string
+        +validationMethod: string
+    }
     
-    %% Orígenes de datos
-    TrainingDataOrigin <|-- ExternalDataset
-    TrainingDataOrigin <|-- InternalDataset
-    TrainingDataOrigin <|-- SyntheticDataset
+    class TransparencyRequirement {
+        +disclosureLevel: string
+        +userInformation: string
+    }
     
-    %% Actores
+    class RobustnessRequirement {
+        +testingProtocol: string
+        +performanceMetrics: string
+    }
+    
+    class DataGovernanceRequirement {
+        +dataProtection: string
+        +auditTrail: boolean
+    }
+    
+    class TraceabilityRequirement {
+        +documentationLevel: string
+        +changeManagement: boolean
+    }
+    
+    class DocumentationRequirement {
+        +documentationType: string
+        +updateFrequency: string
+    }
+    
+    %% Evaluación de riesgo (conexión con diagrama anterior)
+    class RiskAssessment {
+        +requiresCompliance: ComplianceRequirement
+        +complianceDeadline: date
+    }
+    
+    %% Flujo de cumplimiento
+    Criterion --> ComplianceRequirement : triggersComplianceRequirement
+    RiskAssessment --> ComplianceRequirement : requiresCompliance
+    
+    %% Jerarquía de requisitos
+    ComplianceRequirement <|-- TechnicalRequirement
+    ComplianceRequirement <|-- TransparencyRequirement
+    ComplianceRequirement <|-- RobustnessRequirement
+    ComplianceRequirement <|-- DataGovernanceRequirement
+    ComplianceRequirement <|-- TraceabilityRequirement
+    ComplianceRequirement <|-- DocumentationRequirement
+```
+
+</details>
+
+<details>
+<summary><strong>🔗 Diagrama 4: Flujo de Proceso Completo</strong></summary>
+
+```mermaid
+flowchart TD
+    %% Sistema central
+    A[🏗️ IntelligentSystem] --> B[🎯 Purpose]
+    A --> C[📍 DeploymentContext]
+    A --> D[📊 TrainingDataOrigin]
+    
+    %% Unión AIRO
+    B --> E{🔗 ContextOrPurpose}
+    C --> E
+    
+    %% Evaluación de criterios
+    E --> F[⚖️ Criterion]
+    F --> G[⚠️ RiskLevel]
+    
+    %% Evaluación formal
+    G --> H[📋 RiskAssessment]
+    
+    %% Requisitos de cumplimiento
+    F --> I[📝 ComplianceRequirement]
+    H --> I
+    
+    %% Tipos de requisitos
+    I --> J[🔧 Technical]
+    I --> K[👁️ Transparency] 
+    I --> L[🛡️ Robustness]
+    I --> M[📊 DataGovernance]
+    
+    %% Niveles de riesgo específicos
+    G --> N[🔴 HighRisk]
+    G --> O[⛔ UnacceptableRisk]
+    G --> P[🟡 LimitedRisk]
+    G --> Q[🟢 MinimalRisk]
+    
+    %% Mapeo AIRO
+    E -.->|📎| R[airo:Context]
+    G -.->|📎| S[airo:RiskLevel]
+    H -.->|📎| T[airo:RiskAssessment]
+    
+    style A fill:#e1f5fe
+    style E fill:#f3e5f5
+    style F fill:#fff3e0
+    style G fill:#ffebee
+    style I fill:#e8f5e8
+    style R fill:#f0f0f0
+    style S fill:#f0f0f0
+    style T fill:#f0f0f0
+```
+
+</details>
+
+<details>
+<summary><strong>👥 Diagrama de Clases - Actores del Ecosistema</strong></summary>
+
+```mermaid
+classDiagram
+    %% Actores del ecosistema AI Act
+    class Actor {
+        +hasUrn: string
+        +hasHttpIri: string
+        +providesSystem: IntelligentSystem
+        +deploysSystem: IntelligentSystem
+        +usesSystem: IntelligentSystem
+        +monitorsSystem: IntelligentSystem
+    }
+    
+    class Provider {
+        +developmentResponsibilities: string
+        +marketingObligations: string
+        +conformityAssessment: boolean
+    }
+    
+    class Deployer {
+        +deploymentContext: DeploymentContext
+        +operationalResponsibilities: string
+        +humanOversight: boolean
+    }
+    
+    class User {
+        +userType: string
+        +accessLevel: string
+    }
+    
+    class EndUser {
+        +informationRights: boolean
+        +transparencyRequirements: boolean
+    }
+    
+    class ProfessionalUser {
+        +professionalCompetence: string
+        +trainingRequirements: string
+    }
+    
+    class OversightBody {
+        +supervisionScope: string
+        +enforcementPowers: string
+        +complianceMonitoring: boolean
+    }
+    
+    class Distributor {
+        +distributionChannel: string
+        +marketingSuppport: string
+    }
+    
+    class Importer {
+        +importRegion: string
+        +complianceVerification: boolean
+    }
+    
+    %% Jerarquía de actores
     Actor <|-- Provider
     Actor <|-- Deployer
     Actor <|-- User
     Actor <|-- OversightBody
+    Actor <|-- Distributor
+    Actor <|-- Importer
     
-    %% Requisitos
-    ComplianceRequirement <|-- TechnicalRequirement
-    ComplianceRequirement <|-- TransparencyRequirement
-    ComplianceRequirement <|-- RobustnessRequirement
+    %% Especialización de usuarios
+    User <|-- EndUser
+    User <|-- ProfessionalUser
     
-    %% Relaciones de activación
-    ContextOrPurpose --> Criterion : triggersCriterion
-    Criterion --> RiskLevel : assignsRiskLevel
-    TrainingDataOrigin --> ContextualCriterion : triggersCriterion
-    Criterion --> ComplianceRequirement : triggersComplianceRequirement
-    
-    %% Evaluación de riesgo
-    RiskAssessment --> RiskLevel : assignedRiskLevel
-    RiskAssessment --> ComplianceRequirement : requiresCompliance
-    IntelligentSystem --> RiskAssessment : hasRiskAssessment
+    %% Relaciones con sistemas (representativas)
+    Provider --> IntelligentSystem : providesSystem
+    Deployer --> IntelligentSystem : deploysSystem
+    User --> IntelligentSystem : usesSystem
+    OversightBody --> IntelligentSystem : monitorsSystem
 ```
 </details>
+
+
+
 
 <details>
 <summary><strong>🔗 Integración AIRO (AI Risk Ontology)</strong></summary>
@@ -314,16 +546,250 @@ graph TB
 
 </details>
 
-### 🎯 Servicios y Puertos
+## 🏷️ Instancias de la Ontología
 
-| Servicio | Puerto | URL | Descripción |
-|----------|--------|-----|-------------|
-| **Frontend** | 5173 | http://localhost:5173 | Interfaz web React |
-| **Backend API** | 8000 | http://localhost:8000 | API REST principal |
-| **Reasoner** | 8001 | http://localhost:8001 | Servicio de razonamiento |
-| **Fuseki** | 3030 | http://localhost:3030 | Servidor SPARQL |
-| **MongoDB** | 27017 | mongodb://localhost:27017 | Base de datos documentos |
-| **Docs** | 80 | http://localhost/docs | Documentación HTML |
+### Contextos de Despliegue y Propósitos
+
+<details>
+<summary><strong>📍 Instancias: Contextos de Despliegue</strong></summary>
+
+```mermaid
+graph TD
+    subgraph "DeploymentContext Instances"
+        DC[DeploymentContext]
+        
+        %% Instancias específicas
+        EDU[Education<br/>🎓 Educación]
+        HEALTH[Healthcare<br/>🏥 Salud]
+        PUBLIC[PublicServices<br/>🏛️ Servicios Públicos]
+        LAW[LawEnforcement<br/>👮 Aplicación de la Ley]
+        FINANCE[Financial<br/>💰 Financiero]
+        BORDER[Border<br/>🛂 Control Fronterizo]
+        
+        %% Relaciones
+        DC --> EDU
+        DC --> HEALTH
+        DC --> PUBLIC
+        DC --> LAW
+        DC --> FINANCE
+        DC --> BORDER
+        
+        %% Criterios activados
+        EDU --> EDUC_CRIT[EducationEvaluationCriterion]
+        HEALTH --> ESS_CRIT[EssentialServicesAccessCriterion]
+        PUBLIC --> ESS_CRIT
+        LAW --> LAW_CRIT[LawEnforcementCriterion]
+        BORDER --> MIG_CRIT[MigrationBorderCriterion]
+        
+        style EDU fill:#e8f5e8
+        style HEALTH fill:#e1f5fe
+        style PUBLIC fill:#fff3e0
+        style LAW fill:#ffebee
+        style FINANCE fill:#f3e5f5
+        style BORDER fill:#e0f2f1
+    end
+```
+
+</details>
+
+<details>
+<summary><strong>🎯 Instancias: Propósitos de Sistemas</strong></summary>
+
+```mermaid
+graph TD
+    subgraph "Purpose Instances"
+        PURP[Purpose]
+        
+        %% Instancias reales de la ontología
+        BIO_ID[BiometricIdentification<br/>🔍 Identificación Biométrica]
+        EDUC_ACC[EducationAccess<br/>📚 Acceso Educativo]
+        MIG_CTRL[MigrationControl<br/>🗺️ Control Migratorio]
+        PUB_ALLOC[PublicServiceAllocation<br/>📋 Asignación Servicios]
+        CRIT_INFRA[CriticalInfrastructureOperation<br/>🏗️ Infraestructura Crítica]
+        JUDICIAL[JudicialDecisionSupport<br/>⚖️ Apoyo Judicial]
+        LAW_ENF[LawEnforcementSupport<br/>👮 Aplicación de la Ley]
+        RECRUIT[RecruitmentOrEmployment<br/>💼 Reclutamiento]
+        
+        %% Relaciones
+        PURP --> BIO_ID
+        PURP --> EDUC_ACC
+        PURP --> MIG_CTRL
+        PURP --> PUB_ALLOC
+        PURP --> CRIT_INFRA
+        PURP --> JUDICIAL
+        PURP --> LAW_ENF
+        PURP --> RECRUIT
+        
+        %% Criterios activados (flujo correcto - solo los que existen)
+        BIO_ID --> BIO_CRIT[BiometricIdentificationCriterion]
+        EDUC_ACC --> EDUC_CRIT[EducationEvaluationCriterion]
+        MIG_CTRL --> MIG_CRIT[MigrationBorderCriterion]
+        
+        %% Criterios asignan niveles de riesgo (solo los definidos)
+        BIO_CRIT --> HIGH_R[HighRisk]
+        EDUC_CRIT --> HIGH_R
+        MIG_CRIT --> HIGH_R
+        
+        style BIO_ID fill:#ffebee
+        style EDUC_ACC fill:#e8f5e8
+        style MIG_CTRL fill:#fff3e0
+        style PUB_ALLOC fill:#e1f5fe
+        style CRIT_INFRA fill:#f3e5f5
+        style JUDICIAL fill:#fce4ec
+        style LAW_ENF fill:#e0f2f1
+        style RECRUIT fill:#f1f8e9
+        style BIO_CRIT fill:#ff9800,color:#ffffff
+        style HIGH_R fill:#ff5722,color:#ffffff
+    end
+```
+
+</details>
+
+### Niveles de Riesgo y Criterios
+
+<details>
+<summary><strong>⚠️ Instancias: Niveles de Riesgo</strong></summary>
+
+```mermaid
+graph LR
+    subgraph "RiskLevel Instances"
+        RL[RiskLevel]
+        
+        %% Instancias con mapeo AIRO
+        UNAC[UnacceptableRisk<br/>⛔ Riesgo Inaceptable<br/>📎 airo:CriticalRiskLevel]
+        HIGH[HighRisk<br/>🔴 Riesgo Alto<br/>📎 airo:HighRiskLevel]
+        LIM[LimitedRisk<br/>🟡 Riesgo Limitado]
+        MIN[MinimalRisk<br/>🟢 Riesgo Mínimo]
+        
+        %% Jerarquía
+        RL --> UNAC
+        RL --> HIGH
+        RL --> LIM
+        RL --> MIN
+        
+        %% Requisitos asociados
+        UNAC --> PROHIB[Sistema Prohibido]
+        HIGH --> STRICT[Requisitos Estrictos]
+        LIM --> TRANSP[Transparencia Requerida]
+        MIN --> BASIC[Cumplimiento Básico]
+        
+        style UNAC fill:#f44336,color:#ffffff
+        style HIGH fill:#ff5722,color:#ffffff
+        style LIM fill:#ff9800,color:#ffffff
+        style MIN fill:#4caf50,color:#ffffff
+        style PROHIB fill:#000000,color:#ffffff
+        style STRICT fill:#d32f2f,color:#ffffff
+        style TRANSP fill:#f57c00,color:#ffffff
+        style BASIC fill:#388e3c,color:#ffffff
+    end
+```
+
+</details>
+
+<details>
+<summary><strong>⚖️ Instancias: Criterios Específicos</strong></summary>
+
+```mermaid
+graph TD
+    subgraph "Criterion Instances"
+        CRIT[Criterion]
+        
+        %% Criterios normativos
+        subgraph "NormativeCriterion"
+            BIO_CRIT[BiometricIdentificationCriterion<br/>🔍 Identificación Biométrica]
+            CRIT_INFRA[CriticalInfrastructureCriterion<br/>🏗️ Infraestructura Crítica]
+            LAW_CRIT[LawEnforcementCriterion<br/>👮 Aplicación de la Ley]
+            MIG_CRIT[MigrationBorderCriterion<br/>🛂 Control Fronterizo]
+            RECRUIT[RecruitmentEmploymentCriterion<br/>💼 Empleo]
+        end
+        
+        %% Criterios contextuales
+        subgraph "ContextualCriterion"
+            DATA_GOV[DataGovernanceContext<br/>📊 Gobernanza de Datos]
+            TRAINING_Q[TrainingDataQualityContext<br/>📈 Calidad de Datos]
+            ESSENTIAL[EssentialServicesAccessCriterion<br/>🏥 Servicios Esenciales]
+            EDUCATION[EducationEvaluationCriterion<br/>🎓 Evaluación Educativa]
+        end
+        
+        %% Criterios técnicos
+        subgraph "TechnicalCriterion"
+            ACCURACY[AccuracyRequirement<br/>🎯 Precisión]
+            ROBUSTNESS[RobustnessRequirement<br/>🛡️ Robustez]
+            SECURITY[SecurityRequirement<br/>🔒 Seguridad]
+        end
+        
+        %% Relaciones con niveles de riesgo
+        BIO_CRIT --> HIGH_RISK[HighRisk]
+        CRIT_INFRA --> HIGH_RISK
+        LAW_CRIT --> HIGH_RISK
+        DATA_GOV --> HIGH_RISK
+        EDUCATION --> LIM_RISK[LimitedRisk]
+        ACCURACY --> MIN_RISK[MinimalRisk]
+        
+        style BIO_CRIT fill:#ffebee
+        style CRIT_INFRA fill:#e1f5fe
+        style LAW_CRIT fill:#fff3e0
+        style DATA_GOV fill:#f3e5f5
+        style EDUCATION fill:#e8f5e8
+        style ACCURACY fill:#e0f2f1
+    end
+```
+
+</details>
+
+### Requisitos de Cumplimiento
+
+<details>
+<summary><strong>📋 Instancias: Requisitos Específicos</strong></summary>
+
+```mermaid
+graph TD
+    subgraph "ComplianceRequirement Instances"
+        CR[ComplianceRequirement]
+        
+        %% Requisitos técnicos
+        subgraph "Technical Requirements"
+            ACC_EVAL[AccuracyEvaluationRequirement<br/>🎯 Evaluación de Precisión]
+            ROBUST[RobustnessRequirement<br/>🛡️ Robustez]
+            SECURITY[SecurityRequirement<br/>🔒 Seguridad]
+            VALID[ValidationRequirement<br/>✅ Validación]
+        end
+        
+        %% Requisitos de transparencia
+        subgraph "Transparency Requirements"
+            TRANSP[TransparencyRequirement<br/>👁️ Transparencia]
+            DOC[DocumentationRequirement<br/>📝 Documentación]
+            TRACE[TraceabilityRequirement<br/>🔍 Trazabilidad]
+            DISCLOSURE[DisclosureRequirement<br/>📢 Divulgación]
+        end
+        
+        %% Requisitos de gobernanza
+        subgraph "Governance Requirements"
+            DATA_GOV_REQ[DataGovernanceRequirement<br/>📊 Gobernanza de Datos]
+            HUMAN_OV[HumanOversightRequirement<br/>👤 Supervisión Humana]
+            FUND_RIGHTS[FundamentalRightsAssessmentRequirement<br/>⚖️ Derechos Fundamentales]
+            QUALITY_MAN[QualityManagementRequirement<br/>📈 Gestión de Calidad]
+        end
+        
+        %% Relaciones con criterios
+        ACC_EVAL --> ACCURACY_CRIT[AccuracyCriterion]
+        ROBUST --> SAFETY_CRIT[SafetyCriterion]
+        TRANSP --> USER_INFO[UserInformationCriterion]
+        DATA_GOV_REQ --> DATA_CRIT[DataGovernanceCriterion]
+        HUMAN_OV --> HIGH_RISK_CRIT[HighRiskCriterion]
+        
+        style ACC_EVAL fill:#e8f5e8
+        style ROBUST fill:#e1f5fe
+        style TRANSP fill:#fff3e0
+        style DATA_GOV_REQ fill:#f3e5f5
+        style HUMAN_OV fill:#ffebee
+        style DOC fill:#e0f2f1
+    end
+```
+
+</details>
+
+
 
 ## 🔄 Flujos del Sistema
 

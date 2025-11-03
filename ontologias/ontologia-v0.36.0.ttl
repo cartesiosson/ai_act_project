@@ -196,8 +196,6 @@ ai:EndUser a owl:Class ;
 ai:ExternalDataset a ai:TrainingDataOrigin ;
     rdfs:label "External Dataset"@en ;
     rdfs:label "Datos Externos"@es ;
-    ai:triggersCriterion ai:DataGovernanceContext,
-        ai:TrainingDataQualityContext ;
     ai:requiresDataGovernance ai:DataGovernanceRequirement,
         ai:TraceabilityRequirement ;
     rdfs:comment "Dataset originating from external sources. May require enhanced data governance and quality assurance measures under AI Act requirements."@en ;
@@ -214,7 +212,6 @@ ai:Healthcare a ai:DeploymentContext,
 ai:InternalDataset a ai:TrainingDataOrigin ;
     rdfs:label "Internal Dataset"@en ;
     rdfs:label "Datos Internos"@es ;
-    ai:triggersCriterion ai:LowRiskGeneralContext ;
     rdfs:comment "Dataset originating from internal sources. Typically has lower risk profile due to known provenance and controlled access."@en ;
     rdfs:comment "Conjunto de datos originado en fuentes internas. Típicamente tiene un perfil de riesgo menor debido a la procedencia conocida y acceso controlado."@es .
 
@@ -319,8 +316,6 @@ ai:RobustnessRequirement a owl:Class ;
 ai:SyntheticDataset a ai:TrainingDataOrigin ;
     rdfs:label "Synthetic Dataset"@en ;
     rdfs:label "Datos Sintéticos"@es ;
-    ai:triggersCriterion ai:TrainingDataQualityContext,
-        ai:LimitedTransparencyContext ;
     ai:requiresDataGovernance ai:TransparencyRequirement,
         ai:DocumentationRequirement ;
     rdfs:comment "Dataset generated synthetically. Requires validation of quality and representativeness, with transparency obligations about synthetic data use under AI Act requirements."@en ;
