@@ -182,17 +182,32 @@ ai:PerformanceLatencyRule rdf:type swrl:Rule ;
                 rdf:rest rdf:nil ] .
 
 # Regla 11: Seguridad biométrica requiere cifrado
+# Nueva regla: BiometricIdentification → BiometricSecurity
+ai:BiometricIdentificationRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:BiometricIdentification ] ;
+                rdf:rest rdf:nil ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasContextualCriterion ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:BiometricSecurity ] ;
+                rdf:rest rdf:nil ] .
+
 ai:BiometricEncryptionRule rdf:type swrl:Rule ;
     swrl:body [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
                           swrl:propertyPredicate ai:hasContextualCriterion ;
-                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument1 ?system ;
                           swrl:argument2 ai:BiometricSecurity ] ;
                 rdf:rest rdf:nil ] ;
     swrl:head [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
                           swrl:propertyPredicate ai:hasTechnicalRequirement ;
-                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument1 ?system ;
                           swrl:argument2 ai:DataEncryption ] ;
                 rdf:rest rdf:nil ] .
 

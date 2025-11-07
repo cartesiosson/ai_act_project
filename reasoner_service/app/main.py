@@ -173,6 +173,15 @@ async def reason(
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> LatencyMetrics")
                     inferences_count += 1
                 
+                # NUEVA REGLA: BiometricIdentification (propósito) -> BiometricSecurity
+                print(f"DEBUG: Verificando BiometricIdentification para {system}")
+                has_biometric_purpose = (system, AI.hasPurpose, AI.BiometricIdentification) in combined_graph
+                print(f"DEBUG: ¿Tiene propósito BiometricIdentification? {has_biometric_purpose}")
+                if has_biometric_purpose:
+                    combined_graph.add((system, AI.hasContextualCriterion, AI.BiometricSecurity))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasContextualCriterion -> BiometricSecurity (por propósito)")
+                    inferences_count += 1
+                
                 # REGLA 7: BiometricData -> BiometricSecurity
                 if (system, AI.processesDataType, AI.BiometricData) in combined_graph:
                     combined_graph.add((system, AI.hasContextualCriterion, AI.BiometricSecurity))
