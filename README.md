@@ -791,6 +791,334 @@ graph TD
 
 
 
+## 🧠 Sistema de Inferencia Semántica Automática
+
+### Arquitectura de Razonamiento
+
+El proyecto implementa un **sistema avanzado de inferencia semántica** que automáticamente deriva las relaciones entre sistemas IA, criterios y requisitos de cumplimiento basándose en las definiciones del AI Act.
+
+<details>
+<summary><strong>🔗 Flujo de Inferencia Automática</strong></summary>
+
+```mermaid
+graph TB
+    %% Datos de entrada
+    subgraph "Input: Sistema IA"
+        SYS[🤖 IntelligentSystem]
+        SYS --> PURPOSE[🎯 hasPurpose: EducationAccess]
+        SYS --> CONTEXT[📍 hasDeploymentContext: Education]
+        SYS --> INNER[⚙️ hasInnerSystemCriteria: CustomCriterion]
+    end
+    
+    %% Ontología base
+    subgraph "Knowledge Base: Ontología"
+        ONT[📚 Ontología AI Act]
+        ONT --> RULE1[📋 EducationAccess → activatesCriterion → EducationEvaluationCriterion]
+        ONT --> RULE2[📋 Education → triggersCriterion → EducationEvaluationCriterion] 
+        ONT --> RULE3[📋 EducationEvaluationCriterion → activatesRequirement → AccuracyRequirement]
+    end
+    
+    %% Motor de inferencia
+    subgraph "Reasoning Engine: Pellet + SWRL"
+        REASONER[🧠 OwlReady2 + Pellet]
+        SWRL1[📐 Regla SWRL: Purpose → Criterion]
+        SWRL2[📐 Regla SWRL: Context → Criterion] 
+        SWRL3[📐 Regla SWRL: Criterion → Requirement]
+        REASONER --> SWRL1
+        REASONER --> SWRL2
+        REASONER --> SWRL3
+    end
+    
+    %% Salida inferida
+    subgraph "Output: Relaciones Inferidas"
+        INFERRED[📊 Grafo RDF Enriquecido]
+        INFERRED --> CRIT[hasNormativeCriterion: EducationEvaluationCriterion]
+        INFERRED --> REQ1[hasRequirement: AccuracyRequirement]
+        INFERRED --> REQ2[hasRequirement: HumanOversightRequirement]
+        INFERRED --> REQ3[hasTechnicalRequirement: TraceabilityRequirement]
+    end
+    
+    %% Flujo principal
+    SYS --> REASONER
+    ONT --> REASONER
+    REASONER --> INFERRED
+    
+    style SYS fill:#e1f5fe
+    style ONT fill:#f3e5f5
+    style REASONER fill:#fff3e0
+    style INFERRED fill:#e8f5e8
+```
+
+</details>
+
+### Mapeo Criterios ↔ Requisitos
+
+<details>
+<summary><strong>🔗 Criterios de Alto Impacto y sus Requisitos</strong></summary>
+
+```mermaid
+graph LR
+    subgraph "🎓 Contexto Educativo"
+        EDUC[EducationEvaluationCriterion]
+        EDUC --> ACC[🎯 AccuracyEvaluation]
+        EDUC --> HUMAN[👤 HumanOversight]
+        EDUC --> TRACE[🔍 Traceability]
+    end
+    
+    subgraph "🔍 Identificación Biométrica"
+        BIO[BiometricIdentificationCriterion]
+        BIO --> RIGHTS[⚖️ FundamentalRights]
+        BIO --> HUMAN2[👤 HumanOversight]
+        BIO --> SEC[🔒 Security]
+    end
+    
+    subgraph "🏥 Servicios Esenciales"
+        ESS[EssentialServicesAccessCriterion]
+        ESS --> RIGHTS2[⚖️ FundamentalRights]
+        ESS --> TRANSP[👁️ Transparency]
+        ESS --> QUALITY[📈 QualityManagement]
+    end
+    
+    subgraph "👮 Aplicación de la Ley"
+        LAW[LawEnforcementCriterion]
+        LAW --> LOG[📋 EventLogging]
+        LAW --> HUMAN3[👤 HumanOversight]
+        LAW --> SEC2[🔒 Security]
+    end
+```
+
+</details>
+
+<details>
+<summary><strong>📊 Criterios Contextuales y Gobernanza</strong></summary>
+
+```mermaid
+graph LR
+    subgraph "📊 Gobernanza de Datos"
+        DATA_GOV[DataGovernanceContext]
+        DATA_GOV --> GOV_REQ[📊 DataGovernanceRequirement]
+        DATA_GOV --> DOC[📝 Documentation]
+        DATA_GOV --> TRACE2[🔍 Traceability]
+    end
+    
+    subgraph "👥 Población Vulnerable"
+        VULN[VulnerablePopulationContext]
+        VULN --> RIGHTS3[⚖️ FundamentalRights]
+        VULN --> HUMAN4[👤 HumanOversight]
+        VULN --> DISCLOSURE[📢 Disclosure]
+    end
+    
+    subgraph "🛡️ Seguridad Crítica"
+        SAFETY[SafetyCriticalContext]
+        SAFETY --> ROBUST[🛡️ Robustness]
+        SAFETY --> SEC3[🔒 Security]
+        SAFETY --> CYBER[🔐 Cybersecurity]
+    end
+```
+
+</details>
+
+<details>
+<summary><strong>📋 Matriz de Relaciones Completa</strong></summary>
+
+| **Criterio** | **Requisitos Activados** | **Tipo** |
+|--------------|---------------------------|----------|
+| 🎓 **EducationEvaluationCriterion** | AccuracyEvaluation • HumanOversight • Traceability | Normativo |
+| 🔍 **BiometricIdentificationCriterion** | FundamentalRights • HumanOversight • Security | Normativo |
+| 🏥 **EssentialServicesAccessCriterion** | FundamentalRights • Transparency • QualityManagement | Normativo |
+| 👮 **LawEnforcementCriterion** | EventLogging • HumanOversight • Security | Normativo |
+| 🛂 **MigrationBorderCriterion** | FundamentalRights • HumanOversight • Security | Normativo |
+| 💼 **RecruitmentEmploymentCriterion** | FundamentalRights • Transparency • Documentation | Normativo |
+| ⚖️ **JudicialSupportCriterion** | FundamentalRights • HumanOversight • Traceability | Normativo |
+| 🏗️ **CriticalInfrastructureCriterion** | Security • Robustness • ConformityAssessment | Normativo |
+| | | |
+| 📊 **DataGovernanceContext** | DataGovernanceRequirement • Documentation • Traceability | Contextual |
+| 📈 **TrainingDataQualityContext** | ValidationRequirement • QualityManagement • DataGovernance | Contextual |
+| 👥 **VulnerablePopulationContext** | FundamentalRights • HumanOversight • Disclosure | Contextual |
+| 🎯 **HighStakesDecisionContext** | HumanOversight • Transparency • Documentation | Contextual |
+| 🛡️ **SafetyCriticalContext** | Robustness • Security • Cybersecurity | Contextual |
+
+</details>
+
+<details>
+<summary><strong>🎯 Requisitos Más Frecuentes</strong></summary>
+
+```mermaid
+pie title "Frecuencia de Activación de Requisitos"
+    "HumanOversight" : 8
+    "FundamentalRights" : 6  
+    "Security" : 5
+    "Traceability" : 4
+    "Documentation" : 3
+    "Transparency" : 3
+    "DataGovernance" : 2
+    "QualityManagement" : 2
+    "Otros" : 7
+```
+
+**📊 Interpretación:**
+- **👤 HumanOversight**: Requisito más crítico (8 criterios lo activan)
+- **⚖️ FundamentalRights**: Segunda prioridad (6 criterios)
+- **🔒 Security**: Especialmente importante en contextos sensibles (5 criterios)
+
+</details>
+
+### Reglas SWRL Implementadas
+
+<details>
+<summary><strong>📐 Reglas de Inferencia Específicas</strong></summary>
+
+#### 1. **Propósito → Criterios**
+```swrl
+# Si un sistema tiene un propósito que activa un criterio normativo → el sistema debe tener ese criterio
+IntelligentSystem(?s) ∧ hasPurpose(?s, ?p) ∧ activatesCriterion(?p, ?c) ∧ NormativeCriterion(?c) 
+→ hasNormativeCriterion(?s, ?c)
+
+# Si un sistema tiene un propósito que activa un criterio técnico → el sistema debe tener ese criterio
+IntelligentSystem(?s) ∧ hasPurpose(?s, ?p) ∧ activatesCriterion(?p, ?c) ∧ TechnicalCriterion(?c) 
+→ hasTechnicalCriterion(?s, ?c)
+```
+
+#### 2. **Contexto → Criterios**
+```swrl
+# Si un sistema se despliega en un contexto que activa criterios → el sistema debe cumplir esos criterios  
+IntelligentSystem(?s) ∧ hasDeploymentContext(?s, ?ctx) ∧ triggersCriterion(?ctx, ?c) ∧ NormativeCriterion(?c)
+→ hasNormativeCriterion(?s, ?c)
+
+IntelligentSystem(?s) ∧ hasDeploymentContext(?s, ?ctx) ∧ triggersCriterion(?ctx, ?c) ∧ TechnicalCriterion(?c)
+→ hasTechnicalCriterion(?s, ?c)
+```
+
+#### 3. **Criterios → Requisitos**
+```swrl
+# Si un sistema tiene criterios que activan requisitos → el sistema debe cumplir esos requisitos
+IntelligentSystem(?s) ∧ hasNormativeCriterion(?s, ?c) ∧ activatesRequirement(?c, ?r) 
+→ hasRequirement(?s, ?r)
+
+IntelligentSystem(?s) ∧ hasTechnicalCriterion(?s, ?c) ∧ activatesRequirement(?c, ?r) 
+→ hasTechnicalRequirement(?s, ?r)
+```
+
+#### 4. **Criterios Internos → Requisitos**
+```swrl
+# Los criterios internos adicionales también activan requisitos
+IntelligentSystem(?s) ∧ hasInnerSystemCriteria(?s, ?c) ∧ activatesRequirement(?c, ?r) 
+→ hasRequirement(?s, ?r)
+```
+</details>
+
+### Propiedades de la Ontología Utilizadas
+
+<details>
+<summary><strong>🔗 Mapeo de Propiedades OWL</strong></summary>
+
+| **Categoría** | **Propiedad** | **Dominio** | **Rango** | **Descripción** |
+|---------------|---------------|-------------|-----------|-----------------|
+| **Sistema → Criterios** | `hasNormativeCriterion` | `IntelligentSystem` | `NormativeCriterion` | Sistema cumple criterio normativo |
+| | `hasTechnicalCriterion` | `IntelligentSystem` | `TechnicalCriterion` | Sistema cumple criterio técnico |
+| **Propósito/Contexto → Criterios** | `activatesCriterion` | `Purpose` | `Criterion` | Propósito activa criterio de evaluación |
+| | `triggersCriterion` | `DeploymentContext` | `Criterion` | Contexto dispara criterio de evaluación |
+| **Criterios → Requisitos** | `activatesRequirement` | `Criterion` | `ComplianceRequirement` | Criterio activa requisito de cumplimiento |
+| | `triggersComplianceRequirement` | `Criterion` | `ComplianceRequirement` | Criterio dispara requisito (sinónimo) |
+| **Sistema → Requisitos** | `hasRequirement` | `IntelligentSystem` | `ComplianceRequirement` | Sistema debe cumplir requisito |
+| | `hasTechnicalRequirement` | `IntelligentSystem` | `TechnicalRequirement` | Sistema debe cumplir requisito técnico |
+
+</details>
+
+### Ejemplo Práctico de Inferencia
+
+<details>
+<summary><strong>🎯 Caso: Sistema Educativo de IA</strong></summary>
+
+#### **Entrada:** Sistema de evaluación de estudiantes
+```json
+{
+  "@type": "ai:IntelligentSystem",
+  "hasName": "EduAssess-AI",
+  "hasPurpose": ["ai:EducationAccess"],
+  "hasDeploymentContext": ["ai:Education"],
+  "hasInnerSystemCriteria": ["ai:CustomSecurityCriterion"]
+}
+```
+
+#### **Conocimiento Base (Ontología):**
+```turtle
+# Definido en la ontología
+ai:EducationAccess ai:activatesCriterion ai:EducationEvaluationCriterion .
+ai:Education ai:triggersCriterion ai:EducationEvaluationCriterion .
+ai:EducationEvaluationCriterion ai:activatesRequirement ai:AccuracyEvaluationRequirement .
+ai:EducationEvaluationCriterion ai:activatesRequirement ai:HumanOversightRequirement .
+ai:EducationEvaluationCriterion ai:activatesRequirement ai:TraceabilityRequirement .
+```
+
+#### **Salida Inferida Automáticamente:**
+```turtle
+# Inferencias automáticas del reasoner
+<urn:uuid:eduassess-ai> ai:hasNormativeCriterion ai:EducationEvaluationCriterion .
+<urn:uuid:eduassess-ai> ai:hasRequirement ai:AccuracyEvaluationRequirement .
+<urn:uuid:eduassess-ai> ai:hasRequirement ai:HumanOversightRequirement .  
+<urn:uuid:eduassess-ai> ai:hasTechnicalRequirement ai:TraceabilityRequirement .
+<urn:uuid:eduassess-ai> ai:hasRequirement ai:CustomSecurityRequirement .  # De criterio interno
+```
+
+#### **Resultado:**
+✅ **El sistema automáticamente "sabe" que debe cumplir:**
+- Evaluación de precisión (por ser sistema educativo)
+- Supervisión humana obligatoria (por AI Act Anexo III)  
+- Trazabilidad de decisiones (por criterios técnicos)
+- Requisitos de seguridad personalizados (por criterios internos)
+
+</details>
+
+### Implementación Técnica
+
+<details>
+<summary><strong>🛠️ Flujo de Creación de Sistema</strong></summary>
+
+```python
+# Pseudocódigo del flujo completo
+@router.post("/systems")
+async def create_system_with_inference(system_data: IntelligentSystem):
+    # 1. Almacenar datos básicos
+    system_urn = await save_to_mongodb(system_data)
+    
+    # 2. Convertir a RDF y almacenar en Fuseki
+    await save_to_fuseki(system_data)
+    
+    # 3. Preparar datos para razonamiento
+    system_ttl = convert_to_turtle(system_data)
+    swrl_rules = load_inference_rules()
+    
+    # 4. Ejecutar inferencia con Pellet
+    reasoner_response = await call_reasoner_service(
+        data=system_ttl,
+        rules=swrl_rules
+    )
+    
+    # 5. Almacenar grafo enriquecido con inferencias
+    await save_inferred_graph_to_fuseki(reasoner_response)
+    
+    # 6. Actualizar MongoDB con relaciones inferidas
+    await update_system_with_requirements(system_urn, reasoner_response)
+    
+    return {"urn": system_urn, "inferences_applied": True}
+```
+
+</details>
+
+### Ventajas del Sistema de Inferencia
+
+| **Ventaja** | **Descripción** | **Beneficio** |
+|-------------|-----------------|---------------|
+| 🤖 **Automatización** | Las relaciones se derivan automáticamente | Reduce errores manuales y garantiza consistencia |
+| ⚡ **Tiempo Real** | Inferencias se ejecutan al crear/modificar sistemas | Feedback inmediato sobre requisitos aplicables |
+| 📚 **Basado en Conocimiento** | Utiliza definiciones formales del AI Act | Cumplimiento automático con regulaciones |
+| 🔄 **Evolutivo** | Nuevas reglas se añaden sin cambiar código | Sistema adaptable a cambios regulatorios |
+| ✅ **Trazable** | Cada inferencia tiene justificación formal | Auditoría y explicabilidad completa |
+| 🎯 **Precisión** | Elimina ambigüedad en interpretación de requisitos | Cumplimiento normativo confiable |
+
+---
+
 ## 🔄 Flujos del Sistema
 
 <details>
@@ -1025,7 +1353,7 @@ GET    /ds/data                    # 📊 Acceso directo a datos RDF
 - Contraseña: `admin`
 </details>
 
-### �️ Rutas del Frontend (Puerto 5173)
+### 🗂️ Rutas del Frontend (Puerto 5173)
 
 | Ruta | Descripción |
 |------|-------------|
