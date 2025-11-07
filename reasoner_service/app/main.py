@@ -167,6 +167,24 @@ async def reason(
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> PerformanceRequirements")
                     inferences_count += 1
                 
+                # NUEVA REGLA: Healthcare -> EssentialServicesAccessCriterion
+                if (system, AI.hasDeploymentContext, AI.Healthcare) in combined_graph:
+                    combined_graph.add((system, AI.hasNormativeCriterion, AI.EssentialServicesAccessCriterion))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> EssentialServicesAccessCriterion (Healthcare)")
+                    inferences_count += 1
+                
+                # NUEVA REGLA: PublicServices -> EssentialServicesAccessCriterion
+                if (system, AI.hasDeploymentContext, AI.PublicServices) in combined_graph:
+                    combined_graph.add((system, AI.hasNormativeCriterion, AI.EssentialServicesAccessCriterion))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> EssentialServicesAccessCriterion (PublicServices)")
+                    inferences_count += 1
+                
+                # NUEVA REGLA: HighVolumeProcessing -> ScalabilityRequirements
+                if (system, AI.hasDeploymentContext, AI.HighVolumeProcessing) in combined_graph:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ScalabilityRequirements))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> ScalabilityRequirements")
+                    inferences_count += 1
+                
                 # REGLA 10: PerformanceRequirements -> LatencyMetrics  
                 if (system, AI.hasTechnicalCriterion, AI.PerformanceRequirements) in combined_graph:
                     combined_graph.add((system, AI.hasTechnicalRequirement, AI.LatencyMetrics))
@@ -192,6 +210,23 @@ async def reason(
                 if (system, AI.hasContextualCriterion, AI.BiometricSecurity) in combined_graph:
                     combined_graph.add((system, AI.hasTechnicalRequirement, AI.DataEncryption))
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> DataEncryption")
+                    inferences_count += 1
+                
+                # NUEVAS REGLAS EN CADENA: EssentialServicesAccessCriterion
+                if (system, AI.hasNormativeCriterion, AI.EssentialServicesAccessCriterion) in combined_graph:
+                    # -> HumanOversightRequirement
+                    combined_graph.add((system, AI.hasRequirement, AI.HumanOversightRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement")
+                    inferences_count += 1
+                    
+                    # -> DataGovernanceRequirement
+                    combined_graph.add((system, AI.hasRequirement, AI.DataGovernanceRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> DataGovernanceRequirement")
+                    inferences_count += 1
+                    
+                    # -> FundamentalRightsAssessmentRequirement
+                    combined_graph.add((system, AI.hasRequirement, AI.FundamentalRightsAssessmentRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> FundamentalRightsAssessmentRequirement")
                     inferences_count += 1
             
             print(f"DEBUG: *** RAZONAMIENTO COMPLETADO: {inferences_count} inferencias aplicadas ***")
