@@ -10,6 +10,7 @@ from db import get_database,ensure_indexes
 import os, json
 from routers.systems import router as systems_router
 from routers.systems_fuseki import router as fuseki_router
+from routers.reasoning import router as reasoning_router
 
 from rdflib import URIRef, RDF, RDFS
 from typing import List, Dict
@@ -134,6 +135,7 @@ app.mount("/static", StaticFiles(directory="schema"), name="static")
 
 app.include_router(systems_router)
 app.include_router(fuseki_router)
+app.include_router(reasoning_router)
 
 
 def custom_openapi():

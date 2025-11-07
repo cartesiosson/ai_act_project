@@ -1,8 +1,6 @@
 fastapi
 uvicorn[standard]
-motor
+owlready2
 rdflib
-requests
-pymongo
-pyld
-httpx
+jpype1
+python-multipart

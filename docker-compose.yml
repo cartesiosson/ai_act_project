@@ -35,6 +35,7 @@ services:
     depends_on:
       - mongo
       - fuseki
+      - reasoner
     environment:
       - MONGO_URL=mongodb://mongo:27017
       - FUSEKI_ENDPOINT=http://fuseki:3030
@@ -44,6 +45,7 @@ services:
       - FUSEKI_DATASET=ds
       - FUSEKI_GRAPH_DATA=http://ai-act.eu/ontology/data
       - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
+      - REASONER_SERVICE_URL=http://reasoner:8000
     ports:
       - "8000:8000"
     volumes:
