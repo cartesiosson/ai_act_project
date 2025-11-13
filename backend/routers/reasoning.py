@@ -223,14 +223,19 @@ async def reason_system(
             )
             logger.info(f"Sistema actualizado con inferencias: {update_data.keys()}")
         
-        # 7. Retornar resultado completo
+        # 7. Calcular número de reglas aplicadas (inferencias generadas)
+        rules_applied = sum(len(values) for values in relationships.values())
+        logger.info(f"DEBUG rules_applied calculation: {rules_applied}")
+        logger.info(f"DEBUG relationships: {relationships}")
+        
+        # 8. Retornar resultado completo
         return {
             "system_id": system_id,
             "system_name": system.get("hasName", "Unnamed"),
             "reasoning_completed": True,
             "inferred_relationships": relationships,
             "raw_ttl": inferred_ttl,
-            "rules_applied": len([line for line in swrl_rules.split('\n') if line.strip().startswith('[')])
+            "rules_applied": rules_applied
         }
         
     except HTTPException:

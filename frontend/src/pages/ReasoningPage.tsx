@@ -156,7 +156,9 @@ export default function ReasoningPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="bg-gray-700 p-4 rounded">
                 <p><strong>Sistema:</strong> {result.system_name}</p>
-                <p><strong>Reglas aplicadas:</strong> {result.rules_applied}</p>
+                <p><strong>Reglas aplicadas:</strong> {
+                  Object.values(result.inferred_relationships).reduce((total, arr) => total + arr.length, 0)
+                }</p>
                 <p><strong>Estado:</strong> {result.reasoning_completed ? "✅ Exitoso" : "⚠️ Parcial"}</p>
               </div>
             </div>
