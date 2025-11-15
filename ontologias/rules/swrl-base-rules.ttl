@@ -1,0 +1,217 @@
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix swrl: <http://www.w3.org/2003/11/swrl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================
+# REGLAS SWRL BÁSICAS - CONTEXTUALES Y NORMATIVAS (1-12)
+# =============================================================
+
+# REGLA 1: Education Context/Purpose -> ProtectionOfMinors
+[ rdf:type swrl:Imp ;
+  rdfs:label "Education Context triggers Protection of Minors" ;
+  rdfs:comment "Systems in educational context or with educational purpose must protect minors" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasDeploymentContext ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:Education ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:ProtectionOfMinors ] ) ] .
+
+[ rdf:type swrl:Imp ;
+  rdfs:label "Education Purpose triggers Protection of Minors" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:EducationAccess ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:ProtectionOfMinors ] ) ] .
+
+# REGLA 2: RecruitmentOrEmployment -> NonDiscrimination
+[ rdf:type swrl:Imp ;
+  rdfs:label "Recruitment systems require non-discrimination" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:RecruitmentOrEmployment ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:NonDiscrimination ] ) ] .
+
+# REGLA 3: JudicialDecisionSupport -> JudicialSupportCriterion
+[ rdf:type swrl:Imp ;
+  rdfs:label "Judicial support systems trigger judicial criteria" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:JudicialDecisionSupport ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:JudicialSupportCriterion ] ) ] .
+
+# REGLA 4: LawEnforcementSupport -> LawEnforcementCriterion
+[ rdf:type swrl:Imp ;
+  rdfs:label "Law enforcement systems trigger specialized criteria" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:LawEnforcementSupport ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:LawEnforcementCriterion ] ) ] .
+
+# REGLA 5: MigrationControl -> MigrationBorderCriterion
+[ rdf:type swrl:Imp ;
+  rdfs:label "Migration control systems trigger border criteria" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:MigrationControl ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:MigrationBorderCriterion ] ) ] .
+
+# REGLA 6: CriticalInfrastructureOperation -> CriticalInfrastructureCriterion
+[ rdf:type swrl:Imp ;
+  rdfs:label "Critical infrastructure systems trigger specialized criteria" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:CriticalInfrastructureOperation ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:CriticalInfrastructureCriterion ] ) ] .
+
+# REGLA 7: HealthCare Purpose -> PrivacyProtection
+[ rdf:type swrl:Imp ;
+  rdfs:label "Healthcare systems require privacy protection" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:HealthCare ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:PrivacyProtection ] ) ] .
+
+# REGLA 8: EducationAccess Purpose -> EducationEvaluationCriterion
+[ rdf:type swrl:Imp ;
+  rdfs:label "Education access systems trigger evaluation criteria" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:EducationAccess ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:EducationEvaluationCriterion ] ) ] .
+
+# REGLA 9: BiometricData Processing -> BiometricSecurity
+[ rdf:type swrl:Imp ;
+  rdfs:label "Biometric data processing requires security measures" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:processesDataType ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:BiometricData ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasContextualCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:BiometricSecurity ] ) ] .
+
+# REGLA 10: BiometricIdentification Purpose -> BiometricSecurity
+[ rdf:type swrl:Imp ;
+  rdfs:label "Biometric identification purpose triggers security criteria" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasPurpose ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:BiometricIdentification ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasContextualCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:BiometricSecurity ] ) ] .
+
+# REGLA 11: RealTimeProcessing Context -> PerformanceRequirements
+[ rdf:type swrl:Imp ;
+  rdfs:label "Real-time processing requires performance criteria" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasDeploymentContext ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:RealTimeProcessing ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasTechnicalCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:PerformanceRequirements ] ) ] .
+
+# REGLA 12: HighVolumeProcessing Context -> ScalabilityRequirements
+[ rdf:type swrl:Imp ;
+  rdfs:label "High volume processing requires scalability" ;
+  swrl:body ( [ rdf:type swrl:ClassAtom ;
+               swrl:classPredicate ai:IntelligentSystem ;
+               swrl:argument1 ?system ]
+             [ rdf:type swrl:DatavaluedPropertyAtom ;
+               swrl:propertyPredicate ai:hasDeploymentContext ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:HighVolumeProcessing ]
+           ) ;
+  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
+               swrl:propertyPredicate ai:hasTechnicalCriterion ;
+               swrl:argument1 ?system ;
+               swrl:argument2 ai:ScalabilityRequirements ] ) ] .

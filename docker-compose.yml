@@ -57,6 +57,7 @@ services:
       - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
     volumes:
       - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
+      - ./ontologias/rules:/ontologias/rules:ro
     ports:
       - "8001:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000

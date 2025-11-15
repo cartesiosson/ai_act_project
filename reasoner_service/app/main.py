@@ -127,12 +127,37 @@ async def reason(
             combined_graph = base_graph + system_graph + rules_graph
             print(f"DEBUG: Grafo combinado: {len(combined_graph)} triples total")
             
-            # 5. APLICAR INFERENCIAS MANUALES BASADAS EN REGLAS SWRL
+            # 5. APLICAR INFERENCIAS HÍBRIDAS (EXTERNAS + FALLBACK)
             inferences_count = 0
             
-            # Buscar todos los sistemas inteligentes
+            # Intentar usar motor de reglas externas primero
+            try:
+                print(f"DEBUG: Intentando cargar motor de reglas externas...")
+                import sys
+                import os
+                
+                # Buscar directorio de reglas  
+                ontology_dir = os.path.dirname(os.environ.get("ONTOLOGY_PATH", "/ontologias/ontologia-v0.36.0.ttl"))
+                rules_dir = os.path.join(ontology_dir, "rules")
+                
+                if os.path.exists(rules_dir):
+                    sys.path.insert(0, rules_dir)
+                    from rules_engine import rules_engine
+                    
+                    # Aplicar reglas externas
+                    external_inferences = rules_engine.apply_rules(system_graph, combined_graph)
+                    inferences_count += external_inferences
+                    print(f"DEBUG: ✅ Motor externo aplicó {external_inferences} inferencias")
+                else:
+                    print(f"DEBUG: ❌ Directorio de reglas no encontrado: {rules_dir}")
+                    raise FileNotFoundError("Reglas externas no disponibles")
+                    
+            except Exception as e:
+                print(f"DEBUG: ⚠️  Motor externo falló ({e}), usando fallback hardcodeado")
+            
+            # Aplicar reglas hardcodeadas como complemento/fallback  
             for system in combined_graph.subjects(RDF.type, AI.IntelligentSystem):
-                print(f"DEBUG: Procesando sistema: {system}")
+                print(f"DEBUG: Procesando sistema con reglas hardcodeadas: {system}")
                 
                 # REGLA 1 & 4.2: EducationAccess O contexto Education -> ProtectionOfMinors
                 has_education_purpose = (system, AI.hasPurpose, AI.EducationAccess) in combined_graph
@@ -456,9 +481,12 @@ async def reason(
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement (Education)")
                     inferences_count += 1
                     
-                    combined_graph.add((system, AI.hasRequirement, AI.TraceabilityRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> TraceabilityRequirement (Education)")
-                    inferences_count += 1
+                        combined_graph.add((system, AI.hasRequirement, AI.TraceabilityRequirement))
+                        print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> TraceabilityRequirement (Education)")
+                        inferences_count += 1
+                
+                # FIN FALLBACK - Si llegamos aquí, el motor externo falló
+                print(f"DEBUG: Fallback aplicó {inferences_count} inferencias")
             
             print(f"DEBUG: *** RAZONAMIENTO COMPLETADO: {inferences_count} inferencias aplicadas ***")
                 

@@ -17,8 +17,11 @@
     rdfs:comment "Ai-act module of the AI Act ontology with AIRO (AI Risk Ontology) integration."@en,
         "Ontología del módulo ai-act del AI Act con integración AIRO (AI Risk Ontology)."@es ;
     owl:versionIRI <http://ai-act.eu/ai-act/0.36.0> ;
-    owl:versionInfo "Version 0.36.0 released on 2025-06-22 with AIRO integration"@en,
-        "Versión 0.36.0 publicada el 2025-06-22 con integración AIRO"@es .
+    owl:versionInfo "Version 0.36.0 released on 2025-06-22 with AIRO integration and external SWRL rules"@en,
+        "Versión 0.36.0 publicada el 2025-06-22 con integración AIRO y reglas SWRL externas"@es ;
+    rdfs:seeAlso <rules/> ;
+    rdfs:comment "SWRL rules are externalized in the rules/ directory for better maintainability and auditability"@en,
+        "Las reglas SWRL están externalizadas en el directorio rules/ para mejor mantenibilidad y auditabilidad"@es .
 
 ai:Criterion a owl:Class ;
     rdfs:label "Criterion"@en,
