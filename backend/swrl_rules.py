@@ -37,7 +37,7 @@ ai:EmploymentNonDiscriminationRule rdf:type swrl:Rule ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
                           swrl:propertyPredicate ai:hasPurpose ;
                           swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
-                          swrl:argument2 ai:Employment ] ;
+                          swrl:argument2 ai:RecruitmentOrEmployment ] ;
                 rdf:rest rdf:nil ] ;
     swrl:head [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
@@ -197,6 +197,91 @@ ai:BiometricIdentificationRule rdf:type swrl:Rule ;
                           swrl:argument2 ai:BiometricSecurity ] ;
                 rdf:rest rdf:nil ] .
 
+# NUEVAS REGLAS DE PROPÓSITO
+ai:JudicialSupportRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:JudicialDecisionSupport ] ;
+                rdf:rest rdf:nil ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:JudicialSupportCriterion ] ;
+                rdf:rest rdf:nil ] .
+
+ai:LawEnforcementSupportRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:LawEnforcementSupport ] ;
+                rdf:rest rdf:nil ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:LawEnforcementCriterion ] ;
+                rdf:rest rdf:nil ] .
+
+ai:MigrationControlRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:MigrationControl ] ;
+                rdf:rest rdf:nil ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:MigrationBorderCriterion ] ;
+                rdf:rest rdf:nil ] .
+
+ai:CriticalInfrastructureRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:CriticalInfrastructureOperation ] ;
+                rdf:rest rdf:nil ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:CriticalInfrastructureCriterion ] ;
+                rdf:rest rdf:nil ] .
+
+ai:HealthCarePrivacyRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:HealthCare ] ;
+                rdf:rest rdf:nil ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:PrivacyProtection ] ;
+                rdf:rest rdf:nil ] .
+
+ai:EducationAccessRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:EducationAccess ] ;
+                rdf:rest rdf:nil ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:argument1 ?system ;
+                          swrl:argument2 ai:EducationEvaluationCriterion ] ;
+                rdf:rest rdf:nil ] .
+
 ai:BiometricEncryptionRule rdf:type swrl:Rule ;
     swrl:body [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
@@ -282,6 +367,10 @@ ai:ProtectionOfMinors rdf:type ai:NormativeCriterion ;
     rdfs:label "ProtectionOfMinors" ;
     rdfs:comment "Protection of minors criterion" .
 
+ai:EducationEvaluationCriterion rdf:type ai:NormativeCriterion ;
+    rdfs:label "EducationEvaluationCriterion" ;
+    rdfs:comment "Education or Vocational Training Evaluation criterion" .
+
 ai:NonDiscrimination rdf:type ai:NormativeCriterion ;
     rdfs:label "NonDiscrimination" ;
     rdfs:comment "Non-discrimination criterion" .
@@ -329,6 +418,56 @@ ai:LatencyMetrics rdf:type ai:TechnicalRequirement ;
 ai:DataEncryption rdf:type ai:TechnicalRequirement ;
     rdfs:label "DataEncryption" ;
     rdfs:comment "Data encryption requirement" .
+
+# NUEVOS CONCEPTOS Y REQUISITOS
+ai:JudicialSupportCriterion rdf:type ai:NormativeCriterion ;
+    rdfs:label "JudicialSupportCriterion" ;
+    rdfs:comment "Criterion for judicial decision support systems" .
+
+ai:DueProcess rdf:type ai:NormativeCriterion ;
+    rdfs:label "DueProcess" ;
+    rdfs:comment "Due process criterion for legal systems" .
+
+ai:ConformityAssessmentRequirement rdf:type ai:Requirement ;
+    rdfs:label "ConformityAssessmentRequirement" ;
+    rdfs:comment "Conformity assessment requirement" .
+
+ai:RiskManagementRequirement rdf:type ai:Requirement ;
+    rdfs:label "RiskManagementRequirement" ;
+    rdfs:comment "Risk management requirement" .
+
+ai:AccuracyEvaluationRequirement rdf:type ai:Requirement ;
+    rdfs:label "AccuracyEvaluationRequirement" ;
+    rdfs:comment "Accuracy evaluation requirement" .
+
+ai:CybersecurityRequirement rdf:type ai:TechnicalRequirement ;
+    rdfs:label "CybersecurityRequirement" ;
+    rdfs:comment "Cybersecurity requirement" .
+
+ai:PerformanceMonitoringRequirement rdf:type ai:TechnicalRequirement ;
+    rdfs:label "PerformanceMonitoringRequirement" ;
+    rdfs:comment "Performance monitoring requirement" .
+
+ai:TraceabilityRequirement rdf:type ai:ComplianceRequirement ;
+    rdfs:label "TraceabilityRequirement" ;
+    rdfs:comment "Traceability requirement for education systems" .
+
+# PROPÓSITOS ADICIONALES
+ai:JudicialDecisionSupport rdf:type ai:Purpose ;
+    rdfs:label "JudicialDecisionSupport" ;
+    rdfs:comment "Judicial decision support purpose" .
+
+ai:LawEnforcementSupport rdf:type ai:Purpose ;
+    rdfs:label "LawEnforcementSupport" ;
+    rdfs:comment "Law enforcement support purpose" .
+
+ai:MigrationControl rdf:type ai:Purpose ;
+    rdfs:label "MigrationControl" ;
+    rdfs:comment "Migration control purpose" .
+
+ai:CriticalInfrastructureOperation rdf:type ai:Purpose ;
+    rdfs:label "CriticalInfrastructureOperation" ;
+    rdfs:comment "Critical infrastructure operation purpose" .
 
 """
 

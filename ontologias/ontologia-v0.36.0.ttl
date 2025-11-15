@@ -1128,6 +1128,115 @@ ai:InternalDataset owl:disjointWith ai:ExternalDataset, ai:SyntheticDataset .
 ai:ExternalDataset owl:disjointWith ai:SyntheticDataset .
 
 # ===================================================================
+# CONCEPTOS ADICIONALES PARA REGLAS SWRL
+# ===================================================================
+
+# Criterios Normativos Adicionales
+ai:ProtectionOfMinors a ai:NormativeCriterion ;
+    rdfs:label "Protection of Minors"@en, "Protección de Menores"@es ;
+    rdfs:comment "Criterion for protecting children and minors in AI systems."@en,
+        "Criterio para la protección de niños y menores en sistemas de IA."@es .
+
+ai:NonDiscrimination a ai:NormativeCriterion ;
+    rdfs:label "Non-Discrimination"@en, "No Discriminación"@es ;
+    rdfs:comment "Criterion ensuring non-discriminatory use of AI systems."@en,
+        "Criterio que garantiza el uso no discriminatorio de sistemas de IA."@es .
+
+ai:DueProcess a ai:NormativeCriterion ;
+    rdfs:label "Due Process"@en, "Debido Proceso"@es ;
+    rdfs:comment "Criterion ensuring due process in legal and judicial contexts."@en,
+        "Criterio que garantiza el debido proceso en contextos legales y judiciales."@es .
+
+ai:PrivacyProtection a ai:NormativeCriterion ;
+    rdfs:label "Privacy Protection"@en, "Protección de Privacidad"@es ;
+    rdfs:comment "Criterion for protecting privacy in AI systems."@en,
+        "Criterio para la protección de la privacidad en sistemas de IA."@es .
+
+ai:JudicialSupportCriterion a ai:NormativeCriterion ;
+    rdfs:label "Judicial Support Criterion"@en, "Criterio de Apoyo Judicial"@es ;
+    rdfs:comment "Criterion for AI systems supporting judicial decisions."@en,
+        "Criterio para sistemas de IA que apoyan decisiones judiciales."@es .
+
+# Criterios Contextuales Adicionales
+ai:BiometricSecurity a ai:ContextualCriterion ;
+    rdfs:label "Biometric Security"@en, "Seguridad Biométrica"@es ;
+    rdfs:comment "Contextual criterion for biometric security requirements."@en,
+        "Criterio contextual para requisitos de seguridad biométrica."@es .
+
+# Criterios Técnicos Adicionales
+ai:PerformanceRequirements a ai:TechnicalCriterion ;
+    rdfs:label "Performance Requirements"@en, "Requisitos de Rendimiento"@es ;
+    rdfs:comment "Technical criterion for performance requirements."@en,
+        "Criterio técnico para requisitos de rendimiento."@es .
+
+ai:ScalabilityRequirements a ai:TechnicalCriterion ;
+    rdfs:label "Scalability Requirements"@en, "Requisitos de Escalabilidad"@es ;
+    rdfs:comment "Technical criterion for scalability requirements."@en,
+        "Criterio técnico para requisitos de escalabilidad."@es .
+
+# Contextos de Despliegue Adicionales
+ai:RealTimeProcessing a ai:DeploymentContext ;
+    rdfs:label "Real Time Processing"@en, "Procesamiento en Tiempo Real"@es ;
+    rdfs:comment "Deployment context for real-time processing environments."@en,
+        "Contexto de despliegue para entornos de procesamiento en tiempo real."@es .
+
+ai:HighVolumeProcessing a ai:DeploymentContext ;
+    rdfs:label "High Volume Processing"@en, "Procesamiento de Alto Volumen"@es ;
+    rdfs:comment "Deployment context for high-volume processing environments."@en,
+        "Contexto de despliegue para entornos de procesamiento de alto volumen."@es .
+
+# Requisitos de Cumplimiento Adicionales
+ai:ParentalConsent a ai:ComplianceRequirement ;
+    rdfs:label "Parental Consent"@en, "Consentimiento Parental"@es ;
+    rdfs:comment "Requirement for parental consent in systems affecting minors."@en,
+        "Requisito de consentimiento parental en sistemas que afectan a menores."@es .
+
+ai:Auditability a ai:ComplianceRequirement ;
+    rdfs:label "Auditability"@en, "Auditabilidad"@es ;
+    rdfs:comment "Requirement for system auditability and transparency."@en,
+        "Requisito de auditabilidad y transparencia del sistema."@es .
+
+# Requisitos Técnicos Adicionales
+ai:DataEncryption a ai:TechnicalRequirement ;
+    rdfs:label "Data Encryption"@en, "Cifrado de Datos"@es ;
+    rdfs:comment "Technical requirement for data encryption."@en,
+        "Requisito técnico para cifrado de datos."@es .
+
+ai:PerformanceMonitoringRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Performance Monitoring Requirement"@en, "Requisito de Monitoreo de Rendimiento"@es ;
+    rdfs:comment "Technical requirement for performance monitoring."@en,
+        "Requisito técnico para monitoreo de rendimiento."@es .
+
+# Tipos de Datos
+ai:BiometricData a ai:DataType ;
+    rdfs:label "Biometric Data"@en, "Datos Biométricos"@es ;
+    rdfs:comment "Data type for biometric information."@en,
+        "Tipo de datos para información biométrica."@es .
+
+ai:MinorData a ai:DataType ;
+    rdfs:label "Minor Data"@en, "Datos de Menores"@es ;
+    rdfs:comment "Data type for information related to minors."@en,
+        "Tipo de datos para información relacionada con menores."@es .
+
+# Requisitos Técnicos Específicos
+ai:LatencyMetrics a ai:TechnicalRequirement ;
+    rdfs:label "Latency Metrics"@en, "Métricas de Latencia"@es ;
+    rdfs:comment "Technical requirement for latency measurement and control."@en,
+        "Requisito técnico para medición y control de latencia."@es .
+
+# Clases Adicionales
+ai:DataType a owl:Class ;
+    rdfs:label "Data Type"@en, "Tipo de Datos"@es ;
+    rdfs:comment "Classification of different types of data processed by AI systems."@en,
+        "Clasificación de diferentes tipos de datos procesados por sistemas de IA."@es .
+
+# Propósitos Adicionales (si no están ya definidos)
+ai:HealthCare a ai:Purpose ;
+    rdfs:label "Health Care"@en, "Atención Sanitaria"@es ;
+    rdfs:comment "Purpose for healthcare and medical AI systems."@en,
+        "Propósito para sistemas de IA sanitarios y médicos."@es .
+
+# ===================================================================
 # AIRO INTEGRATION MAPPINGS
 # ===================================================================
 # This ontology integrates with AIRO (AI Risk Ontology) through:
