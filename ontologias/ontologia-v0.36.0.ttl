@@ -1196,6 +1196,124 @@ ai:Auditability a ai:ComplianceRequirement ;
     rdfs:comment "Requirement for system auditability and transparency."@en,
         "Requisito de auditabilidad y transparencia del sistema."@es .
 
+# Criterios Técnicos para Modelos GPAI y Capacidades Internas
+ai:SystemicRisk a ai:TechnicalCriterion ;
+    rdfs:label "Systemic Risk"@en, "Riesgo Sistémico"@es ;
+    rdfs:comment "Criterion for models meeting systemic risk thresholds (>10^25 FLOPs)."@en,
+        "Criterio para modelos que cumplen umbrales de riesgo sistémico (>10^25 FLOPs)."@es .
+
+ai:HighImpactCapabilities a ai:TechnicalCriterion ;
+    rdfs:label "High Impact Capabilities"@en, "Capacidades de Alto Impacto"@es ;
+    rdfs:comment "Criterion for models with capabilities matching advanced GPAI models."@en,
+        "Criterio para modelos con capacidades equivalentes a modelos GPAI avanzados."@es .
+
+ai:ModelComplexity a ai:TechnicalCriterion ;
+    rdfs:label "Model Complexity"@en, "Complejidad del Modelo"@es ;
+    rdfs:comment "Criterion based on model parameters, architecture complexity."@en,
+        "Criterio basado en parámetros del modelo, complejidad de arquitectura."@es .
+
+ai:SystemAutonomy a ai:TechnicalCriterion ;
+    rdfs:label "System Autonomy"@en, "Autonomía del Sistema"@es ;
+    rdfs:comment "Criterion evaluating level of system autonomy and human oversight requirements."@en,
+        "Criterio que evalúa el nivel de autonomía del sistema y requisitos de supervisión humana."@es .
+
+ai:AdaptiveCapability a ai:TechnicalCriterion ;
+    rdfs:label "Adaptive Capability"@en, "Capacidad Adaptativa"@es ;
+    rdfs:comment "Criterion for systems that continue learning after deployment."@en,
+        "Criterio para sistemas que continúan aprendiendo después del despliegue."@es .
+
+ai:ProcessingCapacity a ai:TechnicalCriterion ;
+    rdfs:label "Processing Capacity"@en, "Capacidad de Procesamiento"@es ;
+    rdfs:comment "Criterion for high-volume, real-time processing capabilities."@en,
+        "Criterio para capacidades de procesamiento de alto volumen, tiempo real."@es .
+
+ai:AccuracyLevel a ai:TechnicalCriterion ;
+    rdfs:label "Accuracy Level"@en, "Nivel de Exactitud"@es ;
+    rdfs:comment "Criterion evaluating system accuracy across different population groups."@en,
+        "Criterio que evalúa la exactitud del sistema en diferentes grupos poblacionales."@es .
+
+ai:ModelInterpretability a ai:TechnicalCriterion ;
+    rdfs:label "Model Interpretability"@en, "Interpretabilidad del Modelo"@es ;
+    rdfs:comment "Criterion evaluating system's ability to provide explanations for decisions."@en,
+        "Criterio que evalúa la capacidad del sistema para proporcionar explicaciones de decisiones."@es .
+
+# Propiedades técnicas para caracterizar modelos
+ai:hasParameterCount a owl:DatatypeProperty ;
+    rdfs:label "has parameter count"@en, "tiene cantidad de parámetros"@es ;
+    rdfs:comment "Number of parameters in the AI model."@en,
+        "Número de parámetros en el modelo de IA."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:long .
+
+ai:hasComputationFLOPs a owl:DatatypeProperty ;
+    rdfs:label "has computation FLOPs"@en, "tiene FLOPs de cómputo"@es ;
+    rdfs:comment "Floating point operations used for training (FLOPs)."@en,
+        "Operaciones de punto flotante utilizadas para entrenamiento (FLOPs)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:decimal .
+
+ai:hasAccuracyRate a owl:DatatypeProperty ;
+    rdfs:label "has accuracy rate"@en, "tiene tasa de exactitud"@es ;
+    rdfs:comment "Accuracy percentage of the AI system."@en,
+        "Porcentaje de exactitud del sistema de IA."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:decimal .
+
+ai:hasAutonomyLevel a owl:DatatypeProperty ;
+    rdfs:label "has autonomy level"@en, "tiene nivel de autonomía"@es ;
+    rdfs:comment "Level of autonomy (0-1 scale, where 1 is fully autonomous)."@en,
+        "Nivel de autonomía (escala 0-1, donde 1 es completamente autónomo)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:decimal .
+
+ai:hasMarketReach a owl:DatatypeProperty ;
+    rdfs:label "has market reach"@en, "tiene alcance de mercado"@es ;
+    rdfs:comment "Number of registered business users in the Union."@en,
+        "Número de usuarios comerciales registrados en la Unión."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:integer .
+
+ai:isAdaptiveSystem a owl:DatatypeProperty ;
+    rdfs:label "is adaptive system"@en, "es sistema adaptativo"@es ;
+    rdfs:comment "Boolean indicating if system continues learning post-deployment."@en,
+        "Booleano que indica si el sistema continúa aprendiendo post-despliegue."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+# Algoritmos y Arquitecturas
+ai:AlgorithmType a owl:Class ;
+    rdfs:label "Algorithm Type"@en, "Tipo de Algoritmo"@es ;
+    rdfs:comment "Classification of algorithm type used by the AI system."@en,
+        "Clasificación del tipo de algoritmo utilizado por el sistema de IA."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:NeuralNetwork a ai:AlgorithmType ;
+    rdfs:label "Neural Network"@en, "Red Neuronal"@es ;
+    rdfs:comment "Neural network based algorithm."@en,
+        "Algoritmo basado en redes neuronales."@es .
+
+ai:TransformerModel a ai:AlgorithmType ;
+    rdfs:label "Transformer Model"@en, "Modelo Transformer"@es ;
+    rdfs:comment "Transformer-based architecture model."@en,
+        "Modelo de arquitectura basada en Transformer."@es .
+
+ai:FoundationModel a ai:AlgorithmType ;
+    rdfs:label "Foundation Model"@en, "Modelo Fundacional"@es ;
+    rdfs:comment "Large-scale pre-trained foundation model."@en,
+        "Modelo fundacional pre-entrenado a gran escala."@es .
+
+ai:GenerativeModel a ai:AlgorithmType ;
+    rdfs:label "Generative Model"@en, "Modelo Generativo"@es ;
+    rdfs:comment "Model capable of generating new content."@en,
+        "Modelo capaz de generar nuevo contenido."@es .
+
+ai:hasAlgorithmType a owl:ObjectProperty ;
+    rdfs:label "has algorithm type"@en, "tiene tipo de algoritmo"@es ;
+    rdfs:comment "Associates an AI system with its algorithm type."@en,
+        "Asocia un sistema de IA con su tipo de algoritmo."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:AlgorithmType .
+
 # Requisitos Técnicos Adicionales
 ai:DataEncryption a ai:TechnicalRequirement ;
     rdfs:label "Data Encryption"@en, "Cifrado de Datos"@es ;

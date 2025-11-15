@@ -297,6 +297,131 @@ async def reason(
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> RiskManagementRequirement")
                     inferences_count += 1
                 
+                # =============================================================
+                # NUEVAS REGLAS TÉCNICAS PARA CRITERIOS INTERNOS (EU AI ACT)
+                # =============================================================
+                
+                # REGLA 13: Modelos con >10^25 FLOPs -> SystemicRisk
+                system_flops = None
+                for _, _, flops_value in combined_graph.triples((system, AI.hasComputationFLOPs, None)):
+                    system_flops = float(flops_value)
+                    break
+                
+                if system_flops and system_flops > 1e25:  # 10^25 FLOPs threshold
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.SystemicRisk))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> SystemicRisk (FLOPs: {system_flops:.2e})")
+                    inferences_count += 1
+                
+                # REGLA 14: Modelos con >1B parámetros -> HighImpactCapabilities
+                system_params = None
+                for _, _, params_value in combined_graph.triples((system, AI.hasParameterCount, None)):
+                    system_params = int(params_value)
+                    break
+                
+                if system_params and system_params > 1_000_000_000:  # 1B parameters threshold
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.HighImpactCapabilities))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> HighImpactCapabilities (Params: {system_params:,})")
+                    inferences_count += 1
+                
+                # REGLA 15: Alta autonomía (>0.8) -> LacksHumanOversight
+                system_autonomy = None
+                for _, _, autonomy_value in combined_graph.triples((system, AI.hasAutonomyLevel, None)):
+                    system_autonomy = float(autonomy_value)
+                    break
+                
+                if system_autonomy and system_autonomy > 0.8:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.LacksHumanOversight))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> LacksHumanOversight (Autonomy: {system_autonomy})")
+                    inferences_count += 1
+                
+                # REGLA 16: Sistema adaptativo -> AdaptiveCapability
+                is_adaptive = None
+                for _, _, adaptive_value in combined_graph.triples((system, AI.isAdaptiveSystem, None)):
+                    is_adaptive = bool(adaptive_value.value) if hasattr(adaptive_value, 'value') else str(adaptive_value).lower() == 'true'
+                    break
+                
+                if is_adaptive:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.AdaptiveCapability))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> AdaptiveCapability")
+                    inferences_count += 1
+                
+                # REGLA 17: Alto alcance de mercado (>10,000 usuarios) -> SystemicRisk
+                market_reach = None
+                for _, _, reach_value in combined_graph.triples((system, AI.hasMarketReach, None)):
+                    market_reach = int(reach_value)
+                    break
+                
+                if market_reach and market_reach > 10000:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.SystemicRisk))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> SystemicRisk (Market reach: {market_reach:,})")
+                    inferences_count += 1
+                
+                # REGLA 18: Baja precisión (<0.85) -> AccuracyLevel
+                system_accuracy = None
+                for _, _, accuracy_value in combined_graph.triples((system, AI.hasAccuracyRate, None)):
+                    system_accuracy = float(accuracy_value)
+                    break
+                
+                if system_accuracy and system_accuracy < 0.85:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.AccuracyLevel))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> AccuracyLevel (Accuracy: {system_accuracy})")
+                    inferences_count += 1
+                
+                # REGLA 19: Modelos Transformer/Foundation -> ModelComplexity
+                for algorithm_type in combined_graph.objects(system, AI.hasAlgorithmType):
+                    if algorithm_type in [AI.TransformerModel, AI.FoundationModel, AI.GenerativeModel]:
+                        combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
+                        print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> ModelComplexity (Algorithm: {algorithm_type})")
+                        inferences_count += 1
+                        break
+                
+                # =============================================================
+                # REGLAS EN CADENA PARA CRITERIOS TÉCNICOS
+                # =============================================================
+                
+                # REGLA 20: SystemicRisk -> múltiples requisitos de mitigación
+                if (system, AI.hasTechnicalCriterion, AI.SystemicRisk) in combined_graph:
+                    # -> Evaluación continua de riesgo
+                    combined_graph.add((system, AI.hasRequirement, AI.RiskManagementRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> RiskManagementRequirement (SystemicRisk)")
+                    inferences_count += 1
+                    
+                    # -> Monitoreo post-mercado reforzado
+                    combined_graph.add((system, AI.hasRequirement, AI.PostMarketMonitoringRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> PostMarketMonitoringRequirement (SystemicRisk)")
+                    inferences_count += 1
+                    
+                    # -> Ciberseguridad avanzada
+                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.CybersecurityRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> CybersecurityRequirement (SystemicRisk)")
+                    inferences_count += 1
+                
+                # REGLA 21: HighImpactCapabilities -> evaluaciones especializadas
+                if (system, AI.hasTechnicalCriterion, AI.HighImpactCapabilities) in combined_graph:
+                    combined_graph.add((system, AI.hasRequirement, AI.ConformityAssessmentRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> ConformityAssessmentRequirement (HighImpact)")
+                    inferences_count += 1
+                
+                # REGLA 22: AdaptiveCapability -> supervisión continua
+                if (system, AI.hasTechnicalCriterion, AI.AdaptiveCapability) in combined_graph:
+                    combined_graph.add((system, AI.hasRequirement, AI.HumanOversightRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement (Adaptive)")
+                    inferences_count += 1
+                    
+                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.EventLoggingRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> EventLoggingRequirement (Adaptive)")
+                    inferences_count += 1
+                
+                # REGLA 23: ModelComplexity -> requisitos de transparencia
+                if (system, AI.hasTechnicalCriterion, AI.ModelComplexity) in combined_graph:
+                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.TransparencyRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> TransparencyRequirement (Complex)")
+                    inferences_count += 1
+                    
+                    combined_graph.add((system, AI.hasRequirement, AI.Auditability))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> Auditability (Complex)")
+                    inferences_count += 1
+                
                 # NUEVA CADENA: CriticalInfrastructureCriterion -> múltiples requisitos
                 if (system, AI.hasNormativeCriterion, AI.CriticalInfrastructureCriterion) in combined_graph:
                     combined_graph.add((system, AI.hasRequirement, AI.AccuracyEvaluationRequirement))
