@@ -29,7 +29,14 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
 
     try:
         result = await db.systems.insert_one(json_ld)
-    except DuplicateKeyError:
+    except DuplicateKeyError as e:
+        print(f"[ERROR] DuplicateKeyError al crear sistema: {e}")
+        # Intentar liberar recursos explícitamente (por si acaso)
+        try:
+            await db.client.close()
+            print("[INFO] Conexión a MongoDB cerrada tras DuplicateKeyError")
+        except Exception as close_err:
+            print(f"[WARN] Error cerrando conexión MongoDB tras 409: {close_err}")
         raise HTTPException(status_code=409, detail="System with same URN already exists")
 
     json_ld.pop("_id", None)

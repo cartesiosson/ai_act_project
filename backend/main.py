@@ -17,24 +17,6 @@ from typing import List, Dict
 
 app = FastAPI(title="AI Act Backend")
 
-# Endpoint para subtipos de algoritmo
-@app.get("/vocab/algorithmtypes/{algotype_id}/subtypes")
-def get_algorithm_subtypes(algotype_id: str, lang: str = Query("en")):
-    # Construir URI completa
-    if algotype_id.startswith("ai:"):
-        uri = f"http://ai-act.eu/ai#{algotype_id[3:]}"
-    else:
-        uri = algotype_id
-    base = URIRef(uri)
-    # Buscar subclases directas
-    subtypes = set(ont.subjects(RDFS.subClassOf, base))
-    # Si no hay subclases, buscar instancias directas (rdf:type)
-    if not subtypes:
-        subtypes = set(ont.subjects(RDF.type, base))
-    return [
-        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
-        for uri in sorted(subtypes, key=lambda x: get_label(ont, x, lang))
-    ]
 
 
 # Endpoint para escala de modelo según ontología v0.37.0
@@ -132,12 +114,27 @@ def get_origins(lang: str = Query("en")):
 
 @app.get("/vocab/algorithmtypes")
 def get_algorithm_types(lang: str = Query("en")):
-    """Devuelve solo el primer nivel de subclases directas de ai:AlgorithmType"""
+    """Devuelve solo los tipos de algoritmo individuales (hojas) recursivamente"""
     base = URIRef("http://ai-act.eu/ai#AlgorithmType")
-    subclasses = set(ont.subjects(RDFS.subClassOf, base))
+    # Recursively find all leaf instances (those that are not a superclass of any other type)
+    def get_true_leaves(node):
+        children = set(ont.subjects(RDFS.subClassOf, node))
+        leaves = []
+        if not children:
+            # If no subclasses, return instances (rdf:type) of this node
+            instances = set(ont.subjects(RDF.type, node))
+            return list(instances)
+        for child in children:
+            leaves.extend(get_true_leaves(child))
+        return leaves
+
+    # Get all leaf instances recursively
+    leaf_instances = get_true_leaves(base)
+    # Remove base node if present
+    leaf_instances = [uri for uri in leaf_instances if uri != base]
     return [
         {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
-        for uri in sorted(subclasses, key=lambda x: get_label(ont, x, lang))
+        for uri in sorted(leaf_instances, key=lambda x: get_label(ont, x, lang))
     ]
 
 @app.post("/debug/system")

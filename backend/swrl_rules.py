@@ -16,6 +16,79 @@ AI_ACT_SWRL_RULES = """
 # REGLAS SWRL PARA EL AI ACT - INFERENCIAS SEMÁNTICAS COMPLETAS
 # ============================================================================
 
+# REGLAS DE ASIGNACIÓN AUTOMÁTICA DE MODEL SCALE SEGÚN FLOPS
+# Si el sistema tiene hasFLOPS < 1e12, asignar SmallModelScale
+ai:SmallModelScaleRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:DatavaluedPropertyAtom ;
+                          swrl:propertyPredicate ai:hasFLOPS ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "flops" ] ] ;
+                rdf:rest [ rdf:type swrl:AtomList ;
+                    rdf:first [ rdf:type swrl:BuiltinAtom ;
+                        swrl:builtin swrlb:lessThan ;
+                        swrl:arguments ( [ rdf:type swrl:Variable ; rdfs:label "flops" ] "1000000000000"^^xsd:double )
+                    ] ;
+                    rdf:rest rdf:nil
+                ]
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasModelScale ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 ai:SmallModelScale ] ;
+                rdf:rest rdf:nil ] .
+
+# Si el sistema tiene 1e12 <= hasFLOPS < 1e16, asignar RegularModelScale
+ai:RegularModelScaleRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:DatavaluedPropertyAtom ;
+                          swrl:propertyPredicate ai:hasFLOPS ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "flops" ] ] ;
+                rdf:rest [ rdf:type swrl:AtomList ;
+                    rdf:first [ rdf:type swrl:BuiltinAtom ;
+                        swrl:builtin swrlb:greaterThanOrEqual ;
+                        swrl:arguments ( [ rdf:type swrl:Variable ; rdfs:label "flops" ] "1000000000000"^^xsd:double )
+                    ] ;
+                    rdf:rest [ rdf:type swrl:AtomList ;
+                        rdf:first [ rdf:type swrl:BuiltinAtom ;
+                            swrl:builtin swrlb:lessThan ;
+                            swrl:arguments ( [ rdf:type swrl:Variable ; rdfs:label "flops" ] "10000000000000000"^^xsd:double )
+                        ] ;
+                        rdf:rest rdf:nil
+                    ]
+                ]
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasModelScale ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 ai:RegularModelScale ] ;
+                rdf:rest rdf:nil ] .
+
+# Si el sistema tiene hasFLOPS >= 1e16, asignar FoundationalModelScale
+ai:FoundationalModelScaleRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:DatavaluedPropertyAtom ;
+                          swrl:propertyPredicate ai:hasFLOPS ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "flops" ] ] ;
+                rdf:rest [ rdf:type swrl:AtomList ;
+                    rdf:first [ rdf:type swrl:BuiltinAtom ;
+                        swrl:builtin swrlb:greaterThanOrEqual ;
+                        swrl:arguments ( [ rdf:type swrl:Variable ; rdfs:label "flops" ] "10000000000000000"^^xsd:double )
+                    ] ;
+                    rdf:rest rdf:nil
+                ]
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasModelScale ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 ai:FoundationalModelScale ] ;
+                rdf:rest rdf:nil ] .
+
 # Regla 1: Sistemas educativos requieren protección de menores
 ai:EducationProtectionRule rdf:type swrl:Rule ;
     swrl:body [ rdf:type swrl:AtomList ;

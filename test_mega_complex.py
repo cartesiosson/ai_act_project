@@ -10,18 +10,28 @@ basado en las entidades confirmadas que funcionan en los tests anteriores.
 import requests
 import json
 import time
+import random
+import string
 
 BASE_URL = "http://localhost:8000"
 
-def create_mega_system():
+def get_unique_suffix():
+    ts = int(time.time())
+    rand = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return f"{ts}_{rand}"
+
+
+def create_mega_system(unique_suffix):
     """
     Sistema mega-complejo usando solo entidades confirmadas como funcionales
     """
     
+    system_name = f"SISTEMA_MEGA_COMPLEJO_{unique_suffix}"
+    system_version = f"4.0-MEGACOMPLEX-{unique_suffix}"
     mega_system = {
         "@type": "ai:IntelligentSystem",
-        "hasName": "🚀 SISTEMA MEGA-COMPLEJO DE MÁXIMA INFERENCIA 🚀",
-        "hasVersion": "4.0-MEGACOMPLEX",
+        "hasName": system_name,
+        "hasVersion": system_version,
         
         # Propósitos que sabemos funcionan
         "hasPurpose": [
@@ -199,43 +209,41 @@ def analyze_mega_reasoning(system_id):
         return 0
 
 def main():
-    """Función principal para el sistema mega-complejo"""
-    print("🔥🔥🔥 PRUEBA MEGA-COMPLEJA DE MÁXIMAS INFERENCIAS 🔥🔥🔥")
-    print("=" * 80)
-    print("🎯 MISIÓN: Romper todos los récords de reglas aplicadas")
-    print("⚡ MÉTODO: Sistema híbrido multi-dominio de ultra-complejidad")
-    print("🚀 META: Superar las 20 inferencias simultáneas")
-    print("=" * 80)
-    
-    # Crear el mega-sistema
-    system_id = create_mega_system()
-    if not system_id:
-        print("💥 MISIÓN FALLIDA: No se pudo crear el mega-sistema")
+    print("🚀 Iniciando prueba de sistema mega-complejo")
+    print("=" * 60)
+
+    # Validar tipos hoja desde backend
+    print("🔎 Validando tipos de algoritmo hoja desde backend...")
+    import requests
+    BASE_URL = "http://localhost:8000"
+    valid_types = set(x['id'] for x in requests.get(f"{BASE_URL}/vocab/algorithmtypes?lang=es").json())
+    used_types = set([
+        "ai:TransformerModel",
+        "ai:DecisionTree",
+        "ai:ConvolutionalNeuralNetwork",
+        "ai:RandomForest"
+    ])
+    assert all(t in valid_types for t in used_types), "Algoritmos usados no son hojas válidas!"
+
+    # Crear sistema con URN único y borrado previo
+    unique_suffix = get_unique_suffix()
+    # system_name = f"SISTEMA_MEGA_COMPLEJO_{unique_suffix}"
+    # delete_system_if_exists(system_name)
+    mega_system_id = create_mega_system(unique_suffix)
+    if not mega_system_id:
+        print("❌ Error creando el sistema mega-complejo")
         return
-    
-    # Tiempo de procesamiento
-    print("\n⏳ Procesando mega-sistema (5 segundos)...")
-    time.sleep(5)
-    
-    # Análisis mega-complejo
-    rules_count = analyze_mega_reasoning(system_id)
-    
-    # Conclusión épica
-    print("\n" + "🎆" * 40)
-    print("🏁 CONCLUSIÓN DE LA MISIÓN MEGA-COMPLEJA")
-    print("🎆" * 40)
-    
-    print(f"🆔 Sistema ID: {system_id}")
-    print(f"🔥 Total de reglas aplicadas: {rules_count}")
-    
-    if rules_count > 0:
-        print("✅ MISIÓN CUMPLIDA! El motor de reglas funciona perfectamente")
-        print("🎯 Todas las capacidades del sistema están siendo procesadas")
-        print("🚀 El sistema de inferencia está en su máximo rendimiento")
-    else:
-        print("❌ MISIÓN INCOMPLETA: Revisar configuración del motor")
-        
-    print(f"\n🎉 Mega-test completado con {rules_count} reglas!")
+
+    # Ejecutar análisis de razonamiento
+    result = analyze_mega_reasoning(mega_system_id)
+    print("\n" + "=" * 60)
+    print("🎯 Test mega-complejo completado")
+
+    # Guardar resultado para análisis
+    if result:
+        with open("mega_test_result.json", "w") as f:
+            json.dump(result, f, indent=2)
+        print("💾 Resultado guardado en mega_test_result.json")
 
 if __name__ == "__main__":
     main()

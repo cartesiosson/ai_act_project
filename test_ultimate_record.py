@@ -11,19 +11,29 @@ META: Superar las 20 reglas aplicadas
 import requests
 import json
 import time
+import random
+import string
 
 BASE_URL = "http://localhost:8000"
 
-def create_ultimate_system():
+def get_unique_suffix():
+    ts = int(time.time())
+    rand = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return f"{ts}_{rand}"
+
+
+def create_ultimate_system(unique_suffix):
     """
     El sistema más extremo posible - RÉCORD ABSOLUTO
     Añadiendo MÁS propiedades para activar reglas adicionales
     """
     
+    system_name = f"SISTEMA_ULTRA_EXTREMO_RECORD_{unique_suffix}"
+    system_version = f"5.0-ULTIMATE-RECORD-{unique_suffix}"
     ultimate_system = {
         "@type": "ai:IntelligentSystem",
-        "hasName": "🌟⚡🔥 SISTEMA ULTRA-EXTREMO RÉCORD MUNDIAL 🔥⚡🌟",
-        "hasVersion": "5.0-ULTIMATE-RECORD",
+        "hasName": system_name,
+        "hasVersion": system_version,
         
         # MÁS PROPÓSITOS para activar más criterios
         "hasPurpose": [
@@ -257,8 +267,22 @@ def main():
     print("👑 OBJETIVO: Activar +20 reglas simultáneamente")
     print("=" * 90)
     
-    # Crear sistema ultra-extremo
-    system_id = create_ultimate_system()
+    # Validar tipos hoja desde backend
+    print("🔎 Validando tipos de algoritmo hoja desde backend...")
+    valid_types = set(x['id'] for x in requests.get(f"{BASE_URL}/vocab/algorithmtypes?lang=es").json())
+    used_types = set([
+        "ai:TransformerModel",
+        "ai:DecisionTree",
+        "ai:ConvolutionalNeuralNetwork",
+        "ai:RandomForest"
+    ])
+    assert all(t in valid_types for t in used_types), "Algoritmos usados no son hojas válidas!"
+
+    # Crear sistema ultra-extremo con URN único y borrado previo
+    unique_suffix = get_unique_suffix()
+    # system_name = f"SISTEMA_ULTRA_EXTREMO_RECORD_{unique_suffix}"
+    # delete_system_if_exists(system_name)
+    system_id = create_ultimate_system(unique_suffix)
     if not system_id:
         print("💥 MISIÓN ABORTADA: No se pudo crear el sistema")
         return

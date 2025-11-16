@@ -10,10 +10,18 @@ combinando múltiples criterios de alto riesgo del AI Act.
 import requests
 import json
 import time
+import random
+import string
 
 BASE_URL = "http://localhost:8000"
 
-def create_ultra_complex_system():
+def get_unique_suffix():
+    ts = int(time.time())
+    rand = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return f"{ts}_{rand}"
+
+
+def create_ultra_complex_system(unique_suffix):
     """
     Crear el sistema más complejo posible que active múltiples reglas simultáneamente
     
@@ -32,10 +40,12 @@ def create_ultra_complex_system():
     - 🌐 ALTO VOLUMEN: Procesamiento masivo de datos
     """
     
+    system_name = f"SISTEMA_SUPER_COMPLEJO_{unique_suffix}"
+    system_version = f"3.0-COMPLEX-{unique_suffix}"
     ultra_complex_system = {
         "@type": "ai:IntelligentSystem",
-        "hasName": "🔥 Sistema Integral Multi-Riesgo de IA 🔥",
-        "hasVersion": "3.0-COMPLEX",
+        "hasName": system_name,
+        "hasVersion": system_version,
         
         # 🎯 PROPÓSITOS MÚLTIPLES (activarán diferentes criterios)
         "hasPurpose": [
@@ -184,46 +194,41 @@ def run_complex_reasoning(system_id):
         return 0
 
 def main():
-    """Función principal - prueba del sistema súper complejo"""
-    print("🔥🔥🔥 PRUEBA DE SISTEMA SÚPER COMPLEJO 🔥🔥🔥")
-    print("=" * 90)
-    print("🎯 OBJETIVO: Activar el máximo número de reglas de inferencia")
-    print("⚡ ESTRATEGIA: Combinar múltiples criterios de alto riesgo del AI Act")
-    print("=" * 90)
-    
-    # Crear sistema
-    system_id = create_ultra_complex_system()
-    if not system_id:
-        print("💥 FALLO: No se pudo crear el sistema complejo")
+    print("🔥 INICIANDO TEST DE SISTEMA SÚPER COMPLEJO 🔥")
+    print("=" * 60)
+
+    # Validar tipos hoja desde backend
+    print("🔎 Validando tipos de algoritmo hoja desde backend...")
+    import requests
+    BASE_URL = "http://localhost:8000"
+    valid_types = set(x['id'] for x in requests.get(f"{BASE_URL}/vocab/algorithmtypes?lang=es").json())
+    used_types = set([
+        "ai:TransformerModel",
+        "ai:DecisionTree",
+        "ai:ConvolutionalNeuralNetwork",
+        "ai:RandomForest"
+    ])
+    assert all(t in valid_types for t in used_types), "Algoritmos usados no son hojas válidas!"
+
+    # Crear sistema con URN único y borrado previo
+    unique_suffix = get_unique_suffix()
+    # system_name = f"SISTEMA_SUPER_COMPLEJO_{unique_suffix}"
+    # delete_system_if_exists(system_name)
+    ultra_system_id = create_ultra_complex_system(unique_suffix)
+    if not ultra_system_id:
+        print("❌ Error creando el sistema súper complejo")
         return
-    
-    # Esperar a que se guarde
-    print("\n⏳ Esperando 3 segundos para que se procese...")
-    time.sleep(3)
-    
-    # Ejecutar razonamiento
-    rules_applied = run_complex_reasoning(system_id)
-    
-    # Evaluación final
-    print("\n" + "🎯" * 30)
-    print("📊 EVALUACIÓN FINAL DEL SISTEMA COMPLEJO")
-    print("🎯" * 30)
-    
-    if rules_applied >= 20:
-        print("🏆 EXCELENTE! Más de 20 reglas aplicadas")
-        print("🔥 El sistema activa una gran diversidad de criterios")
-    elif rules_applied >= 15:
-        print("✅ MUY BUENO! Entre 15-20 reglas aplicadas") 
-        print("💪 Sistema complejo funcionando correctamente")
-    elif rules_applied >= 10:
-        print("👍 BUENO! Entre 10-15 reglas aplicadas")
-        print("📈 Buen nivel de complejidad alcanzado")
-    else:
-        print("⚠️ BAJO! Menos de 10 reglas aplicadas")
-        print("🔧 El sistema podría ser más complejo")
-    
-    print(f"\n🎯 Sistema ID para referencia futura: {system_id}")
-    print("✨ Prueba de complejidad completada!")
+
+    # Ejecutar análisis de razonamiento
+    result = run_complex_reasoning(ultra_system_id)
+    print("\n" + "=" * 60)
+    print("🎯 Test súper complejo completado")
+
+    # Guardar resultado para análisis
+    if result:
+        with open("complex_test_result.json", "w") as f:
+            json.dump(result, f, indent=2)
+        print("💾 Resultado guardado en complex_test_result.json")
 
 if __name__ == "__main__":
     main()

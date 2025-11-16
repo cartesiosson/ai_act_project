@@ -18,6 +18,7 @@ class IntelligentSystem(BaseModel):
     hasCapability: Optional[List[str]] = Field(default_factory=list, example=["ai:GenerativeCapability"])
     hasVersion: str = Field(..., example="1.0.0")
     hasUrn: Optional[str] = Field(default=None, example="urn:uuid:...")
+    hasFLOPS: Optional[float] = Field(default=None, example=1e13, description="FLOPS del sistema (opcional)")
     # Puedes agregar más campos según los módulos, por ejemplo, requisitos, actores, etc.
 
     class Config:
