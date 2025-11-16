@@ -45,6 +45,7 @@ class ExternalRulesEngine:
         self.base_rules = []
         self.technical_rules = []
         self.cascade_rules = []
+        self.capability_rules = []
         self.all_rules = []
         self._load_rules()
     
@@ -76,8 +77,17 @@ class ExternalRulesEngine:
         except Exception as e:
             print(f"❌ Error cargando reglas de cascada: {e}")
         
+        # Cargar reglas de capacidad del sistema
+        try:
+            capability_module = self._load_module(os.path.join(rules_dir, "capability_rules.py"), "capability_rules")
+            self.capability_rules = capability_module.CAPABILITY_RULES
+            print(f"✅ Cargadas {len(self.capability_rules)} reglas de capacidad")
+        except Exception as e:
+            print(f"❌ Error cargando reglas de capacidad: {e}")
+            self.capability_rules = []
+        
         # Combinar todas las reglas
-        self.all_rules = self.base_rules + self.technical_rules + self.cascade_rules
+        self.all_rules = self.base_rules + self.technical_rules + self.cascade_rules + self.capability_rules
         print(f"📊 Total reglas cargadas: {len(self.all_rules)}")
     
     def _load_module(self, file_path: str, module_name: str):
@@ -109,14 +119,42 @@ class ExternalRulesEngine:
             print("⚠️  No se encontraron sistemas inteligentes para procesar")
             return 0
         
-        print(f"🔍 Procesando {len(systems)} sistemas con {len(self.all_rules)} reglas")
-        
-        # Aplicar cada regla a cada sistema
-        for rule in self.all_rules:
+            print(f"🔍 Procesando {len(systems)} sistemas con {len(self.all_rules)} reglas")
+            
+            # Debug: Imprimir propiedades del sistema para verificar datos técnicos
             for system in systems:
-                if self._evaluate_conditions(rule["conditions"], system, combined_graph):
-                    applied = self._apply_consequences(rule["consequences"], system, combined_graph, rule["id"])
-                    inferences_count += applied
+                print(f"🔍 Sistema: {system}")
+                for prop, obj in combined_graph.predicate_objects(system):
+                    if any(tech in str(prop) for tech in ['FLOP', 'Parameter', 'Accuracy', 'Autonomy', 'Market', 'Adaptive']):
+                        print(f"   • {prop}: {obj}")
+                break  # Solo el primer sistema        # Aplicar reglas iterativamente hasta que no haya más cambios (máximo 5 iteraciones)
+        max_iterations = 5
+        for iteration in range(max_iterations):
+            iteration_inferences = 0
+            print(f"🔄 Iteración {iteration + 1} de reglas...")
+            
+            # Aplicar cada regla a cada sistema
+            rules_applied_this_iteration = 0
+            for rule in self.all_rules:
+                for system in systems:
+                    if self._evaluate_conditions(rule["conditions"], system, combined_graph):
+                        applied = self._apply_consequences(rule["consequences"], system, combined_graph, rule["id"])
+                        if applied > 0:
+                            rules_applied_this_iteration += 1
+                        iteration_inferences += applied
+                        inferences_count += applied
+            
+            if iteration == 0:  # Solo en primera iteración
+                print(f"🔍 Reglas aplicables encontradas: {rules_applied_this_iteration}/{len(self.all_rules)}")
+            
+            print(f"📊 Iteración {iteration + 1}: {iteration_inferences} nuevas inferencias")
+            
+            # Si no se aplicaron nuevas reglas, terminar
+            if iteration_inferences == 0:
+                print(f"✅ Convergencia alcanzada después de {iteration + 1} iteraciones")
+                break
+        else:
+            print(f"⚠️  Máximo de iteraciones alcanzado ({max_iterations})")
         
         return inferences_count
     
@@ -218,6 +256,7 @@ class ExternalRulesEngine:
             "base_rules": len(self.base_rules),
             "technical_rules": len(self.technical_rules),
             "cascade_rules": len(self.cascade_rules),
+            "capability_rules": len(self.capability_rules),
             "rules_by_id": {rule["id"]: rule["name"] for rule in self.all_rules}
         }
 

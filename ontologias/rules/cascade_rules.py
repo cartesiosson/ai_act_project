@@ -103,8 +103,35 @@ RULE_23B = {
     ]
 }
 
+# REGLA 24: PerformanceRequirements -> LatencyMetrics (para testing)
+RULE_24 = {
+    "id": "rule24_performance_latency",
+    "name": "Performance requirements trigger latency metrics",
+    "description": "Systems with performance requirements need latency monitoring",
+    "conditions": [
+        {"property": "ai:hasTechnicalCriterion", "operator": "==", "value": "ai:PerformanceRequirements", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasTechnicalRequirement", "value": "ai:LatencyMetrics"}
+    ]
+}
+
+# REGLA 25: ScalabilityRequirements -> PerformanceMonitoring (para testing)  
+RULE_25 = {
+    "id": "rule25_scalability_monitoring",
+    "name": "Scalability requirements trigger performance monitoring",
+    "description": "Systems with scalability requirements need performance monitoring",
+    "conditions": [
+        {"property": "ai:hasTechnicalCriterion", "operator": "==", "value": "ai:ScalabilityRequirements", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasTechnicalRequirement", "value": "ai:PerformanceMonitoringRequirement"}
+    ]
+}
+
 # Lista de todas las reglas de cascada
 CASCADE_RULES = [
     RULE_20A, RULE_20B, RULE_20C, RULE_21, 
-    RULE_22A, RULE_22B, RULE_23A, RULE_23B
+    RULE_22A, RULE_22B, RULE_23A, RULE_23B,
+    RULE_24, RULE_25  # Nuevas reglas para testing
 ]

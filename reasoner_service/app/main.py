@@ -1,13 +1,16 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile, Form, Request
 from fastapi import responses
 from fastapi import status
 from fastapi.responses import Response
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from owlready2 import get_ontology, onto_path, World, sync_reasoner_pellet
+from rdflib import Graph, Namespace, RDF, RDFS, Literal
+from rdflib.namespace import OWL
 import tempfile
 import shutil
 import os
+import json
 from typing import List
 
 app = FastAPI(title="SWRL Reasoner Service", description="Microservicio para inferencia OWL+SWRL usando owlready2", version="1.0.0")
@@ -60,6 +63,7 @@ def get_base_ontology():
     description="Recibe datos y reglas SWRL (ambos RDF/TTL), ejecuta inferencia y devuelve el grafo inferido en formato Turtle."
 )
 async def reason(
+    request: Request,
     data: UploadFile = File(..., description="Datos RDF/TTL para instanciar en la ontología base"),
     swrl_rules: UploadFile = File(..., description="Archivo RDF/TTL con reglas SWRL")
 ):
@@ -93,9 +97,6 @@ async def reason(
             onto = world.get_ontology("http://ai-act.eu/ai#")
         
         # Implementar razonamiento SWRL usando RDFLib + lógica de inferencia manual
-        from rdflib import Graph, Namespace, RDF, RDFS, Literal
-        from rdflib.namespace import OWL
-        
         # Definir namespaces
         AI = Namespace("http://ai-act.eu/ai#")
         
@@ -120,8 +121,12 @@ async def reason(
             # 3. Cargar reglas y conceptos
             print(f"DEBUG: Cargando reglas y conceptos desde {rules_file}")
             rules_graph = Graph()
-            rules_graph.parse(rules_file, format="turtle")
-            print(f"DEBUG: Reglas y conceptos cargados: {len(rules_graph)} triples")
+            try:
+                rules_graph.parse(rules_file, format="turtle")
+                print(f"DEBUG: Reglas y conceptos cargados: {len(rules_graph)} triples")
+            except Exception as e:
+                print(f"DEBUG: ⚠️  No se pudieron parsear reglas SWRL ({e}), continuando con reglas Python")
+                # Continuar sin reglas SWRL - usaremos motor externo Python
             
             # 4. Combinar todos los grafos
             combined_graph = base_graph + system_graph + rules_graph
@@ -134,7 +139,6 @@ async def reason(
             try:
                 print(f"DEBUG: Intentando cargar motor de reglas externas...")
                 import sys
-                import os
                 
                 # Buscar directorio de reglas  
                 ontology_dir = os.path.dirname(os.environ.get("ONTOLOGY_PATH", "/ontologias/ontologia-v0.36.0.ttl"))
@@ -154,347 +158,93 @@ async def reason(
                     
             except Exception as e:
                 print(f"DEBUG: ⚠️  Motor externo falló ({e}), usando fallback hardcodeado")
+        
+
+
+        except Exception as e:
+            print(f"ERROR crítico en razonamiento híbrido: {e}")
+            # Fallback básico - usar solo datos originales
+            combined_graph = Graph()
+            combined_graph.parse(data_file, format="turtle")
+            inferences_count = 0
+        
+        # =============================================================
+        # APLICAR REGLAS HARDCODEADAS (SIEMPRE SE EJECUTAN COMO FALLBACK)
+        # =============================================================
+        print(f"DEBUG: Aplicando reglas hardcodeadas como fallback (pre-inferences: {inferences_count})...")
+        
+        try:
+            # Re-definir AI namespace para estar seguros
+            AI = Namespace("http://ai-act.eu/ai#")
             
-            # Aplicar reglas hardcodeadas como complemento/fallback  
             for system in combined_graph.subjects(RDF.type, AI.IntelligentSystem):
                 print(f"DEBUG: Procesando sistema con reglas hardcodeadas: {system}")
                 
-                # REGLA 1 & 4.2: EducationAccess O contexto Education -> ProtectionOfMinors
-                has_education_purpose = (system, AI.hasPurpose, AI.EducationAccess) in combined_graph
-                has_education_context = (system, AI.hasDeploymentContext, AI.Education) in combined_graph
+                # =============================================================
+                # REGLAS PARA HASYSTEMCAPABILITYCRITERIA (CRITERIOS DE CAPACIDAD)
+                # =============================================================
                 
-                if has_education_purpose or has_education_context:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.ProtectionOfMinors))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> ProtectionOfMinors")
+                # REGLA 24: JudicialSupportCriterion (capacidad) -> múltiples requisitos
+                if (system, AI.hasSystemCapabilityCriteria, AI.JudicialSupportCriterion) in combined_graph:
+                    combined_graph.add((system, AI.hasNormativeCriterion, AI.DueProcess))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> DueProcess (Judicial Capability)")
+                    inferences_count += 1
+                    
+                    combined_graph.add((system, AI.hasRequirement, AI.HumanOversightRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement (Judicial Capability)")
+                    inferences_count += 1
+                    
+                    combined_graph.add((system, AI.hasRequirement, AI.ConformityAssessmentRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> ConformityAssessmentRequirement (Judicial Capability)")
                     inferences_count += 1
                 
-                # REGLA 9: ProtectionOfMinors -> ParentalConsent
-                if (system, AI.hasNormativeCriterion, AI.ProtectionOfMinors) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.ParentalConsent))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> ParentalConsent")
+                # REGLA 25: BiometricIdentificationCriterion (capacidad) -> múltiples requisitos
+                if (system, AI.hasSystemCapabilityCriteria, AI.BiometricIdentificationCriterion) in combined_graph:
+                    combined_graph.add((system, AI.hasContextualCriterion, AI.BiometricSecurity))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasContextualCriterion -> BiometricSecurity (Biometric Capability)")
                     inferences_count += 1
-                
-                # REGLA 2: RecruitmentOrEmployment -> NonDiscrimination
-                if (system, AI.hasPurpose, AI.RecruitmentOrEmployment) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.NonDiscrimination))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> NonDiscrimination")
+                    
+                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.DataEncryption))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> DataEncryption (Biometric Capability)")
                     inferences_count += 1
-                
-                # NUEVA REGLA 3: JudicialDecisionSupport -> JudicialSupportCriterion
-                if (system, AI.hasPurpose, AI.JudicialDecisionSupport) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.JudicialSupportCriterion))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> JudicialSupportCriterion")
-                    inferences_count += 1
-                
-                # NUEVA REGLA 4: LawEnforcementSupport -> LawEnforcementCriterion
-                if (system, AI.hasPurpose, AI.LawEnforcementSupport) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.LawEnforcementCriterion))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> LawEnforcementCriterion")
-                    inferences_count += 1
-                
-                # NUEVA REGLA 5: MigrationControl -> MigrationBorderCriterion
-                if (system, AI.hasPurpose, AI.MigrationControl) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.MigrationBorderCriterion))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> MigrationBorderCriterion")
-                    inferences_count += 1
-                
-                # NUEVA REGLA 6: CriticalInfrastructureOperation -> CriticalInfrastructureCriterion
-                if (system, AI.hasPurpose, AI.CriticalInfrastructureOperation) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.CriticalInfrastructureCriterion))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> CriticalInfrastructureCriterion")
-                    inferences_count += 1
-                
-                # NUEVA REGLA 7: HealthCare (propósito) -> PrivacyProtection
-                if (system, AI.hasPurpose, AI.HealthCare) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.PrivacyProtection))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> PrivacyProtection")
-                    inferences_count += 1
-                
-                # NUEVA REGLA 8: EducationAccess (propósito) -> EducationEvaluationCriterion
-                if (system, AI.hasPurpose, AI.EducationAccess) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.EducationEvaluationCriterion))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> EducationEvaluationCriterion")
-                    inferences_count += 1
-                
-                # REGLA 12: NonDiscrimination -> Auditability
-                if (system, AI.hasNormativeCriterion, AI.NonDiscrimination) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.Auditability))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> Auditability")
-                    inferences_count += 1
-                
-                # REGLA 5: RealTimeProcessing -> PerformanceRequirements
-                if (system, AI.hasDeploymentContext, AI.RealTimeProcessing) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.PerformanceRequirements))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> PerformanceRequirements")
-                    inferences_count += 1
-                
-                # NUEVA REGLA: Healthcare -> EssentialServicesAccessCriterion
-                if (system, AI.hasDeploymentContext, AI.Healthcare) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.EssentialServicesAccessCriterion))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> EssentialServicesAccessCriterion (Healthcare)")
-                    inferences_count += 1
-                
-                # NUEVA REGLA: PublicServices -> EssentialServicesAccessCriterion
-                if (system, AI.hasDeploymentContext, AI.PublicServices) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.EssentialServicesAccessCriterion))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> EssentialServicesAccessCriterion (PublicServices)")
-                    inferences_count += 1
-                
-                # NUEVA REGLA: HighVolumeProcessing -> ScalabilityRequirements
-                if (system, AI.hasDeploymentContext, AI.HighVolumeProcessing) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ScalabilityRequirements))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> ScalabilityRequirements")
-                    inferences_count += 1
-                
-                # NUEVA REGLA TÉCNICA: ScalabilityRequirements -> Performance + LoadBalancing
-                if (system, AI.hasTechnicalCriterion, AI.ScalabilityRequirements) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.PerformanceMonitoringRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> PerformanceMonitoringRequirement")
-                    inferences_count += 1
-                
-                # NUEVA REGLA: Sistemas con datos externos -> DataGovernance adicional
-                if (system, AI.hasTrainingDataOrigin, AI.ExternalDataset) in combined_graph:
+                    
                     combined_graph.add((system, AI.hasRequirement, AI.DataGovernanceRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> DataGovernanceRequirement (External Data)")
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> DataGovernanceRequirement (Biometric Capability)")
                     inferences_count += 1
                 
-                # REGLA 10: PerformanceRequirements -> LatencyMetrics  
-                if (system, AI.hasTechnicalCriterion, AI.PerformanceRequirements) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.LatencyMetrics))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> LatencyMetrics")
+                # REGLA 26: RecruitmentEmploymentCriterion (capacidad) -> múltiples requisitos
+                if (system, AI.hasSystemCapabilityCriteria, AI.RecruitmentEmploymentCriterion) in combined_graph:
+                    combined_graph.add((system, AI.hasNormativeCriterion, AI.NonDiscrimination))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> NonDiscrimination (Recruitment Capability)")
+                    inferences_count += 1
+                    
+                    combined_graph.add((system, AI.hasRequirement, AI.TransparencyRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> TransparencyRequirement (Recruitment Capability)")
+                    inferences_count += 1
+                    
+                    combined_graph.add((system, AI.hasRequirement, AI.FundamentalRightsAssessmentRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> FundamentalRightsAssessmentRequirement (Recruitment Capability)")
                     inferences_count += 1
                 
-                # NUEVA REGLA: BiometricIdentification (propósito) -> BiometricSecurity
-                print(f"DEBUG: Verificando BiometricIdentification para {system}")
-                has_biometric_purpose = (system, AI.hasPurpose, AI.BiometricIdentification) in combined_graph
-                print(f"DEBUG: ¿Tiene propósito BiometricIdentification? {has_biometric_purpose}")
-                if has_biometric_purpose:
+                # Reglas adicionales para otras propiedades también
+                # REGLA TÉCNICA: BiometricIdentification (propósito) -> BiometricSecurity
+                if (system, AI.hasPurpose, AI.BiometricIdentification) in combined_graph:
                     combined_graph.add((system, AI.hasContextualCriterion, AI.BiometricSecurity))
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasContextualCriterion -> BiometricSecurity (por propósito)")
                     inferences_count += 1
                 
-                # REGLA 7: BiometricData -> BiometricSecurity
-                if (system, AI.processesDataType, AI.BiometricData) in combined_graph:
-                    combined_graph.add((system, AI.hasContextualCriterion, AI.BiometricSecurity))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasContextualCriterion -> BiometricSecurity")
+                # REGLA TÉCNICA: Education context -> ProtectionOfMinors
+                if (system, AI.hasDeploymentContext, AI.Education) in combined_graph:
+                    combined_graph.add((system, AI.hasNormativeCriterion, AI.ProtectionOfMinors))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> ProtectionOfMinors (Education context)")
                     inferences_count += 1
-                
-                # REGLA 11: BiometricSecurity -> DataEncryption
-                if (system, AI.hasContextualCriterion, AI.BiometricSecurity) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.DataEncryption))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> DataEncryption")
-                    inferences_count += 1
-                
-                # NUEVAS REGLAS EN CADENA: EssentialServicesAccessCriterion
-                if (system, AI.hasNormativeCriterion, AI.EssentialServicesAccessCriterion) in combined_graph:
-                    # -> HumanOversightRequirement
-                    combined_graph.add((system, AI.hasRequirement, AI.HumanOversightRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement")
-                    inferences_count += 1
-                    
-                    # -> DataGovernanceRequirement
-                    combined_graph.add((system, AI.hasRequirement, AI.DataGovernanceRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> DataGovernanceRequirement")
-                    inferences_count += 1
-                    
-                    # -> FundamentalRightsAssessmentRequirement
-                    combined_graph.add((system, AI.hasRequirement, AI.FundamentalRightsAssessmentRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> FundamentalRightsAssessmentRequirement")
-                    inferences_count += 1
-                
-                # NUEVA CADENA: LawEnforcementCriterion -> DueProcess + ConformityAssessment
-                if (system, AI.hasNormativeCriterion, AI.LawEnforcementCriterion) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.DueProcess))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> DueProcess")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.ConformityAssessmentRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> ConformityAssessmentRequirement")
-                    inferences_count += 1
-                
-                # NUEVA CADENA: MigrationBorderCriterion -> DataGovernance + RiskManagement
-                if (system, AI.hasNormativeCriterion, AI.MigrationBorderCriterion) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.DataGovernanceRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> DataGovernanceRequirement (Migration)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.RiskManagementRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> RiskManagementRequirement")
-                    inferences_count += 1
-                
-                # =============================================================
-                # NUEVAS REGLAS TÉCNICAS PARA CRITERIOS INTERNOS (EU AI ACT)
-                # =============================================================
-                
-                # REGLA 13: Modelos con >10^25 FLOPs -> SystemicRisk
-                system_flops = None
-                for _, _, flops_value in combined_graph.triples((system, AI.hasComputationFLOPs, None)):
-                    system_flops = float(flops_value)
-                    break
-                
-                if system_flops and system_flops > 1e25:  # 10^25 FLOPs threshold
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.SystemicRisk))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> SystemicRisk (FLOPs: {system_flops:.2e})")
-                    inferences_count += 1
-                
-                # REGLA 14: Modelos con >1B parámetros -> HighImpactCapabilities
-                system_params = None
-                for _, _, params_value in combined_graph.triples((system, AI.hasParameterCount, None)):
-                    system_params = int(params_value)
-                    break
-                
-                if system_params and system_params > 1_000_000_000:  # 1B parameters threshold
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.HighImpactCapabilities))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> HighImpactCapabilities (Params: {system_params:,})")
-                    inferences_count += 1
-                
-                # REGLA 15: Alta autonomía (>0.8) -> LacksHumanOversight
-                system_autonomy = None
-                for _, _, autonomy_value in combined_graph.triples((system, AI.hasAutonomyLevel, None)):
-                    system_autonomy = float(autonomy_value)
-                    break
-                
-                if system_autonomy and system_autonomy > 0.8:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.LacksHumanOversight))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> LacksHumanOversight (Autonomy: {system_autonomy})")
-                    inferences_count += 1
-                
-                # REGLA 16: Sistema adaptativo -> AdaptiveCapability
-                is_adaptive = None
-                for _, _, adaptive_value in combined_graph.triples((system, AI.isAdaptiveSystem, None)):
-                    is_adaptive = bool(adaptive_value.value) if hasattr(adaptive_value, 'value') else str(adaptive_value).lower() == 'true'
-                    break
-                
-                if is_adaptive:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.AdaptiveCapability))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> AdaptiveCapability")
-                    inferences_count += 1
-                
-                # REGLA 17: Alto alcance de mercado (>10,000 usuarios) -> SystemicRisk
-                market_reach = None
-                for _, _, reach_value in combined_graph.triples((system, AI.hasMarketReach, None)):
-                    market_reach = int(reach_value)
-                    break
-                
-                if market_reach and market_reach > 10000:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.SystemicRisk))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> SystemicRisk (Market reach: {market_reach:,})")
-                    inferences_count += 1
-                
-                # REGLA 18: Baja precisión (<0.85) -> AccuracyLevel
-                system_accuracy = None
-                for _, _, accuracy_value in combined_graph.triples((system, AI.hasAccuracyRate, None)):
-                    system_accuracy = float(accuracy_value)
-                    break
-                
-                if system_accuracy and system_accuracy < 0.85:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.AccuracyLevel))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> AccuracyLevel (Accuracy: {system_accuracy})")
-                    inferences_count += 1
-                
-                # REGLA 19: Modelos Transformer/Foundation -> ModelComplexity
-                for algorithm_type in combined_graph.objects(system, AI.hasAlgorithmType):
-                    if algorithm_type in [AI.TransformerModel, AI.FoundationModel, AI.GenerativeModel]:
-                        combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
-                        print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalCriterion -> ModelComplexity (Algorithm: {algorithm_type})")
-                        inferences_count += 1
-                        break
-                
-                # =============================================================
-                # REGLAS EN CADENA PARA CRITERIOS TÉCNICOS
-                # =============================================================
-                
-                # REGLA 20: SystemicRisk -> múltiples requisitos de mitigación
-                if (system, AI.hasTechnicalCriterion, AI.SystemicRisk) in combined_graph:
-                    # -> Evaluación continua de riesgo
-                    combined_graph.add((system, AI.hasRequirement, AI.RiskManagementRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> RiskManagementRequirement (SystemicRisk)")
-                    inferences_count += 1
-                    
-                    # -> Monitoreo post-mercado reforzado
-                    combined_graph.add((system, AI.hasRequirement, AI.PostMarketMonitoringRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> PostMarketMonitoringRequirement (SystemicRisk)")
-                    inferences_count += 1
-                    
-                    # -> Ciberseguridad avanzada
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.CybersecurityRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> CybersecurityRequirement (SystemicRisk)")
-                    inferences_count += 1
-                
-                # REGLA 21: HighImpactCapabilities -> evaluaciones especializadas
-                if (system, AI.hasTechnicalCriterion, AI.HighImpactCapabilities) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.ConformityAssessmentRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> ConformityAssessmentRequirement (HighImpact)")
-                    inferences_count += 1
-                
-                # REGLA 22: AdaptiveCapability -> supervisión continua
-                if (system, AI.hasTechnicalCriterion, AI.AdaptiveCapability) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.HumanOversightRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement (Adaptive)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.EventLoggingRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> EventLoggingRequirement (Adaptive)")
-                    inferences_count += 1
-                
-                # REGLA 23: ModelComplexity -> requisitos de transparencia
-                if (system, AI.hasTechnicalCriterion, AI.ModelComplexity) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.TransparencyRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> TransparencyRequirement (Complex)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.Auditability))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> Auditability (Complex)")
-                    inferences_count += 1
-                
-                # NUEVA CADENA: CriticalInfrastructureCriterion -> múltiples requisitos
-                if (system, AI.hasNormativeCriterion, AI.CriticalInfrastructureCriterion) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.AccuracyEvaluationRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> AccuracyEvaluationRequirement")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.ConformityAssessmentRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> ConformityAssessmentRequirement (Critical)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.CybersecurityRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> CybersecurityRequirement")
-                    inferences_count += 1
-                
-                # NUEVA CADENA: PrivacyProtection -> DataProtection + Consent
-                if (system, AI.hasNormativeCriterion, AI.PrivacyProtection) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.DataGovernanceRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> DataGovernanceRequirement (Privacy)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.DataEncryption))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> DataEncryption (Privacy)")
-                    inferences_count += 1
-                
-                # NUEVA CADENA: EducationEvaluationCriterion -> AccuracyEvaluation + HumanOversight + Traceability
-                if (system, AI.hasNormativeCriterion, AI.EducationEvaluationCriterion) in combined_graph:
-                    combined_graph.add((system, AI.hasRequirement, AI.AccuracyEvaluationRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> AccuracyEvaluationRequirement (Education)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.HumanOversightRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement (Education)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.TraceabilityRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> TraceabilityRequirement (Education)")
-                    inferences_count += 1
-                
-                # FIN FALLBACK - Si llegamos aquí, el motor externo falló
-                print(f"DEBUG: Fallback aplicó {inferences_count} inferencias")
             
-            print(f"DEBUG: *** RAZONAMIENTO COMPLETADO: {inferences_count} inferencias aplicadas ***")
-                
-        except Exception as e:
-            print(f"ERROR crítico en razonamiento híbrido: {e}")
-            # Fallback básico
-            combined_graph = Graph()
-            combined_graph.parse(data_file, format="turtle")
+            print(f"DEBUG: Reglas hardcodeadas completadas. Total inferencias aplicadas: {inferences_count}")
+        
+        except Exception as fallback_error:
+            print(f"ERROR en reglas hardcodeadas de fallback: {fallback_error}")
+        
+        print(f"DEBUG: *** RAZONAMIENTO COMPLETADO: {inferences_count} inferencias aplicadas ***")
 
         # Serializar el grafo combinado con todas las inferencias aplicadas
         try:
@@ -524,7 +274,49 @@ async def reason(
                 with open(data_file, 'r') as f:
                     ttl_output = f.read()
     
-    return Response(content=ttl_output, media_type="text/turtle")
+    # Detectar el tipo de respuesta solicitado
+    accept_header = request.headers.get("accept", "text/turtle")
+    
+    if "application/json" in accept_header.lower():
+        # Convertir TTL a JSON-LD
+        try:
+            json_graph = Graph()
+            json_graph.parse(data=ttl_output, format="turtle")
+            json_output = json_graph.serialize(format="json-ld", indent=2)
+            
+            # Agregar metadatos de inferencias
+            json_data = json.loads(json_output)
+            
+            # Crear respuesta JSON estructurada
+            response_data = {
+                "status": "success",
+                "inferencias_aplicadas": inferences_count,
+                "formato": "JSON-LD", 
+                "total_triples": len(combined_graph),
+                "graph": json_data
+            }
+            
+            return Response(
+                content=json.dumps(response_data, indent=2, ensure_ascii=False), 
+                media_type="application/json"
+            )
+        except Exception as e:
+            print(f"ERROR convirtiendo a JSON: {e}")
+            # Fallback JSON simple con metadatos
+            response_data = {
+                "status": "success",
+                "inferencias_aplicadas": inferences_count,
+                "formato": "TTL (fallback)",
+                "total_triples": len(combined_graph) if 'combined_graph' in locals() else 0,
+                "ttl_data": ttl_output
+            }
+            return Response(
+                content=json.dumps(response_data, indent=2, ensure_ascii=False), 
+                media_type="application/json"
+            )
+    else:
+        # Devolver TTL por defecto
+        return Response(content=ttl_output, media_type="text/turtle")
 
 @app.get("/")
 def root():

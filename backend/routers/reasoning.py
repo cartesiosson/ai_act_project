@@ -87,7 +87,7 @@ def system_to_ttl(system: Dict[str, Any]) -> str:
     
     return ttl_content
 
-async def call_reasoner_service(system_ttl: str, swrl_rules: str) -> str:
+async def call_reasoner_service(system_ttl: str, swrl_rules: str) -> Dict[str, Any]:
     """Llama al servicio de razonamiento con los datos del sistema y reglas SWRL"""
     
     try:
@@ -100,7 +100,8 @@ async def call_reasoner_service(system_ttl: str, swrl_rules: str) -> str:
             
             response = await client.post(
                 f"{REASONER_SERVICE_URL}/reason",
-                files=files
+                files=files,
+                headers={"Accept": "application/json"}
             )
             
             if response.status_code != 200:
@@ -110,7 +111,16 @@ async def call_reasoner_service(system_ttl: str, swrl_rules: str) -> str:
                     detail=f"Error del servicio de razonamiento: {response.status_code}"
                 )
             
-            return response.text
+            # Parsear respuesta JSON
+            try:
+                return response.json()
+            except json.JSONDecodeError as e:
+                logger.error(f"Error parsing JSON response: {e}")
+                logger.error(f"Response text: {response.text[:500]}...")
+                raise HTTPException(
+                    status_code=status.HTTP_502_BAD_GATEWAY,
+                    detail="Error parseando respuesta del servicio de razonamiento"
+                )
             
     except httpx.ConnectError:
         logger.error("Cannot connect to reasoner service")
@@ -169,6 +179,53 @@ def parse_inferred_relationships(ttl_result: str) -> Dict[str, List[str]]:
         logger.error(f"Error parsing inferred relationships: {str(e)}")
         return {}
 
+def parse_inferred_relationships_json(json_graph: Any) -> Dict[str, List[str]]:
+    """Extrae las relaciones inferidas del resultado JSON-LD"""
+    
+    relationships = {
+        "hasNormativeCriterion": [],
+        "hasTechnicalCriterion": [], 
+        "hasContextualCriterion": [],
+        "hasRequirement": [],
+        "hasTechnicalRequirement": []
+    }
+    
+    try:
+        # JSON-LD puede ser una lista de objetos o un objeto
+        items = json_graph if isinstance(json_graph, list) else [json_graph]
+        
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+                
+            # Buscar sistemas de IA
+            if item.get("@type") == "ai:IntelligentSystem" or "IntelligentSystem" in str(item.get("@type", "")):
+                
+                # Buscar las relaciones que nos interesan
+                for prop_name, target_list in relationships.items():
+                    # Buscar tanto la forma completa como abreviada
+                    ai_prop = f"ai:{prop_name}"
+                    
+                    prop_value = item.get(ai_prop) or item.get(prop_name)
+                    if prop_value:
+                        # Manejar tanto objetos únicos como listas
+                        if isinstance(prop_value, list):
+                            for val in prop_value:
+                                if isinstance(val, dict) and "@id" in val:
+                                    target_list.append(val["@id"])
+                                elif isinstance(val, str):
+                                    target_list.append(val)
+                        elif isinstance(prop_value, dict) and "@id" in prop_value:
+                            target_list.append(prop_value["@id"])
+                        elif isinstance(prop_value, str):
+                            target_list.append(prop_value)
+        
+        return relationships
+        
+    except Exception as e:
+        logger.error(f"Error parsing JSON-LD inferred relationships: {str(e)}")
+        return relationships
+
 @router.post("/system/{system_id}")
 async def reason_system(
     system_id: str,
@@ -208,11 +265,16 @@ async def reason_system(
         logger.info(f"Reglas SWRL y conceptos cargados: {len(swrl_rules.split('Rule'))} reglas")
         
         # 4. Ejecutar razonamiento
-        inferred_ttl = await call_reasoner_service(system_ttl, swrl_rules)
-        logger.info(f"Razonamiento completado, resultado: {len(inferred_ttl)} caracteres")
+        reasoner_response = await call_reasoner_service(system_ttl, swrl_rules)
+        logger.info(f"Razonamiento completado, inferencias: {reasoner_response.get('inferencias_aplicadas', 0)}")
         
         # 5. Parsear relaciones inferidas
-        relationships = parse_inferred_relationships(inferred_ttl)
+        if reasoner_response.get("formato") == "JSON-LD" and "graph" in reasoner_response:
+            relationships = parse_inferred_relationships_json(reasoner_response["graph"])
+        else:
+            # Fallback: usar TTL si está disponible
+            ttl_data = reasoner_response.get("ttl_data", "")
+            relationships = parse_inferred_relationships(ttl_data)
         logger.info(f"Relaciones inferidas: {relationships}")
         
         # 6. Actualizar sistema con inferencias (opcional)
@@ -229,8 +291,9 @@ async def reason_system(
             logger.info(f"Sistema actualizado con inferencias: {update_data.keys()}")
         
         # 7. Calcular número de reglas aplicadas (inferencias generadas)
-        rules_applied = sum(len(values) for values in relationships.values())
-        logger.info(f"DEBUG rules_applied calculation: {rules_applied}")
+        # Usar la información del servicio si está disponible, sino contar relaciones
+        rules_applied = reasoner_response.get("inferencias_aplicadas", sum(len(values) for values in relationships.values()))
+        logger.info(f"DEBUG rules_applied from reasoner: {rules_applied}")
         logger.info(f"DEBUG relationships: {relationships}")
         
         # 8. Retornar resultado completo
@@ -239,7 +302,7 @@ async def reason_system(
             "system_name": system.get("hasName", "Unnamed"),
             "reasoning_completed": True,
             "inferred_relationships": relationships,
-            "raw_ttl": inferred_ttl,
+            "raw_response": reasoner_response,
             "rules_applied": rules_applied
         }
         
