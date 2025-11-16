@@ -21,6 +21,21 @@ from rdflib.namespace import split_uri
 
 app = FastAPI(title="AI Act Backend")
 
+# ENDPOINT DE PRUEBA SUPERPRIMARIO
+@app.get("/test/superbasico")
+def test_superprimario():
+    return {"status": "ok"}
+
+# ENDPOINT DE ALGORITHM TYPES - HARDCODEADO SIMPLE
+@app.get("/vocab/algorithmtypes")
+def algorithm_types_simple():
+    return [
+        {"id": "ai:NeuralNetwork", "label": "Neural Network"},
+        {"id": "ai:TransformerModel", "label": "Transformer Model"}, 
+        {"id": "ai:FoundationModel", "label": "Foundation Model"},
+        {"id": "ai:GenerativeModel", "label": "Generative Model"}
+    ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Permitir cualquier origen para desarrollo
@@ -88,6 +103,22 @@ def get_contexts(lang: str = Query("en")):
 @app.get("/vocab/training_origins")
 def get_origins(lang: str = Query("en")):
     return get_options_for_property(ont, "http://ai-act.eu/ai#hasTrainingDataOrigin", lang=lang)
+
+@app.get("/vocab/algorithmtypes")
+def get_algorithm_types(lang: str = Query("en")):
+    """Devuelve los tipos de algoritmos disponibles"""
+    return [
+        {"id": "ai:NeuralNetwork", "label": "Neural Network"},
+        {"id": "ai:TransformerModel", "label": "Transformer Model"}, 
+        {"id": "ai:FoundationModel", "label": "Foundation Model"},
+        {"id": "ai:GenerativeModel", "label": "Generative Model"}
+    ]
+
+@app.post("/debug/system")
+def debug_system_creation(data: dict):
+    """Endpoint de debug para ver qué datos llegan"""
+    print(f"DEBUG - Datos recibidos: {data}")
+    return {"received": data}
 
 
 @app.get("/vocab/system_capability_criteria")

@@ -11,5 +11,5 @@ async def get_database():
 
 async def ensure_indexes():
     db = await get_database()
-    collection = db["intelligent_systems"]
+    collection = db["systems"]
     await collection.create_index("hasUrn", unique=True)

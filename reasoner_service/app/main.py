@@ -238,6 +238,28 @@ async def reason(
                     combined_graph.add((system, AI.hasNormativeCriterion, AI.ProtectionOfMinors))
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> ProtectionOfMinors (Education context)")
                     inferences_count += 1
+                
+                # =============================================================
+                # REGLAS PARA HASALGORITHMTYPE (REGLAS TÉCNICAS 19A, 19B, 19C)
+                # =============================================================
+                
+                # REGLA 19A: FoundationModel -> ModelComplexity
+                if (system, AI.hasAlgorithmType, AI.FoundationModel) in combined_graph:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
+                    print(f"DEBUG: ✅ Inferencia aplicada (RULE_19A): {system} -> hasTechnicalCriterion -> ModelComplexity (FoundationModel)")
+                    inferences_count += 1
+                
+                # REGLA 19B: TransformerModel -> ModelComplexity
+                if (system, AI.hasAlgorithmType, AI.TransformerModel) in combined_graph:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
+                    print(f"DEBUG: ✅ Inferencia aplicada (RULE_19B): {system} -> hasTechnicalCriterion -> ModelComplexity (TransformerModel)")
+                    inferences_count += 1
+                
+                # REGLA 19C: GenerativeModel -> ModelComplexity
+                if (system, AI.hasAlgorithmType, AI.GenerativeModel) in combined_graph:
+                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
+                    print(f"DEBUG: ✅ Inferencia aplicada (RULE_19C): {system} -> hasTechnicalCriterion -> ModelComplexity (GenerativeModel)")
+                    inferences_count += 1
             
             print(f"DEBUG: Reglas hardcodeadas completadas. Total inferencias aplicadas: {inferences_count}")
         
@@ -278,46 +300,72 @@ async def reason(
     accept_header = request.headers.get("accept", "text/turtle")
     
     if "application/json" in accept_header.lower():
-        # Convertir TTL a JSON-LD
+        # Convertir TTL a JSON-LD y crear respuesta JSON estructurada
         try:
-            json_graph = Graph()
-            json_graph.parse(data=ttl_output, format="turtle")
-            json_output = json_graph.serialize(format="json-ld", indent=2)
-            
-            # Agregar metadatos de inferencias
-            json_data = json.loads(json_output)
-            
-            # Crear respuesta JSON estructurada
-            response_data = {
-                "status": "success",
-                "inferencias_aplicadas": inferences_count,
-                "formato": "JSON-LD", 
-                "total_triples": len(combined_graph),
-                "graph": json_data
+            g = Graph()
+            g.parse(data=ttl_output, format="turtle")
+            AI = Namespace("http://ai-act.eu/ai#")
+            print("DEBUG: Triples en el grafo tras parseo TTL:")
+            for s, p, o in g:
+                print(f"  {s} {p} {o}")
+            inferred_relationships = {
+                "hasNormativeCriterion": [],
+                "hasTechnicalCriterion": [],
+                "hasContextualCriterion": [],
+                "hasRequirement": [],
+                "hasTechnicalRequirement": []
             }
-            
+            system_id = None
+            system_name = None
+            for system in g.subjects(RDF.type, AI.IntelligentSystem):
+                system_id = str(system)
+                name = None
+                for _, _, n in g.triples((system, AI.hasName, None)):
+                    name = str(n)
+                system_name = name
+                for rel, arr in inferred_relationships.items():
+                    pred = getattr(AI, rel)
+                    for _, _, obj in g.triples((system, pred, None)):
+                        arr.append(str(obj))
+            response_data = {
+                "system_id": system_id or "",
+                "system_name": system_name or "",
+                "reasoning_completed": True,
+                "inferred_relationships": inferred_relationships,
+                "raw_ttl": ttl_output,
+                "rules_applied": sum(len(arr) for arr in inferred_relationships.values()),
+                "formato": "JSON-LD",
+                "graph": [
+                    {
+                        "@id": system_id or "",
+                        "hasNormativeCriterion": inferred_relationships["hasNormativeCriterion"],
+                        "hasTechnicalCriterion": inferred_relationships["hasTechnicalCriterion"],
+                        "hasContextualCriterion": inferred_relationships["hasContextualCriterion"],
+                        "hasRequirement": inferred_relationships["hasRequirement"],
+                        "hasTechnicalRequirement": inferred_relationships["hasTechnicalRequirement"],
+                        "system_name": system_name or ""
+                    }
+                ]
+            }
             return Response(
-                content=json.dumps(response_data, indent=2, ensure_ascii=False), 
+                content=json.dumps(response_data, indent=2, ensure_ascii=False),
                 media_type="application/json"
             )
         except Exception as e:
-            print(f"ERROR convirtiendo a JSON: {e}")
-            # Fallback JSON simple con metadatos
+            print(f"ERROR generando JSON razonamiento: {e}")
             response_data = {
-                "status": "success",
-                "inferencias_aplicadas": inferences_count,
-                "formato": "TTL (fallback)",
-                "total_triples": len(combined_graph) if 'combined_graph' in locals() else 0,
-                "ttl_data": ttl_output
+                "system_id": "",
+                "system_name": "",
+                "reasoning_completed": False,
+                "inferred_relationships": {},
+                "raw_ttl": ttl_output,
+                "rules_applied": 0,
+                "formato": "JSON-LD",
+                "graph": []
             }
             return Response(
-                content=json.dumps(response_data, indent=2, ensure_ascii=False), 
+                content=json.dumps(response_data, indent=2, ensure_ascii=False),
                 media_type="application/json"
             )
     else:
-        # Devolver TTL por defecto
         return Response(content=ttl_output, media_type="text/turtle")
-
-@app.get("/")
-def root():
-    return {"message": "SWRL Reasoner Service. Use /reason endpoint."}

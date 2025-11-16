@@ -4,6 +4,7 @@ interface SystemCardProps {
   purpose: string[];
   deploymentContext: string[];
   trainingDataOrigin: string[];
+  algorithmType: string[];
   version: string;
   urn: string;
 }
@@ -14,6 +15,7 @@ export default function SystemCard({
   purpose,
   deploymentContext,
   trainingDataOrigin,
+  algorithmType,
   version,
   urn,
 }: SystemCardProps) {
@@ -24,6 +26,7 @@ export default function SystemCard({
       <p><span className="font-semibold">Purpose(s):</span> {purpose.join(", ")}</p>
       <p><span className="font-semibold">Deployment Context(s):</span> {deploymentContext.join(", ")}</p>
       <p><span className="font-semibold">Training Data Origin(s):</span> {trainingDataOrigin.join(", ")}</p>
+      <p><span className="font-semibold">Algorithm Type(s):</span> {algorithmType.join(", ")}</p>
       <p><span className="font-semibold">Version:</span> {version}</p>
       <p className="text-sm text-gray-600 dark:text-gray-400">
         <span className="font-semibold">URN:</span> {urn}

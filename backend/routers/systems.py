@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from rdflib import Graph, URIRef, Literal
 from rdflib.namespace import RDF
 from models.system import IntelligentSystem
@@ -20,7 +20,9 @@ router = APIRouter(prefix="/systems", tags=["systems"])
 
 @router.post("", status_code=201)
 async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
+    print(f"Datos recibidos por Pydantic: {json_ld}")
     json_ld = json_ld.dict(by_alias=True)
+    print(f"Después de dict(by_alias=True): {json_ld}")
     urn = f"urn:uuid:{uuid.uuid4()}"
     json_ld["ai:hasUrn"] = urn
     json_ld["@id"] = urn
@@ -31,10 +33,11 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
         raise HTTPException(status_code=409, detail="System with same URN already exists")
 
     json_ld.pop("_id", None)
-    print(f"Insertando en MongoDB: {json.dumps(json_ld)})")
+    print(f"Insertando en MongoDB: {json.dumps(json_ld)}")
 
     g = Graph()
     mapped = {}
+    print(f"Datos mapeados: {json.dumps(mapped)}")
     for k, v in json_ld.items():
         if not k.startswith("ai:") and k not in ["@id", "@type", "@context"]:
             mapped[f"ai:{k}"] = v
@@ -43,7 +46,7 @@ async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
 
     # Asegurar que los valores múltiples se representen como listas
     for multivalue_key in [
-        "ai:hasPurpose", "ai:hasDeploymentContext", "ai:hasTrainingDataOrigin"
+        "ai:hasPurpose", "ai:hasDeploymentContext", "ai:hasTrainingDataOrigin", "ai:hasAlgorithmType"
     ]:
         if multivalue_key in mapped and not isinstance(mapped[multivalue_key], list):
             mapped[multivalue_key] = [mapped[multivalue_key]]
@@ -75,6 +78,7 @@ async def list_systems(
     purpose: str = Query(None),
     context: str = Query(None),
     training_origin: str = Query(None),
+    algorithm_type: str = Query(None),
     offset: int = Query(0, ge=0),
     limit: int = Query(10, ge=1),
     sort: str = Query("asc", regex="^(asc|desc)$"),
@@ -90,6 +94,8 @@ async def list_systems(
         query["hasDeploymentContext"] = context
     if training_origin:
         query["hasTrainingDataOrigin"] = training_origin
+    if algorithm_type:
+        query["hasAlgorithmType"] = algorithm_type
 
     sort_order = 1 if sort == "asc" else -1
 
@@ -120,6 +126,63 @@ async def get_system_by_urn(urn: str, db=Depends(get_database)):
         doc["_id"] = str(doc["_id"])
         return doc
     raise HTTPException(status_code=404, detail="System not found")
+
+@router.put("/{urn}")
+async def update_system(urn: str, json_ld: IntelligentSystem = Body(...), db=Depends(get_database)):
+        # Buscar sistema existente
+        existing = await db.systems.find_one({"ai:hasUrn": urn})
+        if not existing:
+                raise HTTPException(status_code=404, detail="System not found")
+
+        # Actualizar en MongoDB
+        json_ld = json_ld.dict(by_alias=True)
+        json_ld["ai:hasUrn"] = urn
+        json_ld["@id"] = urn
+        json_ld.pop("_id", None)
+        await db.systems.replace_one({"ai:hasUrn": urn}, json_ld)
+
+        # Actualizar en Fuseki: borrar el sistema anterior y subir el nuevo
+        # 1. Borrar triples anteriores
+        sparql = f"""
+        DELETE WHERE {{
+            GRAPH <http://ai-act.eu/ontology/data> {{
+                <{urn}> ?p ?o .
+            }}
+        }};
+        DELETE WHERE {{
+            GRAPH <http://ai-act.eu/ontology/data> {{
+                ?s ?p <{urn}> .
+            }}
+        }}
+        """
+        headers = {"Content-Type": "application/sparql-update"}
+        res = requests.post(f"{end_point}/{dataset}/update", data=sparql, headers=headers, auth=(user, password))
+        if not res.ok:
+                raise HTTPException(status_code=500, detail="Error deleting from Fuseki for update")
+
+        # 2. Subir el sistema actualizado
+        from rdflib import Graph
+        g = Graph()
+        mapped = {}
+        for k, v in json_ld.items():
+                if not k.startswith("ai:") and k not in ["@id", "@type", "@context"]:
+                        mapped[f"ai:{k}"] = v
+                else:
+                        mapped[k] = v
+        for multivalue_key in [
+                "ai:hasPurpose", "ai:hasDeploymentContext", "ai:hasTrainingDataOrigin", "ai:hasAlgorithmType"
+        ]:
+                if multivalue_key in mapped and not isinstance(mapped[multivalue_key], list):
+                        mapped[multivalue_key] = [mapped[multivalue_key]]
+        g.parse(data=json.dumps(mapped), format="json-ld")
+        fuseki_url = f"{end_point}/{dataset}/data?graph={graph_data}"
+        nt_data = g.serialize(format="nt")
+        headers = {"Content-Type": "application/n-triples"}
+        res = requests.post(fuseki_url, data=nt_data, headers=headers, auth=(user, password))
+        if not res.ok:
+                raise HTTPException(status_code=500, detail="Error uploading updated system to Fuseki")
+
+        return {"status": "updated", "urn": urn}
 
 @router.delete("/{urn}")
 async def delete_system(urn: str, db=Depends(get_database)):

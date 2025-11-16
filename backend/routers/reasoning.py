@@ -2,6 +2,11 @@
 Router para servicios de razonamiento semántico
 """
 
+
+import logging
+import os
+import json
+from rdflib import Namespace, Graph, RDF
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.responses import JSONResponse
 from typing import Dict, Any, Optional, List
@@ -10,12 +15,7 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from db import get_database
 from swrl_rules import get_swrl_rules, get_basic_prefixes, get_ai_act_concepts
-import json
-import logging
-from rdflib import Graph, URIRef, RDF, RDFS, Literal
-from rdflib.namespace import Namespace
-import tempfile
-import os
+from urllib.parse import unquote
 
 logger = logging.getLogger(__name__)
 
@@ -236,45 +236,57 @@ async def reason_system(
     """
     
     try:
+        # Decodificar system_id si está URL-encoded
+        system_id = unquote(system_id)
+        
         # 1. Obtener sistema de la base de datos
         from bson import ObjectId
         
-        # Intentar convertir a ObjectId si es necesario
-        try:
-            if len(system_id) == 24:  # Longitud típica de ObjectId
-                query_id = ObjectId(system_id)
-            else:
-                query_id = system_id
-        except:
-            query_id = system_id
-            
-        system = await db.systems.find_one({"_id": query_id})
+        # Determinar cómo buscar el sistema
+        if system_id.startswith("urn:uuid:"):
+            # Es un URN, buscar por ai:hasUrn
+            query = {"ai:hasUrn": system_id}
+        else:
+            # Podría ser un ObjectId o algún otro identificador
+            try:
+                if len(system_id) == 24:  # Longitud típica de ObjectId
+                    query = {"_id": ObjectId(system_id)}
+                else:
+                    # Intentar buscar por URN primero, luego por _id
+                    query = {"$or": [{"ai:hasUrn": system_id}, {"_id": system_id}]}
+            except:
+                # Si no es ObjectId válido, buscar por URN o _id
+                query = {"$or": [{"ai:hasUrn": system_id}, {"_id": system_id}]}
+        
+        system = await db.systems.find_one(query)
         if not system:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Sistema no encontrado"
             )
-        
+
         # 2. Convertir sistema a TTL
         system_ttl = system_to_ttl(system)
         logger.info(f"Sistema convertido a TTL completo:\n{system_ttl}")
         logger.info(f"TTL preview: {system_ttl[:200]}...")
-        
+
         # 3. Obtener reglas SWRL y conceptos
         swrl_rules = get_basic_prefixes() + get_ai_act_concepts() + get_swrl_rules()
         logger.info(f"Reglas SWRL y conceptos cargados: {len(swrl_rules.split('Rule'))} reglas")
         
         # 4. Ejecutar razonamiento
         reasoner_response = await call_reasoner_service(system_ttl, swrl_rules)
-        logger.info(f"Razonamiento completado, inferencias: {reasoner_response.get('inferencias_aplicadas', 0)}")
-        
-        # 5. Parsear relaciones inferidas
-        if reasoner_response.get("formato") == "JSON-LD" and "graph" in reasoner_response:
-            relationships = parse_inferred_relationships_json(reasoner_response["graph"])
-        else:
-            # Fallback: usar TTL si está disponible
-            ttl_data = reasoner_response.get("ttl_data", "")
-            relationships = parse_inferred_relationships(ttl_data)
+        logger.info(f"Razonamiento completado, inferencias: {reasoner_response.get('rules_applied', 0)}")
+
+        # 5. Usar directamente las relaciones inferidas que vienen en la respuesta del reasoner
+        # El reasoner service ya las procesa y las devuelve en formato correcto
+        relationships = reasoner_response.get("inferred_relationships", {
+            "hasNormativeCriterion": [],
+            "hasTechnicalCriterion": [],
+            "hasContextualCriterion": [],
+            "hasRequirement": [],
+            "hasTechnicalRequirement": []
+        })
         logger.info(f"Relaciones inferidas: {relationships}")
         
         # 6. Actualizar sistema con inferencias (opcional)
@@ -290,19 +302,22 @@ async def reason_system(
             )
             logger.info(f"Sistema actualizado con inferencias: {update_data.keys()}")
         
-        # 7. Calcular número de reglas aplicadas (inferencias generadas)
-        # Usar la información del servicio si está disponible, sino contar relaciones
-        rules_applied = reasoner_response.get("inferencias_aplicadas", sum(len(values) for values in relationships.values()))
+        # 7. Obtener número de reglas aplicadas del reasoner service
+        # El reasoner devuelve este campo con el conteo exacto de inferencias
+        rules_applied = reasoner_response.get("rules_applied", sum(len(values) for values in relationships.values()))
         logger.info(f"DEBUG rules_applied from reasoner: {rules_applied}")
         logger.info(f"DEBUG relationships: {relationships}")
         
         # 8. Retornar resultado completo
+        # Extraer el TTL raw de la respuesta del reasoner
+        raw_ttl = reasoner_response.get("raw_ttl", "")
+
         return {
             "system_id": system_id,
             "system_name": system.get("hasName", "Unnamed"),
             "reasoning_completed": True,
             "inferred_relationships": relationships,
-            "raw_response": reasoner_response,
+            "raw_ttl": raw_ttl,
             "rules_applied": rules_applied
         }
         
@@ -346,18 +361,28 @@ async def test_ttl_generation(
 ):
     """Endpoint para testear la generación de TTL"""
     try:
+        # Decodificar system_id si está URL-encoded
+        system_id = unquote(system_id)
+        
         from bson import ObjectId
         
-        # Obtener sistema
-        try:
-            if len(system_id) == 24:
-                query_id = ObjectId(system_id)
-            else:
-                query_id = system_id
-        except:
-            query_id = system_id
-            
-        system = await db.systems.find_one({"_id": query_id})
+        # Determinar cómo buscar el sistema
+        if system_id.startswith("urn:uuid:"):
+            # Es un URN, buscar por ai:hasUrn
+            query = {"ai:hasUrn": system_id}
+        else:
+            # Podría ser un ObjectId o algún otro identificador
+            try:
+                if len(system_id) == 24:  # Longitud típica de ObjectId
+                    query = {"_id": ObjectId(system_id)}
+                else:
+                    # Intentar buscar por URN primero, luego por _id
+                    query = {"$or": [{"ai.hasUrn": system_id}, {"_id": system_id}]}
+            except:
+                # Si no es ObjectId válido, buscar por URN o _id
+                query = {"$or": [{"ai.hasUrn": system_id}, {"_id": system_id}]}
+        
+        system = await db.systems.find_one(query)
         if not system:
             raise HTTPException(status_code=404, detail="Sistema no encontrado")
         

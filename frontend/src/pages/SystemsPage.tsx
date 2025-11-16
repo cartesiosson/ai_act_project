@@ -12,6 +12,7 @@ export type System = {
   hasDeploymentContext: string[];
   hasTrainingDataOrigin: string[];
   hasSystemCapabilityCriteria: string[];
+  hasAlgorithmType: string[];
   hasVersion: string;
   "ai:hasUrn": string;
 };
@@ -22,6 +23,10 @@ export default function SystemsPage() {
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
   const limit = 10;
+  
+  const [loadedSystem, setLoadedSystem] = useState<System | null>(null);
+  const [showLoadModal, setShowLoadModal] = useState(false);
+  const [systemToLoad, setSystemToLoad] = useState<System | null>(null);
 
   const [filters, setFilters] = useState({
     name: "",
@@ -36,6 +41,7 @@ export default function SystemsPage() {
   const [contexts, setContexts] = useState<{ id: string; label: string }[]>([]);
   const [origins, setOrigins] = useState<{ id: string; label: string }[]>([]);
   const [systemCapabilityCriteria, setSystemCapabilityCriteria] = useState<{ id: string; label: string }[]>([]);
+  const [algorithmTypes, setAlgorithmTypes] = useState<{ id: string; label: string }[]>([]);
 
   const [form, setForm] = useState({
     hasName: "",
@@ -43,14 +49,21 @@ export default function SystemsPage() {
     hasDeploymentContext: [] as string[],
     hasTrainingDataOrigin: [] as string[],
     hasSystemCapabilityCriteria: [] as string[],
+    hasAlgorithmType: [] as string[],
     hasVersion: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_BASE}/systems`, {
-        method: "POST",
+      const isModifying = loadedSystem !== null;
+      const url = isModifying 
+        ? `${API_BASE}/systems/${encodeURIComponent(loadedSystem["ai:hasUrn"])}`
+        : `${API_BASE}/systems`;
+      const method = isModifying ? "PUT" : "POST";
+      
+      const res = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -60,21 +73,52 @@ export default function SystemsPage() {
           ...form,
         }),
       });
-      if (!res.ok) throw new Error("Create failed");
+      if (!res.ok) throw new Error(`${isModifying ? 'Modify' : 'Create'} failed`);
+      
+      // Clear form and loaded system
       setForm({
         hasName: "",
         hasPurpose: [],
         hasDeploymentContext: [],
         hasTrainingDataOrigin: [],
         hasSystemCapabilityCriteria: [],
+        hasAlgorithmType: [],
         hasVersion: "",
       });
+      setLoadedSystem(null);
       await loadSystems(0);
       setOffset(0);
     } catch (err) {
-      console.error("Error creating system:", err);
-      alert("Failed to create system");
+      console.error(`Error ${loadedSystem ? 'modifying' : 'creating'} system:`, err);
+      alert(`Failed to ${loadedSystem ? 'modify' : 'create'} system`);
     }
+  };
+
+  const handleLoadSystem = (system: System) => {
+    setSystemToLoad(system);
+    setShowLoadModal(true);
+  };
+
+  const confirmLoadSystem = () => {
+    if (systemToLoad) {
+      setForm({
+        hasName: systemToLoad.hasName,
+        hasPurpose: systemToLoad.hasPurpose || [],
+        hasDeploymentContext: systemToLoad.hasDeploymentContext || [],
+        hasTrainingDataOrigin: systemToLoad.hasTrainingDataOrigin || [],
+        hasSystemCapabilityCriteria: systemToLoad.hasSystemCapabilityCriteria || [],
+        hasAlgorithmType: systemToLoad.hasAlgorithmType || [],
+        hasVersion: systemToLoad.hasVersion,
+      });
+      setLoadedSystem(systemToLoad);
+    }
+    setShowLoadModal(false);
+    setSystemToLoad(null);
+  };
+
+  const cancelLoadSystem = () => {
+    setShowLoadModal(false);
+    setSystemToLoad(null);
   };
 
   const handleDelete = async (urn: string) => {
@@ -116,18 +160,25 @@ export default function SystemsPage() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const [purposesData, risksData, contextsData, originsData, systemCapabilityCriteriaData] = await Promise.all([
+      const [purposesData, risksData, contextsData, originsData, systemCapabilityCriteriaData, algorithmTypesData] = await Promise.all([
         fetchVocabulary("purposes"),
         fetchVocabulary("risks"),
         fetchVocabulary("contexts"),
         fetchVocabulary("training_origins"),
         fetchVocabulary("system_capability_criteria"),
+        fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/vocab/algorithmtypes?lang=en`).then(r => r.json()).catch(() => [
+          {"id": "ai:NeuralNetwork", "label": "Neural Network"},
+          {"id": "ai:TransformerModel", "label": "Transformer Model"}, 
+          {"id": "ai:FoundationModel", "label": "Foundation Model"},
+          {"id": "ai:GenerativeModel", "label": "Generative Model"}
+        ]),
       ]);
       setPurposes(purposesData);
       setRisks(risksData);
       setContexts(contextsData);
       setOrigins(originsData);
       setSystemCapabilityCriteria(systemCapabilityCriteriaData);
+      setAlgorithmTypes(algorithmTypesData);
       
     };
     load();
@@ -231,14 +282,50 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
+
+          <div>
+            <label className="block font-semibold mt-2">Algorithm Types</label>
+            <select
+              multiple
+              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              value={form.hasAlgorithmType}
+              onChange={e =>
+                setForm({ ...form, hasAlgorithmType: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+              }
+            >
+              {algorithmTypes.map((a) => (
+                <option key={a.id} value={a.id}>{a.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Create System
+          {loadedSystem ? 'Modify System' : 'Create System'}
         </button>
+        {loadedSystem && (
+          <button
+            type="button"
+            onClick={() => {
+              setForm({
+                hasName: "",
+                hasPurpose: [],
+                hasDeploymentContext: [],
+                hasTrainingDataOrigin: [],
+                hasSystemCapabilityCriteria: [],
+                hasAlgorithmType: [],
+                hasVersion: "",
+              });
+              setLoadedSystem(null);
+            }}
+            className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 ml-2"
+          >
+            Clear Form
+          </button>
+        )}
       </form>
 
       {/* Filtros */}
@@ -299,12 +386,10 @@ export default function SystemsPage() {
         <table className="min-w-full border dark:border-gray-700 mb-4 table-fixed">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-700">
-              <th className="p-2 text-left w-[25%]">Name</th>
-              <th className="p-2 text-left w-[15%]">Purpose</th>
-              <th className="p-2 text-left w-[15%]">Context</th>
-              <th className="p-2 text-left w-[15%]">Origin</th>
-              <th className="p-2 text-left w-[10%]">Version</th>
-              <th className="p-2 text-left w-[10%]">Actions</th>
+              <th className="p-2 text-left w-[35%]">Name</th>
+              <th className="p-2 text-left w-[35%]">Purpose</th>
+              <th className="p-2 text-left w-[15%]">Version</th>
+              <th className="p-2 text-left w-[15%]">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -312,13 +397,17 @@ export default function SystemsPage() {
               <tr key={s["@id"]} className="border-t dark:border-gray-700">
                 <td className="p-2 truncate" title={s.hasName}>{s.hasName}</td>
                 <td className="p-2 truncate" title={(s.hasPurpose ?? []).join(", ")}>{(s.hasPurpose ?? []).join(", ")}</td>
-                <td className="p-2 truncate" title={(s.hasDeploymentContext ?? []).join(", ")}>{(s.hasDeploymentContext ?? []).join(", ")}</td>
-                <td className="p-2 truncate" title={(s.hasTrainingDataOrigin ?? []).join(", ")}>{(s.hasTrainingDataOrigin ?? []).join(", ")}</td>
                 <td className="p-2 truncate" title={s.hasVersion}>{s.hasVersion}</td>
-                <td className="p-2">
+                <td className="p-2 space-x-2">
+                  <button
+                    onClick={() => handleLoadSystem(s)}
+                    className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                  >
+                    Load
+                  </button>
                   <button
                     onClick={() => handleDelete(s["ai:hasUrn"])}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
                   >
                     Delete
                   </button>
@@ -346,6 +435,34 @@ export default function SystemsPage() {
             >
               Next
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para cargar sistema */}
+      {showLoadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
+              Load System
+            </h3>
+            <p className="mb-6 text-gray-700 dark:text-gray-300">
+              Loading this system will discard all current form data. Do you want to proceed?
+            </p>
+            <div className="flex space-x-4 justify-end">
+              <button
+                onClick={cancelLoadSystem}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmLoadSystem}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Proceed
+              </button>
+            </div>
           </div>
         </div>
       )}
