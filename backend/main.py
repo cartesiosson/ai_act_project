@@ -1,40 +1,66 @@
+
 # main.py
 
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
-from rdflib import Graph
+from rdflib import Graph, URIRef, RDF, RDFS, Literal
+from rdflib.namespace import split_uri
 from models.system import IntelligentSystem
 from db import get_database,ensure_indexes
 import os, json
 from routers.systems import router as systems_router
 from routers.systems_fuseki import router as fuseki_router
 from routers.reasoning import router as reasoning_router
-
-from rdflib import URIRef, RDF, RDFS
 from typing import List, Dict
-from rdflib import Literal
-from fastapi import Query
-from rdflib.namespace import split_uri
-
 
 app = FastAPI(title="AI Act Backend")
+
+# Endpoint para subtipos de algoritmo
+@app.get("/vocab/algorithmtypes/{algotype_id}/subtypes")
+def get_algorithm_subtypes(algotype_id: str, lang: str = Query("en")):
+    # Construir URI completa
+    if algotype_id.startswith("ai:"):
+        uri = f"http://ai-act.eu/ai#{algotype_id[3:]}"
+    else:
+        uri = algotype_id
+    base = URIRef(uri)
+    # Buscar subclases directas
+    subtypes = set(ont.subjects(RDFS.subClassOf, base))
+    # Si no hay subclases, buscar instancias directas (rdf:type)
+    if not subtypes:
+        subtypes = set(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(subtypes, key=lambda x: get_label(ont, x, lang))
+    ]
+
+
+# Endpoint para escala de modelo según ontología v0.37.0
+@app.get("/vocab/modelscales")
+def get_model_scales(lang: str = Query("en")):
+    return [
+        {"id": "FoundationModelScale", "label": "Foundation Model Scale"},
+        {"id": "RegularModelScale", "label": "Regular Model Scale"},
+        {"id": "SmallModelScale", "label": "Small Model Scale"}
+    ]
+
+# Endpoint para capacidades principales (ajustar según ontología si es necesario)
+@app.get("/vocab/capabilities")
+def get_capabilities(lang: str = Query("en")):
+    return [
+        {"id": "Reasoning", "label": "Reasoning"},
+        {"id": "Planning", "label": "Planning"},
+        {"id": "Perception", "label": "Perception"},
+        {"id": "Interaction", "label": "Interaction"}
+    ]
 
 # ENDPOINT DE PRUEBA SUPERPRIMARIO
 @app.get("/test/superbasico")
 def test_superprimario():
     return {"status": "ok"}
 
-# ENDPOINT DE ALGORITHM TYPES - HARDCODEADO SIMPLE
-@app.get("/vocab/algorithmtypes")
-def algorithm_types_simple():
-    return [
-        {"id": "ai:NeuralNetwork", "label": "Neural Network"},
-        {"id": "ai:TransformerModel", "label": "Transformer Model"}, 
-        {"id": "ai:FoundationModel", "label": "Foundation Model"},
-        {"id": "ai:GenerativeModel", "label": "Generative Model"}
-    ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -106,12 +132,12 @@ def get_origins(lang: str = Query("en")):
 
 @app.get("/vocab/algorithmtypes")
 def get_algorithm_types(lang: str = Query("en")):
-    """Devuelve los tipos de algoritmos disponibles"""
+    """Devuelve solo el primer nivel de subclases directas de ai:AlgorithmType"""
+    base = URIRef("http://ai-act.eu/ai#AlgorithmType")
+    subclasses = set(ont.subjects(RDFS.subClassOf, base))
     return [
-        {"id": "ai:NeuralNetwork", "label": "Neural Network"},
-        {"id": "ai:TransformerModel", "label": "Transformer Model"}, 
-        {"id": "ai:FoundationModel", "label": "Foundation Model"},
-        {"id": "ai:GenerativeModel", "label": "Generative Model"}
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(subclasses, key=lambda x: get_label(ont, x, lang))
     ]
 
 @app.post("/debug/system")

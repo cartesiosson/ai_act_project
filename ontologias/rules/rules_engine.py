@@ -7,8 +7,11 @@ proporcionando una alternativa mantenible y auditable al hardcoding de reglas en
 
 Arquitectura:
 - base_rules.py: Reglas contextuales y normativas básicas (1-12)
-- technical_rules.py: Reglas técnicas para criterios internos GPAI (13-19)  
+- technical_rules.py: Reglas técnicas para criterios internos GPAI (13-19)
 - cascade_rules.py: Reglas de cascada para activación de requisitos (20-23)
+- ml_traditional_rules.py: Reglas para ML tradicional (20A, 21-23)
+- logic_based_rules.py: Reglas para IA basada en lógica (24-28)
+- statistical_rules.py: Reglas para enfoques estadísticos (29-33)
 
 Cada regla se define como un diccionario con:
 - id: Identificador único
@@ -46,6 +49,9 @@ class ExternalRulesEngine:
         self.technical_rules = []
         self.cascade_rules = []
         self.capability_rules = []
+        self.ml_traditional_rules = []
+        self.logic_based_rules = []
+        self.statistical_rules = []
         self.all_rules = []
         self._load_rules()
     
@@ -85,9 +91,44 @@ class ExternalRulesEngine:
         except Exception as e:
             print(f"❌ Error cargando reglas de capacidad: {e}")
             self.capability_rules = []
-        
+
+        # Cargar reglas de ML tradicional
+        try:
+            ml_trad_module = self._load_module(os.path.join(rules_dir, "ml_traditional_rules.py"), "ml_traditional_rules")
+            self.ml_traditional_rules = ml_trad_module.ALL_RULES
+            print(f"✅ Cargadas {len(self.ml_traditional_rules)} reglas de ML tradicional")
+        except Exception as e:
+            print(f"❌ Error cargando reglas de ML tradicional: {e}")
+            self.ml_traditional_rules = []
+
+        # Cargar reglas de lógica y conocimiento
+        try:
+            logic_module = self._load_module(os.path.join(rules_dir, "logic_based_rules.py"), "logic_based_rules")
+            self.logic_based_rules = logic_module.ALL_RULES
+            print(f"✅ Cargadas {len(self.logic_based_rules)} reglas de lógica/conocimiento")
+        except Exception as e:
+            print(f"❌ Error cargando reglas de lógica/conocimiento: {e}")
+            self.logic_based_rules = []
+
+        # Cargar reglas estadísticas
+        try:
+            stat_module = self._load_module(os.path.join(rules_dir, "statistical_rules.py"), "statistical_rules")
+            self.statistical_rules = stat_module.ALL_RULES
+            print(f"✅ Cargadas {len(self.statistical_rules)} reglas estadísticas")
+        except Exception as e:
+            print(f"❌ Error cargando reglas estadísticas: {e}")
+            self.statistical_rules = []
+
         # Combinar todas las reglas
-        self.all_rules = self.base_rules + self.technical_rules + self.cascade_rules + self.capability_rules
+        self.all_rules = (
+            self.base_rules +
+            self.technical_rules +
+            self.cascade_rules +
+            self.capability_rules +
+            self.ml_traditional_rules +
+            self.logic_based_rules +
+            self.statistical_rules
+        )
         print(f"📊 Total reglas cargadas: {len(self.all_rules)}")
     
     def _load_module(self, file_path: str, module_name: str):
@@ -257,6 +298,9 @@ class ExternalRulesEngine:
             "technical_rules": len(self.technical_rules),
             "cascade_rules": len(self.cascade_rules),
             "capability_rules": len(self.capability_rules),
+            "ml_traditional_rules": len(self.ml_traditional_rules),
+            "logic_based_rules": len(self.logic_based_rules),
+            "statistical_rules": len(self.statistical_rules),
             "rules_by_id": {rule["id"]: rule["name"] for rule in self.all_rules}
         }
 

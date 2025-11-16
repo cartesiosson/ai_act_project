@@ -5,6 +5,7 @@ interface SystemCardProps {
   deploymentContext: string[];
   trainingDataOrigin: string[];
   algorithmType: string[];
+  modelScale?: string[];
   version: string;
   urn: string;
 }
@@ -16,6 +17,7 @@ export default function SystemCard({
   deploymentContext,
   trainingDataOrigin,
   algorithmType,
+  modelScale,
   version,
   urn,
 }: SystemCardProps) {
@@ -27,6 +29,9 @@ export default function SystemCard({
       <p><span className="font-semibold">Deployment Context(s):</span> {deploymentContext.join(", ")}</p>
       <p><span className="font-semibold">Training Data Origin(s):</span> {trainingDataOrigin.join(", ")}</p>
       <p><span className="font-semibold">Algorithm Type(s):</span> {algorithmType.join(", ")}</p>
+      {modelScale && modelScale.length > 0 && (
+        <p><span className="font-semibold">Model Scale(s):</span> {modelScale.join(", ")}</p>
+      )}
       <p><span className="font-semibold">Version:</span> {version}</p>
       <p className="text-sm text-gray-600 dark:text-gray-400">
         <span className="font-semibold">URN:</span> {urn}

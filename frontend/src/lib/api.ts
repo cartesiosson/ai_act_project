@@ -46,3 +46,11 @@ export async function createSystem(data: {
   return response.json();
 }
 
+export async function fetchAlgorithmSubtypes(algotypeId: string): Promise<{ id: string; label: string }[]> {
+  const response = await fetch(`${API_BASE}/vocab/algorithmtypes/${algotypeId}/subtypes?lang=en`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch subtypes for ${algotypeId}`);
+  }
+  return response.json();
+}
+

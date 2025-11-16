@@ -74,14 +74,29 @@ def system_to_ttl(system: Dict[str, Any]) -> str:
     for criterion in system.get("hasInnerSystemCriteria", []):
         criterion_uri = criterion if criterion.startswith("ai:") else f"ai:{criterion}"
         properties.append(f"{subject} ai:hasSystemCapabilityCriteria {criterion_uri}")
-    
+
+    # Tipos de algoritmo (nueva propiedad)
+    for algo_type in system.get("hasAlgorithmType", []):
+        algo_uri = algo_type if algo_type.startswith("ai:") else f"ai:{algo_type}"
+        properties.append(f"{subject} ai:hasAlgorithmType {algo_uri}")
+
+    # Escala del modelo (nueva propiedad)
+    for model_scale in system.get("hasModelScale", []):
+        scale_uri = model_scale if model_scale.startswith("ai:") else f"ai:{model_scale}"
+        properties.append(f"{subject} ai:hasModelScale {scale_uri}")
+
+    # Capacidades del sistema (nueva propiedad)
+    for capability in system.get("hasCapability", []):
+        cap_uri = capability if capability.startswith("ai:") else f"ai:{capability}"
+        properties.append(f"{subject} ai:hasCapability {cap_uri}")
+
     # Nivel de riesgo
     if system.get("hasRiskLevel"):
         risk_uri = system["hasRiskLevel"]
         if not risk_uri.startswith("ai:"):
             risk_uri = f"ai:{risk_uri}"
         properties.append(f"{subject} ai:hasRiskLevel {risk_uri}")
-    
+
     # Combinar prefijos y propiedades
     ttl_content = prefixes + "\n" + " .\n".join(properties) + " .\n"
     

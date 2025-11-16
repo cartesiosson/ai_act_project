@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchSystems, fetchVocabulary } from "../lib/api";
+import { fetchAlgorithmSubtypes, fetchSystems, fetchVocabulary } from "../lib/api";
 import SystemCard from "./SystemCard";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -13,6 +13,8 @@ export type System = {
   hasTrainingDataOrigin: string[];
   hasSystemCapabilityCriteria: string[];
   hasAlgorithmType: string[];
+  hasModelScale?: string[];
+  hasCapability?: string[];
   hasVersion: string;
   "ai:hasUrn": string;
 };
@@ -42,6 +44,10 @@ export default function SystemsPage() {
   const [origins, setOrigins] = useState<{ id: string; label: string }[]>([]);
   const [systemCapabilityCriteria, setSystemCapabilityCriteria] = useState<{ id: string; label: string }[]>([]);
   const [algorithmTypes, setAlgorithmTypes] = useState<{ id: string; label: string }[]>([]);
+  const [modelScales, setModelScales] = useState<{ id: string; label: string }[]>([]);
+  const [capabilities, setCapabilities] = useState<{ id: string; label: string }[]>([]);
+  const [algorithmSubtypes, setAlgorithmSubtypes] = useState<{ id: string; label: string }[]>([]);
+  const [selectedAlgorithmSubtypes, setSelectedAlgorithmSubtypes] = useState<string[]>([]);
 
   const [form, setForm] = useState({
     hasName: "",
@@ -50,6 +56,8 @@ export default function SystemsPage() {
     hasTrainingDataOrigin: [] as string[],
     hasSystemCapabilityCriteria: [] as string[],
     hasAlgorithmType: [] as string[],
+    hasModelScale: [] as string[],
+    hasCapability: [] as string[],
     hasVersion: "",
   });
 
@@ -71,11 +79,12 @@ export default function SystemsPage() {
           "@context": "http://ontologias/json-ld-context.json",
           "@type": "ai:IntelligentSystem",
           ...form,
+          hasAlgorithmType: [...form.hasAlgorithmType, ...selectedAlgorithmSubtypes], // Enviar tipos y subtipos
         }),
       });
       if (!res.ok) throw new Error(`${isModifying ? 'Modify' : 'Create'} failed`);
       
-      // Clear form and loaded system
+      // Clear form, loaded system, and algorithm type/subtypes selection
       setForm({
         hasName: "",
         hasPurpose: [],
@@ -83,8 +92,11 @@ export default function SystemsPage() {
         hasTrainingDataOrigin: [],
         hasSystemCapabilityCriteria: [],
         hasAlgorithmType: [],
+        hasModelScale: [],
+        hasCapability: [],
         hasVersion: "",
       });
+      setSelectedAlgorithmSubtypes([]);
       setLoadedSystem(null);
       await loadSystems(0);
       setOffset(0);
@@ -108,8 +120,16 @@ export default function SystemsPage() {
         hasTrainingDataOrigin: systemToLoad.hasTrainingDataOrigin || [],
         hasSystemCapabilityCriteria: systemToLoad.hasSystemCapabilityCriteria || [],
         hasAlgorithmType: systemToLoad.hasAlgorithmType || [],
+        hasModelScale: systemToLoad.hasModelScale || [],
+        hasCapability: systemToLoad.hasCapability || [],
         hasVersion: systemToLoad.hasVersion,
       });
+      // Set selected algorithm subtypes for UI
+      if (systemToLoad.hasAlgorithmType && systemToLoad.hasAlgorithmType.length > 0) {
+        setSelectedAlgorithmSubtypes(systemToLoad.hasAlgorithmType.slice(1));
+      } else {
+        setSelectedAlgorithmSubtypes([]);
+      }
       setLoadedSystem(systemToLoad);
     }
     setShowLoadModal(false);
@@ -160,17 +180,24 @@ export default function SystemsPage() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const [purposesData, risksData, contextsData, originsData, systemCapabilityCriteriaData, algorithmTypesData] = await Promise.all([
+      const apiBase = (window as any).VITE_API_URL || "http://localhost:8000";
+      const [purposesData, risksData, contextsData, originsData, systemCapabilityCriteriaData, algorithmTypesData, modelScalesData, capabilitiesData] = await Promise.all([
         fetchVocabulary("purposes"),
         fetchVocabulary("risks"),
         fetchVocabulary("contexts"),
         fetchVocabulary("training_origins"),
         fetchVocabulary("system_capability_criteria"),
-        fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/vocab/algorithmtypes?lang=en`).then(r => r.json()).catch(() => [
+        fetch(`${apiBase}/vocab/algorithmtypes?lang=en`).then(r => r.json()).catch(() => [
           {"id": "ai:NeuralNetwork", "label": "Neural Network"},
-          {"id": "ai:TransformerModel", "label": "Transformer Model"}, 
-          {"id": "ai:FoundationModel", "label": "Foundation Model"},
-          {"id": "ai:GenerativeModel", "label": "Generative Model"}
+          {"id": "ai:TransformerModel", "label": "Transformer Model"},
+          {"id": "ai:DecisionTree", "label": "Decision Tree"},
+          {"id": "ai:BayesianModel", "label": "Bayesian Model"}
+        ]),
+        fetch(`${apiBase}/vocab/modelscales?lang=en`).then(r => r.json()).catch(() => [
+          {"id": "ai:FoundationModelScale", "label": "Foundation Model Scale"}
+        ]),
+        fetch(`${apiBase}/vocab/capabilities?lang=en`).then(r => r.json()).catch(() => [
+          {"id": "ai:GenerativeCapability", "label": "Generative Capability"}
         ]),
       ]);
       setPurposes(purposesData);
@@ -179,7 +206,9 @@ export default function SystemsPage() {
       setOrigins(originsData);
       setSystemCapabilityCriteria(systemCapabilityCriteriaData);
       setAlgorithmTypes(algorithmTypesData);
-      
+      setModelScales(modelScalesData);
+      setCapabilities(capabilitiesData);
+
     };
     load();
   }, []); // Only on mount, not on offset/filters
@@ -190,12 +219,35 @@ export default function SystemsPage() {
     // eslint-disable-next-line
   }, [offset, filters]);
 
+  useEffect(() => {
+    // If multiple types are selected, fetch subtypes for all
+    if (form.hasAlgorithmType.length > 0) {
+      Promise.all(form.hasAlgorithmType.map(type => fetchAlgorithmSubtypes(type)))
+        .then(results => {
+          // Merge and deduplicate subtypes
+          const allSubs = results.flat();
+          const uniqueSubs = Array.from(new Map(allSubs.map(sub => [sub.id, sub])).values());
+          setAlgorithmSubtypes(uniqueSubs);
+        })
+        .catch(() => setAlgorithmSubtypes([]));
+    } else {
+      setAlgorithmSubtypes([]);
+    }
+  }, [form.hasAlgorithmType]);
+
   return (
     <div className="max-w-7xl mx-auto p-6 text-gray-900 dark:text-white">
       <h1 className="text-3xl font-bold mb-8">Intelligent Systems</h1>
 
       {/* Formulario de creación */}
-      <form onSubmit={handleSubmit} className="space-y-6 mb-12">
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          setForm(f => ({ ...f, hasAlgorithmType: [...f.hasAlgorithmType, ...selectedAlgorithmSubtypes] }));
+          handleSubmit(e);
+        }}
+        className="space-y-6 mb-12"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block font-semibold mb-1">System Name</label>
@@ -289,12 +341,64 @@ export default function SystemsPage() {
               multiple
               className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
               value={form.hasAlgorithmType}
-              onChange={e =>
-                setForm({ ...form, hasAlgorithmType: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
+              onChange={e => {
+                const values = Array.from(e.target.selectedOptions, (opt) => opt.value);
+                setForm({ ...form, hasAlgorithmType: values });
+                setSelectedAlgorithmSubtypes(subs => subs.filter(sub => algorithmSubtypes.some(a => a.id === sub)));
+              }}
             >
               {algorithmTypes.map((a) => (
                 <option key={a.id} value={a.id}>{a.label}</option>
+              ))}
+            </select>
+            {form.hasAlgorithmType.length > 0 && algorithmSubtypes.length > 0 && (
+              <div>
+                <label className="block font-semibold mt-2">Algorithm Subtypes</label>
+                <select
+                  multiple
+                  className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+                  value={selectedAlgorithmSubtypes}
+                  onChange={e => {
+                    const values = Array.from(e.target.selectedOptions, (opt) => opt.value);
+                    setSelectedAlgorithmSubtypes(values);
+                  }}
+                >
+                  {algorithmSubtypes.map((sub) => (
+                    <option key={sub.id} value={sub.id}>{sub.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block font-semibold mt-2">Model Scale</label>
+            <select
+              multiple
+              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              value={form.hasModelScale}
+              onChange={e =>
+                setForm({ ...form, hasModelScale: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+              }
+            >
+              {modelScales.map((m) => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-semibold mt-2">System Capabilities</label>
+            <select
+              multiple
+              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              value={form.hasCapability}
+              onChange={e =>
+                setForm({ ...form, hasCapability: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+              }
+            >
+              {capabilities.map((c) => (
+                <option key={c.id} value={c.id}>{c.label}</option>
               ))}
             </select>
           </div>
@@ -317,8 +421,11 @@ export default function SystemsPage() {
                 hasTrainingDataOrigin: [],
                 hasSystemCapabilityCriteria: [],
                 hasAlgorithmType: [],
+                hasModelScale: [],
+                hasCapability: [],
                 hasVersion: "",
               });
+              setSelectedAlgorithmSubtypes([]);
               setLoadedSystem(null);
             }}
             className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 ml-2"
@@ -386,17 +493,15 @@ export default function SystemsPage() {
         <table className="min-w-full border dark:border-gray-700 mb-4 table-fixed">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-700">
-              <th className="p-2 text-left w-[35%]">Name</th>
-              <th className="p-2 text-left w-[35%]">Purpose</th>
-              <th className="p-2 text-left w-[15%]">Version</th>
-              <th className="p-2 text-left w-[15%]">Actions</th>
+              <th className="p-2 text-left w-[50%]">Name</th>
+              <th className="p-2 text-left w-[20%]">Version</th>
+              <th className="p-2 text-left w-[30%]">Actions</th>
             </tr>
           </thead>
           <tbody>
             {systems.map((s) => (
               <tr key={s["@id"]} className="border-t dark:border-gray-700">
                 <td className="p-2 truncate" title={s.hasName}>{s.hasName}</td>
-                <td className="p-2 truncate" title={(s.hasPurpose ?? []).join(", ")}>{(s.hasPurpose ?? []).join(", ")}</td>
                 <td className="p-2 truncate" title={s.hasVersion}>{s.hasVersion}</td>
                 <td className="p-2 space-x-2">
                   <button

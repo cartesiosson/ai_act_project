@@ -13,7 +13,9 @@ class IntelligentSystem(BaseModel):
     hasDeploymentContext: List[str] = Field(..., example=["ai:Education"])
     hasTrainingDataOrigin: List[str] = Field(..., example=["ai:InternalDataset", "ai:ExternalDataset"])
     hasSystemCapabilityCriteria: List[str] = Field(default_factory=list, example=["ai:CustomCriterion1", "ai:CustomCriterion2"])
-    hasAlgorithmType: List[str] = Field(default_factory=list, example=["ai:NeuralNetwork", "ai:TransformerModel"])
+    hasAlgorithmType: List[str] = Field(default_factory=list, example=["ai:NeuralNetwork", "ai:DecisionTree"])
+    hasModelScale: Optional[List[str]] = Field(default_factory=list, example=["ai:FoundationModelScale"])
+    hasCapability: Optional[List[str]] = Field(default_factory=list, example=["ai:GenerativeCapability"])
     hasVersion: str = Field(..., example="1.0.0")
     hasUrn: Optional[str] = Field(default=None, example="urn:uuid:...")
     # Puedes agregar más campos según los módulos, por ejemplo, requisitos, actores, etc.
@@ -29,7 +31,9 @@ class IntelligentSystem(BaseModel):
                 "hasDeploymentContext": ["ai:Education"],
                 "hasTrainingDataOrigin": ["ai:InternalDataset", "ai:ExternalDataset"],
                 "hasSystemCapabilityCriteria": ["ai:CustomCriterion1", "ai:CustomCriterion2"],
-                "hasAlgorithmType": ["ai:NeuralNetwork", "ai:TransformerModel"],
+                "hasAlgorithmType": ["ai:NeuralNetwork", "ai:DecisionTree"],
+                "hasModelScale": ["ai:FoundationModelScale"],
+                "hasCapability": ["ai:GenerativeCapability"],
                 "hasVersion": "1.0.0",
                 "hasUrn": "urn:uuid:..."
             }
