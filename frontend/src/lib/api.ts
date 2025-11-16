@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
 
 export async function fetchSystems() {
@@ -23,11 +23,10 @@ export async function createSystem(data: {
   hasPurpose: string[];
   hasDeploymentContext: string[];
   hasTrainingDataOrigin: string[];
-  hasInnerSystemCriteria: string[];
+  hasSystemCapabilityCriteria: string[];
   hasVersion: string;
 }) {
   const payload = {
-    "@context": "http://localhost:8080/ontologias/json-ld-context.json",
     "@type": "ai:IntelligentSystem",
     ...data,
   };

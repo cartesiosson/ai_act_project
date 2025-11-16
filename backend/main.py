@@ -90,10 +90,11 @@ def get_origins(lang: str = Query("en")):
     return get_options_for_property(ont, "http://ai-act.eu/ai#hasTrainingDataOrigin", lang=lang)
 
 
-@app.get("/vocab/inner_criteria")
-def get_inner_criteria(lang: str = Query("en")):
+@app.get("/vocab/system_capability_criteria")
+def get_system_capability_criteria(lang: str = Query("en")):
     # Encuentra todos los criterios (NormativeCriterion, TechnicalCriterion, ContextualCriterion)
     # que NO son objeto de ai:activatesCriterion desde ningún Purpose ni Context
+    # Estos son criterios de capacidad del sistema
 
     # Tipos de criterios relevantes
     CRITERION_TYPES = [
@@ -104,8 +105,15 @@ def get_inner_criteria(lang: str = Query("en")):
 
     # Criterios activados por algún propósito o contexto
     activated_criteria = set()
+    
+    # Buscar tanto activatesCriterion como triggersCriterion
     activates_predicate = URIRef("http://ai-act.eu/ai#activatesCriterion")
+    triggers_predicate = URIRef("http://ai-act.eu/ai#triggersCriterion")
+    
     for subj, _, obj in ont.triples((None, activates_predicate, None)):
+        activated_criteria.add(obj)
+    
+    for subj, _, obj in ont.triples((None, triggers_predicate, None)):
         activated_criteria.add(obj)
 
     # Todos los criterios definidos en la ontología
@@ -114,14 +122,19 @@ def get_inner_criteria(lang: str = Query("en")):
         for crit in ont.subjects(RDF.type, t):
             all_criteria.add(crit)
 
-    # Criterios internos = definidos pero no activados por propósito/contexto
-    inner_criteria = all_criteria - activated_criteria
+    # Criterios de capacidad del sistema = definidos pero no activados por propósito/contexto
+    system_capability_criteria = all_criteria - activated_criteria
 
     # Devuelve como lista de {id, label}
     return [
         {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
-        for uri in sorted(inner_criteria, key=lambda x: get_label(ont, x, lang))
+        for uri in sorted(system_capability_criteria, key=lambda x: get_label(ont, x, lang))
     ]
+
+# Endpoint legacy para compatibilidad hacia atrás
+@app.get("/vocab/inner_criteria")
+def get_inner_criteria(lang: str = Query("en")):
+    return get_system_capability_criteria(lang)
 
 @app.get("/healthz")
 async def healthz():

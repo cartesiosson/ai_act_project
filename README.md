@@ -791,6 +791,84 @@ graph TD
 
 
 
+## 📚 Distinción Semántica: Propósitos vs Criterios Internos
+
+### 🎯 Clarificación Conceptual Fundamental
+
+El sistema implementa una **distinción semántica crucial** para evitar confusión entre conceptos similares pero funcionalmente diferentes:
+
+<details>
+<summary><strong>🔍 Diferencia entre Propósitos y Criterios Internos</strong></summary>
+
+#### **PROPÓSITOS** = **"Diseñado específicamente para..."**
+Los **Propósitos** (`Purpose`) representan la **funcionalidad primaria declarada** del sistema IA:
+
+| Propósito | Descripción | Ejemplo de Sistema |
+|-----------|-------------|-------------------|
+| `JudicialDecisionSupport` | Sistema diseñado específicamente para apoyo a decisiones judiciales | Software de análisis de jurisprudencia para jueces |
+| `BiometricIdentification` | Sistema diseñado específicamente para identificación biométrica | Sistema de acceso biométrico corporativo |
+| `RecruitmentOrEmployment` | Sistema diseñado específicamente para reclutamiento y empleo | Plataforma de selección automatizada de candidatos |
+
+#### **CRITERIOS INTERNOS** = **"Capaz de..." o "Impacta en..."**
+Los **Criterios de Capacidad del Sistema** (`System Capability Criteria`) representan **capacidades técnicas o efectos** que activan requisitos regulatorios **independientemente del propósito principal**:
+
+| Criterio Interno | Descripción | Ejemplo de Aplicación |
+|-----------------|-------------|----------------------|
+| `JudicialSupportCriterion` | Evalúa sistemas que procesan datos judiciales, manejan documentos de tribunales, o tienen capacidades que afectan procesos judiciales - **independientemente de su propósito principal** | Sistema de gestión documental que maneja expedientes judiciales (propósito: `DocumentManagement`) |
+| `BiometricIdentificationOrCategorization` | Evalúa sistemas con capacidades biométricas (facial, huellas, voz) **incluso cuando no es su propósito principal** | Sistema de análisis de emociones en marketing que categoriza características faciales (propósito: `MarketResearch`) |
+| `RecruitmentEmploymentCriterion` | Evalúa sistemas que impactan decisiones laborales **como función secundaria** | Sistema de monitoreo de productividad cuyos resultados pueden influir en promociones (propósito: `ProductivityOptimization`) |
+
+</details>
+
+<details>
+<summary><strong>🎯 Casos de Uso Prácticos</strong></summary>
+
+#### **Escenario 1: Sistema de Gestión Documental Jurídica**
+```json
+{
+  "hasName": "LegalDocsAI",
+  "hasPurpose": ["ai:DocumentManagement"],              // ← Propósito principal
+  "hasDeploymentContext": ["ai:LegalServices"],
+  "hasSystemCapabilityCriteria": ["ai:JudicialSupportCriterion"]  // ← Criterio por capacidad técnica
+}
+```
+**Resultado:** El sistema debe cumplir requisitos judiciales **aunque no fue diseñado específicamente para apoyo a decisiones**.
+
+#### **Escenario 2: Sistema de Marketing con Análisis Facial**
+```json
+{
+  "hasName": "EmotionMarketAI", 
+  "hasPurpose": ["ai:MarketResearch"],                  // ← Propósito principal
+  "hasDeploymentContext": ["ai:CommercialServices"],
+  "hasSystemCapabilityCriteria": ["ai:BiometricIdentificationOrCategorization"]  // ← Criterio por capacidad biométrica incidental
+}
+```
+**Resultado:** El sistema debe cumplir requisitos biométricos **aunque no fue diseñado específicamente para identificación**.
+
+#### **Escenario 3: Sistema de Monitoreo de Desempeño**
+```json
+{
+  "hasName": "PerformanceAI",
+  "hasPurpose": ["ai:ProductivityOptimization"],        // ← Propósito principal  
+  "hasDeploymentContext": ["ai:Workplace"],
+  "hasSystemCapabilityCriteria": ["ai:RecruitmentEmploymentCriterion"]  // ← Criterio por impacto en decisiones laborales
+}
+```
+**Resultado:** El sistema debe cumplir requisitos laborales **aunque no fue diseñado específicamente para reclutamiento**.
+
+</details>
+
+### ✅ **Ventaja de esta Distinción**
+
+| **Aspecto** | **Beneficio** |
+|-------------|---------------|
+| 🎯 **Precisión Regulatoria** | Captura sistemas que requieren evaluación **por sus capacidades**, no solo por su propósito declarado |
+| 🔍 **Cobertura Completa** | Evita lagunas regulatorias donde sistemas con impacto secundario podrían escapar evaluación |
+| 📚 **Claridad Conceptual** | Elimina ambigüedad entre "¿para qué fue diseñado?" vs "¿qué puede hacer/afectar?" |
+| ⚖️ **Cumplimiento Robusto** | Alinea con el espíritu del AI Act de evaluar **riesgo real**, no solo **intención declarada** |
+
+---
+
 ## 🧠 Sistema de Inferencia Semántica Automática - SWRL Híbrido
 
 ### Arquitectura de Razonamiento Extendida
@@ -826,7 +904,7 @@ graph TB
         SYS[🤖 IntelligentSystem]
         SYS --> PURPOSE[🎯 hasPurpose: EducationAccess]
         SYS --> CONTEXT[📍 hasDeploymentContext: Education]
-        SYS --> INNER[⚙️ hasInnerSystemCriteria: CustomCriterion]
+        SYS --> CAP[⚙️ hasSystemCapabilityCriteria: CustomCriterion]
     end
     
     %% Ontología base
@@ -1126,12 +1204,17 @@ if (system, AI.hasNormativeCriterion, AI.NonDiscrimination):
 |---------------|---------------|-------------|-----------|-----------------|
 | **Sistema → Criterios** | `hasNormativeCriterion` | `IntelligentSystem` | `NormativeCriterion` | Sistema cumple criterio normativo |
 | | `hasTechnicalCriterion` | `IntelligentSystem` | `TechnicalCriterion` | Sistema cumple criterio técnico |
-| **Propósito/Contexto → Criterios** | `activatesCriterion` | `Purpose` | `Criterion` | Propósito activa criterio de evaluación |
+| | `hasSystemCapabilityCriteria` | `IntelligentSystem` | `Criterion` | **Criterios de capacidad del sistema**: capacidades/efectos que requieren evaluación independientemente del propósito |
+| **Propósito/Contexto → Criterios** | `activatesCriterion` | `Purpose` | `Criterion` | **Propósito específico** activa criterio de evaluación |
 | | `triggersCriterion` | `DeploymentContext` | `Criterion` | Contexto dispara criterio de evaluación |
 | **Criterios → Requisitos** | `activatesRequirement` | `Criterion` | `ComplianceRequirement` | Criterio activa requisito de cumplimiento |
 | | `triggersComplianceRequirement` | `Criterion` | `ComplianceRequirement` | Criterio dispara requisito (sinónimo) |
 | **Sistema → Requisitos** | `hasRequirement` | `IntelligentSystem` | `ComplianceRequirement` | Sistema debe cumplir requisito |
 | | `hasTechnicalRequirement` | `IntelligentSystem` | `TechnicalRequirement` | Sistema debe cumplir requisito técnico |
+
+### 🔑 **Distinción Clave:**
+- **`hasPurpose`** → Funcionalidad **primaria declarada** ("diseñado para X")
+- **`hasSystemCapabilityCriteria`** → Capacidades/efectos que requieren evaluación **independientemente** del propósito ("capaz de Y" o "impacta Z")
 
 </details>
 
@@ -1147,7 +1230,7 @@ if (system, AI.hasNormativeCriterion, AI.NonDiscrimination):
   "hasName": "EduAssess-AI",
   "hasPurpose": ["ai:EducationAccess"],
   "hasDeploymentContext": ["ai:Education"],
-  "hasInnerSystemCriteria": ["ai:CustomSecurityCriterion"]
+  "hasSystemCapabilityCriteria": ["ai:CustomSecurityCriterion"]
 }
 ```
 
@@ -1376,6 +1459,16 @@ async def create_system_with_inference(system_data: IntelligentSystem):
 }
 ```
 **✅ Resultado:** NonDiscrimination → Auditability
+
+#### **💡 Casos con Distinción Semántica (Propósito ≠ Criterio Interno)**
+```json
+{
+  "hasName": "ProductivityMonitorAI",
+  "hasPurpose": ["ai:ProductivityOptimization"],           // ← Propósito: Optimización
+  "hasSystemCapabilityCriteria": ["ai:RecruitmentEmploymentCriterion"]  // ← Criterio: Impacto laboral secundario
+}
+```
+**✅ Resultado:** Criterio interno activa requisitos laborales **independientemente** del propósito declarado
 
 #### **8. Sistema Multipropósito Complejo (15 inferencias)**
 ```json

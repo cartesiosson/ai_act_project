@@ -11,7 +11,7 @@ export type System = {
   hasPurpose: string[];
   hasDeploymentContext: string[];
   hasTrainingDataOrigin: string[];
-  hasInnerSystemCriteria: string[];
+  hasSystemCapabilityCriteria: string[];
   hasVersion: string;
   "ai:hasUrn": string;
 };
@@ -35,14 +35,14 @@ export default function SystemsPage() {
   const [risks, setRisks] = useState<{ id: string; label: string }[]>([]);
   const [contexts, setContexts] = useState<{ id: string; label: string }[]>([]);
   const [origins, setOrigins] = useState<{ id: string; label: string }[]>([]);
-  const [innerCriteria, setInnerCriteria] = useState<{ id: string; label: string }[]>([]);
+  const [systemCapabilityCriteria, setSystemCapabilityCriteria] = useState<{ id: string; label: string }[]>([]);
 
   const [form, setForm] = useState({
     hasName: "",
     hasPurpose: [] as string[],
     hasDeploymentContext: [] as string[],
     hasTrainingDataOrigin: [] as string[],
-    hasInnerSystemCriteria: [] as string[],
+    hasSystemCapabilityCriteria: [] as string[],
     hasVersion: "",
   });
 
@@ -66,7 +66,7 @@ export default function SystemsPage() {
         hasPurpose: [],
         hasDeploymentContext: [],
         hasTrainingDataOrigin: [],
-        hasInnerSystemCriteria: [],
+        hasSystemCapabilityCriteria: [],
         hasVersion: "",
       });
       await loadSystems(0);
@@ -116,18 +116,18 @@ export default function SystemsPage() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const [purposesData, risksData, contextsData, originsData, innerCriteriaData] = await Promise.all([
+      const [purposesData, risksData, contextsData, originsData, systemCapabilityCriteriaData] = await Promise.all([
         fetchVocabulary("purposes"),
         fetchVocabulary("risks"),
         fetchVocabulary("contexts"),
         fetchVocabulary("training_origins"),
-        fetchVocabulary("inner_criteria"),
+        fetchVocabulary("system_capability_criteria"),
       ]);
       setPurposes(purposesData);
       setRisks(risksData);
       setContexts(contextsData);
       setOrigins(originsData);
-      setInnerCriteria(innerCriteriaData);
+      setSystemCapabilityCriteria(systemCapabilityCriteriaData);
       
     };
     load();
@@ -217,16 +217,16 @@ export default function SystemsPage() {
           </div>
 
           <div>
-            <label className="block font-semibold mt-2">Inner System Criteria</label>
+            <label className="block font-semibold mt-2">System Capability Criteria</label>
             <select
               multiple
               className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasInnerSystemCriteria}
+              value={form.hasSystemCapabilityCriteria}
               onChange={e =>
-                setForm({ ...form, hasInnerSystemCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                setForm({ ...form, hasSystemCapabilityCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
               }
             >
-              {innerCriteria.map((c) => (
+              {systemCapabilityCriteria.map((c) => (
                 <option key={c.id} value={c.id}>{c.label}</option>
               ))}
             </select>

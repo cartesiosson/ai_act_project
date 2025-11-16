@@ -65,10 +65,15 @@ def system_to_ttl(system: Dict[str, Any]) -> str:
         origin_uri = origin if origin.startswith("ai:") else f"ai:{origin}"
         properties.append(f"{subject} ai:hasTrainingDataOrigin {origin_uri}")
     
-    # Criterios internos
+    # Criterios de capacidad del sistema
+    for criterion in system.get("hasSystemCapabilityCriteria", []):
+        criterion_uri = criterion if criterion.startswith("ai:") else f"ai:{criterion}"
+        properties.append(f"{subject} ai:hasSystemCapabilityCriteria {criterion_uri}")
+    
+    # Compatibilidad hacia atrás para hasInnerSystemCriteria
     for criterion in system.get("hasInnerSystemCriteria", []):
         criterion_uri = criterion if criterion.startswith("ai:") else f"ai:{criterion}"
-        properties.append(f"{subject} ai:hasInnerSystemCriteria {criterion_uri}")
+        properties.append(f"{subject} ai:hasSystemCapabilityCriteria {criterion_uri}")
     
     # Nivel de riesgo
     if system.get("hasRiskLevel"):

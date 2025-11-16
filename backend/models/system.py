@@ -12,7 +12,7 @@ class IntelligentSystem(BaseModel):
     hasPurpose: List[str] = Field(..., example=["ai:BiometricIdentification", "ai:Chatbot"])
     hasDeploymentContext: List[str] = Field(..., example=["ai:Education"])
     hasTrainingDataOrigin: List[str] = Field(..., example=["ai:InternalDataset", "ai:ExternalDataset"])
-    hasInnerSystemCriteria: List[str] = Field(default_factory=list, example=["ai:CustomCriterion1", "ai:CustomCriterion2"])
+    hasSystemCapabilityCriteria: List[str] = Field(default_factory=list, example=["ai:CustomCriterion1", "ai:CustomCriterion2"])
     hasVersion: str = Field(..., example="1.0.0")
     hasUrn: Optional[str] = Field(default=None, example="urn:uuid:...")
     # Puedes agregar más campos según los módulos, por ejemplo, requisitos, actores, etc.
@@ -27,7 +27,7 @@ class IntelligentSystem(BaseModel):
                 "hasPurpose": ["ai:BiometricIdentification", "ai:Chatbot"],
                 "hasDeploymentContext": ["ai:Education"],
                 "hasTrainingDataOrigin": ["ai:InternalDataset", "ai:ExternalDataset"],
-                "hasInnerSystemCriteria": ["ai:CustomCriterion1", "ai:CustomCriterion2"],
+                "hasSystemCapabilityCriteria": ["ai:CustomCriterion1", "ai:CustomCriterion2"],
                 "hasVersion": "1.0.0",
                 "hasUrn": "urn:uuid:..."
             }

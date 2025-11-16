@@ -5,7 +5,7 @@
     "hasPurpose": "ai:hasPurpose",
     "hasDeploymentContext": "ai:hasDeploymentContext",
     "hasTrainingDataOrigin": "ai:hasTrainingDataOrigin",
-    "hasInnerSystemCriteria": "ai:hasInnerSystemCriteria",
+    "hasSystemCapabilityCriteria": "ai:hasSystemCapabilityCriteria",
     "hasVersion": "ai:hasVersion",
     "hasUrn": "ai:hasUrn",
     "IntelligentSystem": "ai:IntelligentSystem",

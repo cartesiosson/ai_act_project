@@ -481,9 +481,9 @@ async def reason(
                     print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement (Education)")
                     inferences_count += 1
                     
-                        combined_graph.add((system, AI.hasRequirement, AI.TraceabilityRequirement))
-                        print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> TraceabilityRequirement (Education)")
-                        inferences_count += 1
+                    combined_graph.add((system, AI.hasRequirement, AI.TraceabilityRequirement))
+                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> TraceabilityRequirement (Education)")
+                    inferences_count += 1
                 
                 # FIN FALLBACK - Si llegamos aquí, el motor externo falló
                 print(f"DEBUG: Fallback aplicó {inferences_count} inferencias")

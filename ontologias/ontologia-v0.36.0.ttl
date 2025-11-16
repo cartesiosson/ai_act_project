@@ -70,84 +70,84 @@ ai:AffectsFundamentalRightsRecognition a ai:ContextualCriterion ;
     rdfs:comment "This criterion reflects situations where an AI system may influence or condition the recognition, access or exercise of fundamental rights, in line with Article 6(2) of the EU AI Act."@en,
         "Este criterio refleja situaciones en las que un sistema de IA puede influir o condicionar el reconocimiento, acceso o ejercicio de derechos fundamentales, conforme al Artículo 6(2) del AI Act."@es .
 
-ai:VulnerablePopulationContext a ai:ContextualCriterion ;
+ai:VulnerablePopulationContext a ai:DeploymentContext ;
     rdfs:label "Vulnerable Population Context"@en,
         "Contexto de población vulnerable"@es ;
     ai:assignsRiskLevel ai:HighRisk ;
     rdfs:comment "Systems used in contexts involving vulnerable populations such as children, elderly, persons with disabilities, or marginalized groups, requiring enhanced protection under the AI Act."@en,
         "Sistemas utilizados en contextos que involucran poblaciones vulnerables como niños, ancianos, personas con discapacidades o grupos marginados, requiriendo protección reforzada bajo el AI Act."@es .
 
-ai:HighStakesDecisionContext a ai:ContextualCriterion ;
+ai:HighStakesDecisionContext a ai:DeploymentContext ;
     rdfs:label "High Stakes Decision Context"@en,
         "Contexto de decisión de alto impacto"@es ;
     ai:assignsRiskLevel ai:HighRisk ;
     rdfs:comment "Contexts where AI decisions have significant consequences for individuals' life opportunities, safety, or well-being, as recognized in AI Act risk assessment."@en,
         "Contextos donde las decisiones de IA tienen consecuencias significativas para las oportunidades de vida, seguridad o bienestar de las personas, según se reconoce en la evaluación de riesgo del AI Act."@es .
 
-ai:SafetyCriticalContext a ai:ContextualCriterion ;
+ai:SafetyCriticalContext a ai:DeploymentContext ;
     rdfs:label "Safety Critical Context"@en,
         "Contexto crítico de seguridad"@es ;
     ai:assignsRiskLevel ai:HighRisk ;
     rdfs:comment "Deployment contexts where system failures could result in serious harm to health, safety, or human life, aligned with AI Act safety requirements."@en,
         "Contextos de despliegue donde fallos del sistema podrían resultar en daños graves a la salud, seguridad o vida humana, alineado con los requisitos de seguridad del AI Act."@es .
 
-ai:LimitedTransparencyContext a ai:ContextualCriterion ;
+ai:LimitedTransparencyContext a ai:DeploymentContext ;
     rdfs:label "Limited Transparency Context"@en,
         "Contexto de transparencia limitada"@es ;
     ai:assignsRiskLevel ai:LimitedRisk ;
     rdfs:comment "Contexts where AI systems interact with users but may not be immediately recognizable as AI, requiring transparency obligations under Article 52 of the AI Act."@en,
         "Contextos donde los sistemas de IA interactúan con usuarios pero pueden no ser inmediatamente reconocibles como IA, requiriendo obligaciones de transparencia bajo el Artículo 52 del AI Act."@es .
 
-ai:SocialManipulationContext a ai:ContextualCriterion ;
+ai:SocialManipulationContext a ai:DeploymentContext ;
     rdfs:label "Social Manipulation Context"@en,
         "Contexto de manipulación social"@es ;
     ai:assignsRiskLevel ai:UnacceptableRisk ;
     rdfs:comment "Contexts where AI systems could be used to manipulate human behavior in ways that could cause harm, falling under prohibited practices of Article 5 of the AI Act."@en,
         "Contextos donde los sistemas de IA podrían usarse para manipular el comportamiento humano de maneras que podrían causar daño, cayendo bajo las prácticas prohibidas del Artículo 5 del AI Act."@es .
 
-ai:LowRiskGeneralContext a ai:ContextualCriterion ;
+ai:LowRiskGeneralContext a ai:DeploymentContext ;
     rdfs:label "Low Risk General Context"@en,
         "Contexto general de bajo riesgo"@es ;
     ai:assignsRiskLevel ai:MinimalRisk ;
     rdfs:comment "General deployment contexts with minimal risk to fundamental rights, safety, or societal values, requiring no specific obligations under the AI Act."@en,
         "Contextos generales de despliegue con riesgo mínimo para derechos fundamentales, seguridad o valores sociales, sin requerir obligaciones específicas bajo el AI Act."@es .
 
-ai:EmotionalManipulationContext a ai:ContextualCriterion ;
+ai:EmotionalManipulationContext a ai:DeploymentContext ;
     rdfs:label "Emotional Manipulation Context"@en,
         "Contexto de manipulación emocional"@es ;
     ai:assignsRiskLevel ai:UnacceptableRisk ;
     rdfs:comment "Contexts where AI systems exploit psychological vulnerabilities or emotional states to cause material or psychological harm, prohibited under Article 5(1)(a) of the AI Act."@en,
         "Contextos donde los sistemas de IA explotan vulnerabilidades psicológicas o estados emocionales para causar daño material o psicológico, prohibido bajo el Artículo 5(1)(a) del AI Act."@es .
 
-ai:MassPublicSurveillanceContext a ai:ContextualCriterion ;
+ai:MassPublicSurveillanceContext a ai:DeploymentContext ;
     rdfs:label "Mass Public Surveillance Context"@en,
         "Contexto de vigilancia pública masiva"@es ;
     ai:assignsRiskLevel ai:UnacceptableRisk ;
     rdfs:comment "Contexts involving indiscriminate surveillance or mass data collection that threatens democratic values and fundamental rights, prohibited under the AI Act."@en,
         "Contextos que involucran vigilancia indiscriminada o recolección masiva de datos que amenaza valores democráticos y derechos fundamentales, prohibido bajo el AI Act."@es .
 
-ai:WorkplaceMonitoringContext a ai:ContextualCriterion ;
+ai:WorkplaceMonitoringContext a ai:DeploymentContext ;
     rdfs:label "Workplace Monitoring Context"@en,
         "Contexto de monitoreo laboral"@es ;
     ai:assignsRiskLevel ai:HighRisk ;
     rdfs:comment "Contexts involving AI systems for employee monitoring, performance evaluation, or workplace surveillance, requiring high-risk system compliance under Annex III of the AI Act."@en,
         "Contextos que involucran sistemas de IA para monitoreo de empleados, evaluación de rendimiento o vigilancia en el lugar de trabajo, requiriendo cumplimiento de sistemas de alto riesgo bajo el Anexo III del AI Act."@es .
 
-ai:FinancialServicesContext a ai:ContextualCriterion ;
+ai:FinancialServicesContext a ai:DeploymentContext ;
     rdfs:label "Financial Services Context"@en,
         "Contexto de servicios financieros"@es ;
     ai:assignsRiskLevel ai:HighRisk ;
     rdfs:comment "Contexts involving creditworthiness assessment, insurance pricing, or financial risk evaluation affecting individuals' access to financial services, regulated under Annex III of the AI Act."@en,
         "Contextos que involucran evaluación de solvencia crediticia, precios de seguros o evaluación de riesgo financiero que afecta el acceso de individuos a servicios financieros, regulado bajo el Anexo III del AI Act."@es .
 
-ai:DataGovernanceContext a ai:ContextualCriterion ;
+ai:DataGovernanceContext a ai:DeploymentContext ;
     rdfs:label "Data Governance Context"@en,
         "Contexto de gobernanza de datos"@es ;
     ai:assignsRiskLevel ai:HighRisk ;
     rdfs:comment "Contexts involving sensitive data processing, biometric data, or personal data requiring enhanced governance under AI Act data requirements."@en,
         "Contextos que involucran procesamiento de datos sensibles, datos biométricos o datos personales que requieren gobernanza mejorada bajo los requisitos de datos del AI Act."@es .
 
-ai:TrainingDataQualityContext a ai:ContextualCriterion ;
+ai:TrainingDataQualityContext a ai:DeploymentContext ;
     rdfs:label "Training Data Quality Context"@en,
         "Contexto de calidad de datos de entrenamiento"@es ;
     ai:assignsRiskLevel ai:HighRisk ;
@@ -327,8 +327,8 @@ ai:SyntheticDataset a ai:TrainingDataOrigin ;
 ai:TransparencyRequirement a owl:Class ;
     rdfs:label "Transparency Requirement"@en,
         "Requisito de transparencia"@es ;
-    rdfs:comment "Technical requirement for AI systems to provide transparency, such as disclosure of AI use or explainability."@en ;
-    rdfs:comment "Requisito técnico para que los sistemas de IA proporcionen transparencia, como la divulgación del uso de IA o la explicabilidad."@es ;
+    rdfs:comment "Technical requirement for AI systems to provide transparency, such as disclosure of AI use or explainability, as mandated in Article 52 of the EU AI Act."@en ;
+    rdfs:comment "Requisito técnico para que los sistemas de IA proporcionen transparencia, como la divulgación del uso de IA o la explicabilidad, según se exige en el Artículo 52 del AI Act de la UE."@es ;
     rdfs:subClassOf ai:TechnicalRequirement .
 
 ai:activatesRequirement a owl:ObjectProperty ;
@@ -420,6 +420,15 @@ ai:hasNormativeCriterion a owl:ObjectProperty ;
     rdfs:comment "Asocia un sistema de IA con un criterio normativo que le aplica."@es ;
     rdfs:domain ai:IntelligentSystem ;
     rdfs:range ai:NormativeCriterion .
+
+ai:hasSystemCapabilityCriterion a owl:ObjectProperty ;
+    rdfs:subPropertyOf ai:hasNormativeCriterion ;
+    rdfs:label "has system capability criterion"@en,
+        "tiene criterio de capacidad del sistema"@es ;
+    rdfs:comment "Associates an AI system with a criterion that evaluates what the system is capable of doing or what areas it can impact, regardless of its primary intended purpose."@en ;
+    rdfs:comment "Asocia un sistema de IA con un criterio que evalúa lo que el sistema es capaz de hacer o qué áreas puede impactar, independientemente de su propósito principal previsto."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:SystemCapabilityCriterion .
 
 ai:hasPurpose a owl:ObjectProperty ;
     rdfs:label "has purpose"@en,
@@ -613,8 +622,8 @@ ai:ComplianceRequirement a owl:Class ;
 ai:Deployer a owl:Class ;
     rdfs:label "Deployer"@en,
         "Deployer"@es ;
-    rdfs:comment "Entidad que integra o pone en uso un sistema de IA."@en,
-        "Entidad que integra o pone en uso un sistema de IA."@es ;
+    rdfs:comment "Entity that integrates or puts an AI system into use, as defined in Article 3(4) of the EU AI Act."@en,
+        "Entidad que integra o pone en uso un sistema de IA, según se define en el Artículo 3(4) del AI Act de la UE."@es ;
     rdfs:subClassOf ai:Actor .
 
 ai:Distributor a owl:Class ;
@@ -673,6 +682,13 @@ ai:NormativeCriterion a owl:Class ;
     rdfs:comment "Criterion based on legal, regulatory, or policy requirements applicable to AI systems under the EU AI Act."@en ;
     rdfs:comment "Criterio basado en requisitos legales, regulatorios o de políticas aplicables a sistemas de IA según el AI Act de la UE."@es  .
 
+ai:SystemCapabilityCriterion a owl:Class ;
+    rdfs:subClassOf ai:NormativeCriterion ;
+    rdfs:label "System Capability Criterion"@en ;
+    rdfs:label "Criterio de Capacidad del Sistema"@es ;
+    rdfs:comment "Criterion that evaluates what an AI system is capable of doing or what areas it can impact, regardless of its primary intended purpose. These criteria focus on the inherent capabilities, functionalities, or potential effects of a system rather than what it was originally designed for. They assess secondary functions, data processing capabilities, or emergent behaviors that may have regulatory implications under the EU AI Act."@en ;
+    rdfs:comment "Criterio que evalúa lo que un sistema de IA es capaz de hacer o qué áreas puede impactar, independientemente de su propósito principal previsto. Estos criterios se enfocan en las capacidades inherentes, funcionalidades o efectos potenciales de un sistema más que en para qué fue originalmente diseñado. Evalúan funciones secundarias, capacidades de procesamiento de datos o comportamientos emergentes que pueden tener implicaciones regulatorias bajo el AI Act de la UE."@es .
+
 ai:OversightBody a owl:Class ;
     rdfs:label "Oversight Body"@en,
         "Oversight Body"@es ;
@@ -683,8 +699,8 @@ ai:OversightBody a owl:Class ;
 ai:Provider a owl:Class ;
     rdfs:label "Provider"@en,
         "Provider"@es ;
-    rdfs:comment "Entidad que desarrolla o pone en el mercado un sistema de IA."@en,
-        "Entidad que desarrolla o pone en el mercado un sistema de IA."@es ;
+    rdfs:comment "Entity that develops or places an AI system on the market, as defined in Article 3(2) of the EU AI Act."@en,
+        "Entidad que desarrolla o pone en el mercado un sistema de IA, según se define en el Artículo 3(2) del AI Act de la UE."@es ;
     rdfs:subClassOf ai:Actor .
 
 ai:AccuracyEvaluationRequirement a ai:ComplianceRequirement,
@@ -696,7 +712,7 @@ ai:AccuracyEvaluationRequirement a ai:ComplianceRequirement,
     rdfs:comment "Article 10 – accuracy and robustness in high-stakes evaluation."@en,
         "Referenced in Annex IV, point (g)."@en .
 
-ai:BiometricIdentificationCriterion a ai:NormativeCriterion,
+ai:BiometricIdentificationCriterion a ai:SystemCapabilityCriterion,
         owl:NamedIndividual ;
     rdfs:label "Biometric Identification or Categorization"@en,
         "Biometric Identification or Categorization"@es ;
@@ -748,8 +764,8 @@ ai:BiometricIdentificationOrCategorization a ai:TechnicalCriterion ;
         ai:PostMarketMonitoringRequirement,
         ai:RiskManagementRequirement ;
     ai:assignsRiskLevel ai:HighRisk ;
-    rdfs:comment "This criterion refers to systems that use biometric techniques for identification or classification purposes, as referenced in Annex III, point 1 of the EU AI Act."@en,
-        "Este criterio se refiere a sistemas que utilizan técnicas biométricas para identificación o clasificación, según el Anexo III, punto 1 del AI Act de la UE."@es .
+    rdfs:comment "Technical criterion evaluating systems with biometric processing capabilities - including facial recognition, fingerprint analysis, voice patterns, or other biometric categorization features - even when biometric processing is not the system's primary declared purpose. Applies to systems with embedded biometric functionality, incidental biometric processing, or secondary biometric capabilities, as referenced in Annex III, point 1 of the EU AI Act."@en,
+        "Criterio técnico que evalúa sistemas con capacidades de procesamiento biométrico - incluyendo reconocimiento facial, análisis de huellas, patrones de voz, u otras características de categorización biométrica - incluso cuando el procesamiento biométrico no es el propósito principal declarado del sistema. Se aplica a sistemas con funcionalidad biométrica integrada, procesamiento biométrico incidental, o capacidades biométricas secundarias, según el Anexo III, punto 1 del AI Act de la UE."@es .
 
 ai:DataGovernanceRequirement a ai:ComplianceRequirement,
         owl:NamedIndividual ;
@@ -816,6 +832,28 @@ ai:MigrationBorderCriterion a ai:NormativeCriterion,
     rdfs:comment "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@en,
         "Referenced in Annex III, point 8."@en,
         "El sistema se utiliza en la gestión de migración, control fronterizo o verificación de documentos."@es .
+
+ai:RecruitmentEmploymentCriterion a ai:SystemCapabilityCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Recruitment and Employment Management"@en,
+        "Gestión de Reclutamiento y Empleo"@es ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:HumanOversightRequirement,
+        ai:TransparencyRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Criterion evaluating systems that impact employment decisions, worker evaluation, or career progression - even when employment management is not their primary purpose. Applies to performance monitoring systems, productivity analyzers, behavior assessment tools, or any system whose outputs may influence hiring, promotion, discipline, or termination decisions, as referenced in Annex III, point 4 of the EU AI Act."@en,
+        "Criterio que evalúa sistemas que impactan decisiones de empleo, evaluación de trabajadores, o progresión profesional - incluso cuando la gestión de empleo no es su propósito principal. Se aplica a sistemas de monitoreo de desempeño, analizadores de productividad, herramientas de evaluación de comportamiento, o cualquier sistema cuyos resultados puedan influir en decisiones de contratación, promoción, disciplina o terminación, según se referencia en el Anexo III, punto 4 del AI Act de la UE."@es .
+
+ai:EssentialServicesAccessCriterion a ai:NormativeCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "Access to Essential Services"@en,
+        "Acceso a Servicios Esenciales"@es ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:DataGovernanceRequirement,
+        ai:TransparencyRequirement ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "AI systems used for determining access or assignment of essential public services and benefits, as referenced in Annex III, point 5 of the EU AI Act."@en,
+        "Sistemas de IA utilizados para determinar el acceso o asignación de servicios públicos esenciales y beneficios, según se referencia en el Anexo III, punto 5 del AI Act de la UE."@es .
 
 ai:PostMarketMonitoringRequirement a ai:ComplianceRequirement ;
     rdfs:label "Post-market monitoring requirement"@en,
@@ -903,8 +941,8 @@ ai:EducationEvaluationCriterion a ai:NormativeCriterion,
 ai:TechnicalCriterion a owl:Class ;
     rdfs:label "Technical Criterion"@en,
         "Technical Criterion"@es ;
-    rdfs:comment "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@en,
-        "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema."@es ;
+    rdfs:comment "Criterion based on the structure, operation or technical design of the system, as considered in Articles 10-15 of the EU AI Act."@en,
+        "Criterio basado en la estructura, funcionamiento o diseño técnico del sistema, según se considera en los Artículos 10-15 del AI Act de la UE."@es ;
     rdfs:subClassOf ai:Criterion .
 
 ai:User a owl:Class ;
@@ -978,6 +1016,16 @@ ai:isNormativeCriterionOf a owl:ObjectProperty ;
     rdfs:comment "Propiedad inversa de hasNormativeCriterion: relaciona un criterio normativo con el sistema de IA al que aplica."@es ;
     owl:inverseOf ai:hasNormativeCriterion ;
     rdfs:domain ai:NormativeCriterion ;
+    rdfs:range ai:IntelligentSystem .
+
+ai:isSystemCapabilityCriterionOf a owl:ObjectProperty ;
+    rdfs:subPropertyOf ai:isNormativeCriterionOf ;
+    rdfs:label "is system capability criterion of"@en ;
+    rdfs:label "es criterio de capacidad del sistema de"@es ;
+    rdfs:comment "Inverse property of hasSystemCapabilityCriterion: relates a system capability criterion to the AI system it applies to."@en ;
+    rdfs:comment "Propiedad inversa de hasSystemCapabilityCriterion: relaciona un criterio de capacidad del sistema con el sistema de IA al que aplica."@es ;
+    owl:inverseOf ai:hasSystemCapabilityCriterion ;
+    rdfs:domain ai:SystemCapabilityCriterion ;
     rdfs:range ai:IntelligentSystem .
 
 ai:isSystemDeployedBy a owl:ObjectProperty ;
@@ -1155,10 +1203,10 @@ ai:PrivacyProtection a ai:NormativeCriterion ;
     rdfs:comment "Criterion for protecting privacy in AI systems."@en,
         "Criterio para la protección de la privacidad en sistemas de IA."@es .
 
-ai:JudicialSupportCriterion a ai:NormativeCriterion ;
+ai:JudicialSupportCriterion a ai:SystemCapabilityCriterion ;
     rdfs:label "Judicial Support Criterion"@en, "Criterio de Apoyo Judicial"@es ;
-    rdfs:comment "Criterion for AI systems supporting judicial decisions."@en,
-        "Criterio para sistemas de IA que apoyan decisiones judiciales."@es .
+    rdfs:comment "Criterion evaluating systems that process judicial data, handle court documents, or have capabilities affecting judicial processes - regardless of their primary purpose. Applies when systems have judicial impact as a secondary function or through data processing capabilities, as referenced in Annex III, point 8 of the EU AI Act."@en,
+        "Criterio que evalúa sistemas que procesan datos judiciales, manejan documentos de tribunales, o tienen capacidades que afectan procesos judiciales - independientemente de su propósito principal. Se aplica cuando los sistemas tienen impacto judicial como función secundaria o a través de capacidades de procesamiento de datos, según se referencia en el Anexo III, punto 8 del AI Act de la UE."@es .
 
 # Criterios Contextuales Adicionales
 ai:BiometricSecurity a ai:ContextualCriterion ;
@@ -1222,23 +1270,23 @@ ai:SystemAutonomy a ai:TechnicalCriterion ;
 
 ai:AdaptiveCapability a ai:TechnicalCriterion ;
     rdfs:label "Adaptive Capability"@en, "Capacidad Adaptativa"@es ;
-    rdfs:comment "Criterion for systems that continue learning after deployment."@en,
-        "Criterio para sistemas que continúan aprendiendo después del despliegue."@es .
+    rdfs:comment "Criterion for systems that continue learning after deployment, as defined in Article 3(1) of the EU AI Act."@en,
+        "Criterio para sistemas que continúan aprendiendo después del despliegue, según se define en el Artículo 3(1) del AI Act de la UE."@es .
 
 ai:ProcessingCapacity a ai:TechnicalCriterion ;
     rdfs:label "Processing Capacity"@en, "Capacidad de Procesamiento"@es ;
-    rdfs:comment "Criterion for high-volume, real-time processing capabilities."@en,
-        "Criterio para capacidades de procesamiento de alto volumen, tiempo real."@es .
+    rdfs:comment "Criterion for high-volume, real-time processing capabilities, relevant for foundation models under Article 51 of the EU AI Act."@en,
+        "Criterio para capacidades de procesamiento de alto volumen, tiempo real, relevante para modelos fundacionales bajo el Artículo 51 del AI Act de la UE."@es .
 
 ai:AccuracyLevel a ai:TechnicalCriterion ;
     rdfs:label "Accuracy Level"@en, "Nivel de Exactitud"@es ;
-    rdfs:comment "Criterion evaluating system accuracy across different population groups."@en,
-        "Criterio que evalúa la exactitud del sistema en diferentes grupos poblacionales."@es .
+    rdfs:comment "Criterion evaluating system accuracy across different population groups, as required by Article 15 of the EU AI Act."@en,
+        "Criterio que evalúa la exactitud del sistema en diferentes grupos poblacionales, según requiere el Artículo 15 del AI Act de la UE."@es .
 
 ai:ModelInterpretability a ai:TechnicalCriterion ;
     rdfs:label "Model Interpretability"@en, "Interpretabilidad del Modelo"@es ;
-    rdfs:comment "Criterion evaluating system's ability to provide explanations for decisions."@en,
-        "Criterio que evalúa la capacidad del sistema para proporcionar explicaciones de decisiones."@es .
+    rdfs:comment "Criterion evaluating system's ability to provide explanations for decisions, as required by Article 13 of the EU AI Act."@en,
+        "Criterio que evalúa la capacidad del sistema para proporcionar explicaciones de decisiones, según requiere el Artículo 13 del AI Act de la UE."@es .
 
 # Propiedades técnicas para caracterizar modelos
 ai:hasParameterCount a owl:DatatypeProperty ;
