@@ -42,7 +42,7 @@ Crear un **puente entre regulación y tecnología** mediante semántica formal q
 
 ## ✨ Características Principales
 
-### 1. 🧠 Ontología Formal del EU AI Act (v0.36.0)
+### 1. 🧠 Ontología Formal del EU AI Act (v0.37.0)
 
 ```mermaid
 graph TD
@@ -68,7 +68,7 @@ graph TD
 **Características de la ontología:**
 - **31 clases OWL** organizadas jerárquicamente
 - **28 propiedades de relación** entre entidades
-- **991 triples RDF** con integración AIRO
+- **1000+ triples RDF** con integración AIRO mejorada (v0.37.0)
 - **8 niveles de razonamiento** desde propósito → requisitos
 - **100% cobertura** del Anexo III del EU AI Act
 
@@ -262,7 +262,7 @@ graph TB
     end
 
     subgraph "Semantics Layer"
-        ONTO["📚 Ontología OWL<br/>v0.36.0"]
+        ONTO["📚 Ontología OWL<br/>v0.37.0"]
         RULES["📐 Reglas SWRL<br/>15+ rules"]
     end
 
@@ -375,8 +375,9 @@ ai_act_project/
 │   └── requirements.txt           # Dependencies
 │
 ├── 📁 ontologias/                  # Modelo formal
-│   ├── ontologia-v0.36.0.ttl     # Ontología principal (RDF/Turtle)
-│   ├── ontologia-v0.37.0.ttl     # Versión en desarrollo
+│   ├── ontologia-v0.37.0.ttl     # Ontología principal (RDF/Turtle) - ACTUAL
+│   ├── versions/
+│   │   └── 0.37.0/               # Versión actual
 │   ├── rules/
 │   │   ├── base_rules.py
 │   │   ├── capability_rules.py
@@ -510,7 +511,7 @@ graph LR
 
 | Elemento | Cantidad |
 |----------|----------|
-| **Triples RDF** | 991 |
+| **Triples RDF** | 1000+ |
 | **Clases OWL** | 31 |
 | **Propiedades de objeto** | 28 |
 | **Propiedades de datos** | 8 |
@@ -771,8 +772,8 @@ mongosh --port 27017 --eval "db.adminCommand('ping')" && echo "✅ MongoDB OK"
 Crear `.env` en la raíz:
 
 ```bash
-# Versión de ontología
-CURRENT_RELEASE=0.36.0
+# Versión de ontología - ACTUAL: 0.37.0
+CURRENT_RELEASE=0.37.0
 
 # MongoDB
 MONGO_URL=mongodb://mongo:27017
@@ -786,7 +787,7 @@ FUSEKI_DATASET=ds
 FUSEKI_GRAPH=http://ai-act.eu/ontology
 
 # Rutas de ontología
-ONTOLOGY_PATH=/ontologias/ontologia-v0.36.0.ttl
+ONTOLOGY_PATH=/ontologias/ontologia-v0.37.0.ttl
 RULES_PATH=/ontologias/rules/
 
 # Puertos
@@ -1107,13 +1108,13 @@ docker-compose exec backend python -c "import rdflib; print(rdflib.__version__)"
 
 ```bash
 # Validar sintaxis Turtle
-rapper -i turtle -c ontologias/ontologia-v0.36.0.ttl
+rapper -i turtle -c ontologias/ontologia-v0.37.0.ttl
 
 # Parsear con RDFLib (dentro del contenedor)
 docker-compose exec backend python << 'EOF'
 from rdflib import Graph
 g = Graph()
-g.parse("ontologias/ontologia-v0.36.0.ttl", format="turtle")
+g.parse("ontologias/ontologia-v0.37.0.ttl", format="turtle")
 print(f"Triples cargados: {len(g)}")
 EOF
 ```
@@ -1210,5 +1211,6 @@ Para preguntas, reportar bugs o solicitudes de funcionalidades:
 ---
 
 **Última actualización:** Noviembre 2025
-**Versión ontología:** 0.36.0
+**Versión ontología:** 0.37.0 (actual)
+**Versiones previas:** 0.36.0
 **Estado:** Producción ✅
