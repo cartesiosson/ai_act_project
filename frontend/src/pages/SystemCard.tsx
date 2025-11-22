@@ -51,112 +51,236 @@ export default function SystemCard({
   version,
   urn,
 }: SystemCardProps) {
-  const renderField = (label: string, values?: string[]) => {
-    if (!values || values.length === 0) return null;
+  const renderSection = (title: string, icon: string, color: string, fields: { label: string; values?: string[] }[]) => {
+    const hasContent = fields.some(f => f.values && f.values.length > 0);
+    if (!hasContent) return null;
+
     return (
-      <p className="text-sm">
-        <span className="font-semibold">{label}:</span> {values.map(v => v.replace(/^ai:/, '')).join(", ")}
-      </p>
+      <div className={`mb-6 pb-6 border-b last:border-b-0`}>
+        <div className="flex items-center mb-3">
+          <span className="text-xl mr-2">{icon}</span>
+          <h4 className={`font-bold text-sm ${color}`}>{title}</h4>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-6">
+          {fields.map((field, idx) => {
+            if (!field.values || field.values.length === 0) return null;
+            return (
+              <div key={idx} className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase mb-1">{field.label}</p>
+                <p className="text-sm text-gray-900 dark:text-white">
+                  {field.values.map(v => v.replace(/^ai:/, '')).join(", ")}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     );
   };
 
+  const getRiskBadgeColor = (risk: string) => {
+    const cleanRisk = risk.toLowerCase();
+    if (cleanRisk.includes('unacceptable')) return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100';
+    if (cleanRisk.includes('high')) return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100';
+    if (cleanRisk.includes('limited')) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100';
+    return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100';
+  };
+
   return (
-    <div className="border p-4 rounded shadow bg-white dark:bg-gray-800">
-      {/* Header */}
-      <div className="border-b pb-3 mb-3">
-        <h3 className="text-lg font-bold">{name}</h3>
-        <p className="text-xs text-gray-600 dark:text-gray-400">URN: {urn}</p>
+    <div className="rounded-lg shadow-lg bg-white dark:bg-gray-800 overflow-hidden border border-gray-200 dark:border-gray-700">
+      {/* Header - System Identity */}
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-700 dark:to-blue-800 px-6 py-4">
+        <h3 className="text-2xl font-bold text-white mb-1">{name}</h3>
+        <p className="text-sm text-blue-100">URN: {urn}</p>
+        {version && <p className="text-xs text-blue-100 mt-1">Version {version}</p>}
       </div>
 
-      {/* Risk & Classification */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 pb-3 border-b">
-        <p><span className="font-semibold">Risk Level:</span> {riskLevel}</p>
-        {gpaiClassification && gpaiClassification.length > 0 && (
-          <p className="text-sm">
-            <span className="font-semibold">GPAI Classification:</span> {gpaiClassification.map(g => g.replace(/^ai:/, '')).join(", ")}
-          </p>
-        )}
-      </div>
-
-      {/* Core System Properties */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 pb-3 border-b">
-        <p><span className="font-semibold">Purpose(s):</span> {purpose.map(p => p.replace(/^ai:/, '')).join(", ")}</p>
-        <p><span className="font-semibold">Deployment Context(s):</span> {deploymentContext.map(c => c.replace(/^ai:/, '')).join(", ")}</p>
-        <p><span className="font-semibold">Training Data Origin(s):</span> {trainingDataOrigin.map(o => o.replace(/^ai:/, '')).join(", ")}</p>
-        {systemCapabilityCriteria && systemCapabilityCriteria.length > 0 && (
-          <p className="text-sm">
-            <span className="font-semibold">System Capabilities:</span> {systemCapabilityCriteria.map(c => c.replace(/^ai:/, '')).join(", ")}
-          </p>
-        )}
-      </div>
-
-      {/* Algorithm & Model */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 pb-3 border-b">
-        <p><span className="font-semibold">Algorithm Type(s):</span> {algorithmType.map(a => a.replace(/^ai:/, '')).join(", ")}</p>
-        {modelScale && modelScale.length > 0 && (
-          <p><span className="font-semibold">Model Scale:</span> {modelScale.map(m => m.replace(/^ai:/, '')).join(", ")}</p>
-        )}
-        {capabilities && capabilities.length > 0 && (
-          <p className="text-sm">
-            <span className="font-semibold">Capabilities:</span> {capabilities.map(c => c.replace(/^ai:/, '')).join(", ")}
-          </p>
-        )}
-      </div>
-
-      {/* Contextual & Risk Criteria */}
-      {(contextualCriteria && contextualCriteria.length > 0) && (
-        <div className="mb-3 pb-3 border-b">
-          {renderField("Contextual Criteria", contextualCriteria)}
+      {/* Risk & Classification Banner */}
+      <div className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 px-6 py-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <div>
+            <p className="text-xs text-gray-600 dark:text-gray-400 uppercase mb-1">Risk Level</p>
+            <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${getRiskBadgeColor(riskLevel)}`}>
+              {riskLevel}
+            </span>
+          </div>
+          {gpaiClassification && gpaiClassification.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 uppercase mb-1">GPAI Classification</p>
+              <div className="flex flex-wrap gap-2">
+                {gpaiClassification.map((g, i) => (
+                  <span key={i} className="inline-block px-2 py-1 rounded text-xs bg-blue-200 text-blue-800 dark:bg-blue-700 dark:text-blue-100">
+                    {g.replace(/^ai:/, '')}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Compliance Requirements */}
-      {(complianceRequirements && complianceRequirements.length > 0 ||
-        technicalRequirements && technicalRequirements.length > 0 ||
-        securityRequirements && securityRequirements.length > 0) && (
-        <div className="mb-3 pb-3 border-b">
-          <p className="font-semibold text-sm mb-2">Compliance Requirements:</p>
-          {renderField("Technical", technicalRequirements)}
-          {renderField("Security", securityRequirements)}
-          {renderField("Robustness", robustnessRequirements)}
-          {renderField("Documentation", documentationRequirements)}
-          {renderField("Data Governance", dataGovernanceRequirements)}
-        </div>
-      )}
-
-      {/* Standards & Frameworks */}
-      {(isoRequirements && isoRequirements.length > 0 ||
-        nistRequirements && nistRequirements.length > 0) && (
-        <div className="mb-3 pb-3 border-b">
-          <p className="font-semibold text-sm mb-2">Standards & Frameworks:</p>
-          {renderField("ISO 42001", isoRequirements)}
-          {renderField("NIST AI RMF", nistRequirements)}
-        </div>
-      )}
-
-      {/* Human & Governance */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 pb-3 border-b">
-        {humanOversightRequired !== undefined && (
-          <p className="text-sm">
-            <span className="font-semibold">Human Oversight:</span> {humanOversightRequired ? "Required" : "Not Required"}
-          </p>
-        )}
-        {transparencyLevel && (
-          <p className="text-sm">
-            <span className="font-semibold">Transparency Level:</span> {transparencyLevel}
-          </p>
-        )}
-        {fundamentalRightsAssessment !== undefined && (
-          <p className="text-sm">
-            <span className="font-semibold">Fundamental Rights Assessment:</span> {fundamentalRightsAssessment ? "Required" : "Not Required"}
-          </p>
-        )}
       </div>
 
-      {/* Version */}
-      <p className="text-sm text-gray-600 dark:text-gray-400">
-        <span className="font-semibold">Version:</span> {version}
-      </p>
+      {/* Content Sections */}
+      <div className="px-6 py-6">
+        {/* SECTION 1: Purposes */}
+        {renderSection(
+          "1. System Purposes",
+          "🎯",
+          "text-blue-600 dark:text-blue-400",
+          [{ label: "Primary Purpose(s)", values: purpose }]
+        )}
+
+        {/* SECTION 2: Deployment Context */}
+        {renderSection(
+          "2. Deployment Context",
+          "📍",
+          "text-purple-600 dark:text-purple-400",
+          [
+            { label: "Deployment Context(s)", values: deploymentContext },
+            { label: "Training Data Origin(s)", values: trainingDataOrigin }
+          ]
+        )}
+
+        {/* SECTION 3: Technical Factors */}
+        {renderSection(
+          "3. Technical Factors",
+          "⚙️",
+          "text-orange-600 dark:text-orange-400",
+          [
+            { label: "Algorithm Type(s)", values: algorithmType },
+            { label: "Model Scale", values: modelScale },
+            { label: "System Capability Criteria", values: systemCapabilityCriteria }
+          ]
+        )}
+
+        {/* SECTION 4: Capabilities */}
+        {capabilities && capabilities.length > 0 && renderSection(
+          "4. System Capabilities",
+          "🚀",
+          "text-green-600 dark:text-green-400",
+          [{ label: "Specific Capabilities", values: capabilities }]
+        )}
+
+        {/* Contextual Criteria */}
+        {contextualCriteria && contextualCriteria.length > 0 && (
+          <div className="mb-6 pb-6 border-b">
+            <div className="flex items-center mb-3">
+              <span className="text-xl mr-2">📊</span>
+              <h4 className="font-bold text-sm text-indigo-600 dark:text-indigo-400">Contextual Criteria</h4>
+            </div>
+            <div className="ml-6 bg-indigo-50 dark:bg-indigo-900 p-3 rounded">
+              <p className="text-sm text-indigo-900 dark:text-indigo-100">
+                {contextualCriteria.map(c => c.replace(/^ai:/, '')).join(", ")}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Compliance Requirements */}
+        {(complianceRequirements && complianceRequirements.length > 0 ||
+          technicalRequirements && technicalRequirements.length > 0 ||
+          securityRequirements && securityRequirements.length > 0 ||
+          robustnessRequirements && robustnessRequirements.length > 0 ||
+          documentationRequirements && documentationRequirements.length > 0 ||
+          dataGovernanceRequirements && dataGovernanceRequirements.length > 0) && (
+          <div className="mb-6 pb-6 border-b">
+            <div className="flex items-center mb-3">
+              <span className="text-xl mr-2">✅</span>
+              <h4 className="font-bold text-sm text-green-600 dark:text-green-400">Compliance Requirements</h4>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-6">
+              {technicalRequirements && technicalRequirements.length > 0 && (
+                <div className="bg-green-50 dark:bg-green-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-green-600 dark:text-green-300 uppercase mb-1">Technical</p>
+                  <p className="text-sm text-gray-900 dark:text-white">{technicalRequirements.map(t => t.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+              {securityRequirements && securityRequirements.length > 0 && (
+                <div className="bg-green-50 dark:bg-green-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-green-600 dark:text-green-300 uppercase mb-1">Security</p>
+                  <p className="text-sm text-gray-900 dark:text-white">{securityRequirements.map(s => s.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+              {robustnessRequirements && robustnessRequirements.length > 0 && (
+                <div className="bg-green-50 dark:bg-green-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-green-600 dark:text-green-300 uppercase mb-1">Robustness</p>
+                  <p className="text-sm text-gray-900 dark:text-white">{robustnessRequirements.map(r => r.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+              {documentationRequirements && documentationRequirements.length > 0 && (
+                <div className="bg-green-50 dark:bg-green-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-green-600 dark:text-green-300 uppercase mb-1">Documentation</p>
+                  <p className="text-sm text-gray-900 dark:text-white">{documentationRequirements.map(d => d.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+              {dataGovernanceRequirements && dataGovernanceRequirements.length > 0 && (
+                <div className="bg-green-50 dark:bg-green-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-green-600 dark:text-green-300 uppercase mb-1">Data Governance</p>
+                  <p className="text-sm text-gray-900 dark:text-white">{dataGovernanceRequirements.map(dg => dg.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Standards & Frameworks */}
+        {(isoRequirements && isoRequirements.length > 0 ||
+          nistRequirements && nistRequirements.length > 0) && (
+          <div className="mb-6 pb-6 border-b">
+            <div className="flex items-center mb-3">
+              <span className="text-xl mr-2">📋</span>
+              <h4 className="font-bold text-sm text-cyan-600 dark:text-cyan-400">Standards & Frameworks</h4>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-6">
+              {isoRequirements && isoRequirements.length > 0 && (
+                <div className="bg-cyan-50 dark:bg-cyan-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-300 uppercase mb-1">ISO 42001</p>
+                  <p className="text-sm text-gray-900 dark:text-white">{isoRequirements.map(i => i.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+              {nistRequirements && nistRequirements.length > 0 && (
+                <div className="bg-cyan-50 dark:bg-cyan-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-300 uppercase mb-1">NIST AI RMF</p>
+                  <p className="text-sm text-gray-900 dark:text-white">{nistRequirements.map(n => n.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Governance & Human Oversight */}
+        {(humanOversightRequired !== undefined || transparencyLevel || fundamentalRightsAssessment !== undefined) && (
+          <div className="mb-6 pb-6 border-b">
+            <div className="flex items-center mb-3">
+              <span className="text-xl mr-2">👥</span>
+              <h4 className="font-bold text-sm text-rose-600 dark:text-rose-400">Governance & Oversight</h4>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 ml-6">
+              {humanOversightRequired !== undefined && (
+                <div className="bg-rose-50 dark:bg-rose-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-rose-600 dark:text-rose-300 uppercase mb-1">Human Oversight</p>
+                  <span className={`inline-block px-2 py-1 rounded text-xs font-bold ${humanOversightRequired ? 'bg-red-200 text-red-800 dark:bg-red-700 dark:text-red-100' : 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100'}`}>
+                    {humanOversightRequired ? "Required" : "Not Required"}
+                  </span>
+                </div>
+              )}
+              {transparencyLevel && (
+                <div className="bg-rose-50 dark:bg-rose-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-rose-600 dark:text-rose-300 uppercase mb-1">Transparency Level</p>
+                  <p className="text-sm text-gray-900 dark:text-white font-semibold">{transparencyLevel}</p>
+                </div>
+              )}
+              {fundamentalRightsAssessment !== undefined && (
+                <div className="bg-rose-50 dark:bg-rose-900 p-3 rounded">
+                  <p className="text-xs font-semibold text-rose-600 dark:text-rose-300 uppercase mb-1">Fundamental Rights</p>
+                  <span className={`inline-block px-2 py-1 rounded text-xs font-bold ${fundamentalRightsAssessment ? 'bg-red-200 text-red-800 dark:bg-red-700 dark:text-red-100' : 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100'}`}>
+                    {fundamentalRightsAssessment ? "Assessment Required" : "Not Required"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -329,23 +329,27 @@ export default function SystemsPage() {
         className="space-y-6 mb-12"
       >
         {/* SECTION 1: Basic Information */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">1. Basic Information</h2>
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">📋</span>
+            <h2 className="text-xl font-bold">System Identification</h2>
+          </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Basic information about your AI system</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold mb-1">System Name</label>
+              <label className="block font-semibold mb-2">System Name *</label>
               <input
-                className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-                placeholder="System Name"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., EduAssess-AI, BiometricAccess-System"
                 value={form.hasName}
                 onChange={(e) => setForm({ ...form, hasName: e.target.value })}
               />
             </div>
             <div>
-              <label className="block font-semibold mb-1">Version</label>
+              <label className="block font-semibold mb-2">Version</label>
               <input
-                className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-                placeholder="e.g. 1.0.0"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., 1.0.0"
                 value={form.hasVersion}
                 onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
               />
@@ -353,15 +357,19 @@ export default function SystemsPage() {
           </div>
         </div>
 
-        {/* SECTION 2: Technical Classification */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">2. Technical Classification</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-semibold mb-1">Purpose(s)</label>
+        {/* SECTION 1: Purposes */}
+        <div className="bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">🎯</span>
+            <h2 className="text-xl font-bold">1. System Purposes</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">What is this AI system designed to do? Select all applicable primary functions.</p>
+          <div className="bg-white dark:bg-gray-800 rounded p-4">
+            <label className="block font-semibold mb-2">Primary Purpose(s) *</label>
             <select
               multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              size={6}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.hasPurpose}
               onChange={e =>
                 setForm({ ...form, hasPurpose: Array.from(e.target.selectedOptions, (opt) => opt.value) })
@@ -371,88 +379,126 @@ export default function SystemsPage() {
                 <option key={p.id} value={p.id}>{p.label}</option>
               ))}
             </select>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">💡 Hold Ctrl/Cmd to select multiple</p>
           </div>
-          <div>
-            <label className="block font-semibold mb-1">Deployment Context(s)</label>
+        </div>
+
+        {/* SECTION 2: Deployment Context */}
+        <div className="bg-purple-50 dark:bg-purple-900 rounded-lg border border-purple-200 dark:border-purple-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-purple-600 dark:text-purple-400 mr-3">📍</span>
+            <h2 className="text-xl font-bold">2. Deployment Context</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Where and how will this system be used? These contexts trigger specific regulatory requirements.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Deployment Context(s) *</label>
+              <select
+                multiple
+                size={5}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={form.hasDeploymentContext}
+                onChange={e =>
+                  setForm({ ...form, hasDeploymentContext: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {contexts.map((c) => (
+                  <option key={c.id} value={c.id}>{c.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Training Data Origin(s) *</label>
+              <select
+                multiple
+                size={5}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={form.hasTrainingDataOrigin}
+                onChange={e =>
+                  setForm({ ...form, hasTrainingDataOrigin: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {origins.map((o) => (
+                  <option key={o.id} value={o.id}>{o.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 3: Technical Factors */}
+        <div className="bg-orange-50 dark:bg-orange-900 rounded-lg border border-orange-200 dark:border-orange-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-orange-600 dark:text-orange-400 mr-3">⚙️</span>
+            <h2 className="text-xl font-bold">3. Technical Factors</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Technical characteristics of your AI system that impact risk assessment.</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Algorithm Type(s)</label>
+              <select
+                multiple
+                size={4}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={form.hasAlgorithmType}
+                onChange={e => {
+                  const values = Array.from(e.target.selectedOptions, (opt) => opt.value);
+                  setForm({ ...form, hasAlgorithmType: values });
+                }}
+              >
+                {algorithmTypes.map((a) => (
+                  <option key={a.id} value={a.id}>{a.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Model Scale</label>
+              <select
+                multiple
+                size={4}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={form.hasModelScale}
+                onChange={e =>
+                  setForm({ ...form, hasModelScale: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {modelScales.map((m) => (
+                  <option key={m.id} value={m.id}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">System Capability Criteria</label>
+              <select
+                multiple
+                size={4}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={form.hasSystemCapabilityCriteria}
+                onChange={e =>
+                  setForm({ ...form, hasSystemCapabilityCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {systemCapabilityCriteria.map((c) => (
+                  <option key={c.id} value={c.id}>{c.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 4: System Capabilities */}
+        <div className="bg-green-50 dark:bg-green-900 rounded-lg border border-green-200 dark:border-green-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-green-600 dark:text-green-400 mr-3">🚀</span>
+            <h2 className="text-xl font-bold">4. System Capabilities</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">What specific capabilities does your system have? These may trigger additional compliance requirements.</p>
+          <div className="bg-white dark:bg-gray-800 rounded p-4">
+            <label className="block font-semibold mb-2">Specific Capabilities</label>
             <select
               multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasDeploymentContext}
-              onChange={e =>
-                setForm({ ...form, hasDeploymentContext: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {contexts.map((c) => (
-                <option key={c.id} value={c.id}>{c.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mb-1">Training Data Origin(s)</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasTrainingDataOrigin}
-              onChange={e =>
-                setForm({ ...form, hasTrainingDataOrigin: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {origins.map((o) => (
-                <option key={o.id} value={o.id}>{o.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mt-2">System Capability Criteria</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasSystemCapabilityCriteria}
-              onChange={e =>
-                setForm({ ...form, hasSystemCapabilityCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {systemCapabilityCriteria.map((c) => (
-                <option key={c.id} value={c.id}>{c.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mt-2">Algorithm Types</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasAlgorithmType}
-              onChange={e => {
-                const values = Array.from(e.target.selectedOptions, (opt) => opt.value);
-                setForm({ ...form, hasAlgorithmType: values });
-              }}
-            >
-              {algorithmTypes.map((a) => (
-                <option key={a.id} value={a.id}>{a.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mt-2">Model Scale</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasModelScale}
-              onChange={e =>
-                setForm({ ...form, hasModelScale: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {modelScales.map((m) => (
-                <option key={m.id} value={m.id}>{m.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mt-2">System Capabilities</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              size={5}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               value={form.hasCapability}
               onChange={e =>
                 setForm({ ...form, hasCapability: Array.from(e.target.selectedOptions, (opt) => opt.value) })
@@ -463,19 +509,6 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
-          </div>
-        </div>
-
-        {/* SECTION 3: Deployment & Context */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">3. Deployment & Context</h2>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">These selections determine which contextual criteria apply to your system</p>
-        </div>
-
-        {/* SECTION 4: Capabilities */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">4. Capabilities</h2>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">Define the model scale and specific capabilities of your system</p>
         </div>
 
         {/* Derived Classifications - Read-only Info Panel */}
