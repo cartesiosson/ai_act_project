@@ -693,6 +693,40 @@ export default function SystemsPage() {
           </button>
         )}
       </form>
+
+      {/* System Card Preview */}
+      {form.hasName && (
+        <div className="border-t pt-6 mt-6 mb-6">
+          <h3 className="text-lg font-bold mb-4">System Preview</h3>
+          <SystemCard
+            name={form.hasName}
+            riskLevel="To be determined"
+            purpose={form.hasPurpose.map(p => purposes.find(pr => pr.id === p)?.label || p)}
+            deploymentContext={form.hasDeploymentContext.map(d => contexts.find(c => c.id === d)?.label || d)}
+            trainingDataOrigin={form.hasTrainingDataOrigin.map(o => origins.find(org => org.id === o)?.label || o)}
+            algorithmType={form.hasAlgorithmType.map(a => algorithmTypes.find(at => at.id === a)?.label || a)}
+            modelScale={form.hasModelScale.map(m => modelScales.find(ms => ms.id === m)?.label || m)}
+            systemCapabilityCriteria={form.hasSystemCapabilityCriteria.map(s => systemCapabilityCriteria.find(sc => sc.id === s)?.label || s)}
+            capabilities={form.hasCapability.map(c => capabilities.find(cap => cap.id === c)?.label || c)}
+            gpaiClassification={form.hasGPAIClassification.map(g => gpaiClassifications.find(gp => gp.id === g)?.label || g)}
+            contextualCriteria={form.hasContextualCriteria.map(cc => contextualCriteria.find(c => c.id === cc)?.label || cc)}
+            isoRequirements={form.hasISORequirements.map(i => isoRequirements.find(ir => ir.id === i)?.label || i)}
+            nistRequirements={form.hasNISTRequirements.map(n => nistRequirements.find(nr => nr.id === n)?.label || n)}
+            complianceRequirements={form.hasComplianceRequirement.map(c => complianceRequirements.find(cr => cr.id === c)?.label || c)}
+            technicalRequirements={form.hasTechnicalRequirement.map(t => technicalRequirements.find(tr => tr.id === t)?.label || t)}
+            securityRequirements={form.hasSecurityRequirement.map(s => securityRequirements.find(sr => sr.id === s)?.label || s)}
+            robustnessRequirements={form.hasRobustnessRequirement.map(r => robustnessRequirements.find(rr => rr.id === r)?.label || r)}
+            documentationRequirements={form.hasDocumentationRequirement.map(d => documentationRequirements.find(dr => dr.id === d)?.label || d)}
+            dataGovernanceRequirements={form.hasDataGovernanceRequirement.map(dg => dataGovernanceRequirements.find(dgr => dgr.id === dg)?.label || dg)}
+            humanOversightRequired={form.requiresHumanOversight}
+            transparencyLevel={form.hasTransparencyLevel ? transparencyLevels.find(t => t.id === form.hasTransparencyLevel)?.label : undefined}
+            fundamentalRightsAssessment={form.requiresFundamentalRightsAssessment}
+            version={form.hasVersion || "0.0.0"}
+            urn={loadedSystem?.["ai:hasUrn"] || "urn:uuid:new-system"}
+          />
+        </div>
+      )}
+
       {/* Filtros */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-5 gap-4">
         <input

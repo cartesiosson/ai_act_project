@@ -190,6 +190,118 @@ def get_system_capability_criteria(lang: str = Query("en")):
 def get_inner_criteria(lang: str = Query("en")):
     return get_system_capability_criteria(lang)
 
+# ===== NEW VOCABULARY ENDPOINTS (PHASE 2 - GPAI & COMPLIANCE) =====
+
+@app.get("/vocab/gpai")
+def get_gpai_classifications(lang: str = Query("en")):
+    """GPAI classification options"""
+    base = URIRef("http://ai-act.eu/ai#GPAIClassification")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/contextualcriteria")
+def get_contextual_criteria(lang: str = Query("en")):
+    """Contextual criteria from ontology"""
+    base = URIRef("http://ai-act.eu/ai#ContextualCriterion")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/compliance")
+def get_compliance_requirements(lang: str = Query("en")):
+    """General compliance requirements"""
+    base = URIRef("http://ai-act.eu/ai#ComplianceRequirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/technical")
+def get_technical_requirements(lang: str = Query("en")):
+    """Technical requirements"""
+    base = URIRef("http://ai-act.eu/ai#TechnicalRequirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/security")
+def get_security_requirements(lang: str = Query("en")):
+    """Security requirements"""
+    base = URIRef("http://ai-act.eu/ai#SecurityRequirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/robustness")
+def get_robustness_requirements(lang: str = Query("en")):
+    """Robustness requirements"""
+    base = URIRef("http://ai-act.eu/ai#RobustnessRequirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/documentation")
+def get_documentation_requirements(lang: str = Query("en")):
+    """Documentation requirements"""
+    base = URIRef("http://ai-act.eu/ai#DocumentationRequirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/datagovernance")
+def get_data_governance_requirements(lang: str = Query("en")):
+    """Data governance requirements"""
+    base = URIRef("http://ai-act.eu/ai#DataGovernanceRequirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/iso")
+def get_iso_requirements(lang: str = Query("en")):
+    """ISO 42001 requirements"""
+    base = URIRef("http://ai-act.eu/ai#ISO42001Requirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/nist")
+def get_nist_requirements(lang: str = Query("en")):
+    """NIST AI RMF requirements"""
+    base = URIRef("http://ai-act.eu/ai#NISTRequirement")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
+@app.get("/vocab/transparency")
+def get_transparency_levels(lang: str = Query("en")):
+    """Transparency levels"""
+    base = URIRef("http://ai-act.eu/ai#TransparencyLevel")
+    instances = list(ont.subjects(RDF.type, base))
+    return [
+        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
+        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
+    ]
+
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok"}
