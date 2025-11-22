@@ -328,27 +328,35 @@ export default function SystemsPage() {
         onSubmit={handleSubmit}
         className="space-y-6 mb-12"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-semibold mb-1">System Name</label>
-            <input
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              placeholder="System Name"
-              value={form.hasName}
-              onChange={(e) => setForm({ ...form, hasName: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1">Version</label>
-            <input
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              placeholder="e.g. 1.0.0"
-              value={form.hasVersion}
-              onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
-            />
+        {/* SECTION 1: Basic Information */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h2 className="text-lg font-bold mb-4">1. Basic Information</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold mb-1">System Name</label>
+              <input
+                className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+                placeholder="System Name"
+                value={form.hasName}
+                onChange={(e) => setForm({ ...form, hasName: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block font-semibold mb-1">Version</label>
+              <input
+                className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+                placeholder="e.g. 1.0.0"
+                value={form.hasVersion}
+                onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
+              />
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        {/* SECTION 2: Technical Classification */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h2 className="text-lg font-bold mb-4">2. Technical Classification</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block font-semibold mb-1">Purpose(s)</label>
             <select
@@ -455,48 +463,46 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
-        </div>
-
-        {/* GPAI & Contextual Classification */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h3 className="text-sm font-bold mb-3">EU AI Act Classification</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block font-semibold text-sm mb-1">GPAI Classification (if applicable)</label>
-              <select
-                multiple
-                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
-                value={form.hasGPAIClassification}
-                onChange={e =>
-                  setForm({ ...form, hasGPAIClassification: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-                }
-              >
-                {gpaiClassifications.map((g) => (
-                  <option key={g.id} value={g.id}>{g.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block font-semibold text-sm mb-1">Contextual Criteria</label>
-              <select
-                multiple
-                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
-                value={form.hasContextualCriteria}
-                onChange={e =>
-                  setForm({ ...form, hasContextualCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-                }
-              >
-                {contextualCriteria.map((c) => (
-                  <option key={c.id} value={c.id}>{c.label}</option>
-                ))}
-              </select>
-            </div>
           </div>
         </div>
 
-        {/* Compliance Requirements */}
+        {/* SECTION 3: Deployment & Context */}
         <div className="border-t pt-4 mt-4 mb-4">
-          <h3 className="text-sm font-bold mb-3">Compliance Requirements</h3>
+          <h2 className="text-lg font-bold mb-4">3. Deployment & Context</h2>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">These selections determine which contextual criteria apply to your system</p>
+        </div>
+
+        {/* SECTION 4: Capabilities */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h2 className="text-lg font-bold mb-4">4. Capabilities</h2>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">Define the model scale and specific capabilities of your system</p>
+        </div>
+
+        {/* Derived Classifications - Read-only Info Panel */}
+        {(form.hasGPAIClassification.length > 0 || form.hasContextualCriteria.length > 0) && (
+          <div className="border-t pt-4 mt-4 mb-4 bg-blue-50 dark:bg-blue-900 rounded p-4">
+            <h3 className="text-sm font-bold mb-2 text-blue-900 dark:text-blue-100">System Classifications (Auto-derived)</h3>
+            <p className="text-xs text-blue-800 dark:text-blue-200 mb-3">These are automatically derived from your technical characteristics and deployment context above:</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {form.hasGPAIClassification.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-1">GPAI Classification:</p>
+                  <p className="text-sm text-blue-800 dark:text-blue-200">{form.hasGPAIClassification.map(g => g.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+              {form.hasContextualCriteria.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-1">Contextual Criteria:</p>
+                  <p className="text-sm text-blue-800 dark:text-blue-200">{form.hasContextualCriteria.map(c => c.replace(/^ai:/, '')).join(", ")}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* SECTION 5: Compliance Requirements */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h2 className="text-lg font-bold mb-4">5. Compliance Requirements</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block font-semibold text-sm mb-1">Technical Requirements</label>
@@ -576,9 +582,9 @@ export default function SystemsPage() {
           </div>
         </div>
 
-        {/* Standards & Governance */}
+        {/* SECTION 6: Standards & Governance */}
         <div className="border-t pt-4 mt-4 mb-4">
-          <h3 className="text-sm font-bold mb-3">Standards & Governance</h3>
+          <h2 className="text-lg font-bold mb-4">6. Standards & Governance</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block font-semibold text-sm mb-1">ISO 42001 Requirements</label>
@@ -613,9 +619,9 @@ export default function SystemsPage() {
           </div>
         </div>
 
-        {/* Human & Rights */}
+        {/* SECTION 7: Human Oversight & Rights */}
         <div className="border-t pt-4 mt-4 mb-4">
-          <h3 className="text-sm font-bold mb-3">Human Oversight & Rights</h3>
+          <h2 className="text-lg font-bold mb-4">7. Human Oversight & Rights</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex items-center">
               <input
