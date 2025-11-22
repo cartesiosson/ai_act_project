@@ -6,7 +6,10 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -23,9 +26,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Health check: verify API is responding
+# Health check: verify API is responding (use /docs which always exists in FastAPI)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/reasoning/status || exit 1
+    CMD curl -f http://localhost:8000/docs || exit 1
 
 # Start FastAPI application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]

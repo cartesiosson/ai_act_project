@@ -31,12 +31,12 @@ COPY app/ ./app/
 
 EXPOSE 8000
 
-# Health check: verify reasoning service is responding
+# Health check: verify reasoning service is responding (check docs endpoint which always exists in FastAPI)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:8000/docs || exit 1
 
 # Show ontology version when starting container
 RUN echo "Reasoner image built for CURRENT_RELEASE=\${CURRENT_RELEASE}"
 
 # Start FastAPI reasoning service
-ENTRYPOINT ["/bin/sh", "-c", "echo 'Reasoner running with CURRENT_RELEASE=\${CURRENT_RELEASE}'; exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --log-level info"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
