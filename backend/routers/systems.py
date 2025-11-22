@@ -9,6 +9,7 @@ import requests
 import os
 from pymongo.errors import DuplicateKeyError
 from fastapi import Query
+from derivation import derive_classifications
 
 user = os.getenv("FUSEKI_USER", "admin")
 password = os.getenv("FUSEKI_PASSWORD", "admin")
@@ -18,11 +19,98 @@ graph_data= os.getenv("FUSEKI_GRAPH_DATA", "http://ai-act.eu/ontology/data")
 
 router = APIRouter(prefix="/systems", tags=["systems"])
 
+# Load ontology globally for derivation
+_ontology = None
+
+
+def get_ontology():
+    """Get cached ontology graph"""
+    global _ontology
+    if _ontology is None:
+        ontology_path = os.environ.get("ONTOLOGY_PATH")
+        if not ontology_path:
+            raise RuntimeError("ONTOLOGY_PATH not configured")
+        _ontology = Graph()
+        _ontology.parse(ontology_path, format="turtle")
+    return _ontology
+
+
+@router.post("/derive-classifications", status_code=200)
+async def derive_system_classifications(data: dict):
+    """
+    Endpoint to derive Criteria, Requirements, and Risk Level from user input
+
+    Input:
+    {
+        "hasPurpose": ["ai:EducationAccess"],
+        "hasDeploymentContext": ["ai:Education"],
+        "hasTrainingDataOrigin": ["ai:ExternalDataset"],
+        "hasAlgorithmType": ["ai:TransformerModel"],
+        "hasModelScale": "ai:FoundationModelScale"
+    }
+
+    Output:
+    {
+        "hasCriteria": ["ai:EducationEvaluationCriterion"],
+        "hasComplianceRequirement": ["ai:DataGovernanceRequirement", ...],
+        "hasRiskLevel": "ai:HighRisk",
+        "hasGPAIClassification": ["ai:GeneralPurposeAI"]
+    }
+    """
+    try:
+        # Get ontology
+        ont = get_ontology()
+
+        # Perform derivation
+        derived = derive_classifications(data, ont)
+
+        return {
+            "success": True,
+            "derived": derived
+        }
+    except Exception as e:
+        print(f"Error in derivation: {str(e)}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error deriving classifications: {str(e)}"
+        )
+
+
 @router.post("", status_code=201)
 async def create_system(json_ld: IntelligentSystem, db=Depends(get_database)):
     print(f"Datos recibidos por Pydantic: {json_ld}")
     json_ld = json_ld.dict(by_alias=True)
     print(f"Después de dict(by_alias=True): {json_ld}")
+
+    # DERIVE CLASSIFICATIONS FROM USER INPUT
+    try:
+        ont = get_ontology()
+        # Prepare input for derivation (convert from ai: prefix format)
+        derivation_input = {
+            'hasPurpose': json_ld.get('hasPurpose', []),
+            'hasDeploymentContext': json_ld.get('hasDeploymentContext', []),
+            'hasTrainingDataOrigin': json_ld.get('hasTrainingDataOrigin', []),
+            'hasAlgorithmType': json_ld.get('hasAlgorithmType', []),
+            'hasModelScale': json_ld.get('hasModelScale', '')
+        }
+
+        derived = derive_classifications(derivation_input, ont)
+
+        # Merge derived data with user input
+        json_ld['hasCriteria'] = derived.get('hasCriteria', [])
+        json_ld['hasComplianceRequirement'] = derived.get('hasComplianceRequirement', [])
+        json_ld['hasRiskLevel'] = derived.get('hasRiskLevel', 'ai:MinimalRisk')
+        json_ld['hasGPAIClassification'] = derived.get('hasGPAIClassification', [])
+
+        print(f"Derived classifications: Criteria={json_ld.get('hasCriteria')}, Risk={json_ld.get('hasRiskLevel')}")
+    except Exception as e:
+        print(f"Warning: Could not derive classifications: {str(e)}")
+        # Continue without derivation rather than failing
+        json_ld['hasCriteria'] = []
+        json_ld['hasComplianceRequirement'] = []
+        json_ld['hasRiskLevel'] = 'ai:MinimalRisk'
+        json_ld['hasGPAIClassification'] = []
+
     urn = f"urn:uuid:{uuid.uuid4()}"
     json_ld["ai:hasUrn"] = urn
     json_ld["@id"] = urn
