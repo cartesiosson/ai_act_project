@@ -346,7 +346,7 @@ export default function GraphView() {
         });
       }
     }
-  }, [selectedSystem, store]);
+  }, [selectedSystem, store, activeFilter, searchQuery]);
 
   return (
     <div ref={containerRef} style={{ width: "100vw", height: "100vh", background: "#1a1a1a", color: "white", overflow: "hidden" }}>
