@@ -196,8 +196,7 @@ export default function SystemCard({
           "📍",
           "text-purple-600 dark:text-purple-400",
           [
-            { label: "Deployment Context(s)", values: deploymentContext },
-            { label: "Training Data Origin(s)", values: trainingDataOrigin }
+            { label: "Deployment Context(s)", values: deploymentContext }
           ]
         )}
 
@@ -209,7 +208,8 @@ export default function SystemCard({
           [
             { label: "Algorithm Type(s)", values: algorithmType },
             { label: "Model Scale", values: modelScale },
-            { label: "System Capability Criteria", values: systemCapabilityCriteria }
+            { label: "System Capability Criteria", values: systemCapabilityCriteria },
+            { label: "Training Data Origin(s)", values: trainingDataOrigin }
           ]
         )}
 

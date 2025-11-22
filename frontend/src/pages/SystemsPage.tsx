@@ -438,39 +438,21 @@ export default function SystemsPage() {
             <h2 className="text-xl font-bold">2. Deployment Context</h2>
           </div>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Where and how will this system be used? These contexts trigger specific regulatory requirements.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-gray-800 rounded p-4">
-              <label className="block font-semibold mb-2">Deployment Context(s) *</label>
-              <select
-                multiple
-                size={5}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                value={form.hasDeploymentContext}
-                onChange={e =>
-                  setForm({ ...form, hasDeploymentContext: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-                }
-              >
-                {contexts.map((c) => (
-                  <option key={c.id} value={c.id}>{c.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded p-4">
-              <label className="block font-semibold mb-2">Training Data Origin(s) *</label>
-              <select
-                multiple
-                size={5}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                value={form.hasTrainingDataOrigin}
-                onChange={e =>
-                  setForm({ ...form, hasTrainingDataOrigin: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-                }
-              >
-                {origins.map((o) => (
-                  <option key={o.id} value={o.id}>{o.label}</option>
-                ))}
-              </select>
-            </div>
+          <div className="bg-white dark:bg-gray-800 rounded p-4">
+            <label className="block font-semibold mb-2">Deployment Context(s) *</label>
+            <select
+              multiple
+              size={5}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              value={form.hasDeploymentContext}
+              onChange={e =>
+                setForm({ ...form, hasDeploymentContext: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+              }
+            >
+              {contexts.map((c) => (
+                <option key={c.id} value={c.id}>{c.label}</option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -481,7 +463,7 @@ export default function SystemsPage() {
             <h2 className="text-xl font-bold">3. Technical Factors</h2>
           </div>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Technical characteristics of your AI system that impact risk assessment.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white dark:bg-gray-800 rounded p-4">
               <label className="block font-semibold mb-2">Algorithm Type(s)</label>
               <select
@@ -528,6 +510,22 @@ export default function SystemsPage() {
               >
                 {systemCapabilityCriteria.map((c) => (
                   <option key={c.id} value={c.id}>{c.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Training Data Origin(s) *</label>
+              <select
+                multiple
+                size={4}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={form.hasTrainingDataOrigin}
+                onChange={e =>
+                  setForm({ ...form, hasTrainingDataOrigin: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {origins.map((o) => (
+                  <option key={o.id} value={o.id}>{o.label}</option>
                 ))}
               </select>
             </div>
