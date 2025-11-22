@@ -264,7 +264,7 @@ export default function GraphView() {
     const text = g
       .append("g")
       .selectAll("text")
-      .data(searchFiltered)
+      .data(nodeArray)
       .enter()
       .append("text")
       .text((d: any) => d.label)
