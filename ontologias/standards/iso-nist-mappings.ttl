@@ -1,0 +1,249 @@
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix iso: <http://ai-act.eu/iso42001#> .
+@prefix nist: <http://ai-act.eu/nist-rmf#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# ===== ISO/IEC 42001 and NIST AI RMF INTEGRATION - PHASE 3 =====
+# Alignment of EU AI Act with international standards
+# Version: 0.37.1 (2025-11-22)
+
+# ===== ISO/IEC 42001 ALIGNMENT =====
+# ISO/IEC 42001: Artificial Intelligence - Information Security Management Systems
+
+iso:AISecurityManagementSystem a owl:Class ;
+    rdfs:label "AI Security Management System"@en,
+        "Sistema de Gestión de Seguridad de IA"@es ;
+    rdfs:comment "ISO/IEC 42001 compliant security management for AI systems."@en,
+        "Sistema de gestión de seguridad cumpliendo ISO/IEC 42001."@es ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (ai:DataGovernanceRequirement ai:SecurityRequirement ai:TraceabilityRequirement)
+    ] .
+
+# ISO/IEC 42001 Requirement Mappings
+iso:AISecurityRequirement a ai:TechnicalRequirement ;
+    rdfs:label "AI Security Management (ISO 42001)"@en,
+        "Gestión de Seguridad de IA (ISO 42001)"@es ;
+    rdfs:comment "Implementation of ISO/IEC 42001 security controls for AI systems."@en ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Risk Assessment and Treatment"@en ;
+        rdfs:comment "ISO 42001 Section 8.1 - Conduct AI-specific risk assessments."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Supply Chain Security"@en ;
+        rdfs:comment "ISO 42001 Section 8.2 - Manage supplier and third-party risks."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Data and Model Security"@en ;
+        rdfs:comment "ISO 42001 Section 8.3 - Protect training data and models."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Model Monitoring and Management"@en ;
+        rdfs:comment "ISO 42001 Section 8.4 - Monitor model performance and updates."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Human Oversight and Control"@en ;
+        rdfs:comment "ISO 42001 Section 8.5 - Maintain human control and oversight."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Transparency and Documentation"@en ;
+        rdfs:comment "ISO 42001 Section 8.6 - Document all AI security decisions."@en
+    ] .
+
+# Mapping AI Act Requirements to ISO 42001
+ai:DataGovernanceRequirement owl:relatedMatch iso:AISecurityRequirement ;
+    rdfs:comment "Data governance aligns with ISO 42001 data security requirements."@en .
+
+ai:HumanOversightRequirement owl:relatedMatch iso:AISecurityRequirement ;
+    rdfs:comment "Human oversight aligns with ISO 42001 human control requirements."@en .
+
+ai:SecurityRequirement owl:relatedMatch iso:AISecurityRequirement ;
+    rdfs:comment "Direct alignment with ISO 42001 security controls."@en .
+
+# ===== NIST AI RISK MANAGEMENT FRAMEWORK =====
+# NIST AI Risk Management Framework (AI RMF)
+
+nist:AIRiskManagementFramework a owl:Class ;
+    rdfs:label "NIST AI Risk Management Framework"@en,
+        "Marco de Gestión de Riesgo de IA de NIST"@es ;
+    rdfs:comment "NIST AI RMF provides systematic approach to AI risk management."@en,
+        "El Marco de NIST proporciona enfoque sistemático para gestión de riesgo de IA."@es ;
+    rdfs:seeAlso <https://airc.nist.gov/> .
+
+# NIST RMF Core Functions Mapping
+nist:GovernanceFunction a owl:Class ;
+    rdfs:label "NIST AI RMF Governance"@en ;
+    rdfs:comment "Governance function aligns with AI Act compliance requirements."@en ;
+    owl:relatedMatch [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Governance Requirements"@en
+    ] .
+
+nist:MapFunction a owl:Class ;
+    rdfs:label "NIST AI RMF Map"@en ;
+    rdfs:comment "Mapping AI systems and risks aligns with AI Act evaluation."@en ;
+    owl:relatedMatch [
+        a ai:RiskAssessment ;
+        rdfs:label "Risk Assessment"@en
+    ] .
+
+nist:MeasureFunction a owl:Class ;
+    rdfs:label "NIST AI RMF Measure"@en ;
+    rdfs:comment "Measurement and monitoring aligns with AI Act compliance monitoring."@en ;
+    owl:relatedMatch [
+        a ai:TechnicalRequirement ;
+        rdfs:label "Performance Monitoring"@en
+    ] .
+
+nist:ManageFunction a owl:Class ;
+    rdfs:label "NIST AI RMF Manage"@en ;
+    rdfs:comment "Risk management aligns with AI Act mitigation requirements."@en ;
+    owl:relatedMatch [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Risk Mitigation"@en
+    ] .
+
+# NIST RMF Metrics Mapping
+nist:AIPerformanceMetrics a ai:TechnicalCriterion ;
+    rdfs:label "NIST AI RMF Performance Metrics"@en ;
+    rdfs:comment "NIST-recommended metrics for AI system performance evaluation."@en ;
+    ai:activatesRequirement [
+        a ai:TechnicalRequirement ;
+        rdfs:label "Accuracy Metrics"@en ;
+        rdfs:comment "NIST RMFMETRICS-PERF-001: Model accuracy and calibration."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:TechnicalRequirement ;
+        rdfs:label "Robustness Metrics"@en ;
+        rdfs:comment "NIST RMF METRICS-ROBUST-001: Adversarial robustness."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:TechnicalRequirement ;
+        rdfs:label "Fairness Metrics"@en ;
+        rdfs:comment "NIST RMF METRICS-FAIR-001: Fairness across demographic groups."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:TechnicalRequirement ;
+        rdfs:label "Transparency Metrics"@en ;
+        rdfs:comment "NIST RMF METRICS-TRANS-001: Model interpretability."@en
+    ] .
+
+# ===== AI ACT TO NIST RMF MAPPING =====
+
+ai:RiskAssessment owl:relatedMatch nist:MapFunction ;
+    rdfs:comment "AI Act risk assessment aligns with NIST Map function."@en .
+
+ai:ComplianceRequirement owl:relatedMatch nist:ManageFunction ;
+    rdfs:comment "Compliance requirements align with NIST Manage function."@en .
+
+ai:HumanOversightRequirement owl:relatedMatch nist:GovernanceFunction ;
+    rdfs:comment "Human oversight is core to NIST governance function."@en .
+
+ai:TransparencyRequirement owl:relatedMatch nist:MeasureFunction ;
+    rdfs:comment "Transparency supports measurement and monitoring (NIST Measure)."@en .
+
+# ===== COMBINED FRAMEWORK REQUIREMENTS =====
+
+iso:CombinedISONISTRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Combined ISO 42001 + NIST AI RMF"@en,
+        "Requisitos Combinados ISO 42001 + NIST"@es ;
+    rdfs:comment "Integrated requirements covering both ISO 42001 and NIST AI RMF."@en,
+        "Requisitos integrados cubriendo ISO 42001 y NIST AI RMF."@es ;
+    ai:activatesRequirement iso:AISecurityRequirement ;
+    ai:activatesRequirement nist:AIPerformanceMetrics ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Cross-Framework Governance"@en ;
+        rdfs:comment "Governance structure supporting both frameworks."@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Integrated Documentation"@en ;
+        rdfs:comment "Single documentation set supporting both ISO and NIST."@en
+    ] .
+
+# ===== NIST AI RMF CATEGORIES MAPPING =====
+
+nist:BiasesFairness a ai:RiskLevel ;
+    rdfs:label "NIST AI RMF: Biases and Fairness"@en ;
+    rdfs:comment "One of NIST AI RMF failure modes."@en ;
+    owl:relatedMatch ai:NonDiscriminationRequirement .
+
+nist:IOAcaccessibility a ai:RiskLevel ;
+    rdfs:label "NIST AI RMF: IO Accessibility"@en ;
+    rdfs:comment "Input/Output accessibility in NIST framework."@en ;
+    owl:relatedMatch ai:TransparencyRequirement .
+
+nist:DataAndPrivacy a ai:RiskLevel ;
+    rdfs:label "NIST AI RMF: Data and Privacy"@en ;
+    rdfs:comment "Data governance and privacy risks in NIST RMF."@en ;
+    owl:relatedMatch ai:DataGovernanceRequirement .
+
+nist:DataBiasInjection a ai:RiskLevel ;
+    rdfs:label "NIST AI RMF: Data Bias Injection"@en ;
+    rdfs:comment "Bias in training data per NIST RMF."@en ;
+    owl:relatedMatch ai:NonDiscriminationRequirement .
+
+nist:Cybersecurity a ai:RiskLevel ;
+    rdfs:label "NIST AI RMF: Cybersecurity"@en ;
+    rdfs:comment "Cybersecurity risks and AI systems."@en ;
+    owl:relatedMatch ai:SecurityRequirement .
+
+# ===== ISO 42001 CONTROL GROUPS MAPPING =====
+
+iso:GovernanceAndHumanOversight a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Governance Controls"@en ;
+    rdfs:comment "Governance controls per ISO/IEC 42001."@en ;
+    owl:relatedMatch ai:HumanOversightRequirement ;
+    owl:relatedMatch ai:ComplianceRequirement .
+
+iso:DataAIModelSecurityControls a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Data/Model Security"@en ;
+    rdfs:comment "Controls for data and model protection per ISO 42001."@en ;
+    owl:relatedMatch ai:DataGovernanceRequirement ;
+    owl:relatedMatch ai:SecurityRequirement .
+
+iso:InputOutputManagementControls a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Input/Output Controls"@en ;
+    rdfs:comment "Managing AI system inputs and outputs per ISO 42001."@en ;
+    owl:relatedMatch ai:TransparencyRequirement ;
+    owl:relatedMatch ai:ValidationRequirement .
+
+iso:MonitoringManagementControls a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Monitoring Controls"@en ;
+    rdfs:comment "Ongoing monitoring and management per ISO 42001."@en ;
+    owl:relatedMatch ai:TraceabilityRequirement ;
+    owl:relatedMatch ai:DocumentationRequirement .
+
+# ===== CROSS-FRAMEWORK COMPLIANCE MATRIX =====
+
+iso:ComplianceMatrix a owl:Class ;
+    rdfs:label "EU AI Act - ISO 42001 - NIST RMF Compliance Matrix"@en,
+        "Matriz de Cumplimiento AI Act - ISO 42001 - NIST RMF"@es ;
+    rdfs:comment "Single compliance assessment covering all three frameworks."@en,
+        "Evaluación única de cumplimiento cubriendo tres marcos."@es ;
+    owl:sameAs [
+        a owl:Class ;
+        rdfs:label "Tripartite Compliance Framework"@en
+    ] .
+
+# ===== INTEGRATION BENEFITS =====
+
+iso:InteroperabilityBenefit a owl:Class ;
+    rdfs:label "Standards Interoperability"@en ;
+    rdfs:comment "Benefits: Single compliance process, reduced duplication, consistent assessment."@en .
+
+# ===== END ISO/NIST MAPPINGS =====
+
+# Summary:
+# - ISO/IEC 42001 section coverage: 8.1 - 8.6
+# - NIST AI RMF core functions: 4 (Govern, Map, Measure, Manage)
+# - NIST failure modes covered: 5+
+# - Direct mappings to AI Act requirements: 15+

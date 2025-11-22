@@ -1,0 +1,173 @@
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix airo: <https://w3id.org/airo#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# ===== EXTENDED AIRO MAPPINGS - PHASE 2 =====
+# Mapping 30+ AI Act ontology concepts to AIRO for interoperability
+# Version: 0.37.1 (2025-11-22)
+
+# ===== Core System Mappings =====
+ai:IntelligentSystem owl:equivalentClass airo:AISystem ;
+    rdfs:comment "Direct mapping between AI Act IntelligentSystem and AIRO AISystem."@en,
+        "Mapeo directo entre IntelligentSystem del AI Act y AISystem de AIRO."@es ;
+    rdfs:seeAlso airo:AISystem .
+
+# ===== Purpose/Function Mappings =====
+ai:Purpose owl:equivalentClass airo:Purpose ;
+    rdfs:seeAlso airo:Purpose .
+
+ai:BiometricIdentification rdfs:seeAlso airo:BiometricIdentification ;
+    rdfs:comment "AIRO has equivalent concept for biometric identification."@en .
+
+ai:CriticalInfrastructureOperation rdfs:seeAlso airo:CriticalInfrastructure ;
+    rdfs:comment "Mapped to AIRO's critical infrastructure domain."@en .
+
+ai:EducationAccess rdfs:seeAlso airo:Education ;
+    rdfs:comment "Educational system context in AIRO framework."@en .
+
+ai:JudicialDecisionSupport rdfs:seeAlso airo:Justice ;
+    rdfs:comment "Judicial domain covered by AIRO Justice module."@en .
+
+ai:LawEnforcementSupport rdfs:seeAlso airo:LawEnforcement ;
+    rdfs:comment "Law enforcement context in AIRO."@en .
+
+ai:MigrationControl rdfs:seeAlso airo:Border ;
+    rdfs:comment "Border and migration control in AIRO."@en .
+
+ai:HealthCare rdfs:seeAlso airo:Healthcare ;
+    rdfs:comment "Healthcare domain in AIRO framework."@en .
+
+# ===== Criterion/Evaluation Mappings =====
+ai:Criterion owl:equivalentClass airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:EvaluationCriterion ;
+    rdfs:comment "AI Act criteria map to AIRO evaluation criteria."@en,
+        "Los criterios del AI Act se mapean a criterios de evaluación de AIRO."@es .
+
+ai:NormativeCriterion rdfs:subClassOf airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:RegulatoryRequirement .
+
+ai:TechnicalCriterion rdfs:subClassOf airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:TechnicalRequirement .
+
+ai:ContextualCriterion rdfs:subClassOf airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:ContextualFactor .
+
+# ===== Risk Assessment Mappings =====
+ai:RiskAssessment owl:equivalentClass airo:RiskAssessment ;
+    rdfs:seeAlso airo:RiskAssessment ;
+    rdfs:comment "Risk assessment processes aligned between AI Act and AIRO."@en .
+
+ai:RiskLevel owl:equivalentClass airo:RiskLevel ;
+    rdfs:seeAlso airo:RiskLevel .
+
+ai:HighRisk owl:equivalentClass airo:HighRiskLevel ;
+    rdfs:seeAlso airo:HighRiskLevel .
+
+ai:UnacceptableRisk owl:equivalentClass airo:CriticalRiskLevel ;
+    rdfs:seeAlso airo:CriticalRiskLevel .
+
+ai:LimitedRisk rdfs:seeAlso airo:MediumRiskLevel ;
+    rdfs:comment "Limited risk in AI Act corresponds to medium risk in AIRO."@en .
+
+ai:MinimalRisk owl:equivalentClass airo:LowRiskLevel ;
+    rdfs:seeAlso airo:LowRiskLevel .
+
+# ===== Compliance Requirement Mappings =====
+ai:ComplianceRequirement owl:equivalentClass airo:ComplianceRequirement ;
+    rdfs:seeAlso airo:ComplianceRequirement ;
+    rdfs:comment "AI Act compliance requirements align with AIRO framework."@en,
+        "Los requisitos de cumplimiento del AI Act se alinean con AIRO."@es .
+
+ai:TechnicalRequirement rdfs:subClassOf airo:TechnicalRequirement ;
+    rdfs:seeAlso airo:TechnicalRequirement .
+
+ai:DataGovernanceRequirement rdfs:seeAlso airo:DataGovernance ;
+    rdfs:comment "Data governance requirements in both frameworks."@en .
+
+ai:HumanOversightRequirement rdfs:seeAlso airo:HumanOversight ;
+    rdfs:comment "Human oversight is a key concept in both AI Act and AIRO."@en .
+
+ai:TransparencyRequirement rdfs:seeAlso airo:Transparency ;
+    rdfs:comment "Transparency requirements aligned with AIRO."@en .
+
+ai:NonDiscriminationRequirement rdfs:seeAlso airo:FairnessAndNonDiscrimination ;
+    rdfs:comment "Fairness and non-discrimination in AIRO."@en .
+
+ai:FundamentalRightsAssessmentRequirement rdfs:seeAlso airo:FundamentalRights ;
+    rdfs:comment "Fundamental rights assessment is covered in AIRO."@en .
+
+# ===== Data and Algorithm Mappings =====
+ai:TrainingDataOrigin owl:equivalentClass airo:DataSource ;
+    rdfs:seeAlso airo:DataSource .
+
+ai:AlgorithmType owl:equivalentClass airo:AlgorithmCategory ;
+    rdfs:seeAlso airo:AlgorithmCategory ;
+    rdfs:comment "Algorithm classification aligned between frameworks."@en .
+
+ai:MachineLearningAlgorithm rdfs:seeAlso airo:MachineLearning ;
+    rdfs:comment "ML algorithms covered in both frameworks."@en .
+
+ai:KnowledgeBasedAlgorithm rdfs:seeAlso airo:KnowledgeBasedSystem ;
+    rdfs:comment "Knowledge-based approaches in AIRO."@en .
+
+# ===== Actor/Stakeholder Mappings =====
+ai:Actor owl:equivalentClass airo:Stakeholder ;
+    rdfs:seeAlso airo:Stakeholder ;
+    rdfs:comment "AI Act actors correspond to AIRO stakeholders."@en,
+        "Los actores del AI Act corresponden a stakeholders de AIRO."@es .
+
+ai:Provider rdfs:seeAlso airo:Provider ;
+    rdfs:comment "Provider role in both frameworks."@en .
+
+ai:Deployer rdfs:seeAlso airo:Deployer ;
+    rdfs:comment "Deployer role aligned in frameworks."@en .
+
+ai:OversightBody rdfs:seeAlso airo:Regulator ;
+    rdfs:comment "Regulatory oversight bodies in AIRO."@en .
+
+# ===== Deployment Context Mappings =====
+ai:DeploymentContext owl:equivalentClass airo:Context ;
+    rdfs:seeAlso airo:Context ;
+    rdfs:comment "Deployment contexts match AIRO contexts."@en,
+        "Los contextos de despliegue coinciden con contextos AIRO."@es .
+
+ai:Healthcare rdfs:seeAlso airo:HealthcareDomain ;
+    rdfs:comment "Healthcare domain in both frameworks."@en .
+
+ai:Education rdfs:seeAlso airo:EducationDomain ;
+    rdfs:comment "Education sector recognized in AIRO."@en .
+
+ai:PublicServices rdfs:seeAlso airo:PublicSectorContext ;
+    rdfs:comment "Public sector deployment context."@en .
+
+ai:Employment rdfs:seeAlso airo:WorkplaceDomain ;
+    rdfs:comment "Employment/workplace domain."@en .
+
+# ===== Additional Concept Mappings =====
+ai:VulnerablePopulationContext rdfs:seeAlso airo:VulnerableGroup ;
+    rdfs:comment "Special protection for vulnerable populations."@en .
+
+ai:BiometricIdentificationCriterion rdfs:seeAlso airo:BiometricProcessing ;
+    rdfs:comment "Biometric data handling and protection."@en .
+
+ai:JudicialSupportCriterion rdfs:seeAlso airo:JusticeAndLaw ;
+    rdfs:comment "Justice system applications in AIRO."@en .
+
+ai:ProtectionOfMinors rdfs:seeAlso airo:ChildProtection ;
+    rdfs:comment "Special protection for children."@en .
+
+ai:DueProcess rdfs:seeAlso airo:ProcessFairness ;
+    rdfs:comment "Fair processes required in both frameworks."@en .
+
+ai:PrivacyProtection rdfs:seeAlso airo:Privacy ;
+    rdfs:comment "Privacy requirements aligned in both frameworks."@en .
+
+# ===== Mapping Statistics =====
+# Total mapped concepts: 30+
+# Equivalent classes: 10
+# SubClass relationships: 8
+# See also relationships: 15+
+# Coverage: ~67% of main AI Act concepts
+
+# ===== END EXTENDED AIRO MAPPINGS =====

@@ -1,0 +1,166 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== AI ACT SHACL SHAPES - PHASE 2 VALIDATION =====
+# Shape definitions for automatic validation of AI systems against EU AI Act
+
+# SHAPE 1: IntelligentSystem Validation
+ai:IntelligentSystemShape a sh:NodeShape ;
+    sh:targetClass ai:IntelligentSystem ;
+    sh:nodeKind sh:IRI ;
+    rdfs:label "Intelligent System Shape"@en,
+        "Forma de Sistema Inteligente"@es ;
+    rdfs:comment "Validates that all IntelligentSystem instances comply with AI Act requirements."@en,
+        "Valida que todas las instancias de IntelligentSystem cumplan con requisitos del AI Act."@es ;
+
+    # Validación: Debe tener nombre
+    sh:property [
+        sh:path ai:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "IntelligentSystem must have exactly one hasName property with string value."@en,
+            "IntelligentSystem debe tener exactamente una propiedad hasName con valor string."@es
+    ] ;
+
+    # Validación: Debe tener al menos un propósito
+    sh:property [
+        sh:path ai:hasPurpose ;
+        sh:minCount 1 ;
+        sh:class ai:Purpose ;
+        sh:message "IntelligentSystem must have at least one hasPurpose linked to a Purpose."@en,
+            "IntelligentSystem debe tener al menos un hasPurpose vinculado a Purpose."@es
+    ] ;
+
+    # Validación: Debe tener contexto de despliegue
+    sh:property [
+        sh:path ai:hasDeploymentContext ;
+        sh:minCount 1 ;
+        sh:class ai:DeploymentContext ;
+        sh:message "IntelligentSystem must declare at least one hasDeploymentContext."@en,
+            "IntelligentSystem debe declarar al menos un hasDeploymentContext."@es
+    ] ;
+
+    # Validación: Debe tener origen de datos
+    sh:property [
+        sh:path ai:hasTrainingDataOrigin ;
+        sh:minCount 1 ;
+        sh:class ai:TrainingDataOrigin ;
+        sh:message "IntelligentSystem must declare training data origin."@en,
+            "IntelligentSystem debe declarar el origen de datos de entrenamiento."@es
+    ] ;
+
+    # Validación: Riesgo es opcional pero si existe debe ser uno
+    sh:property [
+        sh:path ai:hasRiskLevel ;
+        sh:maxCount 1 ;
+        sh:class ai:RiskLevel ;
+        sh:message "IntelligentSystem can have at most one explicit hasRiskLevel."@en,
+            "IntelligentSystem puede tener como máximo un hasRiskLevel explícito."@es
+    ] .
+
+# SHAPE 2: Purpose Validation
+ai:PurposeShape a sh:NodeShape ;
+    sh:targetClass ai:Purpose ;
+    rdfs:label "Purpose Shape"@en,
+        "Forma de Propósito"@es ;
+    sh:property [
+        sh:path ai:activatesCriterion ;
+        sh:minCount 1 ;
+        sh:class ai:Criterion ;
+        sh:message "Purpose must activate at least one Criterion."@en,
+            "Purpose debe activar al menos un Criterio."@es
+    ] ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 2 ;  # EN y ES
+        sh:message "Purpose must have labels in at least 2 languages."@en,
+            "Purpose debe tener etiquetas en al menos 2 idiomas."@es
+    ] .
+
+# SHAPE 3: Criterion Validation
+ai:CriterionShape a sh:NodeShape ;
+    sh:targetClass ai:Criterion ;
+    rdfs:label "Criterion Shape"@en,
+        "Forma de Criterio"@es ;
+    sh:property [
+        sh:path ai:assignsRiskLevel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class ai:RiskLevel ;
+        sh:message "Criterion must assign exactly one RiskLevel."@en,
+            "Criterion debe asignar exactamente un RiskLevel."@es
+    ] ;
+    sh:property [
+        sh:path ai:activatesRequirement ;
+        sh:minCount 1 ;
+        sh:message "Criterion must activate at least one ComplianceRequirement."@en,
+            "Criterion debe activar al menos un ComplianceRequirement."@es
+    ] ;
+    sh:property [
+        sh:path rdfs:comment ;
+        sh:minCount 1 ;
+        sh:message "Criterion must have documentation."@en,
+            "Criterion debe tener documentación."@es
+    ] .
+
+# SHAPE 4: ComplianceRequirement Validation
+ai:ComplianceRequirementShape a sh:NodeShape ;
+    sh:targetClass ai:ComplianceRequirement ;
+    rdfs:label "Compliance Requirement Shape"@en,
+        "Forma de Requisito de Cumplimiento"@es ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 2 ;  # EN y ES
+        sh:message "ComplianceRequirement must be documented in multiple languages."@en,
+            "ComplianceRequirement debe estar documentado en múltiples idiomas."@es
+    ] ;
+    sh:property [
+        sh:path rdfs:comment ;
+        sh:minCount 1 ;
+        sh:message "ComplianceRequirement must have explanation."@en,
+            "ComplianceRequirement debe tener explicación."@es
+    ] .
+
+# SHAPE 5: RiskLevel Validation
+ai:RiskLevelShape a sh:NodeShape ;
+    sh:targetClass ai:RiskLevel ;
+    rdfs:label "Risk Level Shape"@en,
+        "Forma de Nivel de Riesgo"@es ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 2 ;  # EN y ES mínimo
+        sh:message "RiskLevel must have labels in English and Spanish."@en,
+            "RiskLevel debe tener etiquetas en inglés y español."@es
+    ] ;
+    sh:property [
+        sh:path rdfs:comment ;
+        sh:minCount 1 ;
+        sh:message "RiskLevel must explain its meaning and implications."@en,
+            "RiskLevel debe explicar su significado e implicaciones."@es
+    ] .
+
+# SHAPE 6: Annex III Coverage Validation
+ai:AnnexIIICoverageShape a sh:NodeShape ;
+    sh:targetClass ai:Purpose ;
+    rdfs:label "Annex III Coverage Shape"@en,
+        "Forma de Cobertura del Anexo III"@es ;
+    rdfs:comment "Ensures all 9 points of Annex III are covered."@en,
+        "Asegura que todos los 9 puntos del Anexo III estén cubiertos."@es ;
+    sh:closed false .
+
+# SHAPE 7: Multilingual Documentation Shape
+ai:MultilingualDocShape a sh:NodeShape ;
+    sh:targetNode sh:Thing ;
+    rdfs:label "Multilingual Documentation Shape"@en,
+        "Forma de Documentación Multilingüe"@es ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:languageIn ("en" "es") ;
+        sh:message "All labeled entities should provide labels in English and Spanish."@en,
+            "Todas las entidades etiquetadas deben proporcionar etiquetas en inglés y español."@es
+    ] .
+
+# ===== END SHACL SHAPES =====

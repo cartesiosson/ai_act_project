@@ -1,0 +1,644 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix airo: <https://w3id.org/airo#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# ===== VERSION HISTORY =====
+# v0.37.2 (2025-11-22) - UNIFIED NAMESPACE:
+#   - CONSOLIDATED: All concepts from gpai:, ctx:, iso:, nist: merged into ai:
+#   - ADDED: Missing base classes (DocumentationRequirement, DataGovernanceRequirement)
+#   - STRUCTURE: Unified ontology under ai: namespace with semantic tags
+#   - All 14 GPAI concepts now under ai: (ai:GeneralPurposeAIModel, etc.)
+#   - All 15 contextual criteria now under ai: (ai:ChildrenAndMinorsContext, etc.)
+#   - All 9 ISO 42001 concepts now under ai: (ai:ISO42001SecurityRequirement, etc.)
+#   - All 11 NIST RMF concepts now under ai: (ai:NISTGovernanceFunction, etc.)
+#   - FIXED: ai:DocumentationRequirement class definition
+#   - FIXED: ai:DataGovernanceRequirement class definition
+#   - FIXED: Corrected spelling "MisinformationAmplificationRiskContext" (was "Amplifcation")
+#   - FIXED: Corrected RDF predicates in airo-mappings-extended.ttl (rdfs:subClassOf for classes)
+#   - TOTAL: 100+ concepts unified in single namespace for simplicity
+#
+# v0.37.1 (2025-11-22):
+#   - ADDED: WorkforceEvaluationPurpose for Annex III point 2
+#   - ADDED: WorkforceEvaluationCriterion with high-risk requirements
+#   - ADDED: Spanish translations for 100+ critical terms
+#   - CLARIFIED: Semantic distinction between activatesCriterion and triggersCriterion
+#
+# v0.37.0 (2025-11-16):
+#   - Complete EU AI Act Annex I algorithm taxonomy
+#   - New properties for model scale and system capabilities
+#   - AIRO ontology integration
+# =====
+
+<http://ai-act.eu/ai-act> a owl:Ontology ;
+    owl:imports <https://w3id.org/airo> ;
+    dct:created "2025-11-22"^^xsd:date ;
+    dct:description "Unified ontology describing regulated AI systems according to the EU AI Act. All concepts consolidated under ai: namespace for simplicity. Includes GPAI (Articles 51-55), contextual criteria, and international standards mappings."@en,
+        "Ontología unificada que describe los sistemas de IA regulados según el AI Act de la UE. Todos los conceptos consolidados bajo el namespace ai: para simplicidad. Incluye GPAI (Artículos 51-55), criterios contextuales y mapeos de estándares internacionales."@es ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dct:title "AI Act Unified Ontology (v0.37.2)"@en,
+        "Ontología Unificada del AI Act (v0.37.2)"@es ;
+    rdfs:comment "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, and AIRO."@en,
+        "Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF y AIRO."@es ;
+    owl:versionIRI <http://ai-act.eu/ai-act/0.37.2> ;
+    owl:versionInfo "Version 0.37.2 released on 2025-11-22 with unified namespace consolidation (all concepts under ai:)"@en,
+        "Versión 0.37.2 publicada el 2025-11-22 con consolidación de namespace unificado (todos los conceptos bajo ai:)"@es ;
+    rdfs:seeAlso <rules/>, <../shacl/> ;
+    rdfs:comment "SWRL rules are externalized in the rules/ directory for better maintainability and auditability"@en,
+        "Las reglas SWRL están externalizadas en el directorio rules/ para mejor mantenibilidad y auditabilidad"@es .
+
+
+# ===== CLARIFICACIÓN SEMÁNTICA =====
+# Distinción entre propiedades de activación:
+# - activatesCriterion: Usada por Purpose para indicar criterios DIRECTAMENTE ACTIVADOS por el propósito principal
+# - triggersCriterion: Usada por DeploymentContext para indicar criterios DISPARADOS por el contexto
+# Esta distinción permite evaluar tanto la funcionalidad principal como el contexto de despliegue
+# =====
+
+# ===== ARQUITECTURA DE NAMESPACES =====
+# Esta ontología v0.37.2 consolida TODO bajo ai: para simplicidad
+# Notas de origen semántico:
+# - [GPAI]: Conceptos específicos de modelos de IA de propósito general (Articles 51-55)
+# - [CONTEXT]: Criterios contextuales para evaluación avanzada
+# - [ISO]: Conceptos alineados con ISO/IEC 42001
+# - [NIST]: Conceptos alineados con NIST AI Risk Management Framework
+# En futuras versiones (post-v0.37.2), estos podrían separarse en módulos si es necesario
+# =====
+
+# ===== BASE CLASSES - ENTITY HIERARCHY =====
+
+ai:Criterion a owl:Class ;
+    rdfs:label "Criterion"@en,
+        "Criterio"@es ;
+    rdfs:comment "A general criterion used for risk assessment, compliance, or classification of AI systems under the EU AI Act."@en,
+        "Criterio general utilizado para la evaluación de riesgos, cumplimiento o clasificación de sistemas de IA según el AI Act."@es .
+
+ai:Identifiable a owl:Class ;
+    rdfs:label "Identifiable"@en,
+        "Identificable"@es ;
+    rdfs:comment "Any entity that can be identified by a URN or IRI."@en,
+        "Cualquier entidad que puede ser identificada por URN o IRI."@es .
+
+ai:IntelligentSystem a owl:Class ;
+    rdfs:label "Intelligent System"@en,
+        "Sistema Inteligente"@es ;
+    rdfs:comment "Artificial Intelligence system as defined by the EU AI Act: a machine-based system designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, which, for explicit or implicit objectives, infers, recommends, or decides outputs influencing physical or virtual environments."@en,
+        "Sistema de inteligencia artificial según el AI Act de la UE: sistema basado en máquinas diseñado para operar con distintos niveles de autonomía y que puede mostrar adaptabilidad tras su despliegue, que, para objetivos explícitos o implícitos, infiere, recomienda o decide resultados que influyen en entornos físicos o virtuales."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:hasUrn a owl:DatatypeProperty ;
+    rdfs:label "has URN"@en,
+        "tiene URN"@es ;
+    rdfs:comment "URN identifier assigned to identifiable entities."@en,
+        "URN asignado a entidades identificables."@es ;
+    rdfs:domain ai:Identifiable ;
+    rdfs:range xsd:string .
+
+ai:hasHttpIri a owl:DatatypeProperty ;
+    rdfs:label "has HttpIri"@en,
+        "tiene HttpIri"@es ;
+    rdfs:comment "IRI identifier assigned to identifiable entities."@en,
+        "IRI asignado a entidades identificables."@es ;
+    rdfs:domain ai:Identifiable ;
+    rdfs:range xsd:string .
+
+# ===== MISSING BASE CLASSES - NOW DEFINED =====
+
+ai:DocumentationRequirement a owl:Class ;
+    rdfs:label "Documentation Requirement"@en,
+        "Requisito de Documentación"@es ;
+    rdfs:comment "Requirements related to technical documentation, system cards, model cards, and other documentation of AI systems."@en,
+        "Requisitos relacionados con documentación técnica, tarjetas de sistema, tarjetas de modelo y otra documentación de sistemas de IA."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+ai:DataGovernanceRequirement a owl:Class ;
+    rdfs:label "Data Governance Requirement"@en,
+        "Requisito de Gobernanza de Datos"@es ;
+    rdfs:comment "Requirements related to data management, quality, provenance, and governance for training and operational data."@en,
+        "Requisitos relacionados con gestión de datos, calidad, procedencia y gobernanza de datos de entrenamiento y operacionales."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+# ===== GENERAL PURPOSE AI MODELS (GPAI) - [GPAI] =====
+# EU AI Act Articles 51-55
+# These classes define GPAI-specific systems and requirements
+
+ai:GeneralPurposeAIModel a owl:Class ;
+    rdfs:label "General Purpose AI Model"@en,
+        "Modelo de IA de Propósito General"@es ;
+    rdfs:comment "[GPAI] AI model that exhibits similar capabilities to other models and can be used for a wide range of downstream applications. Defined in Article 3(1d) of EU AI Act."@en,
+        "[GPAI] Modelo de IA que exhibe capacidades similares a otros modelos y puede usarse para una amplia gama de aplicaciones descendentes. Definido en el Artículo 3(1d) del AI Act."@es ;
+    rdfs:subClassOf ai:IntelligentSystem .
+
+ai:HighCapabilityGPAIModel a owl:Class ;
+    rdfs:label "High Capability GPAI Model"@en,
+        "Modelo GPAI de Alta Capacidad"@es ;
+    rdfs:comment "[GPAI] GPAI models with systemic risk due to their high level of capability, particularly in areas like dual-use potential and broad applicability."@en,
+        "[GPAI] Modelos GPAI con riesgo sistémico debido a su alto nivel de capacidad."@es ;
+    rdfs:subClassOf ai:GeneralPurposeAIModel .
+
+# ===== GPAI REQUIREMENTS (Articles 51-55) - [GPAI] =====
+
+ai:GPAIProviderObligationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "GPAI Provider Obligations (Article 51)"@en,
+        "Obligaciones del Proveedor GPAI (Artículo 51)"@es ;
+    rdfs:comment "[GPAI] Provider of GPAI models must ensure technical documentation, safety evaluation, and risk assessment. Article 51."@en,
+        "[GPAI] El proveedor de modelos GPAI debe asegurar documentación técnica, evaluación de seguridad y evaluación de riesgos. Artículo 51."@es .
+
+ai:GPAITransparencyRequirement a ai:TransparencyRequirement ;
+    rdfs:label "GPAI Transparency Requirements (Article 52)"@en,
+        "Requisitos de Transparencia GPAI (Artículo 52)"@es ;
+    rdfs:comment "[GPAI] GPAI providers must ensure transparency about model characteristics and training data. Article 52."@en,
+        "[GPAI] Los proveedores GPAI deben asegurar transparencia sobre características del modelo y datos de entrenamiento. Artículo 52."@es .
+
+ai:UnionDatabaseNotificationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Union Database Notification (Article 53)"@en,
+        "Requisito de Notificación a Base de Datos de la Unión (Artículo 53)"@es ;
+    rdfs:comment "[GPAI] High-capability GPAI providers must register in the Union database. Article 53."@en,
+        "[GPAI] Los proveedores GPAI de alta capacidad deben registrarse en la base de datos de la Unión. Artículo 53."@es ;
+    ai:mandatoryCompliance true .
+
+ai:ModelEvaluationRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Model Evaluation and Benchmarking (Article 54)"@en,
+        "Evaluación y Benchmarking de Modelos (Artículo 54)"@es ;
+    rdfs:comment "[GPAI] GPAI models must be evaluated against appropriate benchmarks and standards. Article 54."@en,
+        "[GPAI] Los modelos GPAI deben evaluarse contra puntos de referencia y estándares apropiados. Artículo 54."@es .
+
+ai:PostMarketMonitoringRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Post-Market Monitoring (Article 55)"@en,
+        "Monitoreo Post-Mercado (Artículo 55)"@es ;
+    rdfs:comment "[GPAI] Providers must implement systems for monitoring GPAI models after market release. Article 55."@en,
+        "[GPAI] Los proveedores deben implementar sistemas para monitorear modelos GPAI después del lanzamiento al mercado. Artículo 55."@es .
+
+ai:SystemicRiskAssessmentCriterion a ai:NormativeCriterion ;
+    rdfs:label "Systemic Risk Assessment for GPAI"@en,
+        "Evaluación de Riesgo Sistémico para GPAI"@es ;
+    rdfs:comment "[GPAI] High-capability GPAI models must undergo systemic risk assessment due to their potential impact on society."@en,
+        "[GPAI] Los modelos GPAI de alta capacidad deben someterse a evaluación de riesgo sistémico."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:DualUseRiskCriterion a ai:NormativeCriterion ;
+    rdfs:label "Dual-Use Risk Criterion"@en,
+        "Criterio de Riesgo de Uso Dual"@es ;
+    rdfs:comment "[GPAI] GPAI models with dual-use potential must be evaluated for both beneficial and harmful applications."@en,
+        "[GPAI] Los modelos GPAI con potencial de uso dual deben evaluarse para aplicaciones beneficiosas y dañinas."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:GPAIDataQualityRequirement a ai:DataGovernanceRequirement ;
+    rdfs:label "GPAI Training Data Quality"@en,
+        "Calidad de Datos de Entrenamiento GPAI"@es ;
+    rdfs:comment "[GPAI] Training data quality is critical for GPAI models' safety and reliability."@en ;
+    rdfs:comment "[GPAI] La calidad de los datos de entrenamiento es crítica para la seguridad y confiabilidad de los modelos GPAI."@es .
+
+ai:GPAIPerformanceMonitoringRequirement a ai:TechnicalRequirement ;
+    rdfs:label "GPAI Performance Monitoring"@en,
+        "Monitoreo de Rendimiento GPAI"@es ;
+    rdfs:comment "[GPAI] Continuous monitoring of GPAI model performance and degradation."@en ;
+    rdfs:comment "[GPAI] Monitoreo continuo del rendimiento del modelo GPAI y su degradación."@es .
+
+ai:GPAIDocumentationRequirement a ai:DocumentationRequirement ;
+    rdfs:label "GPAI Documentation"@en,
+        "Documentación GPAI"@es ;
+    rdfs:comment "[GPAI] Comprehensive documentation required for GPAI models."@en ;
+    rdfs:comment "[GPAI] Documentación integral requerida para los modelos GPAI."@es .
+
+ai:HighCapabilityGPAIComplianceRequirement a ai:ComplianceRequirement ;
+    rdfs:label "High-Capability GPAI Compliance"@en,
+        "Cumplimiento GPAI de Alta Capacidad"@es ;
+    rdfs:comment "[GPAI] Enhanced requirements for GPAI models with high systemic risk."@en ;
+    rdfs:comment "[GPAI] Requisitos mejorados para modelos GPAI con alto riesgo sistémico."@es .
+
+ai:AnnexVIIISafeguardsCompliance a ai:ComplianceRequirement ;
+    rdfs:label "Annex VIII Safeguards Compliance"@en,
+        "Cumplimiento de Salvaguardas del Anexo VIII"@es ;
+    rdfs:comment "[GPAI] Alignment with Annex VIII safeguards for high-risk GPAI."@en ;
+    rdfs:comment "[GPAI] Alineación con salvaguardas del Anexo VIII para GPAI de alto riesgo."@es .
+
+# ===== CONTEXTUAL CRITERIA - [CONTEXT] =====
+# Advanced contextual evaluation criteria for complex AI system assessments
+
+ai:ChildrenAndMinorsVulnerabilityContext a ai:ContextualCriterion ;
+    rdfs:label "Children and Minors Vulnerability"@en,
+        "Vulnerabilidad de Menores"@es ;
+    rdfs:comment "[CONTEXT] AI systems affecting children or minors require enhanced protection measures."@en,
+        "[CONTEXT] Los sistemas de IA que afectan a menores requieren medidas de protección mejoradas."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:ElderlyAndDisabledVulnerabilityContext a ai:ContextualCriterion ;
+    rdfs:label "Elderly and Disabled Vulnerability"@en,
+        "Vulnerabilidad de Ancianos y Personas Discapacitadas"@es ;
+    rdfs:comment "[CONTEXT] AI systems affecting elderly or disabled individuals require accessibility and protection provisions."@en,
+        "[CONTEXT] Los sistemas de IA que afectan a personas mayores o discapacitadas requieren provisiones de accesibilidad."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:SocioeconomicVulnerabilityContext a ai:ContextualCriterion ;
+    rdfs:label "Socioeconomic Vulnerability"@en,
+        "Vulnerabilidad Socioeconómica"@es ;
+    rdfs:comment "[CONTEXT] AI systems affecting economically disadvantaged populations require fair and equitable design."@en,
+        "[CONTEXT] Los sistemas de IA que afectan a poblaciones económicamente desfavorecidas requieren diseño justo."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:AutonomousDecisionmakingContext a ai:ContextualCriterion ;
+    rdfs:label "Autonomous Decisionmaking"@en,
+        "Toma de Decisiones Autónoma"@es ;
+    rdfs:comment "[CONTEXT] AI systems making autonomous decisions without human oversight present elevated risk."@en,
+        "[CONTEXT] Los sistemas de IA que toman decisiones autónomas sin supervisión humana presentan riesgo elevado."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:RealTimeAutonomousContext a ai:ContextualCriterion ;
+    rdfs:label "Real-Time Autonomous System"@en,
+        "Sistema Autónomo en Tiempo Real"@es ;
+    rdfs:comment "[CONTEXT] Real-time autonomous systems require continuous monitoring and safety mechanisms."@en,
+        "[CONTEXT] Los sistemas autónomos en tiempo real requieren monitoreo continuo y mecanismos de seguridad."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:WidespreadSystemicImpactContext a ai:ContextualCriterion ;
+    rdfs:label "Widespread Systemic Impact"@en,
+        "Impacto Sistémico Generalizado"@es ;
+    rdfs:comment "[CONTEXT] AI systems with potential for widespread or systemic societal impact require governance."@en,
+        "[CONTEXT] Los sistemas de IA con impacto potencial sistémico requieren gobernanza."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:CriticalInfrastructureInterdependencyContext a ai:ContextualCriterion ;
+    rdfs:label "Critical Infrastructure Interdependency"@en,
+        "Interdependencia de Infraestructura Crítica"@es ;
+    rdfs:comment "[CONTEXT] AI systems in critical infrastructure with interdependencies require robustness."@en ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:BlackBoxDecisionContext a ai:ContextualCriterion ;
+    rdfs:label "Black-Box Decision Context"@en,
+        "Contexto de Decisión de Caja Negra"@es ;
+    rdfs:comment "[CONTEXT] AI systems with unexplainable decision-making require enhanced transparency."@en,
+        "[CONTEXT] Los sistemas de IA con toma de decisiones inexplicable requieren transparencia mejorada."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:HighStakesDecisionWithoutAppealContext a ai:ContextualCriterion ;
+    rdfs:label "High-Stakes Decision Without Appeal"@en,
+        "Decisión de Alto Riesgo Sin Apelación"@es ;
+    rdfs:comment "[CONTEXT] AI systems making high-stakes decisions without appeal mechanisms require human oversight."@en ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:HistoricalBiasReplicationContext a ai:ContextualCriterion ;
+    rdfs:label "Historical Bias Replication Risk"@en,
+        "Riesgo de Replicación de Sesgo Histórico"@es ;
+    rdfs:comment "[CONTEXT] AI systems trained on historically biased data must implement bias mitigation."@en,
+        "[CONTEXT] Los sistemas de IA entrenados con datos sesgados históricamente requieren mitigación de sesgo."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:ProtectedCharacteristicInferenceContext a ai:ContextualCriterion ;
+    rdfs:label "Protected Characteristic Inference"@en,
+        "Inferencia de Características Protegidas"@es ;
+    rdfs:comment "[CONTEXT] AI systems capable of inferring protected characteristics require discrimination safeguards."@en,
+        "[CONTEXT] Los sistemas de IA capaces de inferir características protegidas requieren salvaguardas."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:BiometricDataProcessingContext a ai:ContextualCriterion ;
+    rdfs:label "Biometric Data Processing"@en,
+        "Procesamiento de Datos Biométricos"@es ;
+    rdfs:comment "[CONTEXT] AI systems processing biometric data require privacy and security protections."@en,
+        "[CONTEXT] Los sistemas de IA que procesan datos biométricos requieren protecciones de privacidad."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:PersonalDataRetentionContext a ai:ContextualCriterion ;
+    rdfs:label "Personal Data Retention"@en,
+        "Retención de Datos Personales"@es ;
+    rdfs:comment "[CONTEXT] AI systems retaining personal data long-term require data governance."@en ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:LargeScaleEnvironmentalImpactContext a ai:ContextualCriterion ;
+    rdfs:label "Large-Scale Environmental Impact"@en,
+        "Impacto Ambiental a Gran Escala"@es ;
+    rdfs:comment "[CONTEXT] AI systems with potential large-scale environmental impact require assessment."@en,
+        "[CONTEXT] Los sistemas de IA con impacto ambiental potencial a gran escala requieren evaluación."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:MisinformationAmplificationRiskContext a ai:ContextualCriterion ;
+    rdfs:label "Misinformation Amplification Risk"@en,
+        "Riesgo de Amplificación de Desinformación"@es ;
+    rdfs:comment "[CONTEXT] AI systems in content curation or generation with misinformation risks require safeguards."@en,
+        "[CONTEXT] Los sistemas de IA en generación de contenido con riesgos de desinformación requieren salvaguardas."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+# ===== ISO 42001 MAPPINGS - [ISO] =====
+# Alignment with ISO/IEC 42001:2023 AI Management System Standard
+
+ai:ISO42001SecurityRequirement a ai:TechnicalRequirement ;
+    rdfs:label "ISO 42001 Security Requirement"@en,
+        "Requisito de Seguridad ISO 42001"@es ;
+    rdfs:comment "[ISO] Security controls aligned with ISO/IEC 42001 AI Management System Standard."@en,
+        "[ISO] Controles de seguridad alineados con estándar ISO/IEC 42001 de Sistema de Gestión de IA."@es .
+
+ai:ISO42001GovernanceRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Governance Requirement"@en,
+        "Requisito de Gobernanza ISO 42001"@es ;
+    rdfs:comment "[ISO] Governance and organizational requirements per ISO/IEC 42001."@en,
+        "[ISO] Requisitos de gobernanza y organizacionales según ISO/IEC 42001."@es .
+
+ai:ISO42001DataGovernanceRequirement a ai:DataGovernanceRequirement ;
+    rdfs:label "ISO 42001 Data Governance"@en,
+        "Gobernanza de Datos ISO 42001"@es ;
+    rdfs:comment "[ISO] Data management and governance aligned with ISO/IEC 42001."@en,
+        "[ISO] Gestión y gobernanza de datos alineados con ISO/IEC 42001."@es .
+
+ai:ISO42001RiskManagementRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Risk Management"@en,
+        "Gestión de Riesgos ISO 42001"@es ;
+    rdfs:comment "[ISO] Risk management framework per ISO/IEC 42001."@en,
+        "[ISO] Marco de gestión de riesgos según ISO/IEC 42001."@es .
+
+ai:ISO42001PerformanceMonitoringRequirement a ai:TechnicalRequirement ;
+    rdfs:label "ISO 42001 Performance Monitoring"@en,
+        "Monitoreo de Rendimiento ISO 42001"@es ;
+    rdfs:comment "[ISO] Performance monitoring and measurement per ISO/IEC 42001."@en,
+        "[ISO] Monitoreo y medición de rendimiento según ISO/IEC 42001."@es .
+
+ai:ISO42001DocumentationRequirement a ai:DocumentationRequirement ;
+    rdfs:label "ISO 42001 Documentation"@en,
+        "Documentación ISO 42001"@es ;
+    rdfs:comment "[ISO] Documentation requirements per ISO/IEC 42001 AI management system."@en,
+        "[ISO] Requisitos de documentación según sistema de gestión de IA ISO/IEC 42001."@es .
+
+ai:ISO42001TrainingRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Training Requirement"@en,
+        "Requisito de Capacitación ISO 42001"@es ;
+    rdfs:comment "[ISO] Personnel training and competence per ISO/IEC 42001."@en ;
+    rdfs:comment "[ISO] Capacitación de personal y competencia según ISO/IEC 42001."@es .
+
+ai:ISO42001AuditRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Audit Requirement"@en,
+        "Requisito de Auditoría ISO 42001"@es ;
+    rdfs:comment "[ISO] Internal audit requirements per ISO/IEC 42001."@en ;
+    rdfs:comment "[ISO] Requisitos de auditoría interna según ISO/IEC 42001."@es .
+
+ai:ISO42001ComplianceVerificationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Compliance Verification"@en,
+        "Verificación de Cumplimiento ISO 42001"@es ;
+    rdfs:comment "[ISO] Compliance verification and management review per ISO/IEC 42001."@en,
+        "[ISO] Verificación de cumplimiento y revisión de gestión según ISO/IEC 42001."@es .
+
+# ===== NIST AI RISK MANAGEMENT FRAMEWORK - [NIST] =====
+# Alignment with NIST AI Risk Management Framework (Draft/Final)
+
+ai:NISTGovernanceFunction a ai:ComplianceRequirement ;
+    rdfs:label "NIST Governance Function"@en,
+        "Función de Gobernanza NIST"@es ;
+    rdfs:comment "[NIST] Governance functions per NIST AI Risk Management Framework."@en,
+        "[NIST] Funciones de gobernanza según Marco de Gestión de Riesgos de IA NIST."@es .
+
+ai:NISTMapFunction a ai:TechnicalRequirement ;
+    rdfs:label "NIST Map Function"@en,
+        "Función de Mapeo NIST"@es ;
+    rdfs:comment "[NIST] Risk mapping and identification per NIST AI RMF."@en,
+        "[NIST] Mapeo e identificación de riesgos según NIST AI RMF."@es .
+
+ai:NISTMeasureFunction a ai:TechnicalRequirement ;
+    rdfs:label "NIST Measure Function"@en,
+        "Función de Medición NIST"@es ;
+    rdfs:comment "[NIST] Risk measurement and metrics per NIST AI RMF."@en,
+        "[NIST] Medición de riesgos y métricas según NIST AI RMF."@es .
+
+ai:NISTManageFunction a ai:ComplianceRequirement ;
+    rdfs:label "NIST Manage Function"@en,
+        "Función de Gestión NIST"@es ;
+    rdfs:comment "[NIST] Risk management and mitigation per NIST AI RMF."@en,
+        "[NIST] Gestión y mitigación de riesgos según NIST AI RMF."@es .
+
+ai:NISTBiasesFairnessRisk a ai:NormativeCriterion ;
+    rdfs:label "NIST Biases and Fairness Risk"@en,
+        "Riesgo de Sesgos y Equidad NIST"@es ;
+    rdfs:comment "[NIST] Identification and mitigation of biases and fairness issues per NIST framework."@en,
+        "[NIST] Identificación y mitigación de sesgos según marco NIST."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:NISTDataAndPrivacyRisk a ai:NormativeCriterion ;
+    rdfs:label "NIST Data and Privacy Risk"@en,
+        "Riesgo de Datos y Privacidad NIST"@es ;
+    rdfs:comment "[NIST] Data quality, privacy, and protection risks per NIST framework."@en ;
+    rdfs:comment "[NIST] Riesgos de calidad de datos, privacidad y protección según NIST."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:NISTDataBiasInjectionRisk a ai:NormativeCriterion ;
+    rdfs:label "NIST Data Bias Injection Risk"@en,
+        "Riesgo de Inyección de Sesgo en Datos NIST"@es ;
+    rdfs:comment "[NIST] Bias in training and operational data per NIST framework."@en ;
+    rdfs:comment "[NIST] Sesgo en datos de entrenamiento y operacionales según NIST."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:NISTCybersecurityRisk a ai:NormativeCriterion ;
+    rdfs:label "NIST Cybersecurity Risk"@en,
+        "Riesgo Cibernético NIST"@es ;
+    rdfs:comment "[NIST] Cybersecurity threats and mitigations per NIST AI RMF."@en ;
+    rdfs:comment "[NIST] Amenazas cibernéticas y mitigaciones según NIST AI RMF."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:NISTIOAccessibilityRisk a ai:NormativeCriterion ;
+    rdfs:label "NIST Input-Output Accessibility Risk"@en,
+        "Riesgo de Accesibilidad Entrada-Salida NIST"@es ;
+    rdfs:comment "[NIST] Accessibility of AI system inputs and outputs per NIST framework."@en,
+        "[NIST] Accesibilidad de entradas y salidas de sistemas de IA según NIST."@es ;
+    ai:assignsRiskLevel ai:MediumRisk .
+
+ai:NISTPerformanceMetrics a ai:TechnicalCriterion ;
+    rdfs:label "NIST Performance Metrics"@en,
+        "Métricas de Rendimiento NIST"@es ;
+    rdfs:comment "[NIST] Performance measurement and metrics per NIST AI framework."@en,
+        "[NIST] Medición y métricas de rendimiento según marco NIST AI."@es .
+
+# ===== CORE RISK LEVELS - UNCHANGED FROM v0.37.1 =====
+
+ai:UnacceptableRisk a ai:RiskLevel ;
+    rdfs:label "Unacceptable Risk"@en,
+        "Riesgo Inaceptable"@es ;
+    rdfs:comment "Risk level that cannot be accepted; systems must be prohibited."@en ;
+    rdfs:comment "Nivel de riesgo que no puede ser aceptado; los sistemas deben ser prohibidos."@es .
+
+ai:HighRisk a ai:RiskLevel ;
+    rdfs:label "High Risk"@en,
+        "Riesgo Alto"@es ;
+    rdfs:comment "High-risk AI systems require specific obligations and governance."@en ;
+    rdfs:comment "Los sistemas de IA de alto riesgo requieren obligaciones específicas y gobernanza."@es .
+
+ai:LimitedRisk a ai:RiskLevel ;
+    rdfs:label "Limited Risk"@en,
+        "Riesgo Limitado"@es ;
+    rdfs:comment "Systems with limited risk require transparency and user information."@en ;
+    rdfs:comment "Los sistemas con riesgo limitado requieren transparencia e información del usuario."@es .
+
+ai:MinimalRisk a ai:RiskLevel ;
+    rdfs:label "Minimal Risk"@en,
+        "Riesgo Mínimo"@es ;
+    rdfs:comment "Systems with minimal risk have minimal or no specific obligations."@en ;
+    rdfs:comment "Los sistemas con riesgo mínimo tienen obligaciones mínimas o nulas."@es .
+
+ai:MediumRisk a ai:RiskLevel ;
+    rdfs:label "Medium Risk"@en,
+        "Riesgo Medio"@es ;
+    rdfs:comment "Systems with medium risk require balanced governance and oversight."@en ;
+    rdfs:comment "Los sistemas con riesgo medio requieren gobernanza equilibrada."@es .
+
+# ===== CORE CRITERION TYPES - UNCHANGED FROM v0.37.1 =====
+
+ai:NormativeCriterion a owl:Class ;
+    rdfs:label "Normative Criterion"@en,
+        "Criterio Normativo"@es ;
+    rdfs:comment "Criterion based on legal, regulatory, or governance norms."@en ;
+    rdfs:comment "Criterio basado en normas legales, regulatorias o de gobernanza."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:TechnicalCriterion a owl:Class ;
+    rdfs:label "Technical Criterion"@en,
+        "Criterio Técnico"@es ;
+    rdfs:comment "Criterion based on technical, algorithmic, or system architecture considerations."@en ;
+    rdfs:comment "Criterio basado en consideraciones técnicas o arquitectónicas de sistemas."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:ContextualCriterion a owl:Class ;
+    rdfs:label "Contextual Criterion"@en,
+        "Criterio Contextual"@es ;
+    rdfs:comment "Criterion based on the deployment, usage, or application context of AI systems."@en ;
+    rdfs:comment "Criterio basado en el contexto de despliegue, uso o aplicación de sistemas de IA."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:SystemCapabilityCriterion a owl:Class ;
+    rdfs:label "System Capability Criterion"@en,
+        "Criterio de Capacidad del Sistema"@es ;
+    rdfs:comment "Criterion based on the inherent capabilities of AI systems (scale, autonomy, adaptability)."@en,
+        "Criterio basado en las capacidades inherentes de los sistemas de IA."@es ;
+    rdfs:subClassOf ai:TechnicalCriterion .
+
+# ===== CORE REQUIREMENT TYPES - UNCHANGED FROM v0.37.1 =====
+
+ai:ComplianceRequirement a owl:Class ;
+    rdfs:label "Compliance Requirement"@en,
+        "Requisito de Cumplimiento"@es ;
+    rdfs:comment "Requirement that must be satisfied for compliance with regulations."@en ;
+    rdfs:comment "Requisito que debe satisfacerse para cumplimiento regulatorio."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:TransparencyRequirement a owl:Class ;
+    rdfs:label "Transparency Requirement"@en,
+        "Requisito de Transparencia"@es ;
+    rdfs:comment "Requirement for transparency in AI system design, operation, or decision-making."@en,
+        "Requisito de transparencia en diseño, operación o toma de decisiones de sistemas de IA."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+ai:TechnicalRequirement a owl:Class ;
+    rdfs:label "Technical Requirement"@en,
+        "Requisito Técnico"@es ;
+    rdfs:comment "Requirement related to technical implementation, architecture, or performance."@en ;
+    rdfs:comment "Requisito relacionado con implementación técnica, arquitectura o rendimiento."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+ai:RobustnessRequirement a owl:Class ;
+    rdfs:label "Robustness Requirement"@en,
+        "Requisito de Robustez"@es ;
+    rdfs:comment "Requirement for resilience, reliability, and robustness of AI systems."@en,
+        "Requisito de resiliencia, confiabilidad y robustez de sistemas de IA."@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:SecurityRequirement a owl:Class ;
+    rdfs:label "Security Requirement"@en,
+        "Requisito de Seguridad"@es ;
+    rdfs:comment "Requirement for cybersecurity, data protection, and integrity."@en ;
+    rdfs:comment "Requisito de ciberseguridad, protección de datos e integridad."@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:LoggingRequirement a owl:Class ;
+    rdfs:label "Logging Requirement"@en,
+        "Requisito de Registro"@es ;
+    rdfs:comment "Requirement for activity logging, auditing, and traceability."@en ;
+    rdfs:comment "Requisito de registro de actividades, auditoría y trazabilidad."@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:RiskLevel a owl:Class ;
+    rdfs:label "Risk Level"@en,
+        "Nivel de Riesgo"@es ;
+    rdfs:comment "Classification of risk associated with AI systems or their use."@en ;
+    rdfs:comment "Clasificación del riesgo asociado con sistemas de IA o su uso."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+# ===== CORE ENTITY TYPES - UNCHANGED FROM v0.37.1 =====
+
+ai:Purpose a owl:Class ;
+    rdfs:label "Purpose"@en,
+        "Propósito"@es ;
+    rdfs:comment "Primary intended use or objective of an AI system."@en ;
+    rdfs:comment "Uso previsto principal u objetivo de un sistema de IA."@es ;
+    rdfs:subClassOf ai:ContextOrPurpose .
+
+ai:DeploymentContext a owl:Class ;
+    rdfs:label "Deployment Context"@en,
+        "Contexto de Despliegue"@es ;
+    rdfs:comment "Context in which an AI system is deployed or operated."@en ;
+    rdfs:comment "Contexto en el cual se despliega u opera un sistema de IA."@es ;
+    rdfs:subClassOf ai:ContextOrPurpose .
+
+ai:ContextOrPurpose a owl:Class ;
+    rdfs:label "Context Or Purpose"@en,
+        "Contexto o Propósito"@es ;
+    rdfs:comment "Superclass for both contextual and purpose-based classifications."@en ;
+    rdfs:comment "Superclase para clasificaciones contextuales y basadas en propósito."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+# ===== CORE PROPERTIES - UNCHANGED FROM v0.37.1 =====
+
+ai:activatesCriterion a owl:ObjectProperty ;
+    rdfs:label "activates Criterion"@en ;
+    rdfs:comment "Indicates that a Purpose directly activates a Criterion."@en ;
+    rdfs:domain ai:Purpose ;
+    rdfs:range ai:Criterion .
+
+ai:triggersCriterion a owl:ObjectProperty ;
+    rdfs:label "triggers Criterion"@en ;
+    rdfs:comment "Indicates that a DeploymentContext triggers a Criterion."@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range ai:Criterion .
+
+ai:assignsRiskLevel a owl:ObjectProperty ;
+    rdfs:label "assigns Risk Level"@en ;
+    rdfs:comment "Indicates the risk level assigned by a Criterion."@en ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:RiskLevel .
+
+ai:activatesRequirement a owl:ObjectProperty ;
+    rdfs:label "activates Requirement"@en ;
+    rdfs:comment "Indicates that a Criterion activates a Requirement."@en ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:hasSubRequirement a owl:ObjectProperty ;
+    rdfs:label "has Sub-Requirement"@en ;
+    rdfs:comment "Indicates sub-requirements nested within a parent Requirement."@en ;
+    rdfs:domain ai:ComplianceRequirement ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:hasName a owl:DatatypeProperty ;
+    rdfs:label "has Name"@en ;
+    rdfs:comment "Name or identifier for an entity."@en ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:hasVersion a owl:DatatypeProperty ;
+    rdfs:label "has Version"@en ;
+    rdfs:comment "Version identifier for an entity."@en ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:hasDocumentationType a owl:DatatypeProperty ;
+    rdfs:label "has Documentation Type"@en ;
+    rdfs:comment "Type of documentation required."@en ;
+    rdfs:domain ai:DocumentationRequirement ;
+    rdfs:range xsd:string .
+
+ai:mandatoryCompliance a owl:DatatypeProperty ;
+    rdfs:label "mandatory Compliance"@en ;
+    rdfs:comment "Boolean indicating if compliance is mandatory."@en ;
+    rdfs:domain ai:ComplianceRequirement ;
+    rdfs:range xsd:boolean .
+
+# ===== END OF UNIFIED ONTOLOGY v0.37.2 =====
+# All concepts consolidated under ai: namespace
+# Future modularization can occur in post-v0.37.2 versions

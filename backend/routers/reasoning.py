@@ -9,13 +9,23 @@ import json
 from rdflib import Namespace, Graph, RDF
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.responses import JSONResponse
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 import httpx
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from db import get_database
 from swrl_rules import get_swrl_rules, get_basic_prefixes, get_ai_act_concepts
 from urllib.parse import unquote
+from pathlib import Path
+
+# SHACL Validation
+try:
+    from pyshacl import validate as shacl_validate
+    SHACL_AVAILABLE = True
+except ImportError:
+    SHACL_AVAILABLE = False
+    logger = logging.getLogger(__name__)
+    logger.warning("pyshacl not installed - SHACL validation will be disabled")
 
 logger = logging.getLogger(__name__)
 
@@ -23,10 +33,104 @@ router = APIRouter(prefix="/reasoning", tags=["reasoning"])
 
 # Configuración del servicio reasoner
 REASONER_SERVICE_URL = os.environ.get("REASONER_SERVICE_URL", "http://reasoner:8001")
-ONTOLOGY_PATH = os.environ.get("ONTOLOGY_PATH", "/ontologias/ontologia-v0.36.0.ttl")
+ONTOLOGY_PATH = os.environ.get("ONTOLOGY_PATH", "/ontologias/versions/0.37.2/ontologia-v0.37.2.ttl")
+SHACL_SHAPES_PATH = os.environ.get("SHACL_SHAPES_PATH", "/ontologias/shacl/ai-act-shapes.ttl")
+ENABLE_SHACL_VALIDATION = os.environ.get("ENABLE_SHACL_VALIDATION", "true").lower() == "true"
 
 # Namespaces
 AI = Namespace("http://ai-act.eu/ai#")
+
+# ===== SHACL VALIDATION FUNCTIONS =====
+
+def load_shacl_shapes() -> Optional[Graph]:
+    """Carga las SHACL shapes desde archivo"""
+    if not SHACL_AVAILABLE or not ENABLE_SHACL_VALIDATION:
+        return None
+
+    try:
+        shapes_path = Path(SHACL_SHAPES_PATH)
+        if not shapes_path.exists():
+            logger.warning(f"SHACL shapes file not found at {SHACL_SHAPES_PATH}")
+            return None
+
+        shapes_graph = Graph()
+        shapes_graph.parse(str(shapes_path), format="turtle")
+        logger.info(f"SHACL shapes loaded from {SHACL_SHAPES_PATH}")
+        return shapes_graph
+    except Exception as e:
+        logger.error(f"Error loading SHACL shapes: {str(e)}")
+        return None
+
+
+def validate_system_pre(system_ttl: str, shapes_graph: Optional[Graph]) -> Tuple[bool, Optional[str]]:
+    """
+    Valida datos PRE-razonamiento usando SHACL
+    Retorna: (is_valid, error_message)
+    """
+    if not SHACL_AVAILABLE or not ENABLE_SHACL_VALIDATION or shapes_graph is None:
+        return True, None
+
+    try:
+        # Cargar datos a validar
+        data_graph = Graph()
+        data_graph.parse(data=system_ttl, format="turtle")
+
+        # Ejecutar validación SHACL
+        conforms, report_graph, report_text = shacl_validate(
+            data_graph,
+            shapes_graph=shapes_graph,
+            inplace=False
+        )
+
+        if not conforms:
+            error_msg = f"Sistema incumple restricciones pre-razonamiento:\n{report_text}"
+            logger.warning(f"Pre-validation failed: {error_msg[:200]}...")
+            return False, error_msg
+
+        logger.info("Pre-validation passed")
+        return True, None
+
+    except Exception as e:
+        error_msg = f"Error en validación SHACL pre-razonamiento: {str(e)}"
+        logger.error(error_msg)
+        # No falla si hay error de validación, solo registra
+        return True, None
+
+
+def validate_results_post(results_ttl: str, shapes_graph: Optional[Graph]) -> Dict[str, Any]:
+    """
+    Valida resultados POST-razonamiento usando SHACL
+    Retorna: {"valid": bool, "message": str, "report": str}
+    """
+    if not SHACL_AVAILABLE or not ENABLE_SHACL_VALIDATION or shapes_graph is None:
+        return {"valid": True, "message": "SHACL validation disabled", "report": ""}
+
+    try:
+        # Cargar resultados
+        results_graph = Graph()
+        results_graph.parse(data=results_ttl, format="turtle")
+
+        # Ejecutar validación SHACL
+        conforms, report_graph, report_text = shacl_validate(
+            results_graph,
+            shapes_graph=shapes_graph,
+            inplace=False
+        )
+
+        return {
+            "valid": conforms,
+            "message": "Válido" if conforms else "Incumple restricciones",
+            "report": report_text if not conforms else ""
+        }
+
+    except Exception as e:
+        logger.error(f"Error in post-validation: {str(e)}")
+        return {
+            "valid": True,
+            "message": "Error in validation",
+            "report": str(e)
+        }
+
 
 def system_to_ttl(system: Dict[str, Any]) -> str:
     """Convierte un sistema a formato TTL"""
@@ -248,15 +352,19 @@ async def reason_system(
 ):
     """
     Ejecuta razonamiento semántico sobre un sistema específico
+    CON validación SHACL (pre y post)
     """
-    
+
     try:
+        # 0. Cargar SHACL shapes (una sola vez)
+        shapes_graph = load_shacl_shapes()
+
         # Decodificar system_id si está URL-encoded
         system_id = unquote(system_id)
-        
+
         # 1. Obtener sistema de la base de datos
         from bson import ObjectId
-        
+
         # Determinar cómo buscar el sistema
         if system_id.startswith("urn:uuid:"):
             # Es un URN, buscar por ai:hasUrn
@@ -272,7 +380,7 @@ async def reason_system(
             except:
                 # Si no es ObjectId válido, buscar por URN o _id
                 query = {"$or": [{"ai:hasUrn": system_id}, {"_id": system_id}]}
-        
+
         system = await db.systems.find_one(query)
         if not system:
             raise HTTPException(
@@ -285,13 +393,30 @@ async def reason_system(
         logger.info(f"Sistema convertido a TTL completo:\n{system_ttl}")
         logger.info(f"TTL preview: {system_ttl[:200]}...")
 
+        # 2.5. PRE-VALIDACIÓN SHACL (NUEVO)
+        logger.info("Iniciando pre-validación SHACL...")
+        is_valid, validation_error = validate_system_pre(system_ttl, shapes_graph)
+
+        if not is_valid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Sistema incumple restricciones: {validation_error}"
+            )
+        logger.info("Pre-validación SHACL completada ✓")
+
         # 3. Obtener reglas SWRL y conceptos
         swrl_rules = get_basic_prefixes() + get_ai_act_concepts() + get_swrl_rules()
         logger.info(f"Reglas SWRL y conceptos cargados: {len(swrl_rules.split('Rule'))} reglas")
-        
+
         # 4. Ejecutar razonamiento
         reasoner_response = await call_reasoner_service(system_ttl, swrl_rules)
         logger.info(f"Razonamiento completado, inferencias: {reasoner_response.get('rules_applied', 0)}")
+
+        # 4.5. POST-VALIDACIÓN SHACL (NUEVO)
+        logger.info("Iniciando post-validación SHACL...")
+        raw_ttl = reasoner_response.get("raw_ttl", "")
+        shacl_post_validation = validate_results_post(raw_ttl, shapes_graph)
+        logger.info(f"Post-validación completada: {shacl_post_validation['message']}")
 
         # 5. Usar directamente las relaciones inferidas que vienen en la respuesta del reasoner
         # El reasoner service ya las procesa y las devuelve en formato correcto
@@ -303,39 +428,49 @@ async def reason_system(
             "hasTechnicalRequirement": []
         })
         logger.info(f"Relaciones inferidas: {relationships}")
-        
+
         # 6. Actualizar sistema con inferencias (opcional)
         update_data = {}
         for rel_type, values in relationships.items():
             if values:  # Solo actualizar si hay valores inferidos
                 update_data[f"inferred_{rel_type}"] = values
-        
+
         if update_data:
             await db.systems.update_one(
                 {"_id": system_id},
                 {"$set": update_data}
             )
             logger.info(f"Sistema actualizado con inferencias: {update_data.keys()}")
-        
+
         # 7. Obtener número de reglas aplicadas del reasoner service
         # El reasoner devuelve este campo con el conteo exacto de inferencias
         rules_applied = reasoner_response.get("rules_applied", sum(len(values) for values in relationships.values()))
         logger.info(f"DEBUG rules_applied from reasoner: {rules_applied}")
         logger.info(f"DEBUG relationships: {relationships}")
-        
-        # 8. Retornar resultado completo
-        # Extraer el TTL raw de la respuesta del reasoner
-        raw_ttl = reasoner_response.get("raw_ttl", "")
 
+        # 8. Retornar resultado completo CON validación SHACL
         return {
             "system_id": system_id,
             "system_name": system.get("hasName", "Unnamed"),
             "reasoning_completed": True,
             "inferred_relationships": relationships,
             "raw_ttl": raw_ttl,
-            "rules_applied": rules_applied
+            "rules_applied": rules_applied,
+            # NUEVO: Información de validación SHACL
+            "shacl_validation": {
+                "pre_validation": {
+                    "status": "passed",
+                    "enabled": ENABLE_SHACL_VALIDATION and SHACL_AVAILABLE
+                },
+                "post_validation": {
+                    "status": "passed" if shacl_post_validation["valid"] else "failed",
+                    "valid": shacl_post_validation["valid"],
+                    "message": shacl_post_validation["message"],
+                    "enabled": ENABLE_SHACL_VALIDATION and SHACL_AVAILABLE
+                }
+            }
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -413,7 +548,7 @@ async def test_ttl_generation(
     except Exception as e:
         return {"error": str(e)}
 
-@router.get("/status")  
+@router.get("/status")
 async def reasoning_service_status():
     """
     Verifica el estado del servicio de razonamiento
@@ -421,7 +556,7 @@ async def reasoning_service_status():
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(f"{REASONER_SERVICE_URL}/")
-            
+
             if response.status_code == 200:
                 return {
                     "reasoner_service": "available",
@@ -430,14 +565,60 @@ async def reasoning_service_status():
                 }
             else:
                 return {
-                    "reasoner_service": "unavailable", 
+                    "reasoner_service": "unavailable",
                     "url": REASONER_SERVICE_URL,
                     "status_code": response.status_code
                 }
-                
+
     except Exception as e:
         return {
             "reasoner_service": "error",
-            "url": REASONER_SERVICE_URL, 
+            "url": REASONER_SERVICE_URL,
             "error": str(e)
         }
+
+
+@router.get("/shacl/status")
+async def shacl_validation_status():
+    """
+    Verifica el estado de la validación SHACL
+    """
+    return {
+        "shacl_validation": {
+            "enabled": ENABLE_SHACL_VALIDATION,
+            "available": SHACL_AVAILABLE,
+            "shapes_path": SHACL_SHAPES_PATH,
+            "shapes_file_exists": Path(SHACL_SHAPES_PATH).exists() if ENABLE_SHACL_VALIDATION else None,
+            "status": "active" if (ENABLE_SHACL_VALIDATION and SHACL_AVAILABLE) else "disabled"
+        }
+    }
+
+
+@router.post("/validate-system")
+async def validate_system_endpoint(system: Dict[str, Any]):
+    """
+    Endpoint para validar un sistema IA sin razonamiento
+    Usa SHACL para validación pre-razonamiento
+    """
+    try:
+        shapes_graph = load_shacl_shapes()
+
+        # Convertir sistema a TTL
+        system_ttl = system_to_ttl(system)
+
+        # Validar
+        is_valid, error_msg = validate_system_pre(system_ttl, shapes_graph)
+
+        return {
+            "valid": is_valid,
+            "message": error_msg if not is_valid else "Sistema válido",
+            "shacl_enabled": ENABLE_SHACL_VALIDATION and SHACL_AVAILABLE,
+            "ttl_preview": system_ttl[:500]
+        }
+
+    except Exception as e:
+        logger.error(f"Error validating system: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error validando sistema: {str(e)}"
+        )

@@ -1,0 +1,228 @@
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix gpai: <http://ai-act.eu/gpai#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+# ===== GPAI REQUIREMENTS - PHASE 2 =====
+# Requirements for General Purpose AI Models
+# EU AI Act Articles 51-55
+# Version: 0.37.1 (2025-11-22)
+
+# GPAI Model Class
+gpai:GeneralPurposeAIModel a owl:Class ;
+    rdfs:label "General Purpose AI Model"@en,
+        "Modelo de IA de Propósito General"@es ;
+    rdfs:comment "AI model that exhibits similar capabilities to other models and can be used for a wide range of downstream applications."@en,
+        "Modelo de IA que exhibe capacidades similares a otros modelos y puede usarse para una amplia gama de aplicaciones descendentes."@es ;
+    rdfs:subClassOf ai:IntelligentSystem .
+
+# GPAI with High-Risk Capability
+gpai:HighCapabilityGPAIModel a owl:Class ;
+    rdfs:label "High Capability GPAI Model"@en,
+        "Modelo GPAI de Alta Capacidad"@es ;
+    rdfs:comment "GPAI models with systemic risk due to their high level of capability, particularly in areas like dual-use potential."@en,
+        "Modelos GPAI con riesgo sistémico debido a su alto nivel de capacidad."@es ;
+    rdfs:subClassOf gpai:GeneralPurposeAIModel .
+
+# ===== GPAI REQUIREMENTS (Articles 51-55) =====
+
+# Article 51: Obligations of Providers of General Purpose AI Models
+gpai:GPAIProviderObligationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "GPAI Provider Obligations (Article 51)"@en,
+        "Obligaciones del Proveedor GPAI (Artículo 51)"@es ;
+    rdfs:comment "Provider of GPAI models must ensure technical documentation, safety evaluation, and risk assessment."@en,
+        "El proveedor de modelos GPAI debe asegurar documentación técnica, evaluación de seguridad y evaluación de riesgos."@es ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Technical Documentation for GPAI"@en ;
+        rdfs:comment "Providers must create and maintain detailed technical documentation."@en
+    ] ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "System Card for GPAI"@en ;
+        rdfs:comment "Providers must prepare a system card with information about capabilities and limitations."@en
+    ] ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Safety Evaluation for GPAI"@en ;
+        rdfs:comment "Providers must conduct safety evaluation for high-capability GPAI models."@en
+    ] .
+
+# Article 52: Transparency for GPAI
+gpai:GPAITransparencyRequirement a ai:TransparencyRequirement ;
+    rdfs:label "GPAI Transparency Requirements (Article 52)"@en,
+        "Requisitos de Transparencia GPAI (Artículo 52)"@es ;
+    rdfs:comment "GPAI providers must ensure transparency about model characteristics and training data."@en,
+        "Los proveedores GPAI deben asegurar transparencia sobre características del modelo y datos de entrenamiento."@es ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Disclose Model Capabilities"@en ;
+        rdfs:comment "GPAI models must clearly disclose capabilities and limitations."@en
+    ] ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Training Data Information"@en ;
+        rdfs:comment "Information about training data should be provided where available."@en
+    ] ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Known Limitations Documentation"@en ;
+        rdfs:comment "Known limitations must be clearly documented and disclosed."@en
+    ] .
+
+# Article 53: Union Database for Notified GPAI Providers
+gpai:UnionDatabaseNotificationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Union Database Notification (Article 53)"@en,
+        "Requisito de Notificación a Base de Datos de la Unión (Artículo 53)"@es ;
+    rdfs:comment "High-capability GPAI providers must register in the Union database."@en,
+        "Los proveedores GPAI de alta capacidad deben registrarse en la base de datos de la Unión."@es ;
+    ai:mandatoryCompliance true .
+
+# Article 54: Model Evaluation and Benchmarking
+gpai:ModelEvaluationRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Model Evaluation and Benchmarking (Article 54)"@en,
+        "Evaluación y Benchmarking de Modelos (Artículo 54)"@es ;
+    rdfs:comment "GPAI models must be evaluated against appropriate benchmarks and standards."@en,
+        "Los modelos GPAI deben evaluarse contra puntos de referencia y estándares apropiados."@es ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Standardized Benchmarks"@en ;
+        rdfs:comment "Use of standardized benchmarks for model evaluation."@en
+    ] ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Performance Documentation"@en ;
+        rdfs:comment "Documentation of model performance on key benchmarks."@en
+    ] .
+
+# Article 55: Post-Market Monitoring and Information
+gpai:PostMarketMonitoringRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Post-Market Monitoring (Article 55)"@en,
+        "Monitoreo Post-Mercado (Artículo 55)"@es ;
+    rdfs:comment "Providers must implement systems for monitoring GPAI models after market release."@en,
+        "Los proveedores deben implementar sistemas para monitorear modelos GPAI después del lanzamiento al mercado."@es ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Adverse Event Reporting"@en ;
+        rdfs:comment "System for reporting and tracking adverse events and incidents."@en
+    ] ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Performance Monitoring System"@en ;
+        rdfs:comment "Continuous monitoring of model performance and degradation."@en
+    ] ;
+    ai:hasSubRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "User Feedback Collection"@en ;
+        rdfs:comment "Mechanisms for collecting and analyzing user feedback."@en
+    ] .
+
+# ===== SPECIFIC GPAI CRITERIA =====
+
+# Systemic Risk Assessment for GPAI
+gpai:SystemicRiskAssessmentCriterion a ai:NormativeCriterion ;
+    rdfs:label "Systemic Risk Assessment for GPAI"@en,
+        "Evaluación de Riesgo Sistémico para GPAI"@es ;
+    rdfs:comment "High-capability GPAI models must undergo systemic risk assessment due to their potential impact on society."@en,
+        "Los modelos GPAI de alta capacidad deben someterse a evaluación de riesgo sistémico."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement gpai:GPAIProviderObligationRequirement ;
+    ai:activatesRequirement gpai:ModelEvaluationRequirement ;
+    ai:activatesRequirement gpai:PostMarketMonitoringRequirement .
+
+# Dual-Use Risk Criterion
+gpai:DualUseRiskCriterion a ai:NormativeCriterion ;
+    rdfs:label "Dual-Use Risk Criterion"@en,
+        "Criterio de Riesgo de Uso Dual"@es ;
+    rdfs:comment "GPAI models with dual-use potential must be evaluated for both beneficial and harmful applications."@en,
+        "Los modelos GPAI con potencial de uso dual deben evaluarse para aplicaciones beneficiosas y dañinas."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement gpai:GPAITransparencyRequirement ;
+    ai:activatesRequirement gpai:ModelEvaluationRequirement .
+
+# ===== GPAI DATA REQUIREMENTS =====
+
+gpai:GPAIDataQualityRequirement a ai:DataGovernanceRequirement ;
+    rdfs:label "GPAI Training Data Quality"@en,
+        "Calidad de Datos de Entrenamiento GPAI"@es ;
+    rdfs:comment "Training data quality is critical for GPAI models' safety and reliability."@en ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Data Provenance Documentation"@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Data Filtering and Cleaning"@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Bias Detection and Mitigation"@en
+    ] .
+
+# ===== GPAI PERFORMANCE REQUIREMENTS =====
+
+gpai:GPAIPerformanceMonitoringRequirement a ai:TechnicalRequirement ;
+    rdfs:label "GPAI Performance Monitoring"@en,
+        "Monitoreo de Rendimiento GPAI"@es ;
+    rdfs:comment "Continuous monitoring of GPAI model performance and degradation."@en ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Real-time Performance Metrics"@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Performance Degradation Detection"@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Automatic Retraining Triggers"@en
+    ] .
+
+# ===== GPAI DOCUMENTATION REQUIREMENTS =====
+
+gpai:GPAIDocumentationRequirement a ai:DocumentationRequirement ;
+    rdfs:label "GPAI Documentation"@en,
+        "Documentación GPAI"@es ;
+    rdfs:comment "Comprehensive documentation required for GPAI models."@en ;
+    ai:hasDocumentationType "System Card"@en ;
+    ai:hasDocumentationType "Model Card"@en ;
+    ai:hasDocumentationType "Technical Report"@en ;
+    ai:hasDocumentationType "Training Data Report"@en ;
+    ai:hasDocumentationType "Evaluation Report"@en ;
+    ai:hasDocumentationType "Safety Assessment"@en .
+
+# ===== HIGH-CAPABILITY GPAI SPECIFIC REQUIREMENTS =====
+
+gpai:HighCapabilityGPAIComplianceRequirement a ai:ComplianceRequirement ;
+    rdfs:label "High-Capability GPAI Compliance"@en,
+        "Cumplimiento GPAI de Alta Capacidad"@es ;
+    rdfs:comment "Enhanced requirements for GPAI models with high systemic risk."@en ;
+    ai:activatesRequirement gpai:SystemicRiskAssessmentCriterion ;
+    ai:activatesRequirement gpai:UnionDatabaseNotificationRequirement ;
+    ai:activatesRequirement gpai:ModelEvaluationRequirement ;
+    ai:activatesRequirement gpai:PostMarketMonitoringRequirement ;
+    ai:activatesRequirement gpai:GPAITransparencyRequirement .
+
+# ===== MAPPING TO ANNEX VIII (GPAI SAFEGUARDS) =====
+
+gpai:AnnexVIIISafeguardsCompliance a ai:ComplianceRequirement ;
+    rdfs:label "Annex VIII Safeguards Compliance"@en,
+        "Cumplimiento de Salvaguardas del Anexo VIII"@es ;
+    rdfs:comment "Alignment with Annex VIII safeguards for high-risk GPAI."@en ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Risk Mitigation"@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Testing and Validation"@en
+    ] ;
+    ai:activatesRequirement [
+        a ai:ComplianceRequirement ;
+        rdfs:label "Human Oversight"@en
+    ] .
+
+# ===== END GPAI REQUIREMENTS =====
+
+# Summary: 15+ GPAI-specific requirements covering Articles 51-55 and systemic risk
