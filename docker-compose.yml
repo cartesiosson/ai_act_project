@@ -19,6 +19,7 @@ services:
       - FUSEKI_PASSWORD=${FUSEKI_PASSWORD}
       - FUSEKI_DATASET=${FUSEKI_DATASET}
       - FUSEKI_GRAPH=${FUSEKI_GRAPH}
+      - CURRENT_RELEASE=${CURRENT_RELEASE}
     volumes:
       - ./ontologias:/app/ontologias
 

@@ -6,7 +6,8 @@ import requests
 FUSEKI_ENDPOINT = os.getenv("FUSEKI_ENDPOINT", "http://fuseki:3030")
 DATASET = "ds"
 GRAPH_URI =os.getenv("FUSEKI_GRAPH","http://ai-act.eu/ontology")
-ONTOLOGY_PATH = "/app/ontologias"
+CURRENT_RELEASE = os.getenv("CURRENT_RELEASE", "0.37.2")
+ONTOLOGY_PATH = f"/app/ontologias/versions/{CURRENT_RELEASE}"
 
 # Esperar a que Fuseki esté disponible
 def wait_for_fuseki():
