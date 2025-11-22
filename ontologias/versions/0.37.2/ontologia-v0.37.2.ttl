@@ -639,6 +639,319 @@ ai:mandatoryCompliance a owl:DatatypeProperty ;
     rdfs:domain ai:ComplianceRequirement ;
     rdfs:range xsd:boolean .
 
+# ===== PURPOSE INSTANCES =====
+# These are the specific purposes covered under EU AI Act Annex III
+
+ai:BiometricIdentification a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Biometric identification"@en,
+        "Identificación biométrica"@es ;
+    rdfs:comment "Purpose involving biometric identification of individuals in public spaces, referenced in Annex III, point 1."@en,
+        "Propósito que implica la identificación biométrica de individuos en espacios públicos, referenciado en el Anexo III, punto 1."@es ;
+    ai:activatesCriterion ai:BiometricIdentificationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:BiometricIdentificationCriterion,
+        ai:BiometricIdentificationOrCategorization .
+
+ai:CriticalInfrastructureOperation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Critical Infrastructure Operation"@en,
+        "Operación de Infraestructura Crítica"@es ;
+    rdfs:comment "Referenced in Annex III, point 1(a)."@en,
+        "Referenciado en el Anexo III, punto 1(a)."@es ;
+    ai:triggersCriterion ai:CriticalInfrastructureCriterion .
+
+ai:EducationAccess a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Education Access"@en,
+        "Acceso a la educación"@es ;
+    ai:activatesCriterion ai:EducationEvaluationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:EducationEvaluationCriterion ;
+    rdfs:comment "Evaluation for access to education or training."@en,
+        "Evaluación para el acceso a educación o formación."@es .
+
+ai:HealthCare a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Health Care"@en,
+        "Atención Sanitaria"@es ;
+    rdfs:comment "Purpose for healthcare and medical AI systems."@en,
+        "Propósito para sistemas de IA sanitarios y médicos."@es ;
+    ai:expectedRiskLevel ai:HighRisk .
+
+ai:JudicialDecisionSupport a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Judicial Decision Support"@en,
+        "Apoyo a la decisión judicial"@es ;
+    ai:triggersCriterion ai:JudicialSupportCriterion ;
+    rdfs:comment "Referenced in Annex III, point 6."@en,
+        "Referenciado en el Anexo III, punto 6."@es .
+
+ai:LawEnforcementSupport a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Law Enforcement Support"@en,
+        "Apoyo a la aplicación de la ley"@es ;
+    ai:triggersCriterion ai:LawEnforcementCriterion ;
+    rdfs:comment "Referenced in Annex III, point 7."@en,
+        "Referenciado en el Anexo III, punto 7."@es .
+
+ai:MigrationControl a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Migration Control"@en,
+        "Control migratorio"@es ;
+    ai:activatesCriterion ai:MigrationBorderCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:MigrationBorderCriterion ;
+    rdfs:comment "Migration, asylum and border control management."@en,
+        "Gestión de migración, asilo y control fronterizo."@es .
+
+ai:PublicServiceAllocation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Public Service Allocation"@en,
+        "Asignación de servicios públicos"@es ;
+    ai:activatesCriterion ai:EssentialServicesAccessCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion ;
+    rdfs:comment "Determination of access to essential public services."@en,
+        "Determinación de acceso a servicios públicos esenciales."@es .
+
+ai:RecruitmentOrEmployment a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Recruitment and Employment"@en,
+        "Reclutamiento y empleo"@es ;
+    ai:triggersCriterion ai:RecruitmentEmploymentCriterion ;
+    rdfs:comment "Referenced in Annex III, point 4."@en,
+        "Referenciado en el Anexo III, punto 4."@es .
+
+ai:WorkforceEvaluationPurpose a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Workforce Evaluation Purpose"@en,
+        "Propósito de Evaluación de Trabajadores"@es ;
+    rdfs:comment "Systems specifically designed to evaluate worker performance, capabilities, or suitability for employment decisions. Regulated under Annex III, point 2."@en,
+        "Sistemas específicamente diseñados para evaluar el desempeño, capacidades o idoneidad de trabajadores para decisiones laborales. Regulado bajo el Anexo III, punto 2."@es ;
+    ai:activatesCriterion ai:WorkforceEvaluationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk .
+
+# ===== DEPLOYMENT CONTEXT INSTANCES =====
+# These are contexts in which AI systems are deployed
+
+ai:Education a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Education"@en,
+        "Educación"@es ;
+    rdfs:comment "Deployment context involving education or training."@en,
+        "Contexto de despliegue que involucra educación o formación."@es ;
+    ai:triggersCriterion ai:EducationEvaluationCriterion .
+
+ai:Healthcare a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Healthcare"@en,
+        "Salud"@es ;
+    rdfs:comment "Deployment context involving healthcare, medical services, or health-related activities. Relevant for AI systems used in diagnosis, treatment, patient management, or healthcare administration."@en,
+        "Contexto de despliegue que involucra la salud, servicios médicos o actividades relacionadas con la atención sanitaria. Relevante para sistemas de IA utilizados en diagnóstico, tratamiento, gestión de pacientes o administración sanitaria."@es ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion .
+
+ai:PublicServices a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Public Services"@en,
+        "Servicios Públicos"@es ;
+    rdfs:comment "Deployment context involving public services."@en,
+        "Contexto de despliegue que involucra servicios públicos."@es ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion .
+
+ai:VulnerablePopulationContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Vulnerable Population Context"@en,
+        "Contexto de población vulnerable"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Systems used in contexts involving vulnerable populations (children, elderly, disabled persons, marginalized groups), requiring enhanced protection."@en,
+        "Sistemas utilizados en contextos que involucran poblaciones vulnerables (niños, ancianos, personas con discapacidades, grupos marginados), requiriendo protección reforzada."@es .
+
+ai:HighStakesDecisionContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "High Stakes Decision Context"@en,
+        "Contexto de decisión de alto impacto"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts where AI decisions have significant consequences for individuals' life opportunities, safety, or well-being."@en,
+        "Contextos donde las decisiones de IA tienen consecuencias significativas para las oportunidades de vida, seguridad o bienestar de las personas."@es .
+
+ai:SafetyCriticalContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Safety Critical Context"@en,
+        "Contexto crítico de seguridad"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Deployment contexts where system failures could result in serious harm to health, safety, or human life."@en,
+        "Contextos de despliegue donde fallos del sistema podrían resultar en daños graves a la salud, seguridad o vida humana."@es .
+
+ai:LimitedTransparencyContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Limited Transparency Context"@en,
+        "Contexto de transparencia limitada"@es ;
+    ai:assignsRiskLevel ai:LimitedRisk ;
+    rdfs:comment "Contexts where AI systems interact with users but may not be immediately recognizable as AI, requiring transparency obligations."@en,
+        "Contextos donde los sistemas de IA interactúan con usuarios pero pueden no ser inmediatamente reconocibles como IA, requiriendo obligaciones de transparencia."@es .
+
+ai:SocialManipulationContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Social Manipulation Context"@en,
+        "Contexto de manipulación social"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts where AI systems could manipulate human behavior in harmful ways, prohibited under Article 5."@en,
+        "Contextos donde los sistemas de IA podrían manipular el comportamiento humano de maneras dañinas, prohibido bajo el Artículo 5."@es .
+
+ai:EmotionalManipulationContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Emotional Manipulation Context"@en,
+        "Contexto de manipulación emocional"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts where AI systems exploit psychological vulnerabilities or emotional states to cause harm, prohibited under Article 5(1)(a)."@en,
+        "Contextos donde los sistemas de IA explotan vulnerabilidades psicológicas o estados emocionales para causar daño, prohibido bajo el Artículo 5(1)(a)."@es .
+
+ai:MassPublicSurveillanceContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Mass Public Surveillance Context"@en,
+        "Contexto de vigilancia pública masiva"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts involving indiscriminate surveillance or mass data collection threatening democratic values, prohibited under the AI Act."@en,
+        "Contextos que involucran vigilancia indiscriminada o recolección masiva de datos amenazando valores democráticos, prohibido bajo el AI Act."@es .
+
+ai:LowRiskGeneralContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Low Risk General Context"@en,
+        "Contexto general de bajo riesgo"@es ;
+    ai:assignsRiskLevel ai:MinimalRisk ;
+    rdfs:comment "General deployment contexts with minimal risk to fundamental rights, safety, or societal values."@en,
+        "Contextos generales de despliegue con riesgo mínimo para derechos fundamentales, seguridad o valores sociales."@es .
+
+ai:RealTimeProcessing a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Real Time Processing"@en,
+        "Procesamiento en Tiempo Real"@es ;
+    rdfs:comment "Deployment context for real-time processing environments."@en,
+        "Contexto de despliegue para entornos de procesamiento en tiempo real."@es .
+
+ai:HighVolumeProcessing a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "High Volume Processing"@en,
+        "Procesamiento de Alto Volumen"@es ;
+    rdfs:comment "Deployment context for high-volume processing environments."@en,
+        "Contexto de despliegue para entornos de procesamiento de alto volumen."@es .
+
+ai:DataGovernanceContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Data Governance Context"@en,
+        "Contexto de gobernanza de datos"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving sensitive data processing, biometric data, or personal data requiring enhanced governance."@en,
+        "Contextos que involucran procesamiento de datos sensibles, datos biométricos o datos personales que requieren gobernanza mejorada."@es .
+
+ai:TrainingDataQualityContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Training Data Quality Context"@en,
+        "Contexto de calidad de datos de entrenamiento"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts where training data quality, bias, or representativeness significantly impacts system reliability and fairness."@en,
+        "Contextos donde la calidad, sesgo o representatividad de los datos de entrenamiento impacta significativamente la confiabilidad y equidad del sistema."@es .
+
+ai:FinancialServicesContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Financial Services Context"@en,
+        "Contexto de servicios financieros"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving creditworthiness assessment, insurance pricing, or financial risk evaluation affecting individuals' access to financial services."@en,
+        "Contextos que involucran evaluación de solvencia crediticia, precios de seguros o evaluación de riesgo financiero que afecta el acceso a servicios financieros."@es .
+
+ai:WorkplaceMonitoringContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Workplace Monitoring Context"@en,
+        "Contexto de monitoreo laboral"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving AI systems for employee monitoring, performance evaluation, or workplace surveillance."@en,
+        "Contextos que involucran sistemas de IA para monitoreo de empleados, evaluación de rendimiento o vigilancia en el lugar de trabajo."@es .
+
+# ===== TRAINING DATA ORIGIN INSTANCES =====
+# Represents the source of training data
+
+ai:InternalDataset a ai:TrainingDataOrigin,
+    owl:NamedIndividual ;
+    rdfs:label "Internal Dataset"@en,
+        "Datos Internos"@es ;
+    rdfs:comment "Dataset originating from internal sources. Typically has lower risk profile due to known provenance and controlled access."@en,
+        "Conjunto de datos originado en fuentes internas. Típicamente tiene un perfil de riesgo menor debido a la procedencia conocida y acceso controlado."@es .
+
+ai:ExternalDataset a ai:TrainingDataOrigin,
+    owl:NamedIndividual ;
+    rdfs:label "External Dataset"@en,
+        "Datos Externos"@es ;
+    ai:requiresDataGovernance ai:DataGovernanceRequirement,
+        ai:TraceabilityRequirement ;
+    rdfs:comment "Dataset originating from external sources. May require enhanced data governance and quality assurance measures."@en,
+        "Conjunto de datos originado en fuentes externas. Puede requerir medidas mejoradas de gobernanza y aseguramiento de la calidad."@es .
+
+ai:SyntheticDataset a ai:TrainingDataOrigin,
+    owl:NamedIndividual ;
+    rdfs:label "Synthetic Dataset"@en,
+        "Datos Sintéticos"@es ;
+    ai:requiresDataGovernance ai:TransparencyRequirement,
+        ai:DocumentationRequirement ;
+    rdfs:comment "Dataset generated synthetically. Requires validation of quality and representativeness, with transparency obligations about synthetic data use."@en,
+        "Conjunto de datos generado sintéticamente. Requiere validación de calidad y representatividad, con obligaciones de transparencia sobre el uso de datos sintéticos."@es .
+
+# ===== RISK LEVEL INSTANCES =====
+# Risk levels according to EU AI Act Article 6
+
+ai:MinimalRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Minimal Risk"@en,
+        "Riesgo Mínimo"@es ;
+    rdfs:comment "AI systems with minimal or no risk. Not subject to specific obligations under the AI Act."@en,
+        "Sistemas de IA con riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es .
+
+ai:LimitedRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Limited Risk"@en,
+        "Riesgo Limitado"@es ;
+    rdfs:comment "Systems requiring transparency obligations. Examples include chatbots or content generators."@en,
+        "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es .
+
+ai:HighRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "High Risk"@en,
+        "Alto Riesgo"@es ;
+    rdfs:comment "AI systems classified as high-risk according to the EU AI Act. Subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights."@en,
+        "Sistemas de IA clasificados como de alto riesgo según el AI Act de la UE. Sujetos a requisitos regulatorios estrictos debido a su posible impacto en la salud, la seguridad o los derechos fundamentales."@es .
+
+ai:UnacceptableRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Unacceptable Risk"@en,
+        "Riesgo Inaceptable"@es ;
+    rdfs:comment "AI systems classified as unacceptable risk according to the EU AI Act. Strictly prohibited due to their unacceptable threat to safety, fundamental rights, or democratic values."@en,
+        "Sistemas de IA clasificados como de riesgo inaceptable según el AI Act de la UE. Estrictamente prohibidos por su amenaza inaceptable a la seguridad, los derechos fundamentales o los valores democráticos."@es .
+
+# ===== MODEL SCALE INSTANCES =====
+# Model scale classifications
+
+ai:SmallModelScale a ai:ModelScale,
+    owl:NamedIndividual ;
+    rdfs:label "Small Model Scale"@en,
+        "Escala de Modelo Pequeño"@es ;
+    rdfs:comment "Small-scale model optimized for edge devices or limited resources."@en,
+        "Modelo de pequeña escala optimizado para dispositivos edge o recursos limitados."@es .
+
+ai:RegularModelScale a ai:ModelScale,
+    owl:NamedIndividual ;
+    rdfs:label "Regular Model Scale"@en,
+        "Escala de Modelo Regular"@es ;
+    rdfs:comment "Standard-scale model with typical computational requirements."@en,
+        "Modelo de escala estándar con requisitos computacionales típicos."@es .
+
+ai:FoundationModelScale a ai:ModelScale,
+    owl:NamedIndividual ;
+    rdfs:label "Foundation Model Scale"@en,
+        "Escala de Modelo Fundacional"@es ;
+    rdfs:comment "Large-scale pre-trained model typically requiring >10^25 FLOPs, subject to GPAI obligations under Articles 51-53."@en,
+        "Modelo pre-entrenado a gran escala que típicamente requiere >10^25 FLOPs, sujeto a obligaciones GPAI bajo Artículos 51-53."@es .
+
 # ===== END OF UNIFIED ONTOLOGY v0.37.2 =====
 # All concepts consolidated under ai: namespace
 # Future modularization can occur in post-v0.37.2 versions
