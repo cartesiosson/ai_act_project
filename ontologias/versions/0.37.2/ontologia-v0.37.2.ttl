@@ -1130,6 +1130,478 @@ ai:FoundationModelScale a ai:ModelScale,
     rdfs:comment "Large-scale pre-trained model typically requiring >10^25 FLOPs, subject to GPAI obligations under Articles 51-53."@en,
         "Modelo pre-entrenado a gran escala que típicamente requiere >10^25 FLOPs, sujeto a obligaciones GPAI bajo Artículos 51-53."@es .
 
+# ===== SYSTEM CAPABILITY CRITERIA INSTANCES =====
+
+ai:ReasoningCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Reasoning Capability"@en,
+        "Capacidad de Razonamiento"@es ;
+    rdfs:comment "System can perform logical reasoning and inference over complex domains."@en,
+        "Sistema que puede realizar razonamiento lógico e inferencia sobre dominios complejos."@es .
+
+ai:PlanningCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Planning Capability"@en,
+        "Capacidad de Planificación"@es ;
+    rdfs:comment "System can generate plans and strategies to achieve specified objectives."@en,
+        "Sistema que puede generar planes y estrategias para lograr objetivos especificados."@es .
+
+ai:PerceptionCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Perception Capability"@en,
+        "Capacidad de Percepción"@es ;
+    rdfs:comment "System can sense and interpret information from its environment."@en,
+        "Sistema que puede detectar e interpretar información de su entorno."@es .
+
+ai:InteractionCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Interaction Capability"@en,
+        "Capacidad de Interacción"@es ;
+    rdfs:comment "System can interact with users and other systems effectively."@en,
+        "Sistema que puede interactuar con usuarios y otros sistemas de manera efectiva."@es .
+
+ai:LearningCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Learning Capability"@en,
+        "Capacidad de Aprendizaje"@es ;
+    rdfs:comment "System can adapt and improve its behavior based on experience."@en,
+        "Sistema que puede adaptarse y mejorar su comportamiento basado en la experiencia."@es .
+
+ai:OptimizationCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Optimization Capability"@en,
+        "Capacidad de Optimización"@es ;
+    rdfs:comment "System can find efficient solutions within constrained parameters."@en,
+        "Sistema que puede encontrar soluciones eficientes dentro de parámetros restringidos."@es .
+
+# ===== ALGORITHM TYPE INSTANCES =====
+
+ai:NeuralNetwork a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Neural Network"@en,
+        "Red Neuronal"@es ;
+    rdfs:comment "Artificial neural networks including deep learning architectures."@en,
+        "Redes neuronales artificiales incluidas las arquitecturas de aprendizaje profundo."@es .
+
+ai:TransformerModel a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Transformer Model"@en,
+        "Modelo Transformer"@es ;
+    rdfs:comment "Transformer-based architectures for sequence processing and language understanding."@en,
+        "Arquitecturas basadas en Transformer para procesamiento de secuencias y comprensión del lenguaje."@es .
+
+ai:DecisionTree a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Decision Tree"@en,
+        "Árbol de Decisión"@es ;
+    rdfs:comment "Tree-based decision models for classification and regression."@en,
+        "Modelos de decisión basados en árboles para clasificación y regresión."@es .
+
+ai:BayesianModel a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Bayesian Model"@en,
+        "Modelo Bayesiano"@es ;
+    rdfs:comment "Probabilistic models based on Bayesian inference and reasoning."@en,
+        "Modelos probabilísticos basados en inferencia y razonamiento Bayesiano."@es .
+
+ai:SupportVectorMachine a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Support Vector Machine"@en,
+        "Máquina de Vectores de Soporte"@es ;
+    rdfs:comment "SVM algorithms for classification and regression tasks."@en,
+        "Algoritmos SVM para tareas de clasificación y regresión."@es .
+
+ai:RandomForest a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Random Forest"@en,
+        "Bosque Aleatorio"@es ;
+    rdfs:comment "Ensemble methods using multiple decision trees."@en,
+        "Métodos de conjunto que utilizan múltiples árboles de decisión."@es .
+
+ai:GradientBoosting a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Gradient Boosting"@en,
+        "Impulso de Gradiente"@es ;
+    rdfs:comment "Ensemble method building models sequentially with gradient optimization."@en,
+        "Método de conjunto que construye modelos secuencialmente con optimización de gradiente."@es .
+
+ai:ConvolutionalNeuralNetwork a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Convolutional Neural Network"@en,
+        "Red Neuronal Convolucional"@es ;
+    rdfs:comment "CNN architectures specialized for image and spatial data processing."@en,
+        "Arquitecturas CNN especializadas para procesamiento de imágenes y datos espaciales."@es .
+
+ai:RecurrentNeuralNetwork a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Recurrent Neural Network"@en,
+        "Red Neuronal Recurrente"@es ;
+    rdfs:comment "RNN architectures for sequential data processing and temporal dependencies."@en,
+        "Arquitecturas RNN para procesamiento de datos secuenciales y dependencias temporales."@es .
+
+ai:GeneticAlgorithm a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Genetic Algorithm"@en,
+        "Algoritmo Genético"@es ;
+    rdfs:comment "Evolutionary algorithms inspired by biological natural selection."@en,
+        "Algoritmos evolutivos inspirados en la selección natural biológica."@es .
+
+# ===== CONTEXTUAL CRITERIA INSTANCES =====
+
+ai:ChildrenMinorsContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Children and Minors Context"@en,
+        "Contexto de Niños y Menores"@es ;
+    rdfs:comment "Systems used in contexts involving children or minors require special protections."@en,
+        "Sistemas utilizados en contextos que involucran niños o menores requieren protecciones especiales."@es .
+
+ai:EmploymentContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Employment Context"@en,
+        "Contexto de Empleo"@es ;
+    rdfs:comment "Systems used in employment or recruitment decisions affecting workers."@en,
+        "Sistemas utilizados en decisiones de empleo o reclutamiento que afectan a los trabajadores."@es .
+
+ai:LegalSystemContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Legal System Context"@en,
+        "Contexto del Sistema Legal"@es ;
+    rdfs:comment "Systems used in legal decision-making or justice processes."@en,
+        "Sistemas utilizados en toma de decisiones legales o procesos de justicia."@es .
+
+ai:EssentialServicesContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Essential Services Context"@en,
+        "Contexto de Servicios Esenciales"@es ;
+    rdfs:comment "Systems critical to essential services like electricity, water, or healthcare."@en,
+        "Sistemas críticos para servicios esenciales como electricidad, agua o sanidad."@es .
+
+ai:FundamentalRightsContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Fundamental Rights Context"@en,
+        "Contexto de Derechos Fundamentales"@es ;
+    rdfs:comment "Systems that may impact fundamental rights protected by the EU Charter."@en,
+        "Sistemas que pueden afectar los derechos fundamentales protegidos por la Carta de la UE."@es .
+
+ai:TransparencyContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Limited Transparency Context"@en,
+        "Contexto de Transparencia Limitada"@es ;
+    rdfs:comment "Systems operating in contexts where transparency is inherently limited."@en,
+        "Sistemas que operan en contextos donde la transparencia es inherentemente limitada."@es .
+
+ai:SurveillanceContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Surveillance Context"@en,
+        "Contexto de Vigilancia"@es ;
+    rdfs:comment "Systems used for mass surveillance or monitoring of populations."@en,
+        "Sistemas utilizados para vigilancia masiva o monitoreo de poblaciones."@es .
+
+ai:ManipulationContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Manipulation Risk Context"@en,
+        "Contexto de Riesgo de Manipulación"@es ;
+    rdfs:comment "Systems with potential for social or emotional manipulation."@en,
+        "Sistemas con potencial para manipulación social o emocional."@es .
+
+ai:HighStakesContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "High-Stakes Context"@en,
+        "Contexto de Alto Riesgo"@es ;
+    rdfs:comment "Systems where errors have significant consequences for individuals or society."@en,
+        "Sistemas donde los errores tienen consecuencias significativas para individuos o la sociedad."@es .
+
+# ===== COMPLIANCE REQUIREMENT INSTANCES =====
+
+ai:UserNotificationRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "User Notification Requirement"@en,
+        "Requisito de Notificación al Usuario"@es ;
+    rdfs:comment "Systems must notify users when they interact with AI-generated content."@en,
+        "Los sistemas deben notificar a los usuarios cuando interactúan con contenido generado por IA."@es .
+
+ai:AuditTrailRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Audit Trail Requirement"@en,
+        "Requisito de Rastro de Auditoría"@es ;
+    rdfs:comment "Systems must maintain comprehensive audit trails of decisions and operations."@en,
+        "Los sistemas deben mantener registros de auditoría exhaustivos de decisiones y operaciones."@es .
+
+ai:RiskAssessmentRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Risk Assessment Requirement"@en,
+        "Requisito de Evaluación de Riesgos"@es ;
+    rdfs:comment "Systems must undergo thorough risk assessments before deployment."@en,
+        "Los sistemas deben someterse a evaluaciones exhaustivas de riesgos antes del despliegue."@es .
+
+ai:GovernanceDocumentationRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Governance Documentation Requirement"@en,
+        "Requisito de Documentación de Gobernanza"@es ;
+    rdfs:comment "Systems must have documented governance structures and accountability mechanisms."@en,
+        "Los sistemas deben tener estructuras de gobernanza documentadas y mecanismos de responsabilidad."@es .
+
+ai:ExternalAuditRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "External Audit Requirement"@en,
+        "Requisito de Auditoría Externa"@es ;
+    rdfs:comment "High-risk systems must be subject to regular external audits."@en,
+        "Los sistemas de alto riesgo deben estar sujetos a auditorías externas regulares."@es .
+
+# ===== TECHNICAL REQUIREMENT INSTANCES =====
+
+ai:PerformanceMonitoringRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Performance Monitoring Requirement"@en,
+        "Requisito de Monitoreo de Rendimiento"@es ;
+    rdfs:comment "Systems must continuously monitor their performance metrics and deviations."@en,
+        "Los sistemas deben monitorear continuamente sus métricas de rendimiento y desviaciones."@es .
+
+ai:InputValidationRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Input Validation Requirement"@en,
+        "Requisito de Validación de Entrada"@es ;
+    rdfs:comment "Systems must validate all inputs for correctness and security."@en,
+        "Los sistemas deben validar todas las entradas para corrección y seguridad."@es .
+
+ai:OutputExplanationRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Output Explanation Requirement"@en,
+        "Requisito de Explicación de Salida"@es ;
+    rdfs:comment "Systems must provide explanations for their decisions to end users."@en,
+        "Los sistemas deben proporcionar explicaciones de sus decisiones a los usuarios finales."@es .
+
+ai:RecoveryMechanismRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Recovery Mechanism Requirement"@en,
+        "Requisito de Mecanismo de Recuperación"@es ;
+    rdfs:comment "Systems must have mechanisms to recover from failures and errors."@en,
+        "Los sistemas deben tener mecanismos para recuperarse de fallos y errores."@es .
+
+ai:LoggingRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Logging Requirement"@en,
+        "Requisito de Registro"@es ;
+    rdfs:comment "Systems must maintain detailed logs of all operations and decisions."@en,
+        "Los sistemas deben mantener registros detallados de todas las operaciones y decisiones."@es .
+
+# ===== SECURITY REQUIREMENT INSTANCES =====
+
+ai:EncryptionRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Encryption Requirement"@en,
+        "Requisito de Encriptación"@es ;
+    rdfs:comment "Systems must encrypt sensitive data in transit and at rest."@en,
+        "Los sistemas deben encriptar datos sensibles en tránsito y en reposo."@es .
+
+ai:AccessControlRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Access Control Requirement"@en,
+        "Requisito de Control de Acceso"@es ;
+    rdfs:comment "Systems must implement strict access control policies."@en,
+        "Los sistemas deben implementar políticas de control de acceso estrictas."@es .
+
+ai:VulnerabilityManagementRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Vulnerability Management Requirement"@en,
+        "Requisito de Gestión de Vulnerabilidades"@es ;
+    rdfs:comment "Systems must have processes for identifying and managing vulnerabilities."@en,
+        "Los sistemas deben tener procesos para identificar y gestionar vulnerabilidades."@es .
+
+ai:SecureDeploymentRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Secure Deployment Requirement"@en,
+        "Requisito de Despliegue Seguro"@es ;
+    rdfs:comment "Systems must be deployed using secure configuration and processes."@en,
+        "Los sistemas deben desplegarse utilizando configuración y procesos seguros."@es .
+
+ai:IncidentResponseRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Incident Response Requirement"@en,
+        "Requisito de Respuesta a Incidentes"@es ;
+    rdfs:comment "Systems must have documented incident response procedures."@en,
+        "Los sistemas deben tener procedimientos de respuesta a incidentes documentados."@es .
+
+# ===== ROBUSTNESS REQUIREMENT INSTANCES =====
+
+ai:AdversarialRobustnessRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Adversarial Robustness Requirement"@en,
+        "Requisito de Robustez Adversarial"@es ;
+    rdfs:comment "Systems must be robust against adversarial attacks and manipulations."@en,
+        "Los sistemas deben ser robustos contra ataques y manipulaciones adversariales."@es .
+
+ai:DistributionShiftRobustnessRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Distribution Shift Robustness Requirement"@en,
+        "Requisito de Robustez ante Cambios de Distribución"@es ;
+    rdfs:comment "Systems must maintain performance when input distributions shift."@en,
+        "Los sistemas deben mantener el rendimiento cuando las distribuciones de entrada cambian."@es .
+
+ai:OutOfDistributionDetectionRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Out-of-Distribution Detection Requirement"@en,
+        "Requisito de Detección Fuera de Distribución"@es ;
+    rdfs:comment "Systems must detect and handle out-of-distribution inputs appropriately."@en,
+        "Los sistemas deben detectar y manejar apropiadamente entradas fuera de distribución."@es .
+
+ai:GracefulDegradationRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Graceful Degradation Requirement"@en,
+        "Requisito de Degradación Elegante"@es ;
+    rdfs:comment "Systems must degrade gracefully when encountering unexpected situations."@en,
+        "Los sistemas deben degradarse elegantemente cuando encuentran situaciones inesperadas."@es .
+
+# ===== DOCUMENTATION REQUIREMENT INSTANCES =====
+
+ai:ModelCardDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Model Card Documentation Requirement"@en,
+        "Requisito de Documentación de Tarjeta de Modelo"@es ;
+    rdfs:comment "Systems must provide model cards documenting their design and capabilities."@en,
+        "Los sistemas deben proporcionar tarjetas de modelo documentando su diseño y capacidades."@es .
+
+ai:DatasetDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Dataset Documentation Requirement"@en,
+        "Requisito de Documentación de Conjunto de Datos"@es ;
+    rdfs:comment "Systems must document their training and operational datasets."@en,
+        "Los sistemas deben documentar sus conjuntos de datos de entrenamiento y operacionales."@es .
+
+ai:SystemDescriptionDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "System Description Documentation Requirement"@en,
+        "Requisito de Documentación de Descripción del Sistema"@es ;
+    rdfs:comment "Systems must provide detailed technical descriptions and architecture documentation."@en,
+        "Los sistemas deben proporcionar descripciones técnicas detalladas y documentación de arquitectura."@es .
+
+ai:LimitationsDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Limitations Documentation Requirement"@en,
+        "Requisito de Documentación de Limitaciones"@es ;
+    rdfs:comment "Systems must document their limitations and failure modes."@en,
+        "Los sistemas deben documentar sus limitaciones y modos de fallo."@es .
+
+# ===== DATA GOVERNANCE REQUIREMENT INSTANCES =====
+
+ai:DataQualityRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Quality Requirement"@en,
+        "Requisito de Calidad de Datos"@es ;
+    rdfs:comment "Systems must ensure high quality standards for all training and operational data."@en,
+        "Los sistemas deben asegurar estándares altos de calidad para todos los datos de entrenamiento y operacionales."@es .
+
+ai:DataPrivacyRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Privacy Requirement"@en,
+        "Requisito de Privacidad de Datos"@es ;
+    rdfs:comment "Systems must comply with data privacy regulations and best practices."@en,
+        "Los sistemas deben cumplir con regulaciones de privacidad de datos y mejores prácticas."@es .
+
+ai:DataProvenanceRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Provenance Requirement"@en,
+        "Requisito de Procedencia de Datos"@es ;
+    rdfs:comment "Systems must track the provenance and origin of all data used."@en,
+        "Los sistemas deben rastrear la procedencia y origen de todos los datos utilizados."@es .
+
+ai:DataRetentionRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Retention Requirement"@en,
+        "Requisito de Retención de Datos"@es ;
+    rdfs:comment "Systems must have policies for appropriate data retention and deletion."@en,
+        "Los sistemas deben tener políticas para retención y eliminación apropiada de datos."@es .
+
+ai:DataAccessControlRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Access Control Requirement"@en,
+        "Requisito de Control de Acceso a Datos"@es ;
+    rdfs:comment "Systems must implement strict controls over who can access sensitive data."@en,
+        "Los sistemas deben implementar controles estrictos sobre quién puede acceder a datos sensibles."@es .
+
+# ===== ISO REQUIREMENT INSTANCES =====
+
+ai:ISO42001ProcessRequirement a ai:ISORequirement,
+    owl:NamedIndividual ;
+    rdfs:label "ISO 42001 Process Requirement"@en,
+        "Requisito de Proceso ISO 42001"@es ;
+    rdfs:comment "Systems must comply with ISO/IEC 42001 AI management system processes."@en,
+        "Los sistemas deben cumplir con los procesos del sistema de gestión de IA ISO/IEC 42001."@es .
+
+ai:ISO42001DocumentationRequirement a ai:ISORequirement,
+    owl:NamedIndividual ;
+    rdfs:label "ISO 42001 Documentation Requirement"@en,
+        "Requisito de Documentación ISO 42001"@es ;
+    rdfs:comment "Systems must maintain documentation required by ISO/IEC 42001."@en,
+        "Los sistemas deben mantener documentación requerida por ISO/IEC 42001."@es .
+
+ai:ISO42001RiskRequirement a ai:ISORequirement,
+    owl:NamedIndividual ;
+    rdfs:label "ISO 42001 Risk Requirement"@en,
+        "Requisito de Riesgo ISO 42001"@es ;
+    rdfs:comment "Systems must implement risk management according to ISO/IEC 42001."@en,
+        "Los sistemas deben implementar gestión de riesgos según ISO/IEC 42001."@es .
+
+# ===== NIST REQUIREMENT INSTANCES =====
+
+ai:NISTGovernanceRequirement a ai:NISTRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "NIST Governance Requirement"@en,
+        "Requisito de Gobernanza NIST"@es ;
+    rdfs:comment "Systems must implement governance structures per NIST AI RMF."@en,
+        "Los sistemas deben implementar estructuras de gobernanza según NIST AI RMF."@es .
+
+ai:NISTMapRequirement a ai:NISTRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "NIST Map Requirement"@en,
+        "Requisito de Mapeo NIST"@es ;
+    rdfs:comment "Systems must map risks and safeguards per NIST AI RMF."@en,
+        "Los sistemas deben mapear riesgos y salvaguardas según NIST AI RMF."@es .
+
+ai:NISTMeasureRequirement a ai:NISTRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "NIST Measure Requirement"@en,
+        "Requisito de Medición NIST"@es ;
+    rdfs:comment "Systems must measure and monitor per NIST AI RMF."@en,
+        "Los sistemas deben medir y monitorear según NIST AI RMF."@es .
+
+ai:NISTManageRequirement a ai:NISTRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "NIST Manage Requirement"@en,
+        "Requisito de Gestión NIST"@es ;
+    rdfs:comment "Systems must manage risks and impacts per NIST AI RMF."@en,
+        "Los sistemas deben gestionar riesgos e impactos según NIST AI RMF."@es .
+
+# ===== TRANSPARENCY LEVEL INSTANCES =====
+
+ai:FullTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Full Transparency"@en,
+        "Transparencia Total"@es ;
+    rdfs:comment "Complete transparency with detailed explanations of all decisions."@en,
+        "Transparencia completa con explicaciones detalladas de todas las decisiones."@es .
+
+ai:HighTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "High Transparency"@en,
+        "Transparencia Alta"@es ;
+    rdfs:comment "High level of transparency with explanations of key decisions."@en,
+        "Nivel alto de transparencia con explicaciones de decisiones clave."@es .
+
+ai:MediumTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Medium Transparency"@en,
+        "Transparencia Media"@es ;
+    rdfs:comment "Moderate transparency with explanations available upon request."@en,
+        "Transparencia moderada con explicaciones disponibles bajo demanda."@es .
+
+ai:LowTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Low Transparency"@en,
+        "Transparencia Baja"@es ;
+    rdfs:comment "Limited transparency due to technical or business constraints."@en,
+        "Transparencia limitada debido a restricciones técnicas o comerciales."@es .
+
 # ===== END OF UNIFIED ONTOLOGY v0.37.2 =====
 # All concepts consolidated under ai: namespace
 # Future modularization can occur in post-v0.37.2 versions
