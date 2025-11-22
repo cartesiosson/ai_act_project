@@ -639,6 +639,48 @@ ai:mandatoryCompliance a owl:DatatypeProperty ;
     rdfs:domain ai:ComplianceRequirement ;
     rdfs:range xsd:boolean .
 
+# ===== INTELLIGENT SYSTEM PROPERTIES =====
+
+ai:hasPurpose a owl:ObjectProperty ;
+    rdfs:label "has Purpose"@en,
+        "tiene Propósito"@es ;
+    rdfs:comment "The primary purpose or intended use of an intelligent system."@en,
+        "El propósito principal o uso previsto de un sistema inteligente."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Purpose .
+
+ai:hasDeploymentContext a owl:ObjectProperty ;
+    rdfs:label "has Deployment Context"@en,
+        "tiene Contexto de Despliegue"@es ;
+    rdfs:comment "The context in which an intelligent system is deployed or operates."@en,
+        "El contexto en el que un sistema inteligente se despliega u opera."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:DeploymentContext .
+
+ai:hasTrainingDataOrigin a owl:ObjectProperty ;
+    rdfs:label "has Training Data Origin"@en,
+        "tiene Origen de Datos de Entrenamiento"@es ;
+    rdfs:comment "The source or origin of training data used in an intelligent system."@en,
+        "La fuente u origen de los datos de entrenamiento utilizados en un sistema inteligente."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:TrainingDataOrigin .
+
+ai:hasAlgorithmType a owl:ObjectProperty ;
+    rdfs:label "has Algorithm Type"@en,
+        "tiene Tipo de Algoritmo"@es ;
+    rdfs:comment "The type of algorithm or machine learning approach used."@en,
+        "El tipo de algoritmo o enfoque de aprendizaje automático utilizado."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:AlgorithmType .
+
+ai:hasModelScale a owl:ObjectProperty ;
+    rdfs:label "has Model Scale"@en,
+        "tiene Escala de Modelo"@es ;
+    rdfs:comment "The scale or size category of the model."@en,
+        "La escala o categoría de tamaño del modelo."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:ModelScale .
+
 # ===== MISSING CRITERION DEFINITIONS =====
 # These criteria are referenced by Purpose/Context instances but were not previously defined
 # Adding definitions with their activated requirements (for Phase 3 derivation)
