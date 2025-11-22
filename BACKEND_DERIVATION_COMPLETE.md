@@ -353,16 +353,25 @@ USER INPUT FORM
 ## Files Modified/Created
 
 ### Created:
-- `backend/derivation.py` - Core derivation engine (300+ lines)
-- `backend/test_derivation.py` - Comprehensive test suite (400+ lines)
+- `backend/derivation.py` - Core derivation engine (292 lines)
+  - Contains all semantic reasoning logic
+  - Generic RDF graph traversal utilities
+  - Risk hierarchy and GPAI classification logic
+
+- `backend/test_derivation.py` - Comprehensive test suite (400+ lines, local only)
+  - 40+ test cases for all derivation functions
+  - Tests with real v0.37.2 ontology
+  - Covers edge cases and error conditions
+  - Run with: `pytest backend/test_derivation.py -v`
+
 - `BACKEND_DERIVATION_COMPLETE.md` - This documentation
 
 ### Modified:
-- `backend/routers/systems.py`
-  - Added `get_ontology()` function
+- `backend/routers/systems.py` (+88 lines)
+  - Added `get_ontology()` function for caching
   - Added `POST /derive-classifications` endpoint
   - Modified `POST /systems` to auto-derive classifications
-  - Added derivation logic to system creation flow
+  - Added complete derivation flow to system creation
 
 ## Integration with Frontend
 
