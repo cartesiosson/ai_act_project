@@ -134,24 +134,36 @@ export default function GraphView() {
       }
     });
 
-    const nodeArray = Array.from(nodes.values());
-    const filteredNodes = activeFilter
-      ? nodeArray.filter((n) => n.category === activeFilter)
-      : nodeArray;
-    const filteredLinks = activeFilter
-      ? links.filter(
-          (l) =>
-            nodes.get(l.source)?.category === activeFilter ||
-            nodes.get(l.target)?.category === activeFilter
-        )
-      : links;
+    let nodeArray = Array.from(nodes.values());
+    let linksToRender = links;
 
-    const searchFiltered = searchQuery
-      ? filteredNodes.filter((n) =>
-          n.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          n.id.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      : filteredNodes;
+    // Apply category filter
+    if (activeFilter) {
+      linksToRender = links.filter(
+        (l) =>
+          nodes.get(l.source)?.category === activeFilter ||
+          nodes.get(l.target)?.category === activeFilter
+      );
+      const nodeIdsInLinks = new Set<string>();
+      linksToRender.forEach((l) => {
+        nodeIdsInLinks.add(l.source);
+        nodeIdsInLinks.add(l.target);
+      });
+      nodeArray = nodeArray.filter((n) => nodeIdsInLinks.has(n.id));
+    }
+
+    // Apply search filter
+    if (searchQuery) {
+      nodeArray = nodeArray.filter((n) =>
+        n.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        n.id.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      linksToRender = linksToRender.filter(
+        (l) =>
+          nodeArray.some((n) => n.id === l.source) &&
+          nodeArray.some((n) => n.id === l.target)
+      );
+    }
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -160,8 +172,8 @@ export default function GraphView() {
     const height = window.innerHeight;
 
     const simulation = d3
-      .forceSimulation(searchFiltered as any)
-      .force("link", d3.forceLink(filteredLinks as any).id((d: any) => d.id).distance(120))
+      .forceSimulation(nodeArray as any)
+      .force("link", d3.forceLink(linksToRender as any).id((d: any) => d.id).distance(120))
       .force("charge", d3.forceManyBody().strength(-500))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("collision", d3.forceCollide().radius(40));
@@ -179,7 +191,7 @@ export default function GraphView() {
     const link = g
       .append("g")
       .selectAll("line")
-      .data(filteredLinks)
+      .data(linksToRender)
       .enter()
       .append("line")
       .attr("stroke", "#888")
@@ -203,7 +215,7 @@ export default function GraphView() {
     const linkLabels = g
       .append("g")
       .selectAll("text")
-      .data(filteredLinks)
+      .data(linksToRender)
       .enter()
       .append("text")
       .text((d) => d.predicateLabel)
@@ -215,7 +227,7 @@ export default function GraphView() {
     const node = g
       .append("g")
       .selectAll("circle")
-      .data(searchFiltered)
+      .data(nodeArray)
       .enter()
       .append("circle")
       .attr("r", (d: any) => d.size)
