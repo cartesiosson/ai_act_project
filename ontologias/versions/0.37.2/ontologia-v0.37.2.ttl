@@ -1179,42 +1179,78 @@ ai:ReasoningCapability a ai:SystemCapabilityCriterion,
     rdfs:label "Reasoning Capability"@en,
         "Capacidad de Razonamiento"@es ;
     rdfs:comment "System can perform logical reasoning and inference over complex domains."@en,
-        "Sistema que puede realizar razonamiento lógico e inferencia sobre dominios complejos."@es .
+        "Sistema que puede realizar razonamiento lógico e inferencia sobre dominios complejos."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:ExplainabilityRequirement,
+        ai:DocumentationRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement .
 
 ai:PlanningCapability a ai:SystemCapabilityCriterion,
     owl:NamedIndividual ;
     rdfs:label "Planning Capability"@en,
         "Capacidad de Planificación"@es ;
     rdfs:comment "System can generate plans and strategies to achieve specified objectives."@en,
-        "Sistema que puede generar planes y estrategias para lograr objetivos especificados."@es .
+        "Sistema que puede generar planes y estrategias para lograr objetivos especificados."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement,
+        ai:RobustnessRequirement .
 
 ai:PerceptionCapability a ai:SystemCapabilityCriterion,
     owl:NamedIndividual ;
     rdfs:label "Perception Capability"@en,
         "Capacidad de Percepción"@es ;
     rdfs:comment "System can sense and interpret information from its environment."@en,
-        "Sistema que puede detectar e interpretar información de su entorno."@es .
+        "Sistema que puede detectar e interpretar información de su entorno."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:AccuracyEvaluationRequirement,
+        ai:DataGovernanceRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement .
 
 ai:InteractionCapability a ai:SystemCapabilityCriterion,
     owl:NamedIndividual ;
     rdfs:label "Interaction Capability"@en,
         "Capacidad de Interacción"@es ;
     rdfs:comment "System can interact with users and other systems effectively."@en,
-        "Sistema que puede interactuar con usuarios y otros sistemas de manera efectiva."@es .
+        "Sistema que puede interactuar con usuarios y otros sistemas de manera efectiva."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:UserNotificationRequirement,
+        ai:DocumentationRequirement,
+        ai:DataGovernanceRequirement .
 
 ai:LearningCapability a ai:SystemCapabilityCriterion,
     owl:NamedIndividual ;
     rdfs:label "Learning Capability"@en,
         "Capacidad de Aprendizaje"@es ;
     rdfs:comment "System can adapt and improve its behavior based on experience."@en,
-        "Sistema que puede adaptarse y mejorar su comportamiento basado en la experiencia."@es .
+        "Sistema que puede adaptarse y mejorar su comportamiento basado en la experiencia."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:DataGovernanceRequirement,
+        ai:BiasDetectionRequirement,
+        ai:MonitoringRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement .
 
 ai:OptimizationCapability a ai:SystemCapabilityCriterion,
     owl:NamedIndividual ;
     rdfs:label "Optimization Capability"@en,
         "Capacidad de Optimización"@es ;
     rdfs:comment "System can find efficient solutions within constrained parameters."@en,
-        "Sistema que puede encontrar soluciones eficientes dentro de parámetros restringidos."@es .
+        "Sistema que puede encontrar soluciones eficientes dentro de parámetros restringidos."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:RobustnessRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DocumentationRequirement,
+        ai:DataGovernanceRequirement .
 
 # ===== ALGORITHM TYPE INSTANCES =====
 
@@ -1295,63 +1331,116 @@ ai:ChildrenMinorsContextualCriterion a ai:ContextualCriterion,
     rdfs:label "Children and Minors Context"@en,
         "Contexto de Niños y Menores"@es ;
     rdfs:comment "Systems used in contexts involving children or minors require special protections."@en,
-        "Sistemas utilizados en contextos que involucran niños o menores requieren protecciones especiales."@es .
+        "Sistemas utilizados en contextos que involucran niños o menores requieren protecciones especiales."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:DataGovernanceRequirement,
+        ai:ParentalConsentRequirement,
+        ai:SafetyRequirement .
 
 ai:EmploymentContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Employment Context"@en,
         "Contexto de Empleo"@es ;
     rdfs:comment "Systems used in employment or recruitment decisions affecting workers."@en,
-        "Sistemas utilizados en decisiones de empleo o reclutamiento que afectan a los trabajadores."@es .
+        "Sistemas utilizados en decisiones de empleo o reclutamiento que afectan a los trabajadores."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:AccuracyEvaluationRequirement .
 
 ai:LegalSystemContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Legal System Context"@en,
         "Contexto del Sistema Legal"@es ;
     rdfs:comment "Systems used in legal decision-making or justice processes."@en,
-        "Sistemas utilizados en toma de decisiones legales o procesos de justicia."@es .
+        "Sistemas utilizados en toma de decisiones legales o procesos de justicia."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement .
 
 ai:EssentialServicesContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Essential Services Context"@en,
         "Contexto de Servicios Esenciales"@es ;
     rdfs:comment "Systems critical to essential services like electricity, water, or healthcare."@en,
-        "Sistemas críticos para servicios esenciales como electricidad, agua o sanidad."@es .
+        "Sistemas críticos para servicios esenciales como electricidad, agua o sanidad."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:SystemSafetyRequirement,
+        ai:RobustnessRequirement,
+        ai:MonitoringRequirement,
+        ai:DocumentationRequirement .
 
 ai:FundamentalRightsContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Fundamental Rights Context"@en,
         "Contexto de Derechos Fundamentales"@es ;
     rdfs:comment "Systems that may impact fundamental rights protected by the EU Charter."@en,
-        "Sistemas que pueden afectar los derechos fundamentales protegidos por la Carta de la UE."@es .
+        "Sistemas que pueden afectar los derechos fundamentales protegidos por la Carta de la UE."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:HumanOversightRequirement,
+        ai:TransparencyRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:DocumentationRequirement .
 
 ai:TransparencyContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Limited Transparency Context"@en,
         "Contexto de Transparencia Limitada"@es ;
     rdfs:comment "Systems operating in contexts where transparency is inherently limited."@en,
-        "Sistemas que operan en contextos donde la transparencia es inherentemente limitada."@es .
+        "Sistemas que operan en contextos donde la transparencia es inherentemente limitada."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:ExplainabilityRequirement,
+        ai:DocumentationRequirement,
+        ai:HumanOversightRequirement .
 
 ai:SurveillanceContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Surveillance Context"@en,
         "Contexto de Vigilancia"@es ;
     rdfs:comment "Systems used for mass surveillance or monitoring of populations."@en,
-        "Sistemas utilizados para vigilancia masiva o monitoreo de poblaciones."@es .
+        "Sistemas utilizados para vigilancia masiva o monitoreo de poblaciones."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement .
 
 ai:ManipulationContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Manipulation Risk Context"@en,
         "Contexto de Riesgo de Manipulación"@es ;
     rdfs:comment "Systems with potential for social or emotional manipulation."@en,
-        "Sistemas con potencial para manipulación social o emocional."@es .
+        "Sistemas con potencial para manipulación social o emocional."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:TransparencyRequirement,
+        ai:UserNotificationRequirement,
+        ai:DocumentationRequirement,
+        ai:HumanOversightRequirement .
 
 ai:HighStakesContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "High-Stakes Context"@en,
         "Contexto de Alto Riesgo"@es ;
     rdfs:comment "Systems where errors have significant consequences for individuals or society."@en,
-        "Sistemas donde los errores tienen consecuencias significativas para individuos o la sociedad."@es .
+        "Sistemas donde los errores tienen consecuencias significativas para individuos o la sociedad."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:AccuracyEvaluationRequirement,
+        ai:RobustnessRequirement,
+        ai:HumanOversightRequirement,
+        ai:MonitoringRequirement,
+        ai:DocumentationRequirement .
 
 # ===== COMPLIANCE REQUIREMENT INSTANCES =====
 
