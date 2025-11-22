@@ -169,108 +169,100 @@ async def reason(
             inferences_count = 0
         
         # =============================================================
-        # APLICAR REGLAS HARDCODEADAS (SIEMPRE SE EJECUTAN COMO FALLBACK)
+        # APLICAR REGLAS GENÉRICAS SWRL (NAVEGAN LA ONTOLOGÍA)
         # =============================================================
-        print(f"DEBUG: Aplicando reglas hardcodeadas como fallback (pre-inferences: {inferences_count})...")
-        
+        print(f"DEBUG: Aplicando 6 reglas genéricas SWRL que navegan ontología (pre-inferences: {inferences_count})...")
+
         try:
             # Re-definir AI namespace para estar seguros
             AI = Namespace("http://ai-act.eu/ai#")
-            
+
             for system in combined_graph.subjects(RDF.type, AI.IntelligentSystem):
-                print(f"DEBUG: Procesando sistema con reglas hardcodeadas: {system}")
-                
+                print(f"DEBUG: Procesando sistema con reglas genéricas SWRL: {system}")
+
                 # =============================================================
-                # REGLAS PARA HASYSTEMCAPABILITYCRITERIA (CRITERIOS DE CAPACIDAD)
+                # REGLA 1: Purpose → activatesCriterion → hasCriteria
+                # Si un sistema tiene un propósito, y ese propósito activa un criterio,
+                # entonces el sistema tiene ese criterio
                 # =============================================================
-                
-                # REGLA 24: JudicialSupportCriterion (capacidad) -> múltiples requisitos
-                if (system, AI.hasSystemCapabilityCriteria, AI.JudicialSupportCriterion) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.DueProcess))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> DueProcess (Judicial Capability)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.HumanOversightRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> HumanOversightRequirement (Judicial Capability)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.ConformityAssessmentRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> ConformityAssessmentRequirement (Judicial Capability)")
-                    inferences_count += 1
-                
-                # REGLA 25: BiometricIdentificationCriterion (capacidad) -> múltiples requisitos
-                if (system, AI.hasSystemCapabilityCriteria, AI.BiometricIdentificationCriterion) in combined_graph:
-                    combined_graph.add((system, AI.hasContextualCriterion, AI.BiometricSecurity))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasContextualCriterion -> BiometricSecurity (Biometric Capability)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasTechnicalRequirement, AI.DataEncryption))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasTechnicalRequirement -> DataEncryption (Biometric Capability)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.DataGovernanceRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> DataGovernanceRequirement (Biometric Capability)")
-                    inferences_count += 1
-                
-                # REGLA 26: RecruitmentEmploymentCriterion (capacidad) -> múltiples requisitos
-                if (system, AI.hasSystemCapabilityCriteria, AI.RecruitmentEmploymentCriterion) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.NonDiscrimination))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> NonDiscrimination (Recruitment Capability)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.TransparencyRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> TransparencyRequirement (Recruitment Capability)")
-                    inferences_count += 1
-                    
-                    combined_graph.add((system, AI.hasRequirement, AI.FundamentalRightsAssessmentRequirement))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasRequirement -> FundamentalRightsAssessmentRequirement (Recruitment Capability)")
-                    inferences_count += 1
-                
-                # Reglas adicionales para otras propiedades también
-                # REGLA TÉCNICA: BiometricIdentification (propósito) -> BiometricSecurity
-                if (system, AI.hasPurpose, AI.BiometricIdentification) in combined_graph:
-                    combined_graph.add((system, AI.hasContextualCriterion, AI.BiometricSecurity))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasContextualCriterion -> BiometricSecurity (por propósito)")
-                    inferences_count += 1
-                
-                # REGLA TÉCNICA: Education context -> ProtectionOfMinors
-                if (system, AI.hasDeploymentContext, AI.Education) in combined_graph:
-                    combined_graph.add((system, AI.hasNormativeCriterion, AI.ProtectionOfMinors))
-                    print(f"DEBUG: ✅ Inferencia aplicada: {system} -> hasNormativeCriterion -> ProtectionOfMinors (Education context)")
-                    inferences_count += 1
-                
+                for purpose in combined_graph.objects(system, AI.hasPurpose):
+                    for criterion in combined_graph.objects(purpose, AI.activatesCriterion):
+                        combined_graph.add((system, AI.hasCriteria, criterion))
+                        print(f"DEBUG: ✅ REGLA 1 aplicada: {system} hasCriteria {criterion} (vía hasPurpose → activatesCriterion)")
+                        inferences_count += 1
+
                 # =============================================================
-                # REGLAS PARA HASALGORITHMTYPE (REGLAS TÉCNICAS 19A, 19B, 19C)
+                # REGLA 2: DeploymentContext → triggersCriterion → hasCriteria
+                # Si un sistema tiene un contexto de despliegue, y ese contexto dispara un criterio,
+                # entonces el sistema tiene ese criterio
                 # =============================================================
-                
-                # REGLA 19A: FoundationModel -> ModelComplexity
-                if (system, AI.hasAlgorithmType, AI.FoundationModel) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
-                    print(f"DEBUG: ✅ Inferencia aplicada (RULE_19A): {system} -> hasTechnicalCriterion -> ModelComplexity (FoundationModel)")
+                for context in combined_graph.objects(system, AI.hasDeploymentContext):
+                    for criterion in combined_graph.objects(context, AI.triggersCriterion):
+                        combined_graph.add((system, AI.hasCriteria, criterion))
+                        print(f"DEBUG: ✅ REGLA 2 aplicada: {system} hasCriteria {criterion} (vía hasDeploymentContext → triggersCriterion)")
+                        inferences_count += 1
+
+                # =============================================================
+                # REGLA 3: SystemCapabilityCriteria → (actúan como criterios derivados)
+                # Si un sistema tiene SystemCapabilityCriteria, se trata como criterios
+                # =============================================================
+                for capability in combined_graph.objects(system, AI.hasSystemCapabilityCriteria):
+                    combined_graph.add((system, AI.hasCriteria, capability))
+                    print(f"DEBUG: ✅ REGLA 3 aplicada: {system} hasCriteria {capability} (vía hasSystemCapabilityCriteria)")
                     inferences_count += 1
-                
-                # REGLA 19B: TransformerModel -> ModelComplexity
-                if (system, AI.hasAlgorithmType, AI.TransformerModel) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
-                    print(f"DEBUG: ✅ Inferencia aplicada (RULE_19B): {system} -> hasTechnicalCriterion -> ModelComplexity (TransformerModel)")
-                    inferences_count += 1
-                
-                # REGLA 19C: GenerativeModel -> ModelComplexity
-                if (system, AI.hasAlgorithmType, AI.GenerativeModel) in combined_graph:
-                    combined_graph.add((system, AI.hasTechnicalCriterion, AI.ModelComplexity))
-                    print(f"DEBUG: ✅ Inferencia aplicada (RULE_19C): {system} -> hasTechnicalCriterion -> ModelComplexity (GenerativeModel)")
-                    inferences_count += 1
-            
-            print(f"DEBUG: Reglas hardcodeadas completadas. Total inferencias aplicadas: {inferences_count}")
-        
+
+                # =============================================================
+                # REGLA 4: Criterion → activatesRequirement → hasComplianceRequirement
+                # Si un sistema tiene un criterio, y ese criterio activa requisitos,
+                # entonces el sistema tiene esos requisitos
+                # =============================================================
+                for criterion in combined_graph.objects(system, AI.hasCriteria):
+                    for requirement in combined_graph.objects(criterion, AI.activatesRequirement):
+                        combined_graph.add((system, AI.hasComplianceRequirement, requirement))
+                        print(f"DEBUG: ✅ REGLA 4 aplicada: {system} hasComplianceRequirement {requirement} (vía hasCriteria → activatesRequirement)")
+                        inferences_count += 1
+
+                # =============================================================
+                # REGLA 5: Criterion → assignsRiskLevel → hasRiskLevel
+                # Si un sistema tiene un criterio, y ese criterio asigna un nivel de riesgo,
+                # entonces el sistema tiene ese nivel de riesgo
+                # =============================================================
+                for criterion in combined_graph.objects(system, AI.hasCriteria):
+                    for risk_level in combined_graph.objects(criterion, AI.assignsRiskLevel):
+                        combined_graph.add((system, AI.hasRiskLevel, risk_level))
+                        print(f"DEBUG: ✅ REGLA 5 aplicada: {system} hasRiskLevel {risk_level} (vía hasCriteria → assignsRiskLevel)")
+                        inferences_count += 1
+
+                # =============================================================
+                # REGLA 6: FoundationModelScale → GPAI Classification
+                # Si un sistema tiene FoundationModelScale, es un GPAI
+                # =============================================================
+                for model_scale in combined_graph.objects(system, AI.hasModelScale):
+                    if str(model_scale).endswith("FoundationModelScale"):
+                        combined_graph.add((system, AI.hasGPAIClassification, AI.GeneralPurposeAI))
+                        print(f"DEBUG: ✅ REGLA 6 aplicada: {system} hasGPAIClassification GeneralPurposeAI (vía hasModelScale=FoundationModelScale)")
+                        inferences_count += 1
+                        break  # Solo una vez por sistema
+
+            print(f"DEBUG: Reglas genéricas SWRL completadas. Total inferencias aplicadas: {inferences_count}")
+
         except Exception as fallback_error:
-            print(f"ERROR en reglas hardcodeadas de fallback: {fallback_error}")
+            print(f"ERROR en reglas genéricas SWRL: {fallback_error}")
         
         print(f"DEBUG: *** RAZONAMIENTO COMPLETADO: {inferences_count} inferencias aplicadas ***")
 
         # Serializar el grafo combinado con todas las inferencias aplicadas
         try:
             print("DEBUG: Serializando grafo con inferencias...")
+            print(f"DEBUG: Triples en combined_graph antes de serializar: {len(combined_graph)}")
+            # Log sample of triples to verify inferences are in the graph
+            print("DEBUG: Sample triples en combined_graph (primeras 20):")
+            count = 0
+            for s, p, o in combined_graph:
+                if count < 20:
+                    print(f"  {s} {p} {o}")
+                    count += 1
+
             ttl_output = combined_graph.serialize(format="turtle")
             print(f"DEBUG: Grafo final serializado: {len(ttl_output)} caracteres, {len(combined_graph)} triples")
             
@@ -313,20 +305,31 @@ async def reason(
                 "hasTechnicalCriterion": [],
                 "hasContextualCriterion": [],
                 "hasRequirement": [],
-                "hasTechnicalRequirement": []
+                "hasTechnicalRequirement": [],
+                "hasCriteria": [],
+                "hasComplianceRequirement": [],
+                "hasRiskLevel": [],
+                "hasGPAIClassification": []
             }
             system_id = None
             system_name = None
+            print(f"DEBUG: Total triples en grafo parseado: {len(g)}")
             for system in g.subjects(RDF.type, AI.IntelligentSystem):
+                print(f"DEBUG: Encontrado sistema: {system}")
                 system_id = str(system)
                 name = None
                 for _, _, n in g.triples((system, AI.hasName, None)):
                     name = str(n)
                 system_name = name
+                print(f"DEBUG: Extrayendo relaciones para sistema {system}...")
                 for rel, arr in inferred_relationships.items():
                     pred = getattr(AI, rel)
-                    for _, _, obj in g.triples((system, pred, None)):
+                    matches = list(g.triples((system, pred, None)))
+                    if matches:
+                        print(f"DEBUG: ✅ Encontrados {len(matches)} triples para {rel}")
+                    for _, _, obj in matches:
                         arr.append(str(obj))
+                print(f"DEBUG: Resumen relaciones extraídas: {inferred_relationships}")
             response_data = {
                 "system_id": system_id or "",
                 "system_name": system_name or "",
@@ -343,6 +346,10 @@ async def reason(
                         "hasContextualCriterion": inferred_relationships["hasContextualCriterion"],
                         "hasRequirement": inferred_relationships["hasRequirement"],
                         "hasTechnicalRequirement": inferred_relationships["hasTechnicalRequirement"],
+                        "hasCriteria": inferred_relationships["hasCriteria"],
+                        "hasComplianceRequirement": inferred_relationships["hasComplianceRequirement"],
+                        "hasRiskLevel": inferred_relationships["hasRiskLevel"],
+                        "hasGPAIClassification": inferred_relationships["hasGPAIClassification"],
                         "system_name": system_name or ""
                     }
                 ]

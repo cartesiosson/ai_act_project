@@ -420,12 +420,17 @@ async def reason_system(
 
         # 5. Usar directamente las relaciones inferidas que vienen en la respuesta del reasoner
         # El reasoner service ya las procesa y las devuelve en formato correcto
+        # Incluir todas las relaciones posibles (antiguas + nuevas SWRL)
         relationships = reasoner_response.get("inferred_relationships", {
             "hasNormativeCriterion": [],
             "hasTechnicalCriterion": [],
             "hasContextualCriterion": [],
             "hasRequirement": [],
-            "hasTechnicalRequirement": []
+            "hasTechnicalRequirement": [],
+            "hasCriteria": [],
+            "hasComplianceRequirement": [],
+            "hasRiskLevel": [],
+            "hasGPAIClassification": []
         })
         logger.info(f"Relaciones inferidas: {relationships}")
 
