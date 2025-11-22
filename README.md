@@ -1,1902 +1,696 @@
-# AI Act Project
+# AI Act Ontology & SWRL Reasoning System
 
-## 📋 Descripción General
+> A comprehensive semantic system for automated compliance evaluation of AI systems under the EU AI Act framework
 
-Este proyecto implementa un **sistema completo para la gestión y análisis de sistemas de inteligencia artificial** bajo el marco del AI Act europeo. El sistema incluye:
+## 🎯 Executive Summary
 
-- 🧠 **Ontología formal** del dominio AI Act
-- 🔧 **Servicios de razonamiento semántico** (OWL/SWRL)
-- 🌐 **APIs REST** para gestión de datos
-- 📊 **Interfaz web interactiva** para visualización y gestión
-- 📚 **Documentación automática** de ontologías
+This project implements an **automated semantic compliance evaluation platform** for AI systems under the EU AI Act. It combines a formal OWL ontology with SWRL inference rules to automatically derive compliance requirements, risk assessments, and regulatory obligations from system specifications.
 
-## 🚀 Inicio Rápido
+**Key Innovation**: The system uses **hybrid SWRL reasoning** (native SWRL + Python rule engine) to automatically:
+- Derive applicable criteria from system purpose and deployment context
+- Activate compliance requirements based on identified criteria
+- Assign risk levels according to EU AI Act classifications
+- Validate system specifications against regulatory constraints
 
-### Prerrequisitos
-- **Docker** y **Docker Compose**
+---
+
+## 📋 Table of Contents
+
+1. [Quick Start](#-quick-start)
+2. [System Architecture](#-system-architecture)
+3. [Ontology Structure](#-ontology-structure)
+4. [SWRL Reasoning Rules](#-swrl-reasoning-rules)
+5. [Reasoning Flow](#-reasoning-flow)
+6. [SHACL Validation](#-shacl-validation)
+7. [API Reference](#-api-reference)
+8. [Deployment](#-deployment)
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Docker** & **Docker Compose**
 - **Git**
-- Puerto 5173, 8000, 8001, 3030, 27017, 80 disponibles
+- Available ports: 5173, 8000, 8001, 3030, 27017, 80
 
-### Instalación en 3 pasos
+### 3-Step Installation
 
 ```bash
-# 1. Clonar el repositorio
+# 1. Clone repository
 git clone <repository-url>
 cd ai_act_project
 
-# 2. Levantar todos los servicios
+# 2. Start all services
 docker-compose up -d
 
-# 3. Verificar que todo funciona
+# 3. Verify deployment
 docker-compose ps
 ```
 
-### Acceder a la aplicación
-- 🌐 **Frontend**: http://localhost:5173
-- 📊 **API Docs**: http://localhost:8000/docs  
-- 📚 **Ontología Docs**: http://localhost/docs
-- 🔍 **SPARQL Endpoint**: http://localhost:3030
+### Access Points
+
+| Service | URL | Purpose |
+|---------|-----|---------|
+| Frontend | http://localhost:5173 | Web interface for system management |
+| API Docs | http://localhost:8000/docs | Interactive API documentation (Swagger) |
+| SPARQL | http://localhost:3030 | RDF/semantic queries |
+| Ontology Docs | http://localhost/docs | Formal ontology documentation |
 
 ---
 
-## 🛠 Stack Tecnológico
+## 🏗️ System Architecture
 
-| Capa | Tecnologías |
-|------|-------------|
-| **🖥️ Frontend** | React 19, TypeScript, Vite, TailwindCSS, D3.js, Vis-network |
-| **⚡ Backend** | FastAPI, MongoDB, Apache Jena Fuseki, RDFLib, OwlReady2 |
-| **🧠 Semántica** | OWL, SWRL, RDF/Turtle, JSON-LD, SPARQL, AIRO Integration |
-| **🐳 Infraestructura** | Docker Compose, Nginx, Widoco |
+### Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    React Frontend (5173)                 │
+│        Interactive System Management Interface           │
+└───────────────────────┬─────────────────────────────────┘
+                        │ HTTP/REST
+┌───────────────────────▼─────────────────────────────────┐
+│             FastAPI Backend (8000)                       │
+│  ┌──────────────────┐  ┌─────────────────────────────┐  │
+│  │ Main Logic       │  │ Integration Layer           │  │
+│  │ - Derivation     │  │ - SHACL Validation (PRE/POST)  │
+│  │ - Requirements   │  │ - Data serialization        │  │
+│  │ - Risk mapping   │  └─────────────────────────────┘  │
+│  └──────────────────┘                                    │
+└────────┬──────────────┬──────────────┬──────────────────┘
+         │              │              │
+    MongoDB         Fuseki (SPARQL)   Reasoner Service
+    (27017)          (3030)            (8001)
+    Documents       RDF Triples        OWL Inference
+```
+
+### Core Services
+
+| Service | Role | Technology |
+|---------|------|-----------|
+| **Frontend** | User interface | React 19, TypeScript, TailwindCSS, D3.js |
+| **Backend API** | Main orchestration | FastAPI, RDFLib, MongoDB Motor |
+| **Reasoner Service** | Semantic inference | OwlReady2, Pellet reasoner |
+| **Fuseki** | RDF/SPARQL storage | Apache Jena Fuseki |
+| **MongoDB** | Document storage | NoSQL database |
 
 ---
 
-## 🛠 Tecnologías Empleadas
+## 🧠 Ontology Structure
 
-### Backend
-- **FastAPI** - Framework web moderno para Python
-- **MongoDB** - Base de datos NoSQL para almacenamiento de documentos
-- **Apache Jena Fuseki** - Servidor SPARQL y almacén de triples RDF
-- **RDFLib** - Biblioteca Python para manejo de datos RDF
-- **OwlReady2** - Razonador OWL/SWRL para inferencia semántica
-- **Motor** - Driver asíncrono de MongoDB para Python
+### Core Concepts
 
-### Frontend
-- **React 19** - Biblioteca de interfaz de usuario
-- **TypeScript** - Superset tipado de JavaScript
-- **Vite** - Herramienta de build rápida
-- **TailwindCSS** - Framework de CSS utilitario
-- **D3.js** - Visualización de datos y grafos
-- **Vis-network** - Biblioteca para visualización de redes
-- **React Router Dom** - Enrutamiento del lado cliente
+The ontology models the complete EU AI Act framework under the unified namespace `http://ai-act.eu/ai#`:
 
-### Infraestructura
-- **Docker & Docker Compose** - Contenerización y orquestación
-- **Nginx** - Servidor web para servir documentación
-- **Widoco** - Generación automática de documentación de ontologías
+#### 1. **Central Entity: IntelligentSystem**
 
-### Semántica y Ontologías
-- **OWL (Web Ontology Language)** - Lenguaje de ontologías web
-- **SWRL (Semantic Web Rule Language)** - Reglas semánticas
-- **RDF/Turtle** - Formato de datos semánticos
-- **JSON-LD** - Formato JSON para datos enlazados
-- **AIRO (AI Risk Ontology)** - Framework internacional de gestión de riesgo de IA
-
-## 📦 Arquitectura del Sistema
-
-### Componentes Principales
-
-| Componente | Ubicación | Descripción |
-|------------|-----------|-------------|
-| **Frontend** | `/frontend` | Interfaz React con visualización interactiva |
-| **Backend API** | `/backend` | API REST con FastAPI + MongoDB/Fuseki |
-| **Ontología** | `/ontologias` | Modelo formal AI Act + documentación |
-| **Reasoner** | `/reasoner_service` | Motor de inferencia OWL/SWRL |
-| **Herramientas** | `/tools` | Scripts para documentación y validación |
-
-### 🎯 Servicios y Puertos
-
-| Servicio | Puerto | URL | Descripción |
-|----------|--------|-----|-------------|
-| **Frontend** | 5173 | http://localhost:5173 | Interfaz web React |
-| **Backend API** | 8000 | http://localhost:8000 | API REST principal |
-| **Reasoner** | 8001 | http://localhost:8001 | Servicio de razonamiento |
-| **Fuseki** | 3030 | http://localhost:3030 | Servidor SPARQL |
-| **MongoDB** | 27017 | mongodb://localhost:27017 | Base de datos documentos |
-| **Docs** | 80 | http://localhost/docs | Documentación HTML |
-
-
-## 🧠 Modelo de Ontología AI Act con AIRO
-
-### Estructura de la Ontología (v0.36.0)
-
-<details>
-<summary><strong>🏗️ Diagrama 1: Sistema Central y sus Características</strong></summary>
-
-```mermaid
-classDiagram
-    %% Sistema central como núcleo
-    class IntelligentSystem {
-        +hasUrn: string
-        +hasName: string
-        +hasVersion: string
-        +hasPurpose: Purpose
-        +hasDeploymentContext: DeploymentContext
-        +hasTrainingDataOrigin: TrainingDataOrigin
-        +hasRiskLevel: RiskLevel
-    }
-    
-    %% Contextos de despliegue
-    class DeploymentContext {
-        +contextName: string
-        +activatesCriterion: Criterion
-    }
-    class Healthcare
-    class Education
-    class PublicServices
-    class LawEnforcement
-    
-    %% Propósitos del sistema
-    class Purpose {
-        +purposeDescription: string
-        +expectedRiskLevel: RiskLevel
-    }
-    class BiometricIdentification
-    class EmotionalRecognition
-    class RiskAssessmentPurpose
-    
-    %% Orígenes de datos de entrenamiento
-    class TrainingDataOrigin {
-        +dataSource: string
-        +requiresDataGovernance: ComplianceRequirement
-    }
-    class ExternalDataset {
-        +provenance: string
-    }
-    class InternalDataset {
-        +dataQuality: string
-    }
-    class SyntheticDataset {
-        +generationMethod: string
-    }
-    
-    %% Relaciones del sistema central
-    IntelligentSystem --> Purpose : hasPurpose
-    IntelligentSystem --> DeploymentContext : hasDeploymentContext
-    IntelligentSystem --> TrainingDataOrigin : hasTrainingDataOrigin
-    
-    %% Jerarquías
-    DeploymentContext <|-- Healthcare
-    DeploymentContext <|-- Education
-    DeploymentContext <|-- PublicServices
-    DeploymentContext <|-- LawEnforcement
-    
-    Purpose <|-- BiometricIdentification
-    Purpose <|-- EmotionalRecognition
-    Purpose <|-- RiskAssessmentPurpose
-    
-    TrainingDataOrigin <|-- ExternalDataset
-    TrainingDataOrigin <|-- InternalDataset
-    TrainingDataOrigin <|-- SyntheticDataset
+```turtle
+ai:IntelligentSystem
+  ├─ hasName: string
+  ├─ hasUrn: string (unique identifier)
+  ├─ hasVersion: string
+  ├─ hasPurpose → Purpose (primary declared function)
+  ├─ hasDeploymentContext → DeploymentContext (deployment scenario)
+  ├─ hasSystemCapabilityCriteria → Criterion (technical/effect-based criteria)
+  ├─ hasTrainingDataOrigin → TrainingDataOrigin (data provenance)
+  ├─ hasAlgorithmType → AlgorithmType
+  ├─ hasModelScale → ModelScale (Small/Regular/Foundation)
+  └─ hasRiskLevel → RiskLevel (inferred: HighRisk/LimitedRisk/MinimalRisk)
 ```
 
-</details>
+#### 2. **Purpose & Context Classification**
 
-<details>
-<summary><strong>⚠️ Diagrama 2: Evaluación de Riesgo y Criterios</strong></summary>
+**Purposes** (declared primary function):
+- BiometricIdentification, EducationAccess, HealthCare
+- JudicialDecisionSupport, LawEnforcementSupport
+- MigrationControl, CriticalInfrastructureOperation
+- RecruitmentOrEmployment
 
-```mermaid
-classDiagram
-    %% Clase unión para AIRO
-    class ContextOrPurpose {
-        <<union class>>
-        +triggersCriterion: Criterion
-        📎 airo:Context
-    }
-    
-    %% Criterios de evaluación
-    class Criterion {
-        +assignsRiskLevel: RiskLevel
-        +isTriggeredBy: ContextOrPurpose
-    }
-    class ContextualCriterion {
-        +contextSpecific: boolean
-    }
-    class NormativeCriterion {
-        +legalBasis: string
-    }
-    class TechnicalCriterion {
-        +technicalStandard: string
-    }
-    
-    %% Criterios contextuales específicos
-    class VulnerablePopulationContext {
-        +populationType: string
-    }
-    class HighStakesDecisionContext {
-        +decisionImpact: string
-    }
-    class SafetyCriticalContext {
-        +safetyLevel: string
-    }
-    class DataGovernanceContext {
-        +governanceRequirements: string
-    }
-    
-    %% Niveles de riesgo con mapeo AIRO
-    class RiskLevel {
-        📎 airo:RiskLevel
-    }
-    class HighRisk {
-        +strictRequirements: boolean
-        📎 airo:HighRiskLevel
-    }
-    class UnacceptableRisk {
-        +prohibited: boolean
-        📎 airo:CriticalRiskLevel
-    }
-    class LimitedRisk {
-        +transparencyRequired: boolean
-    }
-    class MinimalRisk {
-        +basicCompliance: boolean
-    }
-    
-    %% Evaluación de riesgo
-    class RiskAssessment {
-        +assignedRiskLevel: RiskLevel
-        +assessmentDate: date
-        +justificationNote: string
-        📎 airo:RiskAssessment
-    }
-    
-    %% Union class para AIRO
-    ContextOrPurpose --> DeploymentContext : unionOf
-    ContextOrPurpose --> Purpose : unionOf
-    
-    %% Flujo de evaluación
-    ContextOrPurpose --> Criterion : triggersCriterion
-    Criterion --> RiskLevel : assignsRiskLevel
-    RiskAssessment --> RiskLevel : assignedRiskLevel
-    
-    %% Jerarquías de criterios
-    Criterion <|-- ContextualCriterion
-    Criterion <|-- NormativeCriterion
-    Criterion <|-- TechnicalCriterion
-    
-    ContextualCriterion <|-- VulnerablePopulationContext
-    ContextualCriterion <|-- HighStakesDecisionContext
-    ContextualCriterion <|-- SafetyCriticalContext
-    ContextualCriterion <|-- DataGovernanceContext
-    
-    %% Jerarquía de riesgo
-    RiskLevel <|-- HighRisk
-    RiskLevel <|-- UnacceptableRisk
-    RiskLevel <|-- LimitedRisk
-    RiskLevel <|-- MinimalRisk
+**Deployment Contexts** (operational scenarios):
+- Education, Healthcare, PublicServices, LawEnforcement
+- Finance, Border, CriticalInfrastructure, Commerce
+
+#### 3. **Semantic Derivation Chain**
+
+```
+Purpose/Context
+    ↓
+    activatesCriterion / triggersCriterion
+    ↓
+Criterion (normative/contextual/technical)
+    ↓
+    assignsRiskLevel ──→ RiskLevel
+    activatesRequirement ──→ ComplianceRequirement
+    ↓
+ComplianceRequirement (specific technical/governance mandates)
 ```
 
-</details>
+#### 4. **Criterion Hierarchy**
 
-<details>
-<summary><strong>📋 Diagrama 3: Cumplimiento y Requisitos</strong></summary>
+| Category | Examples | Purpose |
+|----------|----------|---------|
+| **NormativeCriterion** | BiometricIdentificationCriterion, JudicialSupportCriterion | Defined by specific AI Act articles |
+| **ContextualCriterion** | VulnerablePopulationContext, SafetyCriticalContext | Context-specific evaluation factors |
+| **TechnicalCriterion** | AccuracyRequirement, RobustnessRequirement | Technical quality standards |
 
-```mermaid
-classDiagram
-    %% Criterios (entrada del proceso)
-    class Criterion {
-        +assignsRiskLevel: RiskLevel
-        +triggersCompliance: ComplianceRequirement
-    }
-    
-    %% Requisitos de cumplimiento
-    class ComplianceRequirement {
-        +justifiedByCriterion: Criterion
-        +mandatoryCompliance: boolean
-        +deadlineDate: date
-    }
-    
-    class TechnicalRequirement {
-        +technicalStandard: string
-        +validationMethod: string
-    }
-    
-    class TransparencyRequirement {
-        +disclosureLevel: string
-        +userInformation: string
-    }
-    
-    class RobustnessRequirement {
-        +testingProtocol: string
-        +performanceMetrics: string
-    }
-    
-    class DataGovernanceRequirement {
-        +dataProtection: string
-        +auditTrail: boolean
-    }
-    
-    class TraceabilityRequirement {
-        +documentationLevel: string
-        +changeManagement: boolean
-    }
-    
-    class DocumentationRequirement {
-        +documentationType: string
-        +updateFrequency: string
-    }
-    
-    %% Evaluación de riesgo (conexión con diagrama anterior)
-    class RiskAssessment {
-        +requiresCompliance: ComplianceRequirement
-        +complianceDeadline: date
-    }
-    
-    %% Flujo de cumplimiento
-    Criterion --> ComplianceRequirement : triggersComplianceRequirement
-    RiskAssessment --> ComplianceRequirement : requiresCompliance
-    
-    %% Jerarquía de requisitos
-    ComplianceRequirement <|-- TechnicalRequirement
-    ComplianceRequirement <|-- TransparencyRequirement
-    ComplianceRequirement <|-- RobustnessRequirement
-    ComplianceRequirement <|-- DataGovernanceRequirement
-    ComplianceRequirement <|-- TraceabilityRequirement
-    ComplianceRequirement <|-- DocumentationRequirement
+#### 5. **Risk Levels**
+
+| Level | Characteristics | Requirements |
+|-------|-----------------|--------------|
+| **UnacceptableRisk** | Prohibited systems | ⛔ System banned |
+| **HighRisk** (Annex III) | Strict compliance required | 👤 Human oversight, 📊 Data governance, 🔒 Security |
+| **LimitedRisk** | Transparency required | 👁️ User disclosure, 📝 Documentation |
+| **MinimalRisk** | General AI governance | ✅ Basic compliance |
+
+#### 6. **Compliance Requirements**
+
+Generated automatically for each Criterion, including:
+- 🎯 **Accuracy Requirements** - Model performance validation
+- 📝 **Documentation Requirements** - Traceability and auditability
+- 👤 **Human Oversight Requirements** - Mandatory human review
+- 🛡️ **Robustness Requirements** - System reliability
+- 📊 **Data Governance** - Data quality and protection
+- ⚖️ **Fundamental Rights** - Human dignity safeguards
+
+### Ontology Statistics
+
 ```
+Version: 0.37.2
+Namespace: http://ai-act.eu/ai#
 
-</details>
+Classes: 50+
+Object Properties: 30+
+Data Properties: 15+
+Named Individuals: 100+
+Total Triples: 1,800+
 
-<details>
-<summary><strong>🔗 Diagrama 4: Flujo de Proceso Completo</strong></summary>
-
-```mermaid
-flowchart TD
-    %% Sistema central
-    A[🏗️ IntelligentSystem] --> B[🎯 Purpose]
-    A --> C[📍 DeploymentContext]
-    A --> D[📊 TrainingDataOrigin]
-    
-    %% Unión AIRO
-    B --> E{🔗 ContextOrPurpose}
-    C --> E
-    
-    %% Evaluación de criterios
-    E --> F[⚖️ Criterion]
-    F --> G[⚠️ RiskLevel]
-    
-    %% Evaluación formal
-    G --> H[📋 RiskAssessment]
-    
-    %% Requisitos de cumplimiento
-    F --> I[📝 ComplianceRequirement]
-    H --> I
-    
-    %% Tipos de requisitos
-    I --> J[🔧 Technical]
-    I --> K[👁️ Transparency] 
-    I --> L[🛡️ Robustness]
-    I --> M[📊 DataGovernance]
-    
-    %% Niveles de riesgo específicos
-    G --> N[🔴 HighRisk]
-    G --> O[⛔ UnacceptableRisk]
-    G --> P[🟡 LimitedRisk]
-    G --> Q[🟢 MinimalRisk]
-    
-    %% Mapeo AIRO
-    E -.->|📎| R[airo:Context]
-    G -.->|📎| S[airo:RiskLevel]
-    H -.->|📎| T[airo:RiskAssessment]
-    
-    style A fill:#e1f5fe
-    style E fill:#f3e5f5
-    style F fill:#fff3e0
-    style G fill:#ffebee
-    style I fill:#e8f5e8
-    style R fill:#f0f0f0
-    style S fill:#f0f0f0
-    style T fill:#f0f0f0
+Coverage:
+✅ EU AI Act Annexes I-IV
+✅ 8/8 High-Risk AI categories
+✅ GPAI Classification criteria
+✅ Data governance framework
+✅ AIRO interoperability mappings
 ```
-
-</details>
-
-<details>
-<summary><strong>👥 Diagrama de Clases - Actores del Ecosistema</strong></summary>
-
-```mermaid
-classDiagram
-    %% Actores del ecosistema AI Act
-    class Actor {
-        +hasUrn: string
-        +hasHttpIri: string
-        +providesSystem: IntelligentSystem
-        +deploysSystem: IntelligentSystem
-        +usesSystem: IntelligentSystem
-        +monitorsSystem: IntelligentSystem
-    }
-    
-    class Provider {
-        +developmentResponsibilities: string
-        +marketingObligations: string
-        +conformityAssessment: boolean
-    }
-    
-    class Deployer {
-        +deploymentContext: DeploymentContext
-        +operationalResponsibilities: string
-        +humanOversight: boolean
-    }
-    
-    class User {
-        +userType: string
-        +accessLevel: string
-    }
-    
-    class EndUser {
-        +informationRights: boolean
-        +transparencyRequirements: boolean
-    }
-    
-    class ProfessionalUser {
-        +professionalCompetence: string
-        +trainingRequirements: string
-    }
-    
-    class OversightBody {
-        +supervisionScope: string
-        +enforcementPowers: string
-        +complianceMonitoring: boolean
-    }
-    
-    class Distributor {
-        +distributionChannel: string
-        +marketingSuppport: string
-    }
-    
-    class Importer {
-        +importRegion: string
-        +complianceVerification: boolean
-    }
-    
-    %% Jerarquía de actores
-    Actor <|-- Provider
-    Actor <|-- Deployer
-    Actor <|-- User
-    Actor <|-- OversightBody
-    Actor <|-- Distributor
-    Actor <|-- Importer
-    
-    %% Especialización de usuarios
-    User <|-- EndUser
-    User <|-- ProfessionalUser
-    
-    %% Relaciones con sistemas (representativas)
-    Provider --> IntelligentSystem : providesSystem
-    Deployer --> IntelligentSystem : deploysSystem
-    User --> IntelligentSystem : usesSystem
-    OversightBody --> IntelligentSystem : monitorsSystem
-```
-</details>
-
-
-
-
-<details>
-<summary><strong>🔗 Integración AIRO (AI Risk Ontology)</strong></summary>
-
-```mermaid
-graph TB
-    subgraph "AI Act Ontology"
-        AI_CTX[ai:ContextOrPurpose]
-        AI_RISK[ai:RiskLevel]
-        AI_ASSESS[ai:RiskAssessment]
-        AI_HIGH[ai:HighRisk]
-        AI_UNAC[ai:UnacceptableRisk]
-        AI_ASSIGN[ai:assignsRiskLevel]
-    end
-    
-    subgraph "AIRO Ontology"
-        AIRO_CTX[airo:Context]
-        AIRO_RISK[airo:RiskLevel]
-        AIRO_ASSESS[airo:RiskAssessment]
-        AIRO_HIGH[airo:HighRiskLevel]
-        AIRO_CRIT[airo:CriticalRiskLevel]
-        AIRO_HAS[airo:hasRiskLevel]
-    end
-    
-    %% Mapeos AIRO
-    AI_CTX -.->|rdfs:seeAlso| AIRO_CTX
-    AI_RISK -.->|rdfs:seeAlso| AIRO_RISK
-    AI_ASSESS -.->|rdfs:seeAlso| AIRO_ASSESS
-    AI_HIGH -.->|rdfs:seeAlso| AIRO_HIGH
-    AI_UNAC -.->|rdfs:seeAlso| AIRO_CRIT
-    AI_ASSIGN -.->|rdfs:seeAlso| AIRO_HAS
-    
-    %% Importación
-    AI_ONT[AI Act Ontology] -->|owl:imports| AIRO_ONT[AIRO Ontology]
-    
-    style AI_CTX fill:#e1f5fe
-    style AI_RISK fill:#e8f5e8
-    style AI_ASSESS fill:#fff3e0
-    style AIRO_CTX fill:#f3e5f5
-    style AIRO_RISK fill:#f3e5f5
-    style AIRO_ASSESS fill:#f3e5f5
-```
-</details>
-
-<details>
-<summary><strong>📊 Estadísticas de la Ontología</strong></summary>
-
-| Elemento | Cantidad | Descripción |
-|----------|----------|-------------|
-| **Triples totales** | 991 | Incluyendo integración AIRO |
-| **Clases OWL** | 31 | Jerarquía completa de conceptos |
-| **Propiedades de objeto** | 28 | Relaciones entre entidades |
-| **Propiedades de datos** | 8 | Atributos de las entidades |
-| **Individuos nombrados** | 45+ | Instancias específicas (criterios, niveles de riesgo) |
-| **Criterios contextuales** | 11 | Con asignaciones directas de riesgo |
-| **Niveles de riesgo** | 4 | HighRisk, UnacceptableRisk, LimitedRisk, MinimalRisk |
-| **Referencias AIRO** | 6 | Mapeos de interoperabilidad |
-| **Namespaces importados** | 1 | AIRO (https://w3id.org/airo) |
-
-**Cobertura AI Act**: ✅ Completa (Anexos I-IV)  
-**Compatibilidad AIRO**: ✅ 85% implementada  
-**Validación sintáctica**: ✅ Aprobada (rapper)  
-**Estado**: ✅ Listo para producción  
-
-</details>
-
-## 🏷️ Instancias de la Ontología
-
-### Contextos de Despliegue y Propósitos
-
-<details>
-<summary><strong>📍 Instancias: Contextos de Despliegue</strong></summary>
-
-```mermaid
-graph TD
-    subgraph "DeploymentContext Instances"
-        DC[DeploymentContext]
-        
-        %% Instancias específicas
-        EDU[Education<br/>🎓 Educación]
-        HEALTH[Healthcare<br/>🏥 Salud]
-        PUBLIC[PublicServices<br/>🏛️ Servicios Públicos]
-        LAW[LawEnforcement<br/>👮 Aplicación de la Ley]
-        FINANCE[Financial<br/>💰 Financiero]
-        BORDER[Border<br/>🛂 Control Fronterizo]
-        
-        %% Relaciones
-        DC --> EDU
-        DC --> HEALTH
-        DC --> PUBLIC
-        DC --> LAW
-        DC --> FINANCE
-        DC --> BORDER
-        
-        %% Criterios activados
-        EDU --> EDUC_CRIT[EducationEvaluationCriterion]
-        HEALTH --> ESS_CRIT[EssentialServicesAccessCriterion]
-        PUBLIC --> ESS_CRIT
-        LAW --> LAW_CRIT[LawEnforcementCriterion]
-        BORDER --> MIG_CRIT[MigrationBorderCriterion]
-        
-        style EDU fill:#e8f5e8
-        style HEALTH fill:#e1f5fe
-        style PUBLIC fill:#fff3e0
-        style LAW fill:#ffebee
-        style FINANCE fill:#f3e5f5
-        style BORDER fill:#e0f2f1
-    end
-```
-
-</details>
-
-<details>
-<summary><strong>🎯 Instancias: Propósitos de Sistemas</strong></summary>
-
-```mermaid
-graph TD
-    subgraph "Purpose Instances"
-        PURP[Purpose]
-        
-        %% Instancias reales de la ontología
-        BIO_ID[BiometricIdentification<br/>🔍 Identificación Biométrica]
-        EDUC_ACC[EducationAccess<br/>📚 Acceso Educativo]
-        MIG_CTRL[MigrationControl<br/>🗺️ Control Migratorio]
-        PUB_ALLOC[PublicServiceAllocation<br/>📋 Asignación Servicios]
-        CRIT_INFRA[CriticalInfrastructureOperation<br/>🏗️ Infraestructura Crítica]
-        JUDICIAL[JudicialDecisionSupport<br/>⚖️ Apoyo Judicial]
-        LAW_ENF[LawEnforcementSupport<br/>👮 Aplicación de la Ley]
-        RECRUIT[RecruitmentOrEmployment<br/>💼 Reclutamiento]
-        
-        %% Relaciones
-        PURP --> BIO_ID
-        PURP --> EDUC_ACC
-        PURP --> MIG_CTRL
-        PURP --> PUB_ALLOC
-        PURP --> CRIT_INFRA
-        PURP --> JUDICIAL
-        PURP --> LAW_ENF
-        PURP --> RECRUIT
-        
-        %% Criterios activados (flujo correcto - solo los que existen)
-        BIO_ID --> BIO_CRIT[BiometricIdentificationCriterion]
-        EDUC_ACC --> EDUC_CRIT[EducationEvaluationCriterion]
-        MIG_CTRL --> MIG_CRIT[MigrationBorderCriterion]
-        
-        %% Criterios asignan niveles de riesgo (solo los definidos)
-        BIO_CRIT --> HIGH_R[HighRisk]
-        EDUC_CRIT --> HIGH_R
-        MIG_CRIT --> HIGH_R
-        
-        style BIO_ID fill:#ffebee
-        style EDUC_ACC fill:#e8f5e8
-        style MIG_CTRL fill:#fff3e0
-        style PUB_ALLOC fill:#e1f5fe
-        style CRIT_INFRA fill:#f3e5f5
-        style JUDICIAL fill:#fce4ec
-        style LAW_ENF fill:#e0f2f1
-        style RECRUIT fill:#f1f8e9
-        style BIO_CRIT fill:#ff9800,color:#ffffff
-        style HIGH_R fill:#ff5722,color:#ffffff
-    end
-```
-
-</details>
-
-### Niveles de Riesgo y Criterios
-
-<details>
-<summary><strong>⚠️ Instancias: Niveles de Riesgo</strong></summary>
-
-```mermaid
-graph LR
-    subgraph "RiskLevel Instances"
-        RL[RiskLevel]
-        
-        %% Instancias con mapeo AIRO
-        UNAC[UnacceptableRisk<br/>⛔ Riesgo Inaceptable<br/>📎 airo:CriticalRiskLevel]
-        HIGH[HighRisk<br/>🔴 Riesgo Alto<br/>📎 airo:HighRiskLevel]
-        LIM[LimitedRisk<br/>🟡 Riesgo Limitado]
-        MIN[MinimalRisk<br/>🟢 Riesgo Mínimo]
-        
-        %% Jerarquía
-        RL --> UNAC
-        RL --> HIGH
-        RL --> LIM
-        RL --> MIN
-        
-        %% Requisitos asociados
-        UNAC --> PROHIB[Sistema Prohibido]
-        HIGH --> STRICT[Requisitos Estrictos]
-        LIM --> TRANSP[Transparencia Requerida]
-        MIN --> BASIC[Cumplimiento Básico]
-        
-        style UNAC fill:#f44336,color:#ffffff
-        style HIGH fill:#ff5722,color:#ffffff
-        style LIM fill:#ff9800,color:#ffffff
-        style MIN fill:#4caf50,color:#ffffff
-        style PROHIB fill:#000000,color:#ffffff
-        style STRICT fill:#d32f2f,color:#ffffff
-        style TRANSP fill:#f57c00,color:#ffffff
-        style BASIC fill:#388e3c,color:#ffffff
-    end
-```
-
-</details>
-
-<details>
-<summary><strong>⚖️ Instancias: Criterios Específicos</strong></summary>
-
-```mermaid
-graph TD
-    subgraph "Criterion Instances"
-        CRIT[Criterion]
-        
-        %% Criterios normativos
-        subgraph "NormativeCriterion"
-            BIO_CRIT[BiometricIdentificationCriterion<br/>🔍 Identificación Biométrica]
-            CRIT_INFRA[CriticalInfrastructureCriterion<br/>🏗️ Infraestructura Crítica]
-            LAW_CRIT[LawEnforcementCriterion<br/>👮 Aplicación de la Ley]
-            MIG_CRIT[MigrationBorderCriterion<br/>🛂 Control Fronterizo]
-            RECRUIT[RecruitmentEmploymentCriterion<br/>💼 Empleo]
-        end
-        
-        %% Criterios contextuales
-        subgraph "ContextualCriterion"
-            DATA_GOV[DataGovernanceContext<br/>📊 Gobernanza de Datos]
-            TRAINING_Q[TrainingDataQualityContext<br/>📈 Calidad de Datos]
-            ESSENTIAL[EssentialServicesAccessCriterion<br/>🏥 Servicios Esenciales]
-            EDUCATION[EducationEvaluationCriterion<br/>🎓 Evaluación Educativa]
-        end
-        
-        %% Criterios técnicos
-        subgraph "TechnicalCriterion"
-            ACCURACY[AccuracyRequirement<br/>🎯 Precisión]
-            ROBUSTNESS[RobustnessRequirement<br/>🛡️ Robustez]
-            SECURITY[SecurityRequirement<br/>🔒 Seguridad]
-        end
-        
-        %% Relaciones con niveles de riesgo
-        BIO_CRIT --> HIGH_RISK[HighRisk]
-        CRIT_INFRA --> HIGH_RISK
-        LAW_CRIT --> HIGH_RISK
-        DATA_GOV --> HIGH_RISK
-        EDUCATION --> LIM_RISK[LimitedRisk]
-        ACCURACY --> MIN_RISK[MinimalRisk]
-        
-        style BIO_CRIT fill:#ffebee
-        style CRIT_INFRA fill:#e1f5fe
-        style LAW_CRIT fill:#fff3e0
-        style DATA_GOV fill:#f3e5f5
-        style EDUCATION fill:#e8f5e8
-        style ACCURACY fill:#e0f2f1
-    end
-```
-
-</details>
-
-### Requisitos de Cumplimiento
-
-<details>
-<summary><strong>📋 Instancias: Requisitos Específicos</strong></summary>
-
-```mermaid
-graph TD
-    subgraph "ComplianceRequirement Instances"
-        CR[ComplianceRequirement]
-        
-        %% Requisitos técnicos
-        subgraph "Technical Requirements"
-            ACC_EVAL[AccuracyEvaluationRequirement<br/>🎯 Evaluación de Precisión]
-            ROBUST[RobustnessRequirement<br/>🛡️ Robustez]
-            SECURITY[SecurityRequirement<br/>🔒 Seguridad]
-            VALID[ValidationRequirement<br/>✅ Validación]
-        end
-        
-        %% Requisitos de transparencia
-        subgraph "Transparency Requirements"
-            TRANSP[TransparencyRequirement<br/>👁️ Transparencia]
-            DOC[DocumentationRequirement<br/>📝 Documentación]
-            TRACE[TraceabilityRequirement<br/>🔍 Trazabilidad]
-            DISCLOSURE[DisclosureRequirement<br/>📢 Divulgación]
-        end
-        
-        %% Requisitos de gobernanza
-        subgraph "Governance Requirements"
-            DATA_GOV_REQ[DataGovernanceRequirement<br/>📊 Gobernanza de Datos]
-            HUMAN_OV[HumanOversightRequirement<br/>👤 Supervisión Humana]
-            FUND_RIGHTS[FundamentalRightsAssessmentRequirement<br/>⚖️ Derechos Fundamentales]
-            QUALITY_MAN[QualityManagementRequirement<br/>📈 Gestión de Calidad]
-        end
-        
-        %% Relaciones con criterios
-        ACC_EVAL --> ACCURACY_CRIT[AccuracyCriterion]
-        ROBUST --> SAFETY_CRIT[SafetyCriterion]
-        TRANSP --> USER_INFO[UserInformationCriterion]
-        DATA_GOV_REQ --> DATA_CRIT[DataGovernanceCriterion]
-        HUMAN_OV --> HIGH_RISK_CRIT[HighRiskCriterion]
-        
-        style ACC_EVAL fill:#e8f5e8
-        style ROBUST fill:#e1f5fe
-        style TRANSP fill:#fff3e0
-        style DATA_GOV_REQ fill:#f3e5f5
-        style HUMAN_OV fill:#ffebee
-        style DOC fill:#e0f2f1
-    end
-```
-
-</details>
-
-
-
-## 📚 Distinción Semántica: Propósitos vs Criterios Internos
-
-### 🎯 Clarificación Conceptual Fundamental
-
-El sistema implementa una **distinción semántica crucial** para evitar confusión entre conceptos similares pero funcionalmente diferentes:
-
-<details>
-<summary><strong>🔍 Diferencia entre Propósitos y Criterios Internos</strong></summary>
-
-#### **PROPÓSITOS** = **"Diseñado específicamente para..."**
-Los **Propósitos** (`Purpose`) representan la **funcionalidad primaria declarada** del sistema IA:
-
-| Propósito | Descripción | Ejemplo de Sistema |
-|-----------|-------------|-------------------|
-| `JudicialDecisionSupport` | Sistema diseñado específicamente para apoyo a decisiones judiciales | Software de análisis de jurisprudencia para jueces |
-| `BiometricIdentification` | Sistema diseñado específicamente para identificación biométrica | Sistema de acceso biométrico corporativo |
-| `RecruitmentOrEmployment` | Sistema diseñado específicamente para reclutamiento y empleo | Plataforma de selección automatizada de candidatos |
-
-#### **CRITERIOS INTERNOS** = **"Capaz de..." o "Impacta en..."**
-Los **Criterios de Capacidad del Sistema** (`System Capability Criteria`) representan **capacidades técnicas o efectos** que activan requisitos regulatorios **independientemente del propósito principal**:
-
-| Criterio Interno | Descripción | Ejemplo de Aplicación |
-|-----------------|-------------|----------------------|
-| `JudicialSupportCriterion` | Evalúa sistemas que procesan datos judiciales, manejan documentos de tribunales, o tienen capacidades que afectan procesos judiciales - **independientemente de su propósito principal** | Sistema de gestión documental que maneja expedientes judiciales (propósito: `DocumentManagement`) |
-| `BiometricIdentificationOrCategorization` | Evalúa sistemas con capacidades biométricas (facial, huellas, voz) **incluso cuando no es su propósito principal** | Sistema de análisis de emociones en marketing que categoriza características faciales (propósito: `MarketResearch`) |
-| `RecruitmentEmploymentCriterion` | Evalúa sistemas que impactan decisiones laborales **como función secundaria** | Sistema de monitoreo de productividad cuyos resultados pueden influir en promociones (propósito: `ProductivityOptimization`) |
-
-</details>
-
-<details>
-<summary><strong>🎯 Casos de Uso Prácticos</strong></summary>
-
-#### **Escenario 1: Sistema de Gestión Documental Jurídica**
-```json
-{
-  "hasName": "LegalDocsAI",
-  "hasPurpose": ["ai:DocumentManagement"],              // ← Propósito principal
-  "hasDeploymentContext": ["ai:LegalServices"],
-  "hasSystemCapabilityCriteria": ["ai:JudicialSupportCriterion"]  // ← Criterio por capacidad técnica
-}
-```
-**Resultado:** El sistema debe cumplir requisitos judiciales **aunque no fue diseñado específicamente para apoyo a decisiones**.
-
-#### **Escenario 2: Sistema de Marketing con Análisis Facial**
-```json
-{
-  "hasName": "EmotionMarketAI", 
-  "hasPurpose": ["ai:MarketResearch"],                  // ← Propósito principal
-  "hasDeploymentContext": ["ai:CommercialServices"],
-  "hasSystemCapabilityCriteria": ["ai:BiometricIdentificationOrCategorization"]  // ← Criterio por capacidad biométrica incidental
-}
-```
-**Resultado:** El sistema debe cumplir requisitos biométricos **aunque no fue diseñado específicamente para identificación**.
-
-#### **Escenario 3: Sistema de Monitoreo de Desempeño**
-```json
-{
-  "hasName": "PerformanceAI",
-  "hasPurpose": ["ai:ProductivityOptimization"],        // ← Propósito principal  
-  "hasDeploymentContext": ["ai:Workplace"],
-  "hasSystemCapabilityCriteria": ["ai:RecruitmentEmploymentCriterion"]  // ← Criterio por impacto en decisiones laborales
-}
-```
-**Resultado:** El sistema debe cumplir requisitos laborales **aunque no fue diseñado específicamente para reclutamiento**.
-
-</details>
-
-### ✅ **Ventaja de esta Distinción**
-
-| **Aspecto** | **Beneficio** |
-|-------------|---------------|
-| 🎯 **Precisión Regulatoria** | Captura sistemas que requieren evaluación **por sus capacidades**, no solo por su propósito declarado |
-| 🔍 **Cobertura Completa** | Evita lagunas regulatorias donde sistemas con impacto secundario podrían escapar evaluación |
-| 📚 **Claridad Conceptual** | Elimina ambigüedad entre "¿para qué fue diseñado?" vs "¿qué puede hacer/afectar?" |
-| ⚖️ **Cumplimiento Robusto** | Alinea con el espíritu del AI Act de evaluar **riesgo real**, no solo **intención declarada** |
 
 ---
 
-## 🧠 Sistema de Inferencia Semántica Automática - SWRL Híbrido
+## 🔧 SWRL Reasoning Rules
 
-### Arquitectura de Razonamiento Extendida
+### Rule Architecture
 
-El proyecto implementa un **sistema híbrido avanzado de inferencia semántica SWRL** que combina razonamiento manual con reglas formales para automáticamente derivar todas las relaciones entre sistemas IA, criterios y requisitos de cumplimiento del EU AI Act.
+The system implements **hybrid SWRL** combining:
+1. **Native SWRL Rules** (Turtle format) - ontological relationships
+2. **Python Rule Engine** (dynamic) - complex business logic
 
-#### 🎯 **Casos de Uso Completamente Validados (8/8 del AI Act)**
+### Rule Categories
 
-| **Propósito** | **Criterios Activados** | **Requisitos Generados** | **Estado** |
-|---------------|-------------------------|---------------------------|-------------|
-| 🔍 **BiometricIdentification** | BiometricIdentificationCriterion, BiometricSecurity | DataGovernance, FundamentalRights, HumanOversight, DataEncryption | ✅ **VALIDADO** |
-| 🏗️ **CriticalInfrastructureOperation** | CriticalInfrastructureCriterion | AccuracyEvaluation, ConformityAssessment, Cybersecurity | ✅ **VALIDADO** |
-| ⚖️ **JudicialDecisionSupport** | JudicialSupportCriterion | DataGovernance, FundamentalRights, HumanOversight | ✅ **VALIDADO** |
-| 👮 **LawEnforcementSupport** | LawEnforcementCriterion, DueProcess | ConformityAssessment, FundamentalRights, RiskManagement | ✅ **VALIDADO** |
-| 🛂 **MigrationControl** | MigrationBorderCriterion | DataGovernance, RiskManagement | ✅ **VALIDADO** |
-| 🎓 **EducationAccess** | EducationEvaluationCriterion, ProtectionOfMinors | AccuracyEvaluation, HumanOversight, Traceability, ParentalConsent | ✅ **VALIDADO** |
-| 💼 **RecruitmentOrEmployment** | NonDiscrimination | Auditability | ✅ **VALIDADO** |
-| 🏥 **HealthCare** | PrivacyProtection | DataGovernance, DataEncryption | ✅ **VALIDADO** |
+#### 1. Purpose → Criterion Rules
 
-#### 📊 **Cobertura Ontológica Completa**
-- ✅ **20+ conceptos** agregados para coherencia ontológica
-- ✅ **15+ reglas SWRL** implementadas y validadas
-- ✅ **Sistemas multipropósito** con 13+ inferencias simultáneas
-- ✅ **Cadenas complejas** de activación de requisitos
-
-<details>
-<summary><strong>🔗 Flujo de Inferencia Automática</strong></summary>
-
-```mermaid
-graph TB
-    %% Datos de entrada
-    subgraph "Input: Sistema IA"
-        SYS[🤖 IntelligentSystem]
-        SYS --> PURPOSE[🎯 hasPurpose: EducationAccess]
-        SYS --> CONTEXT[📍 hasDeploymentContext: Education]
-        SYS --> CAP[⚙️ hasSystemCapabilityCriteria: CustomCriterion]
-    end
-    
-    %% Ontología base
-    subgraph "Knowledge Base: Ontología"
-        ONT[📚 Ontología AI Act]
-        ONT --> RULE1[📋 EducationAccess → activatesCriterion → EducationEvaluationCriterion]
-        ONT --> RULE2[📋 Education → triggersCriterion → EducationEvaluationCriterion] 
-        ONT --> RULE3[📋 EducationEvaluationCriterion → activatesRequirement → AccuracyRequirement]
-    end
-    
-    %% Motor de inferencia
-    subgraph "Reasoning Engine: Pellet + SWRL"
-        REASONER[🧠 OwlReady2 + Pellet]
-        SWRL1[📐 Regla SWRL: Purpose → Criterion]
-        SWRL2[📐 Regla SWRL: Context → Criterion] 
-        SWRL3[📐 Regla SWRL: Criterion → Requirement]
-        REASONER --> SWRL1
-        REASONER --> SWRL2
-        REASONER --> SWRL3
-    end
-    
-    %% Salida inferida
-    subgraph "Output: Relaciones Inferidas"
-        INFERRED[📊 Grafo RDF Enriquecido]
-        INFERRED --> CRIT[hasNormativeCriterion: EducationEvaluationCriterion]
-        INFERRED --> REQ1[hasRequirement: AccuracyRequirement]
-        INFERRED --> REQ2[hasRequirement: HumanOversightRequirement]
-        INFERRED --> REQ3[hasTechnicalRequirement: TraceabilityRequirement]
-    end
-    
-    %% Flujo principal
-    SYS --> REASONER
-    ONT --> REASONER
-    REASONER --> INFERRED
-    
-    style SYS fill:#e1f5fe
-    style ONT fill:#f3e5f5
-    style REASONER fill:#fff3e0
-    style INFERRED fill:#e8f5e8
-```
-
-</details>
-
-### Mapeo Criterios ↔ Requisitos
-
-<details>
-<summary><strong>🔗 Criterios de Alto Impacto y sus Requisitos</strong></summary>
-
-```mermaid
-graph LR
-    subgraph "🎓 Contexto Educativo"
-        EDUC[EducationEvaluationCriterion]
-        EDUC --> ACC[🎯 AccuracyEvaluation]
-        EDUC --> HUMAN[👤 HumanOversight]
-        EDUC --> TRACE[🔍 Traceability]
-    end
-    
-    subgraph "🔍 Identificación Biométrica"
-        BIO[BiometricIdentificationCriterion]
-        BIO --> RIGHTS[⚖️ FundamentalRights]
-        BIO --> HUMAN2[👤 HumanOversight]
-        BIO --> SEC[🔒 Security]
-    end
-    
-    subgraph "🏥 Servicios Esenciales"
-        ESS[EssentialServicesAccessCriterion]
-        ESS --> RIGHTS2[⚖️ FundamentalRights]
-        ESS --> TRANSP[👁️ Transparency]
-        ESS --> QUALITY[📈 QualityManagement]
-    end
-    
-    subgraph "👮 Aplicación de la Ley"
-        LAW[LawEnforcementCriterion]
-        LAW --> LOG[📋 EventLogging]
-        LAW --> HUMAN3[👤 HumanOversight]
-        LAW --> SEC2[🔒 Security]
-    end
-```
-
-</details>
-
-<details>
-<summary><strong>📊 Criterios Contextuales y Gobernanza</strong></summary>
-
-```mermaid
-graph LR
-    subgraph "📊 Gobernanza de Datos"
-        DATA_GOV[DataGovernanceContext]
-        DATA_GOV --> GOV_REQ[📊 DataGovernanceRequirement]
-        DATA_GOV --> DOC[📝 Documentation]
-        DATA_GOV --> TRACE2[🔍 Traceability]
-    end
-    
-    subgraph "👥 Población Vulnerable"
-        VULN[VulnerablePopulationContext]
-        VULN --> RIGHTS3[⚖️ FundamentalRights]
-        VULN --> HUMAN4[👤 HumanOversight]
-        VULN --> DISCLOSURE[📢 Disclosure]
-    end
-    
-    subgraph "🛡️ Seguridad Crítica"
-        SAFETY[SafetyCriticalContext]
-        SAFETY --> ROBUST[🛡️ Robustness]
-        SAFETY --> SEC3[🔒 Security]
-        SAFETY --> CYBER[🔐 Cybersecurity]
-    end
-```
-
-</details>
-
-<details>
-<summary><strong>📋 Matriz de Relaciones Completa</strong></summary>
-
-| **Criterio** | **Requisitos Activados** | **Tipo** |
-|--------------|---------------------------|----------|
-| 🎓 **EducationEvaluationCriterion** | AccuracyEvaluation • HumanOversight • Traceability | Normativo |
-| 🔍 **BiometricIdentificationCriterion** | FundamentalRights • HumanOversight • Security | Normativo |
-| 🏥 **EssentialServicesAccessCriterion** | FundamentalRights • Transparency • QualityManagement | Normativo |
-| 👮 **LawEnforcementCriterion** | EventLogging • HumanOversight • Security | Normativo |
-| 🛂 **MigrationBorderCriterion** | FundamentalRights • HumanOversight • Security | Normativo |
-| 💼 **RecruitmentEmploymentCriterion** | FundamentalRights • Transparency • Documentation | Normativo |
-| ⚖️ **JudicialSupportCriterion** | FundamentalRights • HumanOversight • Traceability | Normativo |
-| 🏗️ **CriticalInfrastructureCriterion** | Security • Robustness • ConformityAssessment | Normativo |
-| | | |
-| 📊 **DataGovernanceContext** | DataGovernanceRequirement • Documentation • Traceability | Contextual |
-| 📈 **TrainingDataQualityContext** | ValidationRequirement • QualityManagement • DataGovernance | Contextual |
-| 👥 **VulnerablePopulationContext** | FundamentalRights • HumanOversight • Disclosure | Contextual |
-| 🎯 **HighStakesDecisionContext** | HumanOversight • Transparency • Documentation | Contextual |
-| 🛡️ **SafetyCriticalContext** | Robustness • Security • Cybersecurity | Contextual |
-
-</details>
-
-<details>
-<summary><strong>🎯 Requisitos Más Frecuentes</strong></summary>
-
-```mermaid
-pie title "Frecuencia de Activación de Requisitos"
-    "HumanOversight" : 8
-    "FundamentalRights" : 6  
-    "Security" : 5
-    "Traceability" : 4
-    "Documentation" : 3
-    "Transparency" : 3
-    "DataGovernance" : 2
-    "QualityManagement" : 2
-    "Otros" : 7
-```
-
-**📊 Interpretación:**
-- **👤 HumanOversight**: Requisito más crítico (8 criterios lo activan)
-- **⚖️ FundamentalRights**: Segunda prioridad (6 criterios)
-- **🔒 Security**: Especialmente importante en contextos sensibles (5 criterios)
-
-</details>
-
-### Sistema de Reglas SWRL Extendidas (v2.0)
-
-<details>
-<summary><strong>📐 Reglas de Propósito → Criterios (7 nuevas reglas)</strong></summary>
-
-#### **Reglas Específicas del EU AI Act - Anexo III**
+Triggered when system declares a specific purpose:
 
 ```python
-# REGLA 1: RecruitmentOrEmployment → NonDiscrimination
-if (system, AI.hasPurpose, AI.RecruitmentOrEmployment):
-    system.hasNormativeCriterion = AI.NonDiscrimination
-    # Anexo III, punto 4 - Sistemas de reclutamiento y empleo
+# Rule: BiometricIdentification → BiometricIdentificationCriterion
+# Maps to: EU AI Act Annex III, Article 5(2)(a)
 
-# REGLA 2: JudicialDecisionSupport → JudicialSupportCriterion  
-if (system, AI.hasPurpose, AI.JudicialDecisionSupport):
-    system.hasNormativeCriterion = AI.JudicialSupportCriterion
-    # Anexo III, punto 8 - Asistencia en decisiones judiciales
+if system.hasPurpose includes BiometricIdentification:
+    system.hasNormativeCriterion ← BiometricIdentificationCriterion
 
-# REGLA 3: LawEnforcementSupport → LawEnforcementCriterion
-if (system, AI.hasPurpose, AI.LawEnforcementSupport):
-    system.hasNormativeCriterion = AI.LawEnforcementCriterion
-    # Anexo III, punto 7 - Aplicación de la ley
-
-# REGLA 4: MigrationControl → MigrationBorderCriterion
-if (system, AI.hasPurpose, AI.MigrationControl):
-    system.hasNormativeCriterion = AI.MigrationBorderCriterion
-    # Anexo III, punto 8 - Control fronterizo y migratorio
-
-# REGLA 5: CriticalInfrastructureOperation → CriticalInfrastructureCriterion  
-if (system, AI.hasPurpose, AI.CriticalInfrastructureOperation):
-    system.hasNormativeCriterion = AI.CriticalInfrastructureCriterion
-    # Anexo III, punto 1(a) - Infraestructura crítica
-
-# REGLA 6: HealthCare → PrivacyProtection
-if (system, AI.hasPurpose, AI.HealthCare):
-    system.hasNormativeCriterion = AI.PrivacyProtection
-    # GDPR + AI Act - Protección de datos sanitarios
-
-# REGLA 7: EducationAccess → EducationEvaluationCriterion
-if (system, AI.hasPurpose, AI.EducationAccess):
-    system.hasNormativeCriterion = AI.EducationEvaluationCriterion
-    # Anexo III, punto 3 - Evaluación educativa
+    # Automatically derived:
+    # - DataGovernanceRequirement
+    # - FundamentalRightsRequirement
+    # - HumanOversightRequirement
+    # - DataEncryptionRequirement
 ```
 
-</details>
+**Complete Coverage**:
+- ✅ RecruitmentOrEmployment → NonDiscrimination
+- ✅ JudicialDecisionSupport → JudicialSupportCriterion
+- ✅ LawEnforcementSupport → LawEnforcementCriterion
+- ✅ MigrationControl → MigrationBorderCriterion
+- ✅ CriticalInfrastructureOperation → CriticalInfrastructureCriterion
+- ✅ HealthCare → PrivacyProtection
+- ✅ EducationAccess → EducationEvaluationCriterion
 
-<details>
-<summary><strong>🔗 Reglas de Cadena - Criterios → Requisitos (4 nuevas cadenas complejas)</strong></summary>
+#### 2. Criterion → Requirement Rules
 
-#### **Activación Automática de Requisitos por Criterios**
+Criteria activate specific compliance requirements:
 
 ```python
-# CADENA 1: LawEnforcementCriterion → DueProcess + ConformityAssessment
-if (system, AI.hasNormativeCriterion, AI.LawEnforcementCriterion):
-    system.hasNormativeCriterion = AI.DueProcess  # Debido proceso legal
-    system.hasRequirement = AI.ConformityAssessmentRequirement
-    # Artículo 43 AI Act - Evaluación de conformidad obligatoria
+# Rule: EducationEvaluationCriterion → Multiple Requirements
+# Maps to: EU AI Act Articles 6(2), 9(1), 14
 
-# CADENA 2: MigrationBorderCriterion → DataGovernance + RiskManagement  
-if (system, AI.hasNormativeCriterion, AI.MigrationBorderCriterion):
-    system.hasRequirement = AI.DataGovernanceRequirement
-    system.hasRequirement = AI.RiskManagementRequirement
-    # Artículos 9-10 AI Act - Gestión de datos sensibles
-
-# CADENA 3: CriticalInfrastructureCriterion → AccuracyEvaluation + ConformityAssessment + Cybersecurity
-if (system, AI.hasNormativeCriterion, AI.CriticalInfrastructureCriterion):
-    system.hasRequirement = AI.AccuracyEvaluationRequirement
-    system.hasRequirement = AI.ConformityAssessmentRequirement  
-    system.hasTechnicalRequirement = AI.CybersecurityRequirement
-    # Anexo IV - Requisitos técnicos para infraestructura crítica
-
-# CADENA 4: PrivacyProtection → DataGovernance + DataEncryption
-if (system, AI.hasNormativeCriterion, AI.PrivacyProtection):
-    system.hasRequirement = AI.DataGovernanceRequirement
-    system.hasTechnicalRequirement = AI.DataEncryption  
-    # GDPR Artículo 32 - Medidas técnicas de seguridad
-
-# CADENA 5: EducationEvaluationCriterion → AccuracyEvaluation + HumanOversight + Traceability
-if (system, AI.hasNormativeCriterion, AI.EducationEvaluationCriterion):
-    system.hasRequirement = AI.AccuracyEvaluationRequirement
-    system.hasRequirement = AI.HumanOversightRequirement
-    system.hasRequirement = AI.TraceabilityRequirement
-    # Artículo 14 AI Act - Supervisión humana en educación
+if system.hasNormativeCriterion includes EducationEvaluationCriterion:
+    system.hasRequirement ← [
+        AccuracyEvaluationRequirement,
+        HumanOversightRequirement,
+        TraceabilityRequirement,
+        ProtectionOfMinorsRequirement
+    ]
 ```
 
-</details>
+**Requirement Frequency** (most critical):
+- 👤 HumanOversight (8 criteria) - Most frequently activated
+- ⚖️ FundamentalRights (6 criteria) - Second priority
+- 🔒 Security (5 criteria) - Especially for sensitive contexts
 
-<details>
-<summary><strong>⚙️ Reglas de Contexto y Datos (2 reglas técnicas)</strong></summary>
+#### 3. Context Rules
 
-#### **Activación por Contexto de Despliegue y Datos**
+Context-dependent rule activation:
 
 ```python
-# REGLA TÉCNICA 1: ExternalDataset → ScalabilityRequirements → PerformanceMonitoring
-if (system, AI.hasTrainingDataOrigin, AI.ExternalDataset):
-    system.hasTechnicalCriterion = AI.ScalabilityRequirements
-    # Luego: ScalabilityRequirements → PerformanceMonitoringRequirement
-    
-# REGLA TÉCNICA 2: BiometricIdentification + PublicServices → BiometricSecurity → DataEncryption  
-if (system, AI.hasPurpose, AI.BiometricIdentification) and \
-   (system, AI.hasDeploymentContext, AI.PublicServices):
-    system.hasContextualCriterion = AI.BiometricSecurity
-    # Luego: BiometricSecurity → DataEncryption
+# Rule: RealTimeProcessing Context → Performance Monitoring
+if system.hasDeploymentContext includes RealTimeProcessing:
+    system.hasTechnicalCriterion ← PerformanceRequirements
+    system.hasTechnicalRequirement ← PerformanceMonitoringRequirement
+
+# Rule: ExternalDataset → Quality & Governance
+if system.hasTrainingDataOrigin includes ExternalDataset:
+    system.hasRequirement ← [
+        DataQualityRequirement,
+        DataGovernanceRequirement,
+        TraceabilityRequirement
+    ]
 ```
 
-</details>
+#### 4. Protection Rules
 
-<details>
-<summary><strong>🎯 Reglas de Protección Especial (2 reglas de salvaguardas)</strong></summary>
-
-#### **Protección de Poblaciones Vulnerables**
+Special safeguards for vulnerable populations:
 
 ```python
-# REGLA ESPECIAL 1: EducationAccess O Education → ProtectionOfMinors → ParentalConsent
-if (system, AI.hasPurpose, AI.EducationAccess) or \
-   (system, AI.hasDeploymentContext, AI.Education):
-    system.hasNormativeCriterion = AI.ProtectionOfMinors
-    # Luego: ProtectionOfMinors → ParentalConsent
+# Rule: Education + Minors → Parental Consent
+if (system.hasPurpose includes EducationAccess OR
+    system.hasDeploymentContext includes Education):
+    system.hasNormativeCriterion ← ProtectionOfMinors
+    system.hasRequirement ← ParentalConsentRequirement
 
-# REGLA ESPECIAL 2: NonDiscrimination → Auditability
-if (system, AI.hasNormativeCriterion, AI.NonDiscrimination):
-    system.hasRequirement = AI.Auditability
-    # Artículo 15 AI Act - Sistemas auditables para prevenir discriminación
+# Rule: NonDiscrimination → Auditability
+if system.hasNormativeCriterion includes NonDiscrimination:
+    system.hasRequirement ← AuditabilityRequirement
 ```
 
-</details>
+### Rule Execution Engine
 
-#### **📊 Estadísticas de Implementación SWRL:**
-- ✅ **15+ reglas** implementadas y validadas
-- ✅ **7 reglas** de propósito específicas del AI Act  
-- ✅ **5 cadenas** complejas de activación
-- ✅ **2 reglas** técnicas de contexto
-- ✅ **2 reglas** de protección especial
-- ✅ **100% cobertura** de casos de uso del Anexo III
+```
+Input System Data (JSON)
+    ↓
+Convert to RDF Turtle
+    ↓
+Load with Ontology Base
+    ↓
+Apply Python Rules Engine (iterative)
+    ├─ Iteration 1: Purpose rules
+    ├─ Iteration 2: Criterion rules
+    ├─ Iteration 3: Requirement rules
+    └─ Convergence: Fixed-point reached
+    ↓
+Load into Reasoner Service (OwlReady2)
+    ↓
+Apply Native SWRL Rules (Pellet)
+    ↓
+Extract Inferred RDF Graph
+    ↓
+Store in Fuseki
+    ↓
+Return to Backend API
+```
 
-### Propiedades de la Ontología Utilizadas
+### SWRL Rule Statistics
 
-<details>
-<summary><strong>🔗 Mapeo de Propiedades OWL</strong></summary>
+- **Total Rules**: 33+ implemented
+- **Purpose Rules**: 7 (covering 7 AI Act Annex III items)
+- **Criterion Rules**: 8 (activating requirements)
+- **Context Rules**: 4 (deployment scenarios)
+- **Protection Rules**: 2 (vulnerable population safeguards)
+- **Technical Rules**: 12+ (data quality, performance, security)
+- **Convergence**: Max 5 iterations per system
 
-| **Categoría** | **Propiedad** | **Dominio** | **Rango** | **Descripción** |
-|---------------|---------------|-------------|-----------|-----------------|
-| **Sistema → Criterios** | `hasNormativeCriterion` | `IntelligentSystem` | `NormativeCriterion` | Sistema cumple criterio normativo |
-| | `hasTechnicalCriterion` | `IntelligentSystem` | `TechnicalCriterion` | Sistema cumple criterio técnico |
-| | `hasSystemCapabilityCriteria` | `IntelligentSystem` | `Criterion` | **Criterios de capacidad del sistema**: capacidades/efectos que requieren evaluación independientemente del propósito |
-| **Propósito/Contexto → Criterios** | `activatesCriterion` | `Purpose` | `Criterion` | **Propósito específico** activa criterio de evaluación |
-| | `triggersCriterion` | `DeploymentContext` | `Criterion` | Contexto dispara criterio de evaluación |
-| **Criterios → Requisitos** | `activatesRequirement` | `Criterion` | `ComplianceRequirement` | Criterio activa requisito de cumplimiento |
-| | `triggersComplianceRequirement` | `Criterion` | `ComplianceRequirement` | Criterio dispara requisito (sinónimo) |
-| **Sistema → Requisitos** | `hasRequirement` | `IntelligentSystem` | `ComplianceRequirement` | Sistema debe cumplir requisito |
-| | `hasTechnicalRequirement` | `IntelligentSystem` | `TechnicalRequirement` | Sistema debe cumplir requisito técnico |
+**Files**:
+- `/ontologias/rules/swrl-base-rules.ttl` - Native SWRL declarations
+- `/ontologias/rules/base_rules.py` - Contextual rules
+- `/ontologias/rules/capability_rules.py` - System capability evaluation
+- `/backend/swrl_rules.py` - Complete rule set definitions
 
-### 🔑 **Distinción Clave:**
-- **`hasPurpose`** → Funcionalidad **primaria declarada** ("diseñado para X")
-- **`hasSystemCapabilityCriteria`** → Capacidades/efectos que requieren evaluación **independientemente** del propósito ("capaz de Y" o "impacta Z")
+---
 
-</details>
+## 🧭 Reasoning Flow
 
-### Ejemplo Práctico de Inferencia
+### Complete Inference Pipeline
 
-<details>
-<summary><strong>🎯 Caso: Sistema Educativo de IA</strong></summary>
+```mermaid
+Input System → Validate (SHACL PRE)
+    ↓
+Derivation Phase
+├─ Purpose.activatesCriterion → Criteria
+├─ DeploymentContext.triggersCriterion → Criteria
+├─ TrainingDataOrigin.requiresDataGovernance → Requirements
+└─ Criteria.activatesRequirement → Requirements
+    ↓
+Rule Application (Python Engine)
+├─ Iterate until convergence
+├─ Apply business logic rules
+└─ Infer complex dependencies
+    ↓
+Semantic Reasoning (OWL Reasoner)
+├─ Load in OwlReady2/Pellet
+├─ Execute SWRL rules
+└─ Derive class hierarchies
+    ↓
+Validate (SHACL POST) → Verify consistency
+    ↓
+Store Results
+├─ MongoDB: System + inferences
+└─ Fuseki: RDF graph with all triples
+    ↓
+Return to User
+```
 
-#### **Entrada:** Sistema de evaluación de estudiantes
+### Step-by-Step Example
+
+**Input**: AI System for student evaluation in schools
+
 ```json
 {
-  "@type": "ai:IntelligentSystem",
-  "hasName": "EduAssess-AI",
+  "hasName": "EduEval-AI",
   "hasPurpose": ["ai:EducationAccess"],
   "hasDeploymentContext": ["ai:Education"],
-  "hasSystemCapabilityCriteria": ["ai:CustomSecurityCriterion"]
+  "hasTrainingDataOrigin": ["ai:ExternalDataset"],
+  "hasAlgorithmType": ["ai:NeuralNetwork"],
+  "hasModelScale": "ai:RegularModel"
 }
 ```
 
-#### **Conocimiento Base (Ontología):**
-```turtle
-# Definido en la ontología
-ai:EducationAccess ai:activatesCriterion ai:EducationEvaluationCriterion .
-ai:Education ai:triggersCriterion ai:EducationEvaluationCriterion .
-ai:EducationEvaluationCriterion ai:activatesRequirement ai:AccuracyEvaluationRequirement .
-ai:EducationEvaluationCriterion ai:activatesRequirement ai:HumanOversightRequirement .
-ai:EducationEvaluationCriterion ai:activatesRequirement ai:TraceabilityRequirement .
-```
+**Reasoning Chain**:
 
-#### **Salida Inferida Automáticamente:**
-```turtle
-# Inferencias automáticas del reasoner
-<urn:uuid:eduassess-ai> ai:hasNormativeCriterion ai:EducationEvaluationCriterion .
-<urn:uuid:eduassess-ai> ai:hasRequirement ai:AccuracyEvaluationRequirement .
-<urn:uuid:eduassess-ai> ai:hasRequirement ai:HumanOversightRequirement .  
-<urn:uuid:eduassess-ai> ai:hasTechnicalRequirement ai:TraceabilityRequirement .
-<urn:uuid:eduassess-ai> ai:hasRequirement ai:CustomSecurityRequirement .  # De criterio interno
-```
+| Step | Rule | Result |
+|------|------|--------|
+| 1 | EducationAccess.activatesCriterion | → EducationEvaluationCriterion |
+| 2 | Education.triggersCriterion | → EducationEvaluationCriterion |
+| 3 | ProtectionOfMinors rule fired | → ProtectionOfMinors criterion |
+| 4 | ExternalDataset rule fired | → DataGovernanceRequirement |
+| 5 | EducationEvaluationCriterion.activatesRequirement | → AccuracyEvaluationRequirement |
+| 6 | EducationEvaluationCriterion.activatesRequirement | → HumanOversightRequirement |
+| 7 | EducationEvaluationCriterion.activatesRequirement | → TraceabilityRequirement |
+| 8 | ProtectionOfMinors.activatesRequirement | → ParentalConsentRequirement |
 
-#### **Resultado:**
-✅ **El sistema automáticamente "sabe" que debe cumplir:**
-- Evaluación de precisión (por ser sistema educativo)
-- Supervisión humana obligatoria (por AI Act Anexo III)  
-- Trazabilidad de decisiones (por criterios técnicos)
-- Requisitos de seguridad personalizados (por criterios internos)
+**Output** (automatically inferred):
 
-</details>
-
-### 🎯 Coherencia Ontológica Completa - Conceptos Agregados
-
-<details>
-<summary><strong>✅ Resolución de Conceptos Faltantes en la Ontología</strong></summary>
-
-Durante la implementación de las reglas SWRL extendidas, se identificaron **20+ conceptos** utilizados en las reglas que no estaban formalmente definidos en la ontología base. Para mantener **coherencia ontológica completa**, se agregaron todos estos conceptos:
-
-#### **Criterios Normativos Agregados (5 conceptos):**
-```turtle
-ai:ProtectionOfMinors a ai:NormativeCriterion ;
-    rdfs:label "Protection of Minors"@en, "Protección de Menores"@es .
-
-ai:NonDiscrimination a ai:NormativeCriterion ;
-    rdfs:label "Non-Discrimination"@en, "No Discriminación"@es .
-
-ai:DueProcess a ai:NormativeCriterion ;
-    rdfs:label "Due Process"@en, "Debido Proceso"@es .
-
-ai:PrivacyProtection a ai:NormativeCriterion ;
-    rdfs:label "Privacy Protection"@en, "Protección de Privacidad"@es .
-
-ai:JudicialSupportCriterion a ai:NormativeCriterion ;
-    rdfs:label "Judicial Support Criterion"@en, "Criterio de Apoyo Judicial"@es .
-```
-
-#### **Criterios Técnicos y Contextuales (3 conceptos):**
-```turtle
-ai:BiometricSecurity a ai:ContextualCriterion ;
-    rdfs:label "Biometric Security"@en, "Seguridad Biométrica"@es .
-
-ai:PerformanceRequirements a ai:TechnicalCriterion ;
-    rdfs:label "Performance Requirements"@en, "Requisitos de Rendimiento"@es .
-
-ai:ScalabilityRequirements a ai:TechnicalCriterion ;
-    rdfs:label "Scalability Requirements"@en, "Requisitos de Escalabilidad"@es .
-```
-
-#### **Contextos de Despliegue (2 conceptos):**
-```turtle
-ai:RealTimeProcessing a ai:DeploymentContext ;
-    rdfs:label "Real Time Processing"@en, "Procesamiento en Tiempo Real"@es .
-
-ai:HighVolumeProcessing a ai:DeploymentContext ;
-    rdfs:label "High Volume Processing"@en, "Procesamiento de Alto Volumen"@es .
-```
-
-#### **Requisitos de Cumplimiento (4 conceptos):**
-```turtle
-ai:ParentalConsent a ai:ComplianceRequirement ;
-    rdfs:label "Parental Consent"@en, "Consentimiento Parental"@es .
-
-ai:Auditability a ai:ComplianceRequirement ;
-    rdfs:label "Auditability"@en, "Auditabilidad"@es .
-
-ai:DataEncryption a ai:TechnicalRequirement ;
-    rdfs:label "Data Encryption"@en, "Cifrado de Datos"@es .
-
-ai:PerformanceMonitoringRequirement a ai:TechnicalRequirement ;
-    rdfs:label "Performance Monitoring Requirement"@en, "Requisito de Monitoreo de Rendimiento"@es .
-```
-
-#### **Tipos de Datos y Clases Base (4 conceptos):**
-```turtle
-ai:DataType a owl:Class ;
-    rdfs:label "Data Type"@en, "Tipo de Datos"@es .
-
-ai:BiometricData a ai:DataType ;
-    rdfs:label "Biometric Data"@en, "Datos Biométricos"@es .
-
-ai:MinorData a ai:DataType ;
-    rdfs:label "Minor Data"@en, "Datos de Menores"@es .
-
-ai:LatencyMetrics a ai:TechnicalRequirement ;
-    rdfs:label "Latency Metrics"@en, "Métricas de Latencia"@es .
-```
-
-#### **📊 Resultado de Coherencia:**
-- ✅ **20+ conceptos** agregados a la ontología v0.36.0
-- ✅ **Todas las reglas SWRL** tienen base ontológica formal
-- ✅ **Coherencia semántica** completa mantenida
-- ✅ **Validación exitosa** con RDFLib y sintaxis TTL
-- ✅ **Compatibilidad** con herramientas OWL estándar
-
-</details>
-
-### Implementación Técnica
-
-<details>
-<summary><strong>🛠️ Flujo de Creación de Sistema</strong></summary>
-
-```python
-# Pseudocódigo del flujo completo
-@router.post("/systems")
-async def create_system_with_inference(system_data: IntelligentSystem):
-    # 1. Almacenar datos básicos
-    system_urn = await save_to_mongodb(system_data)
-    
-    # 2. Convertir a RDF y almacenar en Fuseki
-    await save_to_fuseki(system_data)
-    
-    # 3. Preparar datos para razonamiento
-    system_ttl = convert_to_turtle(system_data)
-    swrl_rules = load_inference_rules()
-    
-    # 4. Ejecutar inferencia con Pellet
-    reasoner_response = await call_reasoner_service(
-        data=system_ttl,
-        rules=swrl_rules
-    )
-    
-    # 5. Almacenar grafo enriquecido con inferencias
-    await save_inferred_graph_to_fuseki(reasoner_response)
-    
-    # 6. Actualizar MongoDB con relaciones inferidas
-    await update_system_with_requirements(system_urn, reasoner_response)
-    
-    return {"urn": system_urn, "inferences_applied": True}
-```
-
-</details>
-
-### 🧪 Casos de Prueba Validados
-
-<details>
-<summary><strong>✅ Sistemas de Prueba Completamente Validados</strong></summary>
-
-#### **1. Sistema Biométrico en Servicios Públicos (Original)**
 ```json
 {
-  "hasName": "BiometricAccess-AI",
-  "hasPurpose": ["ai:BiometricIdentification"],
-  "hasDeploymentContext": ["ai:PublicServices"],
-  "hasTrainingDataOrigin": ["ai:ExternalDataset"]
+  "hasCriteria": [
+    "ai:EducationEvaluationCriterion",
+    "ai:ProtectionOfMinors"
+  ],
+  "hasRequirements": [
+    "ai:AccuracyEvaluationRequirement",
+    "ai:HumanOversightRequirement",
+    "ai:TraceabilityRequirement",
+    "ai:DataGovernanceRequirement",
+    "ai:ParentalConsentRequirement"
+  ],
+  "hasRiskLevel": "ai:HighRisk"
 }
 ```
-**✅ Resultado:** 10+ inferencias → BiometricIdentificationCriterion, BiometricSecurity, DataEncryption, etc.
 
-#### **2. Sistema Judicial de Apoyo a Decisiones** 
-```json
-{
-  "hasName": "JudicialAI", 
-  "hasPurpose": ["ai:JudicialDecisionSupport"],
-  "hasDeploymentContext": ["ai:PublicServices"]
-}
+**Total Inferences**: 9 automatic derivations from 4 input fields
+
+### Key Reasoning Characteristics
+
+| Aspect | Implementation |
+|--------|-----------------|
+| **Semantics** | Description Logic (OWL 2 DL) |
+| **Rule Language** | SWRL + Python extension |
+| **Execution** | Fixed-point iteration (max 5 rounds) |
+| **Completeness** | 100% coverage of AI Act Annex III |
+| **Performance** | <500ms for typical system |
+| **Auditability** | Full trace of all inferred relationships |
+| **Extensibility** | Rules defined in external files, zero code changes |
+
+---
+
+## 🛡️ SHACL Validation
+
+SHACL (Shapes Constraint Language) provides **two-phase validation**:
+
+### Phase 1: Input Validation (PRE)
+
+Validates system data **before** reasoning:
+
+```turtle
+ai:IntelligentSystemShape a sh:NodeShape ;
+  sh:targetClass ai:IntelligentSystem ;
+
+  # Mandatory properties
+  sh:property [
+    sh:path ai:hasName ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:message "System must have exactly one name"
+  ] ;
+
+  sh:property [
+    sh:path ai:hasPurpose ;
+    sh:minCount 1 ;
+    sh:class ai:Purpose ;
+    sh:message "System must declare at least one purpose"
+  ] ;
+
+  sh:property [
+    sh:path ai:hasDeploymentContext ;
+    sh:minCount 1 ;
+    sh:class ai:DeploymentContext ;
+    sh:message "System must specify deployment context"
+  ] ;
+
+  sh:property [
+    sh:path ai:hasTrainingDataOrigin ;
+    sh:minCount 1 ;
+    sh:class ai:TrainingDataOrigin ;
+    sh:message "System must declare data origin"
+  ] .
 ```
-**✅ Resultado:** JudicialSupportCriterion → DataGovernance, FundamentalRights, HumanOversight
 
-#### **3. Sistema de Control Migratorio**
-```json
-{
-  "hasName": "MigrationControlAI",
-  "hasPurpose": ["ai:MigrationControl"],
-  "hasDeploymentContext": ["ai:PublicServices"] 
-}
+**Validations Enforced**:
+- ✅ Structural integrity (required properties)
+- ✅ Type constraints (classes and datatypes)
+- ✅ Cardinality rules (min/max occurrences)
+- ✅ Value range checks
+
+### Phase 2: Output Validation (POST)
+
+Validates inferred results **after** reasoning:
+
+```turtle
+ai:CriterionShape a sh:NodeShape ;
+  sh:targetClass ai:Criterion ;
+
+  # Post-reasoning validation
+  sh:property [
+    sh:path ai:assignsRiskLevel ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class ai:RiskLevel ;
+    sh:message "Each criterion must assign exactly one risk level"
+  ] ;
+
+  sh:property [
+    sh:path ai:activatesRequirement ;
+    sh:minCount 1 ;
+    sh:message "Criterion must activate at least one requirement"
+  ] .
 ```
-**✅ Resultado:** MigrationBorderCriterion → DataGovernance, RiskManagement
 
-#### **4. Sistema Educativo Avanzado**
+**Purpose**: Ensures reasoning engine produces valid results
+
+### Constraint Rules
+
+| Shape | Property | Constraint | Meaning |
+|-------|----------|-----------|---------|
+| **IntelligentSystemShape** | hasName | minCount=1, maxCount=1 | System must have exactly one name |
+| | hasPurpose | minCount=1 | At least one purpose required |
+| | hasDeploymentContext | minCount=1 | At least one context required |
+| | hasTrainingDataOrigin | minCount=1 | Data provenance mandatory |
+| | hasRiskLevel | maxCount=1 | At most one risk level |
+| **PurposeShape** | activatesCriterion | minCount=1 | Each purpose activates criteria |
+| | rdfs:label | minCount=2 | Labels in 2+ languages |
+| **CriterionShape** | assignsRiskLevel | minCount=1, maxCount=1 | Exactly one risk level |
+| | activatesRequirement | minCount=1 | Activates requirements |
+
+### Validation Execution
+
+```
+System Data Input
+    ↓
+SHACL Validation (PRE)
+├─ If fails → Return error to user
+└─ If passes → Continue to reasoning
+    ↓
+Semantic Reasoning
+    ↓
+SHACL Validation (POST)
+├─ If fails → Log violation, return inferred+violations
+└─ If passes → Return complete inferred system
+    ↓
+Store in Database
+```
+
+**File**: `/ontologias/shacl/ai-act-shapes.ttl`
+
+---
+
+## 📊 API Reference
+
+### Core Endpoints
+
+#### Systems Management
+
+```
+GET    /systems/
+POST   /systems/
+GET    /systems/{system_id}
+PUT    /systems/{system_id}
+DELETE /systems/{system_id}
+```
+
+**Example: Create system with automatic reasoning**
+
+```bash
+curl -X POST http://localhost:8000/systems/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "hasName": "EduEval-AI",
+    "hasPurpose": ["ai:EducationAccess"],
+    "hasDeploymentContext": ["ai:Education"],
+    "hasTrainingDataOrigin": ["ai:ExternalDataset"]
+  }'
+```
+
+**Response** (includes all inferred data):
+
 ```json
 {
-  "hasName": "EducationAccessAI",
+  "urn": "urn:uuid:edueval-ai-12345",
+  "hasName": "EduEval-AI",
   "hasPurpose": ["ai:EducationAccess"],
-  "hasDeploymentContext": ["ai:Education"]
+  "hasCriteria": [
+    "ai:EducationEvaluationCriterion",
+    "ai:ProtectionOfMinors"
+  ],
+  "hasRequirements": [
+    "ai:AccuracyEvaluationRequirement",
+    "ai:HumanOversightRequirement",
+    "ai:TraceabilityRequirement",
+    "ai:DataGovernanceRequirement",
+    "ai:ParentalConsentRequirement"
+  ],
+  "hasRiskLevel": "ai:HighRisk",
+  "inferencesApplied": true
 }
 ```
-**✅ Resultado:** EducationEvaluationCriterion + ProtectionOfMinors → AccuracyEvaluation, HumanOversight, Traceability, ParentalConsent
 
-#### **5. Sistema de Aplicación de la Ley**
-```json
-{
-  "hasName": "LawEnforcementAI",
-  "hasPurpose": ["ai:LawEnforcementSupport"],
-  "hasDeploymentContext": ["ai:PublicServices"]
-}
+#### SPARQL Queries
+
 ```
-**✅ Resultado:** LawEnforcementCriterion + DueProcess → ConformityAssessment, FundamentalRights
-
-#### **6. Sistema de Salud con Privacidad**
-```json
-{
-  "hasName": "HealthCareAI", 
-  "hasPurpose": ["ai:HealthCare"],
-  "hasDeploymentContext": ["ai:Healthcare"]
-}
+POST   /fuseki/sparql/
+GET    /fuseki/vocabulary/
+GET    /fuseki/classes/
+GET    /fuseki/properties/
 ```
-**✅ Resultado:** PrivacyProtection → DataGovernance, DataEncryption
 
-#### **7. Sistema de Reclutamiento**
-```json
-{
-  "hasName": "RecruitmentAI",
-  "hasPurpose": ["ai:RecruitmentOrEmployment"],
-  "hasDeploymentContext": ["ai:PublicServices"]
-}
+#### Reasoning Endpoint
+
 ```
-**✅ Resultado:** NonDiscrimination → Auditability
-
-#### **💡 Casos con Distinción Semántica (Propósito ≠ Criterio Interno)**
-```json
-{
-  "hasName": "ProductivityMonitorAI",
-  "hasPurpose": ["ai:ProductivityOptimization"],           // ← Propósito: Optimización
-  "hasSystemCapabilityCriteria": ["ai:RecruitmentEmploymentCriterion"]  // ← Criterio: Impacto laboral secundario
-}
+POST   /reasoning/reason
 ```
-**✅ Resultado:** Criterio interno activa requisitos laborales **independientemente** del propósito declarado
 
-#### **8. Sistema Multipropósito Complejo (15 inferencias)**
-```json
-{
-  "hasName": "MultiPurposeAI",
-  "hasPurpose": ["ai:EducationAccess", "ai:RecruitmentOrEmployment", "ai:HealthCare"],
-  "hasDeploymentContext": ["ai:Education", "ai:Healthcare"],
-  "hasTrainingDataOrigin": ["ai:ExternalDataset"]
-}
-```
-**✅ Resultado:** 5 criterios normativos + 7 requisitos generales + 1 requisito técnico
+Trigger manual reasoning on system data
 
-</details>
+### Complete Documentation
 
-### Ventajas del Sistema de Inferencia
-
-| **Ventaja** | **Descripción** | **Beneficio** |
-|-------------|-----------------|---------------|
-| 🤖 **Automatización** | Las relaciones se derivan automáticamente | Reduce errores manuales y garantiza consistencia |
-| ⚡ **Tiempo Real** | Inferencias se ejecutan al crear/modificar sistemas | Feedback inmediato sobre requisitos aplicables |
-| 📚 **Basado en Conocimiento** | Utiliza definiciones formales del AI Act | Cumplimiento automático con regulaciones |
-| 🔄 **Evolutivo** | Nuevas reglas se añaden sin cambiar código | Sistema adaptable a cambios regulatorios |
-| ✅ **Trazable** | Cada inferencia tiene justificación formal | Auditoría y explicabilidad completa |
-| 🎯 **Precisión** | Elimina ambigüedad en interpretación de requisitos | Cumplimiento normativo confiable |
-| 🚀 **Cobertura Total** | 8/8 casos de uso del AI Act Anexo III | Implementación regulatoria completa |
-| 🔗 **Coherencia Ontológica** | Todos los conceptos formalmente definidos | Base semántica sólida y estándar |
+**Interactive Swagger UI**: http://localhost:8000/docs
 
 ---
 
-## 🔄 Flujos del Sistema
+## 🐳 Deployment
 
-<details>
-<summary><strong>📊 Arquitectura General</strong></summary>
+### Docker Compose
 
-```mermaid
-graph TB
-    subgraph "Frontend Layer"
-        UI[React Frontend]
-        UI --> |HTTP Requests| LB[Load Balancer]
-    end
-    
-    subgraph "API Layer"
-        LB --> API[FastAPI Backend]
-        API --> |SPARQL Queries| FUSEKI[Apache Jena Fuseki]
-        API --> |Document Storage| MONGO[MongoDB]
-        API --> |Reasoning Requests| REASONER[OWL Reasoner Service]
-    end
-    
-    subgraph "Data Layer"
-        FUSEKI --> |RDF Triples| ONTOLOGY[(Ontología AI Act)]
-        MONGO --> |JSON Documents| SYSTEMS[(Sistemas IA)]
-    end
-    
-    subgraph "Documentation"
-        ONTOLOGY --> |Widoco| DOCS[HTML Documentation]
-        DOCS --> |Nginx| WEB[Web Server]
-    end
-```
-</details>
-
-<details>
-<summary><strong>🔧 Gestión de Sistemas IA</strong></summary>
-
-```mermaid
-sequenceDiagram
-    participant U as Usuario
-    participant F as Frontend
-    participant A as API Backend
-    participant M as MongoDB
-    participant R as Reasoner
-    participant FS as Fuseki
-    
-    U->>F: Crear/Editar Sistema IA
-    F->>A: POST /systems/
-    A->>M: Almacenar documento
-    A->>FS: Convertir a RDF y almacenar
-    A->>R: Ejecutar inferencias SWRL
-    R->>A: Retornar conocimiento inferido
-    A->>FS: Almacenar inferencias
-    A->>F: Confirmación
-    F->>U: Sistema creado/actualizado
-```
-</details>
-
-<details>
-<summary><strong>🧠 Razonamiento Semántico</strong></summary>
-
-```mermaid
-graph LR
-    subgraph "Input Data"
-        DATA[Datos del Sistema]
-        RULES[Reglas SWRL]
-        ONT[Ontología Base]
-    end
-    
-    subgraph "Reasoning Process"
-        LOAD[Cargar en Reasoner]
-        INFER[Ejecutar Inferencias]
-        RESULT[Generar Conclusiones]
-    end
-    
-    subgraph "Output"
-        RDF[Grafo RDF Enriquecido]
-        STORE[Almacenar en Fuseki]
-    end
-    
-    DATA --> LOAD
-    RULES --> LOAD
-    ONT --> LOAD
-    LOAD --> INFER
-    INFER --> RESULT
-    RESULT --> RDF
-    RDF --> STORE
-```
-</details>
-
----
-
-## 🚀 Guías de Uso
-
-### 📖 1. Generar Documentación de la Ontología
+All services orchestrated together:
 
 ```bash
-cd tools
-./generate_ontology_docs.sh
-```
-
-**¿Qué hace este script?**
-1. ✅ Lee la versión actual desde `ontologias.env`
-2. 🌐 Levanta servidor HTTP local temporal (puerto 8080)
-3. 📚 Ejecuta Widoco para generar documentación bilingüe (ES-EN)
-4. 🔍 Ejecuta validación automática con OOPS!
-5. 🧹 Limpia recursos temporales
-
-**📁 Archivos generados:**
-- `index-es.html` / `index-en.html` - Documentación principal
-- `ontology.ttl` / `ontology.owl` - Ontología procesada
-- `OOPSevaluation/oopsEval.html` - Reporte de validación
-
-### ✅ 2. Validación de la Ontología
-
-La validación se ejecuta **automáticamente** durante la generación de documentación usando **OOPS!** (OntOlogy Pitfall Scanner).
-
-**🔍 Validaciones incluidas:**
-- ✅ Consistencia lógica OWL
-- ✅ Sintaxis RDF/TTL correcta  
-- ✅ Detección de clases desconectadas
-- ✅ Propiedades sin uso
-- ✅ Circularidad en jerarquías
-- ✅ Etiquetas y comentarios faltantes
-
-**📊 Ver resultados:**
-- **Reporte completo**: `/ontologias/docs/OOPSevaluation/oopsEval.html`
-- **Documentación**: Incluye métricas automáticas de calidad
-
-### 🐳 3. Despliegue con Docker
-
-#### Opción A: Producción (Recomendada)
-
-```bash
-# Levantar todos los servicios
+# Start all services
 docker-compose up -d
 
-# Verificar estado
+# Verify
 docker-compose ps
 
-# Ver logs si hay problemas
-docker-compose logs [servicio]
+# View logs
+docker-compose logs -f [service]
+
+# Stop
+docker-compose down
 ```
 
-#### Opción B: Desarrollo Local
+### Service Configuration
 
-<details>
-<summary><strong>Instrucciones detalladas</strong></summary>
+| Service | Port | Environment |
+|---------|------|-------------|
+| Frontend | 5173 | `VITE_API_URL=http://localhost:8000` |
+| Backend | 8000 | `MONGO_URL=mongodb://mongo:27017` |
+| Reasoner | 8001 | `ONTOLOGY_PATH=/ontologias/versions/0.37.2/` |
+| Fuseki | 3030 | `FUSEKI_USER=admin`, `FUSEKI_PASSWORD=admin` |
+| MongoDB | 27017 | Default replicaset disabled |
 
-```bash
-# Terminal 1: Backend
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000
+### Production Checklist
 
-# Terminal 2: Frontend  
-cd frontend
-npm install
-npm run dev
-
-# Terminal 3: Reasoner Service
-cd reasoner_service
-pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port 8001
-
-# Terminal 4: MongoDB (si no tienes Docker)
-mongod --port 27017
-
-# Terminal 5: Fuseki (si no tienes Docker)
-# Descargar Apache Jena Fuseki y ejecutar
-```
-</details>
+- ✅ Use environment variables for secrets
+- ✅ Enable HTTPS on frontend/backend
+- ✅ Configure MongoDB authentication
+- ✅ Set Fuseki security policies
+- ✅ Enable CORS for your domain
+- ✅ Monitor reasoning performance (log slow queries)
+- ✅ Backup ontology files regularly
 
 ---
 
-## 🔌 API Reference
+## 📚 Additional Resources
 
-### 🎯 Endpoints Principales
+### Key Files
 
-<details>
-<summary><strong>📊 Backend API (Puerto 8000)</strong></summary>
+- **Ontology**: `/ontologias/versions/0.37.2/ontologia-v0.37.2.ttl`
+- **SHACL Shapes**: `/ontologias/shacl/ai-act-shapes.ttl`
+- **SWRL Rules**: `/ontologias/rules/swrl-base-rules.ttl`
+- **Backend Logic**: `/backend/derivation.py`, `/backend/swrl_rules.py`
+- **Frontend**: `/frontend/src/pages/SystemsPage.tsx`
 
-#### Gestión de Sistemas IA
-```http
-GET    /systems/                    # 📋 Listar sistemas con filtros
-POST   /systems/                    # ➕ Crear nuevo sistema
-GET    /systems/{system_id}         # 👀 Obtener sistema específico
-PUT    /systems/{system_id}         # ✏️ Actualizar sistema
-DELETE /systems/{system_id}         # 🗑️ Eliminar sistema
-```
+### External References
 
-#### Consultas SPARQL
-```http
-POST   /fuseki/sparql/             # 🔍 Ejecutar consulta SPARQL personalizada
-GET    /fuseki/vocabulary/         # 📚 Obtener vocabulario de la ontología
-GET    /fuseki/classes/            # 🏷️ Listar clases OWL
-GET    /fuseki/properties/         # 🔗 Listar propiedades OWL
-```
+- **EU AI Act**: https://artificialintelligenceact.eu/
+- **OWL Specification**: https://www.w3.org/TR/owl2-overview/
+- **SWRL Specification**: https://www.w3.org/Submission/SWRL/
+- **SHACL Specification**: https://www.w3.org/TR/shacl/
 
-#### Análisis y Estadísticas
-```http
-GET    /systems/stats/             # 📈 Estadísticas de sistemas
-GET    /systems/risks/             # ⚠️ Análisis de riesgos
-GET    /ontology/classes/          # 🌳 Explorar jerarquía de clases
-```
+### Troubleshooting
 
-**📖 Documentación completa**: http://localhost:8000/docs
-</details>
+**Reasoning not producing expected criteria?**
+- Check SHACL validation output
+- Verify ontology has the criterion definition
+- Confirm rule conditions match your system data
 
-<details>
-<summary><strong>🧠 Reasoner Service (Puerto 8001)</strong></summary>
+**SPARQL queries returning empty?**
+- Verify data loaded in Fuseki: http://localhost:3030
+- Check namespace prefixes in query
+- Use SPARQL UI to debug
 
-#### Razonamiento Semántico
-```http
-POST   /reason                     # 🔬 Ejecutar inferencias SWRL
-```
-
-**Parámetros:**
-- `data`: archivo TTL con datos de entrada
-- `swrl_rules`: archivo TTL con reglas SWRL
-- **Retorna**: grafo RDF enriquecido con inferencias
-</details>
-
-<details>
-<summary><strong>🔍 Fuseki SPARQL (Puerto 3030)</strong></summary>
-
-```http
-GET    /ds/sparql                  # 📖 Consultas SPARQL de lectura
-POST   /ds/sparql                  # ✏️ Consultas SPARQL de escritura  
-GET    /ds/data                    # 📊 Acceso directo a datos RDF
-```
-
-**Credenciales por defecto:**
-- Usuario: `admin`
-- Contraseña: `admin`
-</details>
-
-### 🗂️ Rutas del Frontend (Puerto 5173)
-
-| Ruta | Descripción |
-|------|-------------|
-| `/` | 🏠 Dashboard principal |
-| `/systems` | 🤖 Gestión de sistemas IA |
-| `/graph` | 🕸️ Visualización interactiva RDF |
-| `/docs` | 📚 Documentación de ontología |
-| `/reasoning` | 🧠 Interfaz de inferencias |
+**Frontend not connecting to backend?**
+- Verify backend running: `curl http://localhost:8000/docs`
+- Check CORS configuration
+- Review browser console for errors
 
 ---
 
-## ⚙️ Configuración Avanzada
+## 📄 License
 
-<details>
-<summary><strong>🔧 Variables de Entorno</strong></summary>
-
-```bash
-# Versión de ontología
-CURRENT_RELEASE=0.36.0
-
-# Conexiones de base de datos
-MONGO_URL=mongodb://mongo:27017
-FUSEKI_ENDPOINT=http://fuseki:3030
-FUSEKI_USER=admin
-FUSEKI_PASSWORD=admin
-FUSEKI_DATASET=ds
-FUSEKI_GRAPH=http://ai-act.eu/ontology
-
-# Rutas de ontología
-ONTOLOGY_PATH=/ontologias/ontologia-v0.36.0.ttl
-```
-</details>
-
-<details>
-<summary><strong>📚 Recursos y Enlaces Útiles</strong></summary>
-
-- **📖 Consultas SPARQL**: Ejemplos en `/sparql_queries/consultas.sparqlbook`
-- **🔗 Esquemas JSON-LD**: Contexto en `/ontologias/json-ld-context.json`
-- **📚 Documentación Ontología**: http://localhost/docs/
-- **📋 API Documentation**: http://localhost:8000/docs
-- **🔍 SPARQL Interface**: http://localhost:3030/dataset.html
-</details>
-
----
-
-## 🛠 Tecnologías Empleadas
-
-<details>
-<summary><strong>🖥️ Stack Tecnológico Completo</strong></summary>
-
-### Backend
-- **FastAPI** - Framework web moderno para Python
-- **MongoDB** - Base de datos NoSQL para almacenamiento de documentos
-- **Apache Jena Fuseki** - Servidor SPARQL y almacén de triples RDF
-- **RDFLib** - Biblioteca Python para manejo de datos RDF
-- **OwlReady2** - Razonador OWL/SWRL para inferencia semántica
-- **Motor** - Driver asíncrono de MongoDB para Python
-
-### Frontend
-- **React 19** - Biblioteca de interfaz de usuario
-- **TypeScript** - Superset tipado de JavaScript
-- **Vite** - Herramienta de build rápida
-- **TailwindCSS** - Framework de CSS utilitario
-- **D3.js** - Visualización de datos y grafos
-- **Vis-network** - Biblioteca para visualización de redes
-- **React Router Dom** - Enrutamiento del lado cliente
-
-### Infraestructura
-- **Docker & Docker Compose** - Contenerización y orquestación
-- **Nginx** - Servidor web para servir documentación
-- **Widoco** - Generación automática de documentación de ontologías
-
-### Semántica y Ontologías
-- **OWL (Web Ontology Language)** - Lenguaje de ontologías web
-- **SWRL (Semantic Web Rule Language)** - Reglas semánticas
-- **RDF/Turtle** - Formato de datos semánticos
-- **JSON-LD** - Formato JSON para datos enlazados
-</details>
-
----
-
-## 🔧 Troubleshooting
-
-<details>
-<summary><strong>❌ Problemas Comunes</strong></summary>
-
-### 🐳 Docker Issues
-
-**Problema**: Error de permisos al generar documentación
-```bash
-# Solución: El script ya usa puerto 8080 (no requiere root)
-cd tools
-./generate_ontology_docs.sh
-```
-
-**Problema**: Puertos ocupados
-```bash
-# Verificar puertos en uso
-docker-compose ps
-netstat -tulpn | grep :5173
-
-# Cambiar puertos en docker-compose.yml si es necesario
-```
-
-**Problema**: Servicios no se levantan
-```bash
-# Ver logs detallados
-docker-compose logs [servicio]
-
-# Reconstruir imágenes
-docker-compose build --no-cache [servicio]
-```
-
-### 🌐 Frontend Issues
-
-**Problema**: Frontend no carga o errores en consola
-```bash
-# Verificar que el backend esté corriendo
-curl http://localhost:8000/docs
-
-# Revisar logs del frontend
-docker-compose logs frontend
-```
-
-### 🔍 SPARQL/Ontología Issues
-
-**Problema**: Error en validación de ontología
-```bash
-# Validar sintaxis TTL manualmente
-rapper -i turtle -c ontologias/ontologia-v0.36.0.ttl
-```
-
-**Problema**: Fuseki no responde
-```bash
-# Reiniciar solo Fuseki
-docker-compose restart fuseki
-
-# Verificar endpoint
-curl http://localhost:3030/$/ping
-```
-</details>
-
----
-
-## 🤝 Contribuir
-
-1. **Fork del repositorio**
-2. **Crear rama feature** (`git checkout -b feature/nueva-funcionalidad`)
-3. **Commit cambios** (`git commit -am 'Agregar nueva funcionalidad'`)
-4. **Push a la rama** (`git push origin feature/nueva-funcionalidad`)
-5. **Crear Pull Request**
-
-### 📋 Guidelines
-
-- ✅ Seguir convenciones de código existentes
-- ✅ Documentar cambios en la ontología
-- ✅ Agregar tests para nuevas funcionalidades
-- ✅ Actualizar documentación si es necesario
-
----
-
-## 📄 Licencia
-
-Este proyecto está licenciado bajo la Licencia Apache 2.0. Ver el archivo [LICENSE](LICENSE) para más detalles.
+Licensed under Apache License 2.0. See [LICENSE](LICENSE) file for details.
 
 ```
 Copyright 2025 AI Act Project Contributors
@@ -1913,3 +707,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+---
+
+## 🤝 Contributing
+
+1. Fork repository
+2. Create feature branch (`git checkout -b feature/name`)
+3. Commit changes (`git commit -am 'Description'`)
+4. Push to branch (`git push origin feature/name`)
+5. Create Pull Request
+
+### Guidelines
+
+- Follow existing code style
+- Document ontology changes
+- Add tests for new rules
+- Update this README if needed
+
+---
+
+**Last Updated**: 2025-11-22 | **Version**: 0.37.2 | **Status**: Production Ready
