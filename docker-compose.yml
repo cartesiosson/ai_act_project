@@ -1,11 +1,11 @@
 services:
 
   fuseki:
-    image: stain/jena-fuseki
+    image: ${FUSEKI_IMAGE}
     ports:
       - "3030:3030"
     environment:
-      - ADMIN_PASSWORD=admin
+      - ADMIN_PASSWORD=${FUSEKI_ADMIN_PASSWORD}
     volumes:
       - fuseki_data:/fuseki
 
@@ -14,19 +14,19 @@ services:
     depends_on:
       - fuseki
     environment:
-      - FUSEKI_ENDPOINT=http://fuseki:3030
-      - FUSEKI_USER=admin
-      - FUSEKI_PASSWORD=admin
-      - FUSEKI_DATASET=ds
-      - FUSEKI_GRAPH=http://ai-act.eu/ontology
+      - FUSEKI_ENDPOINT=${FUSEKI_ENDPOINT}
+      - FUSEKI_USER=${FUSEKI_USER}
+      - FUSEKI_PASSWORD=${FUSEKI_PASSWORD}
+      - FUSEKI_DATASET=${FUSEKI_DATASET}
+      - FUSEKI_GRAPH=${FUSEKI_GRAPH}
     volumes:
       - ./ontologias:/app/ontologias
 
   mongo:
-    image: mongo:6
+    image: ${MONGO_IMAGE}
     restart: always
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT}:27017"
     volumes:
       - mongo_data:/data/db
 
@@ -37,17 +37,17 @@ services:
       - fuseki
       - reasoner
     environment:
-      - MONGO_URL=mongodb://mongo:27017
-      - FUSEKI_ENDPOINT=http://fuseki:3030
-      - FUSEKI_USER=admin
-      - FUSEKI_PASSWORD=admin
-      - FUSEKI_GRAPH=http://ai-act.eu/ontology
-      - FUSEKI_DATASET=ds
-      - FUSEKI_GRAPH_DATA=http://ai-act.eu/ontology/data
-      - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
-      - REASONER_SERVICE_URL=http://reasoner:8000
+      - MONGO_URL=${MONGO_URL}
+      - FUSEKI_ENDPOINT=${FUSEKI_ENDPOINT}
+      - FUSEKI_USER=${FUSEKI_USER}
+      - FUSEKI_PASSWORD=${FUSEKI_PASSWORD}
+      - FUSEKI_GRAPH=${FUSEKI_GRAPH}
+      - FUSEKI_DATASET=${FUSEKI_DATASET}
+      - FUSEKI_GRAPH_DATA=${FUSEKI_GRAPH_DATA}
+      - ONTOLOGY_PATH=${ONTOLOGY_PATH}
+      - REASONER_SERVICE_URL=${REASONER_SERVICE_URL}
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT}:8000"
     volumes:
       - ./backend:/app
       - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
@@ -55,19 +55,19 @@ services:
   reasoner:
     build: ./reasoner_service
     environment:
-      - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
+      - ONTOLOGY_PATH=${ONTOLOGY_PATH}
     volumes:
       - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
       - ./ontologias/rules:/ontologias/rules:ro
     ports:
-      - "8001:8000"
+      - "${REASONER_PORT}:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
-    
+
 
   ontologias:
-    build: ./ontologias          
+    build: ./ontologias
     ports:
-      - "80:80"
+      - "${ONTOLOGIES_PORT}:80"
     volumes:
       - ./ontologias/json-ld-context.json:/usr/share/nginx/html/json-ld-context.json:ro
       - ./ontologias/docs:/usr/share/nginx/html/docs:ro
@@ -87,13 +87,13 @@ services:
       - ./frontend/.env:/app/.env
       - frontend_node_modules:/app/node_modules
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT}:5173"
     depends_on:
       - backend
     environment:
-      - NODE_ENV=development
-      - VITE_FUSEKI_USER=admin
-      - VITE_FUSEKI_PASSWORD=admin
+      - NODE_ENV=${NODE_ENV}
+      - VITE_FUSEKI_USER=${VITE_FUSEKI_USER}
+      - VITE_FUSEKI_PASSWORD=${VITE_FUSEKI_PASSWORD}
       
 volumes:
   fuseki_data:
