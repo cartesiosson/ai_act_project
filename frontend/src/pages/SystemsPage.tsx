@@ -15,6 +15,19 @@ export type System = {
   hasAlgorithmType: string[];
   hasModelScale?: string[];
   hasCapability?: string[];
+  hasGPAIClassification?: string[];
+  hasContextualCriteria?: string[];
+  hasISORequirements?: string[];
+  hasNISTRequirements?: string[];
+  hasComplianceRequirement?: string[];
+  hasTechnicalRequirement?: string[];
+  hasSecurityRequirement?: string[];
+  hasRobustnessRequirement?: string[];
+  hasDocumentationRequirement?: string[];
+  hasDataGovernanceRequirement?: string[];
+  requiresHumanOversight?: boolean;
+  hasTransparencyLevel?: string;
+  requiresFundamentalRightsAssessment?: boolean;
   hasVersion: string;
   "ai:hasUrn": string;
 };
@@ -46,6 +59,17 @@ export default function SystemsPage() {
   const [algorithmTypes, setAlgorithmTypes] = useState<{ id: string; label: string }[]>([]);
   const [modelScales, setModelScales] = useState<{ id: string; label: string }[]>([]);
   const [capabilities, setCapabilities] = useState<{ id: string; label: string }[]>([]);
+  const [gpaiClassifications, setGPAIClassifications] = useState<{ id: string; label: string }[]>([]);
+  const [contextualCriteria, setContextualCriteria] = useState<{ id: string; label: string }[]>([]);
+  const [isoRequirements, setISORequirements] = useState<{ id: string; label: string }[]>([]);
+  const [nistRequirements, setNISTRequirements] = useState<{ id: string; label: string }[]>([]);
+  const [complianceRequirements, setComplianceRequirements] = useState<{ id: string; label: string }[]>([]);
+  const [technicalRequirements, setTechnicalRequirements] = useState<{ id: string; label: string }[]>([]);
+  const [securityRequirements, setSecurityRequirements] = useState<{ id: string; label: string }[]>([]);
+  const [robustnessRequirements, setRobustnessRequirements] = useState<{ id: string; label: string }[]>([]);
+  const [documentationRequirements, setDocumentationRequirements] = useState<{ id: string; label: string }[]>([]);
+  const [dataGovernanceRequirements, setDataGovernanceRequirements] = useState<{ id: string; label: string }[]>([]);
+  const [transparencyLevels, setTransparencyLevels] = useState<{ id: string; label: string }[]>([]);
 
   const [form, setForm] = useState({
     hasName: "",
@@ -56,6 +80,19 @@ export default function SystemsPage() {
     hasAlgorithmType: [] as string[],
     hasModelScale: [] as string[],
     hasCapability: [] as string[],
+    hasGPAIClassification: [] as string[],
+    hasContextualCriteria: [] as string[],
+    hasISORequirements: [] as string[],
+    hasNISTRequirements: [] as string[],
+    hasComplianceRequirement: [] as string[],
+    hasTechnicalRequirement: [] as string[],
+    hasSecurityRequirement: [] as string[],
+    hasRobustnessRequirement: [] as string[],
+    hasDocumentationRequirement: [] as string[],
+    hasDataGovernanceRequirement: [] as string[],
+    requiresHumanOversight: false as boolean,
+    hasTransparencyLevel: "" as string,
+    requiresFundamentalRightsAssessment: false as boolean,
     hasVersion: "",
   });
 
@@ -91,6 +128,19 @@ export default function SystemsPage() {
         hasAlgorithmType: [],
         hasModelScale: [],
         hasCapability: [],
+        hasGPAIClassification: [],
+        hasContextualCriteria: [],
+        hasISORequirements: [],
+        hasNISTRequirements: [],
+        hasComplianceRequirement: [],
+        hasTechnicalRequirement: [],
+        hasSecurityRequirement: [],
+        hasRobustnessRequirement: [],
+        hasDocumentationRequirement: [],
+        hasDataGovernanceRequirement: [],
+        requiresHumanOversight: false,
+        hasTransparencyLevel: "",
+        requiresFundamentalRightsAssessment: false,
         hasVersion: "",
       });
       setLoadedSystem(null);
@@ -118,6 +168,19 @@ export default function SystemsPage() {
         hasAlgorithmType: systemToLoad.hasAlgorithmType || [],
         hasModelScale: systemToLoad.hasModelScale || [],
         hasCapability: systemToLoad.hasCapability || [],
+        hasGPAIClassification: systemToLoad.hasGPAIClassification || [],
+        hasContextualCriteria: systemToLoad.hasContextualCriteria || [],
+        hasISORequirements: systemToLoad.hasISORequirements || [],
+        hasNISTRequirements: systemToLoad.hasNISTRequirements || [],
+        hasComplianceRequirement: systemToLoad.hasComplianceRequirement || [],
+        hasTechnicalRequirement: systemToLoad.hasTechnicalRequirement || [],
+        hasSecurityRequirement: systemToLoad.hasSecurityRequirement || [],
+        hasRobustnessRequirement: systemToLoad.hasRobustnessRequirement || [],
+        hasDocumentationRequirement: systemToLoad.hasDocumentationRequirement || [],
+        hasDataGovernanceRequirement: systemToLoad.hasDataGovernanceRequirement || [],
+        requiresHumanOversight: systemToLoad.requiresHumanOversight ?? false,
+        hasTransparencyLevel: systemToLoad.hasTransparencyLevel || "",
+        requiresFundamentalRightsAssessment: systemToLoad.requiresFundamentalRightsAssessment ?? false,
         hasVersion: systemToLoad.hasVersion,
       });
       setLoadedSystem(systemToLoad);
@@ -171,7 +234,27 @@ export default function SystemsPage() {
     const load = async () => {
       setLoading(true);
       const apiBase = (window as any).VITE_API_URL || "http://localhost:8000";
-      const [purposesData, risksData, contextsData, originsData, systemCapabilityCriteriaData, algorithmTypesData, modelScalesData, capabilitiesData] = await Promise.all([
+      const [
+        purposesData,
+        risksData,
+        contextsData,
+        originsData,
+        systemCapabilityCriteriaData,
+        algorithmTypesData,
+        modelScalesData,
+        capabilitiesData,
+        gpaiClassificationsData,
+        contextualCriteriaData,
+        isoRequirementsData,
+        nistRequirementsData,
+        complianceRequirementsData,
+        technicalRequirementsData,
+        securityRequirementsData,
+        robustnessRequirementsData,
+        documentationRequirementsData,
+        dataGovernanceRequirementsData,
+        transparencyLevelsData
+      ] = await Promise.all([
         fetchVocabulary("purposes"),
         fetchVocabulary("risks"),
         fetchVocabulary("contexts"),
@@ -189,6 +272,24 @@ export default function SystemsPage() {
         fetch(`${apiBase}/vocab/capabilities?lang=en`).then(r => r.json()).catch(() => [
           {"id": "ai:GenerativeCapability", "label": "Generative Capability"}
         ]),
+        fetch(`${apiBase}/vocab/gpai?lang=en`).then(r => r.json()).catch(() => [
+          {"id": "ai:GeneralPurposeAIModel", "label": "General Purpose AI"},
+          {"id": "ai:HighCapabilityGPAIModel", "label": "High Capability GPAI"}
+        ]),
+        fetch(`${apiBase}/vocab/contextualcriteria?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/iso?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/nist?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/compliance?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/technical?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/security?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/robustness?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/documentation?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/datagovernance?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/transparency?lang=en`).then(r => r.json()).catch(() => [
+          {"id": "ai:High", "label": "High"},
+          {"id": "ai:Medium", "label": "Medium"},
+          {"id": "ai:Low", "label": "Low"}
+        ]),
       ]);
       setPurposes(purposesData);
       setRisks(risksData);
@@ -198,7 +299,17 @@ export default function SystemsPage() {
       setAlgorithmTypes(algorithmTypesData);
       setModelScales(modelScalesData);
       setCapabilities(capabilitiesData);
-
+      setGPAIClassifications(gpaiClassificationsData);
+      setContextualCriteria(contextualCriteriaData);
+      setISORequirements(isoRequirementsData);
+      setNISTRequirements(nistRequirementsData);
+      setComplianceRequirements(complianceRequirementsData);
+      setTechnicalRequirements(technicalRequirementsData);
+      setSecurityRequirements(securityRequirementsData);
+      setRobustnessRequirements(robustnessRequirementsData);
+      setDocumentationRequirements(documentationRequirementsData);
+      setDataGovernanceRequirements(dataGovernanceRequirementsData);
+      setTransparencyLevels(transparencyLevelsData);
     };
     load();
   }, []); // Only on mount, not on offset/filters
@@ -345,6 +456,201 @@ export default function SystemsPage() {
             </select>
           </div>
         </div>
+
+        {/* GPAI & Contextual Classification */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h3 className="text-sm font-bold mb-3">EU AI Act Classification</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold text-sm mb-1">GPAI Classification (if applicable)</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasGPAIClassification}
+                onChange={e =>
+                  setForm({ ...form, hasGPAIClassification: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {gpaiClassifications.map((g) => (
+                  <option key={g.id} value={g.id}>{g.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-1">Contextual Criteria</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasContextualCriteria}
+                onChange={e =>
+                  setForm({ ...form, hasContextualCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {contextualCriteria.map((c) => (
+                  <option key={c.id} value={c.id}>{c.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Compliance Requirements */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h3 className="text-sm font-bold mb-3">Compliance Requirements</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block font-semibold text-sm mb-1">Technical Requirements</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasTechnicalRequirement}
+                onChange={e =>
+                  setForm({ ...form, hasTechnicalRequirement: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {technicalRequirements.map((t) => (
+                  <option key={t.id} value={t.id}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-1">Security Requirements</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasSecurityRequirement}
+                onChange={e =>
+                  setForm({ ...form, hasSecurityRequirement: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {securityRequirements.map((s) => (
+                  <option key={s.id} value={s.id}>{s.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-1">Robustness Requirements</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasRobustnessRequirement}
+                onChange={e =>
+                  setForm({ ...form, hasRobustnessRequirement: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {robustnessRequirements.map((r) => (
+                  <option key={r.id} value={r.id}>{r.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-1">Documentation Requirements</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasDocumentationRequirement}
+                onChange={e =>
+                  setForm({ ...form, hasDocumentationRequirement: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {documentationRequirements.map((d) => (
+                  <option key={d.id} value={d.id}>{d.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-1">Data Governance Requirements</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasDataGovernanceRequirement}
+                onChange={e =>
+                  setForm({ ...form, hasDataGovernanceRequirement: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {dataGovernanceRequirements.map((d) => (
+                  <option key={d.id} value={d.id}>{d.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Standards & Governance */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h3 className="text-sm font-bold mb-3">Standards & Governance</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold text-sm mb-1">ISO 42001 Requirements</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasISORequirements}
+                onChange={e =>
+                  setForm({ ...form, hasISORequirements: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {isoRequirements.map((i) => (
+                  <option key={i.id} value={i.id}>{i.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-1">NIST AI RMF Functions</label>
+              <select
+                multiple
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasNISTRequirements}
+                onChange={e =>
+                  setForm({ ...form, hasNISTRequirements: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {nistRequirements.map((n) => (
+                  <option key={n.id} value={n.id}>{n.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Human & Rights */}
+        <div className="border-t pt-4 mt-4 mb-4">
+          <h3 className="text-sm font-bold mb-3">Human Oversight & Rights</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                className="mr-2"
+                checked={form.requiresHumanOversight}
+                onChange={(e) => setForm({ ...form, requiresHumanOversight: e.target.checked })}
+              />
+              <label className="font-semibold text-sm">Requires Human Oversight</label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                className="mr-2"
+                checked={form.requiresFundamentalRightsAssessment}
+                onChange={(e) => setForm({ ...form, requiresFundamentalRightsAssessment: e.target.checked })}
+              />
+              <label className="font-semibold text-sm">Fundamental Rights Assessment</label>
+            </div>
+            <div>
+              <label className="block font-semibold text-sm mb-1">Transparency Level</label>
+              <select
+                className="w-full border rounded p-2 text-xs bg-white text-black dark:bg-gray-800 dark:text-white"
+                value={form.hasTransparencyLevel}
+                onChange={(e) => setForm({ ...form, hasTransparencyLevel: e.target.value })}
+              >
+                <option value="">Select...</option>
+                {transparencyLevels.map((t) => (
+                  <option key={t.id} value={t.id}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -364,6 +670,19 @@ export default function SystemsPage() {
                 hasAlgorithmType: [],
                 hasModelScale: [],
                 hasCapability: [],
+                hasGPAIClassification: [],
+                hasContextualCriteria: [],
+                hasISORequirements: [],
+                hasNISTRequirements: [],
+                hasComplianceRequirement: [],
+                hasTechnicalRequirement: [],
+                hasSecurityRequirement: [],
+                hasRobustnessRequirement: [],
+                hasDocumentationRequirement: [],
+                hasDataGovernanceRequirement: [],
+                requiresHumanOversight: false,
+                hasTransparencyLevel: "",
+                requiresFundamentalRightsAssessment: false,
                 hasVersion: "",
               });
               setLoadedSystem(null);
