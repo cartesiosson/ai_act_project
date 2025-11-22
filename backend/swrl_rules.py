@@ -89,34 +89,138 @@ ai:FoundationalModelScaleRule rdf:type swrl:Rule ;
                           swrl:argument2 ai:FoundationalModelScale ] ;
                 rdf:rest rdf:nil ] .
 
-# Regla 1: Sistemas educativos requieren protección de menores
-ai:EducationProtectionRule rdf:type swrl:Rule ;
+# ============================================================================
+# REGLAS GENÉRICAS PARA NAVEGAR LA ONTOLOGÍA
+# ============================================================================
+
+# REGLA 1: Purpose → activatesCriterion → hasCriteria
+# Si un sistema tiene un propósito, y ese propósito activa un criterio,
+# entonces el sistema tiene ese criterio
+ai:PurposeCriterionDerivationRule rdf:type swrl:Rule ;
     swrl:body [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
                           swrl:propertyPredicate ai:hasPurpose ;
                           swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
-                          swrl:argument2 ai:EducationAccess ] ;
-                rdf:rest rdf:nil ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "purpose" ] ] ;
+                rdf:rest [ rdf:type swrl:AtomList ;
+                    rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                              swrl:propertyPredicate ai:activatesCriterion ;
+                              swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "purpose" ] ;
+                              swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ] ;
+                    rdf:rest rdf:nil
+                ]
+    ] ;
     swrl:head [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
-                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:propertyPredicate ai:hasCriteria ;
                           swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
-                          swrl:argument2 ai:ProtectionOfMinors ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ] ;
                 rdf:rest rdf:nil ] .
 
-# Regla 2: Sistemas de empleo requieren no discriminación  
-ai:EmploymentNonDiscriminationRule rdf:type swrl:Rule ;
+# REGLA 2: DeploymentContext → triggersCriterion → hasCriteria
+# Si un sistema tiene un contexto de despliegue, y ese contexto dispara un criterio,
+# entonces el sistema tiene ese criterio
+ai:ContextCriterionDerivationRule rdf:type swrl:Rule ;
     swrl:body [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
-                          swrl:propertyPredicate ai:hasPurpose ;
+                          swrl:propertyPredicate ai:hasDeploymentContext ;
                           swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
-                          swrl:argument2 ai:RecruitmentOrEmployment ] ;
-                rdf:rest rdf:nil ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "context" ] ] ;
+                rdf:rest [ rdf:type swrl:AtomList ;
+                    rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                              swrl:propertyPredicate ai:triggersCriterion ;
+                              swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "context" ] ;
+                              swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ] ;
+                    rdf:rest rdf:nil
+                ]
+    ] ;
     swrl:head [ rdf:type swrl:AtomList ;
                 rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
-                          swrl:propertyPredicate ai:hasNormativeCriterion ;
+                          swrl:propertyPredicate ai:hasCriteria ;
                           swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
-                          swrl:argument2 ai:NonDiscrimination ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ] ;
+                rdf:rest rdf:nil ] .
+
+# REGLA 3: SystemCapabilityCriteria → (actúan como criterios derivados)
+# Si un sistema tiene SystemCapabilityCriteria, se trata como criterios
+ai:SystemCapabilityCriterionRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasSystemCapabilityCriteria ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "capability" ] ] ;
+                rdf:rest rdf:nil
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasCriteria ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "capability" ] ] ;
+                rdf:rest rdf:nil ] .
+
+# REGLA 4: Criterion → activatesRequirement → hasComplianceRequirement
+# Si un sistema tiene un criterio, y ese criterio activa requisitos,
+# entonces el sistema tiene esos requisitos
+ai:CriterionRequirementDerivationRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasCriteria ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ] ;
+                rdf:rest [ rdf:type swrl:AtomList ;
+                    rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                              swrl:propertyPredicate ai:activatesRequirement ;
+                              swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ;
+                              swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "requirement" ] ] ;
+                    rdf:rest rdf:nil
+                ]
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasComplianceRequirement ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "requirement" ] ] ;
+                rdf:rest rdf:nil ] .
+
+# REGLA 5: Criterion → assignsRiskLevel → hasRiskLevel
+# Si un sistema tiene un criterio, y ese criterio asigna un nivel de riesgo,
+# entonces el sistema tiene ese nivel de riesgo
+ai:CriterionRiskLevelRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasCriteria ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ] ;
+                rdf:rest [ rdf:type swrl:AtomList ;
+                    rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                              swrl:propertyPredicate ai:assignsRiskLevel ;
+                              swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "criterion" ] ;
+                              swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "riskLevel" ] ] ;
+                    rdf:rest rdf:nil
+                ]
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasRiskLevel ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "riskLevel" ] ] ;
+                rdf:rest rdf:nil ] .
+
+# REGLA 6: FoundationModelScale → GPAI Classification
+# Si un sistema tiene FoundationModelScale, es un GPAI
+ai:GPAIClassificationRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasModelScale ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 ai:FoundationModelScale ] ;
+                rdf:rest rdf:nil
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasGPAIClassification ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 ai:GeneralPurposeAI ] ;
                 rdf:rest rdf:nil ] .
 
 # Regla 3: Sistemas de salud requieren privacidad
