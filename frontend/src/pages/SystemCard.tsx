@@ -86,13 +86,74 @@ export default function SystemCard({
     return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100';
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleExportJSON = () => {
+    const data = {
+      name,
+      urn,
+      version,
+      riskLevel,
+      purpose,
+      deploymentContext,
+      trainingDataOrigin,
+      algorithmType,
+      modelScale,
+      systemCapabilityCriteria,
+      capabilities,
+      gpaiClassification,
+      contextualCriteria,
+      isoRequirements,
+      nistRequirements,
+      complianceRequirements,
+      technicalRequirements,
+      securityRequirements,
+      robustnessRequirements,
+      documentationRequirements,
+      dataGovernanceRequirements,
+      humanOversightRequired,
+      transparencyLevel,
+      fundamentalRightsAssessment,
+    };
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name.replace(/\s+/g, '-').toLowerCase()}-system-assessment.json`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
-    <div className="rounded-lg shadow-lg bg-white dark:bg-gray-800 overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div className="rounded-lg shadow-lg bg-white dark:bg-gray-800 overflow-hidden border border-gray-200 dark:border-gray-700 print:shadow-none print:border-0">
       {/* Header - System Identity */}
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-700 dark:to-blue-800 px-6 py-4">
-        <h3 className="text-2xl font-bold text-white mb-1">{name}</h3>
-        <p className="text-sm text-blue-100">URN: {urn}</p>
-        {version && <p className="text-xs text-blue-100 mt-1">Version {version}</p>}
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-700 dark:to-blue-800 px-6 py-4 print:bg-blue-600">
+        <div className="flex items-start justify-between mb-2">
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-1">{name}</h3>
+            <p className="text-sm text-blue-100">URN: {urn}</p>
+            {version && <p className="text-xs text-blue-100 mt-1">Version {version}</p>}
+          </div>
+          <div className="flex gap-2 print:hidden">
+            <button
+              onClick={handlePrint}
+              className="text-blue-100 hover:text-white px-3 py-1 rounded text-xs bg-blue-700 hover:bg-blue-800 transition-colors"
+              title="Print this assessment"
+            >
+              🖨️ Print
+            </button>
+            <button
+              onClick={handleExportJSON}
+              className="text-blue-100 hover:text-white px-3 py-1 rounded text-xs bg-blue-700 hover:bg-blue-800 transition-colors"
+              title="Download as JSON"
+            >
+              💾 Export
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Risk & Classification Banner */}

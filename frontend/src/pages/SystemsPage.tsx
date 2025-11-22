@@ -51,6 +51,15 @@ export default function SystemsPage() {
     origin: "",
   });
 
+  const [showValidation, setShowValidation] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    identification: true,
+    purposes: true,
+    deployment: true,
+    technical: true,
+    capabilities: true,
+  });
+
   const [purposes, setPurposes] = useState<{ id: string; label: string }[]>([]);
   const [risks, setRisks] = useState<{ id: string; label: string }[]>([]);
   const [contexts, setContexts] = useState<{ id: string; label: string }[]>([]);
@@ -328,59 +337,98 @@ export default function SystemsPage() {
         onSubmit={handleSubmit}
         className="space-y-6 mb-12"
       >
-        {/* SECTION 1: Basic Information */}
+        {/* SECTION 1: Basic Information - COLLAPSIBLE */}
         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
-          <div className="flex items-center mb-4">
-            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">📋</span>
-            <h2 className="text-xl font-bold">System Identification</h2>
-          </div>
+          <button
+            type="button"
+            onClick={() => setExpandedSections({ ...expandedSections, identification: !expandedSections.identification })}
+            className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">📋</span>
+              <h2 className="text-xl font-bold">System Identification</h2>
+            </div>
+            <span className="text-xl">{expandedSections.identification ? '▼' : '▶'}</span>
+          </button>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Basic information about your AI system</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block font-semibold mb-2">System Name *</label>
-              <input
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., EduAssess-AI, BiometricAccess-System"
-                value={form.hasName}
-                onChange={(e) => setForm({ ...form, hasName: e.target.value })}
-              />
+
+          {expandedSections.identification && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block font-semibold">System Name *</label>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="A unique identifier for your AI system">ℹ️</span>
+                </div>
+                <input
+                  className={`w-full border rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                    showValidation && !form.hasName ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                  }`}
+                  placeholder="e.g., EduAssess-AI, BiometricAccess-System"
+                  value={form.hasName}
+                  onChange={(e) => setForm({ ...form, hasName: e.target.value })}
+                />
+                {showValidation && !form.hasName && (
+                  <p className="text-red-500 text-xs mt-1">System name is required</p>
+                )}
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block font-semibold">Version</label>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="System version (optional)">ℹ️</span>
+                </div>
+                <input
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., 1.0.0"
+                  value={form.hasVersion}
+                  onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
+                />
+              </div>
             </div>
-            <div>
-              <label className="block font-semibold mb-2">Version</label>
-              <input
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., 1.0.0"
-                value={form.hasVersion}
-                onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
-              />
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* SECTION 1: Purposes */}
+        {/* SECTION 1: Purposes - COLLAPSIBLE */}
         <div className="bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700 p-6 mb-6">
-          <div className="flex items-center mb-4">
-            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">🎯</span>
-            <h2 className="text-xl font-bold">1. System Purposes</h2>
-          </div>
+          <button
+            type="button"
+            onClick={() => setExpandedSections({ ...expandedSections, purposes: !expandedSections.purposes })}
+            className="w-full flex items-center justify-between hover:opacity-80 transition-opacity mb-3"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">🎯</span>
+              <h2 className="text-xl font-bold">1. System Purposes</h2>
+            </div>
+            <span className="text-xl">{expandedSections.purposes ? '▼' : '▶'}</span>
+          </button>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">What is this AI system designed to do? Select all applicable primary functions.</p>
-          <div className="bg-white dark:bg-gray-800 rounded p-4">
-            <label className="block font-semibold mb-2">Primary Purpose(s) *</label>
-            <select
-              multiple
-              size={6}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={form.hasPurpose}
-              onChange={e =>
-                setForm({ ...form, hasPurpose: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {purposes.map((p) => (
-                <option key={p.id} value={p.id}>{p.label}</option>
-              ))}
-            </select>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">💡 Hold Ctrl/Cmd to select multiple</p>
-          </div>
+
+          {expandedSections.purposes && (
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold">Primary Purpose(s) *</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Select the primary business function(s) of your AI system according to EU AI Act">ℹ️</span>
+              </div>
+              <select
+                multiple
+                size={6}
+                className={`w-full border rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                  showValidation && form.hasPurpose.length === 0 ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                }`}
+                value={form.hasPurpose}
+                onChange={e =>
+                  setForm({ ...form, hasPurpose: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {purposes.map((p) => (
+                  <option key={p.id} value={p.id}>{p.label}</option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">💡 Hold Ctrl/Cmd to select multiple</p>
+              {showValidation && form.hasPurpose.length === 0 && (
+                <p className="text-red-500 text-xs mt-1">At least one purpose is required</p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* SECTION 2: Deployment Context */}
