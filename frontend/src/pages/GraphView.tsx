@@ -361,8 +361,8 @@ export default function GraphView() {
   }, [selectedSystem, store, activeFilter, searchQuery]);
 
   return (
-    <div ref={containerRef} style={{ width: "100vw", height: "100vh", background: "#1a1a1a", color: "white", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10, background: "rgba(26, 26, 26, 0.95)", padding: "12px", borderBottom: "1px solid #444" }}>
+    <div ref={containerRef} style={{ width: "100%", height: "100%", background: "#1a1a1a", color: "white", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ position: "relative", top: 0, left: 0, right: 0, zIndex: 10, background: "rgba(26, 26, 26, 0.95)", padding: "12px", borderBottom: "1px solid #444" }}>
         <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
           <select
             onChange={(e) => setSelectedSystem(e.target.value)}
@@ -438,38 +438,40 @@ export default function GraphView() {
         </div>
       </div>
 
-      {selectedSystemData && (
-        <div style={{
-          position: "absolute",
-          bottom: "20px",
-          right: "20px",
-          width: "360px",
-          maxHeight: "400px",
-          background: "rgba(255, 255, 255, 0.95)",
-          color: "#1a1a1a",
-          padding: "16px",
-          borderRadius: "8px",
-          boxShadow: "0 10px 40px rgba(0, 0, 0, 0.3)",
-          overflow: "auto",
-          zIndex: 5,
-        }}>
-          <h3 style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "12px", borderBottom: "2px solid #3b82f6", paddingBottom: "8px" }}>
-            {selectedSystemData.name}
-          </h3>
-          <div style={{ fontSize: "13px", lineHeight: "1.6" }}>
-            <p><strong>Nivel de Riesgo:</strong> {selectedSystemData.riskLevel}</p>
-            <p><strong>Propósito(s):</strong> {selectedSystemData.purpose}</p>
-            <p><strong>Contexto(s) de Despliegue:</strong> {selectedSystemData.deploymentContext}</p>
-            <p><strong>Origen de Datos:</strong> {selectedSystemData.trainingDataOrigin}</p>
-            <p><strong>Versión:</strong> {selectedSystemData.version}</p>
-            <p style={{ fontSize: "11px", color: "#666", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid #ccc" }}>
-              <strong>URN:</strong> <code>{selectedSystemData.urn}</code>
-            </p>
-          </div>
-        </div>
-      )}
+      <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
+        <svg ref={svgRef} width="100%" height="100%" style={{ display: "block" }}></svg>
 
-      <svg ref={svgRef} width="100%" height="100%" style={{ display: "block" }}></svg>
+        {selectedSystemData && (
+          <div style={{
+            position: "absolute",
+            bottom: "20px",
+            right: "20px",
+            width: "360px",
+            maxHeight: "400px",
+            background: "rgba(255, 255, 255, 0.95)",
+            color: "#1a1a1a",
+            padding: "16px",
+            borderRadius: "8px",
+            boxShadow: "0 10px 40px rgba(0, 0, 0, 0.3)",
+            overflow: "auto",
+            zIndex: 5,
+          }}>
+            <h3 style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "12px", borderBottom: "2px solid #3b82f6", paddingBottom: "8px" }}>
+              {selectedSystemData.name}
+            </h3>
+            <div style={{ fontSize: "13px", lineHeight: "1.6" }}>
+              <p><strong>Nivel de Riesgo:</strong> {selectedSystemData.riskLevel}</p>
+              <p><strong>Propósito(s):</strong> {selectedSystemData.purpose}</p>
+              <p><strong>Contexto(s) de Despliegue:</strong> {selectedSystemData.deploymentContext}</p>
+              <p><strong>Origen de Datos:</strong> {selectedSystemData.trainingDataOrigin}</p>
+              <p><strong>Versión:</strong> {selectedSystemData.version}</p>
+              <p style={{ fontSize: "11px", color: "#666", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid #ccc" }}>
+                <strong>URN:</strong> <code>{selectedSystemData.urn}</code>
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
