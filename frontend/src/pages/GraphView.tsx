@@ -89,6 +89,11 @@ export default function GraphView() {
   };
 
   const renderGraph = (triples: any[]) => {
+    if (!svgRef.current) {
+      console.error("SVG ref not available");
+      return;
+    }
+
     const nodes = new Map<string, NodeData>();
     const links: LinkData[] = [];
     const nodeCount = new Map<string, number>();
@@ -172,11 +177,17 @@ export default function GraphView() {
       );
     }
 
+    console.log(`Rendering graph: ${nodeArray.length} nodes, ${linksToRender.length} links`);
+
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    // Get actual dimensions from SVG element
+    const svgElement = svgRef.current;
+    const width = svgElement.clientWidth || window.innerWidth;
+    const height = svgElement.clientHeight || window.innerHeight;
+
+    console.log(`SVG dimensions: ${width}x${height}`);
 
     const simulation = d3
       .forceSimulation(nodeArray as any)
@@ -482,7 +493,16 @@ export default function GraphView() {
           </div>
         )}
 
-        <svg ref={svgRef} width="100%" height="100%" style={{ display: "block", position: isLoading || loadingError ? "absolute" : "static" }}></svg>
+        <svg
+          ref={svgRef}
+          width="100%"
+          height="100%"
+          style={{
+            display: isLoading || loadingError ? "none" : "block",
+            position: "static",
+            background: "#0f0f0f"
+          }}
+        ></svg>
 
         {selectedSystemData && (
           <div style={{
