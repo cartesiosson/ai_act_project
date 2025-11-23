@@ -38,6 +38,8 @@ export default function GraphView() {
   const [store, setStore] = useState<any>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loadingError, setLoadingError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getNodeType = (uri: string): string => {
     if (uri.startsWith("urn:uuid:")) return "system";
@@ -61,9 +63,14 @@ export default function GraphView() {
   };
 
   const fetchGraph = async (): Promise<string> => {
+    // Try to fetch from the specific graph first, then fall back to all graphs
     const query = `
       CONSTRUCT { ?s ?p ?o }
-      WHERE { GRAPH <http://ai-act.eu/ontology/data> { ?s ?p ?o } }
+      WHERE {
+        { GRAPH <http://ai-act.eu/ontology/data> { ?s ?p ?o } }
+        UNION
+        { ?s ?p ?o }
+      }
     `;
     const response = await fetch("http://localhost:3030/ds/sparql", {
       method: "POST",
@@ -292,11 +299,19 @@ export default function GraphView() {
 
   useEffect(() => {
     const store = graph();
+    setIsLoading(true);
+    setLoadingError(null);
 
     fetchGraph()
       .then((ttlData) => {
         const n3Parser = new N3Parser();
         const triples = n3Parser.parse(ttlData);
+
+        if (triples.length === 0) {
+          setLoadingError("No data found in the RDF graph. Please create a system first.");
+          setIsLoading(false);
+          return;
+        }
 
         triples.forEach((t) => {
           const subject = sym(t.subject.id || t.subject.value);
@@ -315,9 +330,12 @@ export default function GraphView() {
           .map((st) => st.object.value);
         const uniqueNames = Array.from(new Set(systems));
         setSystems(uniqueNames);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Failed to load or parse RDF graph", error);
+        setLoadingError(`Error loading graph: ${error instanceof Error ? error.message : "Unknown error"}`);
+        setIsLoading(false);
       });
   }, []);
 
@@ -438,8 +456,33 @@ export default function GraphView() {
         </div>
       </div>
 
-      <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
-        <svg ref={svgRef} width="100%" height="100%" style={{ display: "block" }}></svg>
+      <div style={{ position: "relative", flex: 1, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {isLoading && (
+          <div style={{ textAlign: "center", color: "white" }}>
+            <p style={{ fontSize: "18px", marginBottom: "10px" }}>⏳ Loading graph data...</p>
+            <p style={{ fontSize: "14px", color: "#aaa" }}>Fetching systems from RDF store</p>
+          </div>
+        )}
+
+        {loadingError && (
+          <div style={{
+            background: "rgba(220, 38, 38, 0.1)",
+            border: "1px solid #dc2626",
+            color: "#fca5a5",
+            padding: "20px",
+            borderRadius: "8px",
+            maxWidth: "500px",
+            textAlign: "center"
+          }}>
+            <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "8px" }}>⚠️ Error Loading Graph</p>
+            <p style={{ fontSize: "14px" }}>{loadingError}</p>
+            <p style={{ fontSize: "12px", marginTop: "12px", color: "#fda29b" }}>
+              Check the console for more details
+            </p>
+          </div>
+        )}
+
+        <svg ref={svgRef} width="100%" height="100%" style={{ display: "block", position: isLoading || loadingError ? "absolute" : "static" }}></svg>
 
         {selectedSystemData && (
           <div style={{
