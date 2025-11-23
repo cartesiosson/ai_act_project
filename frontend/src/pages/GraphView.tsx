@@ -390,7 +390,7 @@ export default function GraphView() {
   }, [selectedSystem, store, activeFilter, searchQuery]);
 
   return (
-    <div ref={containerRef} style={{ width: "100%", height: "100%", background: "#1a1a1a", color: "white", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+    <div ref={containerRef} style={{ width: "100vw", height: "calc(100vh - 64px)", background: "#1a1a1a", color: "white", overflow: "hidden", display: "flex", flexDirection: "column", marginLeft: "-16px", marginRight: "-16px", marginBottom: "-16px" }}>
       <div style={{ position: "relative", top: 0, left: 0, right: 0, zIndex: 10, background: "rgba(26, 26, 26, 0.95)", padding: "12px", borderBottom: "1px solid #444" }}>
         <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
           <select
