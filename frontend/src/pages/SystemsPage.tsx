@@ -11,7 +11,6 @@ export type System = {
   hasPurpose: string[];
   hasDeploymentContext: string[];
   hasTrainingDataOrigin: string[];
-  hasSystemCapabilityCriteria: string[];
   hasAlgorithmType: string[];
   hasModelScale?: string[];
   hasCapability?: string[];
@@ -94,7 +93,6 @@ export default function SystemsPage() {
     hasPurpose: [] as string[],
     hasDeploymentContext: [] as string[],
     hasTrainingDataOrigin: [] as string[],
-    hasSystemCapabilityCriteria: [] as string[],
     hasAlgorithmType: [] as string[],
     hasModelScale: [] as string[],
     hasCapability: [] as string[],
@@ -170,7 +168,6 @@ export default function SystemsPage() {
         hasPurpose: [],
         hasDeploymentContext: [],
         hasTrainingDataOrigin: [],
-        hasSystemCapabilityCriteria: [],
         hasAlgorithmType: [],
         hasModelScale: [],
         hasCapability: [],
@@ -219,7 +216,6 @@ export default function SystemsPage() {
         hasPurpose: systemToLoad.hasPurpose || [],
         hasDeploymentContext: systemToLoad.hasDeploymentContext || [],
         hasTrainingDataOrigin: systemToLoad.hasTrainingDataOrigin || [],
-        hasSystemCapabilityCriteria: systemToLoad.hasSystemCapabilityCriteria || [],
         hasAlgorithmType: systemToLoad.hasAlgorithmType || [],
         hasModelScale: systemToLoad.hasModelScale || [],
         hasCapability: systemToLoad.hasCapability || [],
@@ -544,22 +540,6 @@ export default function SystemsPage() {
               </select>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded p-4">
-              <label className="block font-semibold mb-2">System Capability Criteria</label>
-              <select
-                multiple
-                size={4}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-                value={form.hasSystemCapabilityCriteria}
-                onChange={e =>
-                  setForm({ ...form, hasSystemCapabilityCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-                }
-              >
-                {systemCapabilityCriteria.map((c) => (
-                  <option key={c.id} value={c.id}>{c.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded p-4">
               <label className="block font-semibold mb-2">Training Data Origin(s) *</label>
               <select
                 multiple
@@ -749,7 +729,6 @@ export default function SystemsPage() {
                 hasPurpose: [],
                 hasDeploymentContext: [],
                 hasTrainingDataOrigin: [],
-                hasSystemCapabilityCriteria: [],
                 hasAlgorithmType: [],
                 hasModelScale: [],
                 hasCapability: [],
@@ -795,7 +774,6 @@ export default function SystemsPage() {
             trainingDataOrigin={form.hasTrainingDataOrigin.map(o => origins.find(org => org.id === o)?.label || o)}
             algorithmType={form.hasAlgorithmType.map(a => algorithmTypes.find(at => at.id === a)?.label || a)}
             modelScale={form.hasModelScale.map(m => modelScales.find(ms => ms.id === m)?.label || m)}
-            systemCapabilityCriteria={form.hasSystemCapabilityCriteria.map(s => systemCapabilityCriteria.find(sc => sc.id === s)?.label || s)}
             capabilities={form.hasCapability.map(c => capabilities.find(cap => cap.id === c)?.label || c)}
             gpaiClassification={form.hasGPAIClassification.map(g => gpaiClassifications.find(gp => gp.id === g)?.label || g)}
             contextualCriteria={form.hasContextualCriteria.map(cc => contextualCriteria.find(c => c.id === cc)?.label || cc)}
