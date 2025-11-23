@@ -48,20 +48,27 @@ export default function GraphView() {
     // Check predicate first to determine category based on relationship
     if (lowerPredicate.includes("purpose")) return "purpose";
     if (lowerPredicate.includes("deployment") || lowerPredicate.includes("deploymentcontext")) return "deployment";
-    if (lowerPredicate.includes("capability") || lowerPredicate.includes("systemcapability")) return "capability";
     if (lowerPredicate.includes("trainingdata") || lowerPredicate.includes("dataorigin")) return "technical";
+    if (lowerPredicate.includes("algorithm")) return "technical";
+    if (lowerPredicate.includes("model")) return "technical";
+    if (lowerPredicate.includes("scale")) return "technical";
+    if (lowerPredicate.includes("systemcapability")) return "capability";
 
     // Then check the URI itself for more specific categorization
+    // Technical concepts first (more specific)
+    if (lowerUri.includes("algorithmtype") || lowerUri.includes("algorithm")) return "technical";
+    if (lowerUri.includes("modelscale") || lowerUri.includes("model") && lowerUri.includes("scale")) return "technical";
+    if (lowerUri.includes("training")) return "technical";
+    if (lowerUri.includes("data")) return "technical";
+    if (lowerUri.includes("metric") || lowerUri.includes("performance")) return "technical";
+    if (lowerUri.includes("scale")) return "technical";
+    if (lowerUri.includes("criterion") && lowerUri.includes("capability")) return "technical";
+
+    // Then check for other categories
     if (lowerUri.includes("purpose")) return "purpose";
     if (lowerUri.includes("deployment") || lowerUri.includes("context")) return "deployment";
     if (lowerUri.includes("capability")) return "capability";
     if (lowerUri.includes("criterion") || lowerUri.includes("requirement")) return "compliance";
-
-    // Technical concepts - includes data, algorithms, models, training, etc.
-    if (lowerUri.includes("algorithm") || lowerUri.includes("model")) return "technical";
-    if (lowerUri.includes("training")) return "technical";
-    if (lowerUri.includes("data")) return "technical";
-    if (lowerUri.includes("metric") || lowerUri.includes("performance") || lowerUri.includes("scale")) return "technical";
 
     return "other";
   };
