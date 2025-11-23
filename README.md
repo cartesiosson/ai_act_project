@@ -6,11 +6,12 @@
 
 This project implements an **automated semantic compliance evaluation platform** for AI systems under the EU AI Act. It combines a formal OWL ontology with SWRL inference rules to automatically derive compliance requirements, risk assessments, and regulatory obligations from system specifications.
 
-**Key Innovation**: The system uses **hybrid SWRL reasoning** (native SWRL + Python rule engine) to automatically:
+**Key Innovation**: The system uses **unified SWRL reasoning** (single source of truth) to automatically:
 - Derive applicable criteria from system purpose and deployment context
 - Activate compliance requirements based on identified criteria
 - Assign risk levels according to EU AI Act classifications
 - Validate system specifications against regulatory constraints
+- Support post-incident forensic compliance analysis using the ontology
 
 ---
 
@@ -223,9 +224,9 @@ Requirements activated: (DataGovernance, HumanOversight, FundamentalRights, etc.
 ```
 
 **Implementation**:
-- **SWRL Rules** (native): 12 rules in `/ontologias/rules/swrl-base-rules.ttl`
-- **Purpose Mapping**: 7 Annex III categories → 7 dedicated criteria
-- **Context Mapping**: 4 deployment scenarios → specialized criteria
+- **SWRL Rules** (native): Defined in `/backend/swrl_rules.py` (single source of truth)
+- **Purpose Mapping**: 10 Annex III purposes → dedicated criteria
+- **Context Mapping**: 13+ deployment scenarios → specialized criteria
 - **Result Property**: `hasActivatedCriterion` (populated by automatic derivation)
 
 **Real-World Example**:
@@ -617,9 +618,10 @@ A system that demonstrates all three mechanisms:
 
 ### Rule Architecture
 
-The system implements **hybrid SWRL** combining:
-1. **Native SWRL Rules** (Turtle format) - ontological relationships
-2. **Python Rule Engine** (dynamic) - complex business logic
+The system implements **unified SWRL** with:
+1. **Single SWRL Rule Source** (`/backend/swrl_rules.py`) - all SWRL rules defined in Python
+2. **Backend Derivation Engine** (`/backend/derivation.py`) - automated requirement derivation
+3. **Reasoner Service** (`/reasoner_service/app/main.py`) - applies rules to RDF graphs
 
 ### Rule Categories
 
@@ -735,19 +737,18 @@ Return to Backend API
 
 ### SWRL Rule Statistics
 
-- **Total Rules**: 33+ implemented
-- **Purpose Rules**: 7 (covering 7 AI Act Annex III items)
-- **Criterion Rules**: 8 (activating requirements)
-- **Context Rules**: 4 (deployment scenarios)
-- **Protection Rules**: 2 (vulnerable population safeguards)
-- **Technical Rules**: 12+ (data quality, performance, security)
+- **Total Rules**: 40+ implemented
+- **Purpose Rules**: 10 (covering 10 AI Act Annex III purposes)
+- **Criterion Rules**: 15 (activating requirements, including Article 6(3) contextual)
+- **Context Rules**: 13+ (deployment scenarios)
+- **Protection Rules**: 6+ (vulnerable population safeguards)
+- **GPAI Rules**: 5+ (foundation model evaluation)
 - **Convergence**: Max 5 iterations per system
 
-**Files**:
-- `/ontologias/rules/swrl-base-rules.ttl` - Native SWRL declarations
-- `/ontologias/rules/base_rules.py` - Contextual rules
-- `/ontologias/rules/capability_rules.py` - System capability evaluation
-- `/backend/swrl_rules.py` - Complete rule set definitions
+**Single Source of Truth**:
+- `/backend/swrl_rules.py` - Complete unified rule set (490 lines, all SWRL rules)
+- `/backend/derivation.py` - Requirement derivation engine
+- **REMOVED** (cleaned up): `/ontologias/rules/` directory (obsolete duplicate rules)
 
 ---
 
@@ -1074,11 +1075,19 @@ docker-compose down
 
 ### Key Files
 
-- **Ontology**: `/ontologias/versions/0.37.2/ontologia-v0.37.2.ttl`
+- **Ontology** (v0.37.2 - single version): `/ontologias/versions/0.37.2/ontologia-v0.37.2.ttl`
 - **SHACL Shapes**: `/ontologias/shacl/ai-act-shapes.ttl`
-- **SWRL Rules**: `/ontologias/rules/swrl-base-rules.ttl`
-- **Backend Logic**: `/backend/derivation.py`, `/backend/swrl_rules.py`
+- **SWRL Rules** (unified source): `/backend/swrl_rules.py`
+- **Backend Logic**: `/backend/derivation.py` (requirement derivation), `/backend/swrl_rules.py` (all SWRL rules)
+- **JSON-LD Context** (v0.37.2 comprehensive): `/ontologias/json-ld-context.json`
 - **Frontend**: `/frontend/src/pages/SystemsPage.tsx`
+
+### Project Cleanup (Recent)
+
+- ✅ Removed `/ontologias/rules/` directory (duplicate Python rules, 10 files)
+- ✅ Removed obsolete ontology artifacts (contextual-criteria, airo, backup folders)
+- ✅ Expanded JSON-LD context from 31 to 209 lines (206 concepts)
+- ✅ Unified rule management: single source of truth in `/backend/swrl_rules.py`
 
 ### External References
 
@@ -1145,4 +1154,4 @@ limitations under the License.
 
 ---
 
-**Last Updated**: 2025-11-22 | **Version**: 0.37.2 | **Status**: Production Ready
+**Last Updated**: 2025-11-24 | **Version**: 0.37.2 | **Status**: Production Ready | **Recent Cleanup**: Rules unified, obsolete artifacts removed, JSON-LD context expanded
