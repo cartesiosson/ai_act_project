@@ -23,7 +23,6 @@ export type System = {
   hasGPAIClassification?: string[];
   hasContextualCriteria?: string[];
   hasISORequirements?: string[];
-  hasNISTRequirements?: string[];
   hasComplianceRequirement?: string[];
   hasTechnicalRequirement?: string[];
   hasSecurityRequirement?: string[];
@@ -79,7 +78,6 @@ export default function SystemsPage() {
   const [gpaiClassifications, setGPAIClassifications] = useState<{ id: string; label: string }[]>([]);
   const [contextualCriteria, setContextualCriteria] = useState<{ id: string; label: string }[]>([]);
   const [isoRequirements, setISORequirements] = useState<{ id: string; label: string }[]>([]);
-  const [nistRequirements, setNISTRequirements] = useState<{ id: string; label: string }[]>([]);
   const [complianceRequirements, setComplianceRequirements] = useState<{ id: string; label: string }[]>([]);
   const [technicalRequirements, setTechnicalRequirements] = useState<{ id: string; label: string }[]>([]);
   const [securityRequirements, setSecurityRequirements] = useState<{ id: string; label: string }[]>([]);
@@ -105,7 +103,6 @@ export default function SystemsPage() {
     hasGPAIClassification: [] as string[],
     hasContextualCriteria: [] as string[],
     hasISORequirements: [] as string[],
-    hasNISTRequirements: [] as string[],
     hasComplianceRequirement: [] as string[],
     hasTechnicalRequirement: [] as string[],
     hasSecurityRequirement: [] as string[],
@@ -174,7 +171,6 @@ export default function SystemsPage() {
         hasGPAIClassification: [],
         hasContextualCriteria: [],
         hasISORequirements: [],
-        hasNISTRequirements: [],
         hasComplianceRequirement: [],
         hasTechnicalRequirement: [],
         hasSecurityRequirement: [],
@@ -222,7 +218,6 @@ export default function SystemsPage() {
         hasGPAIClassification: systemToLoad.hasGPAIClassification || [],
         hasContextualCriteria: systemToLoad.hasContextualCriteria || [],
         hasISORequirements: systemToLoad.hasISORequirements || [],
-        hasNISTRequirements: systemToLoad.hasNISTRequirements || [],
         hasComplianceRequirement: systemToLoad.hasComplianceRequirement || [],
         hasTechnicalRequirement: systemToLoad.hasTechnicalRequirement || [],
         hasSecurityRequirement: systemToLoad.hasSecurityRequirement || [],
@@ -297,7 +292,6 @@ export default function SystemsPage() {
         gpaiClassificationsData,
         contextualCriteriaData,
         isoRequirementsData,
-        nistRequirementsData,
         complianceRequirementsData,
         technicalRequirementsData,
         securityRequirementsData,
@@ -329,7 +323,6 @@ export default function SystemsPage() {
         ]),
         fetch(`${apiBase}/vocab/contextualcriteria?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/iso?lang=en`).then(r => r.json()).catch(() => []),
-        fetch(`${apiBase}/vocab/nist?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/compliance?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/technical?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/security?lang=en`).then(r => r.json()).catch(() => []),
@@ -353,7 +346,6 @@ export default function SystemsPage() {
       setGPAIClassifications(gpaiClassificationsData);
       setContextualCriteria(contextualCriteriaData);
       setISORequirements(isoRequirementsData);
-      setNISTRequirements(nistRequirementsData);
       setComplianceRequirements(complianceRequirementsData);
       setTechnicalRequirements(technicalRequirementsData);
       setSecurityRequirements(securityRequirementsData);
@@ -741,7 +733,6 @@ export default function SystemsPage() {
                 hasGPAIClassification: [],
                 hasContextualCriteria: [],
                 hasISORequirements: [],
-                hasNISTRequirements: [],
                 hasComplianceRequirement: [],
                 hasTechnicalRequirement: [],
                 hasSecurityRequirement: [],
@@ -778,7 +769,6 @@ export default function SystemsPage() {
             gpaiClassification={form.hasGPAIClassification.map(g => gpaiClassifications.find(gp => gp.id === g)?.label || g)}
             contextualCriteria={form.hasContextualCriteria.map(cc => contextualCriteria.find(c => c.id === cc)?.label || cc)}
             isoRequirements={form.hasISORequirements.map(i => isoRequirements.find(ir => ir.id === i)?.label || i)}
-            nistRequirements={form.hasNISTRequirements.map(n => nistRequirements.find(nr => nr.id === n)?.label || n)}
             complianceRequirements={form.hasComplianceRequirement.map(c => complianceRequirements.find(cr => cr.id === c)?.label || c)}
             technicalRequirements={form.hasTechnicalRequirement.map(t => technicalRequirements.find(tr => tr.id === t)?.label || t)}
             securityRequirements={form.hasSecurityRequirement.map(s => securityRequirements.find(sr => sr.id === s)?.label || s)}

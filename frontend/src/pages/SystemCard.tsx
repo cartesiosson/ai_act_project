@@ -11,7 +11,6 @@ interface SystemCardProps {
   gpaiClassification?: string[];
   contextualCriteria?: string[];
   isoRequirements?: string[];
-  nistRequirements?: string[];
   complianceRequirements?: string[];
   technicalRequirements?: string[];
   securityRequirements?: string[];
@@ -38,7 +37,6 @@ export default function SystemCard({
   gpaiClassification,
   contextualCriteria,
   isoRequirements,
-  nistRequirements,
   complianceRequirements,
   technicalRequirements,
   securityRequirements,
@@ -106,7 +104,6 @@ export default function SystemCard({
       gpaiClassification,
       contextualCriteria,
       isoRequirements,
-      nistRequirements,
       complianceRequirements,
       technicalRequirements,
       securityRequirements,
@@ -284,26 +281,17 @@ export default function SystemCard({
         )}
 
         {/* Standards & Frameworks */}
-        {(isoRequirements && isoRequirements.length > 0 ||
-          nistRequirements && nistRequirements.length > 0) && (
+        {isoRequirements && isoRequirements.length > 0 && (
           <div className="mb-6 pb-6 border-b">
             <div className="flex items-center mb-3">
               <span className="text-xl mr-2">📋</span>
               <h4 className="font-bold text-sm text-cyan-600 dark:text-cyan-400">Standards & Frameworks</h4>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-6">
-              {isoRequirements && isoRequirements.length > 0 && (
-                <div className="bg-cyan-50 dark:bg-cyan-900 p-3 rounded">
-                  <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-300 uppercase mb-1">ISO 42001</p>
-                  <p className="text-sm text-gray-900 dark:text-white">{isoRequirements.map(i => i.replace(/^ai:/, '')).join(", ")}</p>
-                </div>
-              )}
-              {nistRequirements && nistRequirements.length > 0 && (
-                <div className="bg-cyan-50 dark:bg-cyan-900 p-3 rounded">
-                  <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-300 uppercase mb-1">NIST AI RMF</p>
-                  <p className="text-sm text-gray-900 dark:text-white">{nistRequirements.map(n => n.replace(/^ai:/, '')).join(", ")}</p>
-                </div>
-              )}
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-3 ml-6">
+              <div className="bg-cyan-50 dark:bg-cyan-900 p-3 rounded">
+                <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-300 uppercase mb-1">ISO 42001</p>
+                <p className="text-sm text-gray-900 dark:text-white">{isoRequirements.map(i => i.replace(/^ai:/, '')).join(", ")}</p>
+              </div>
             </div>
           </div>
         )}

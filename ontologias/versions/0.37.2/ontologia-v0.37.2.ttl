@@ -9,13 +9,13 @@
 
 # ===== VERSION HISTORY =====
 # v0.37.2 (2025-11-22) - UNIFIED NAMESPACE:
-#   - CONSOLIDATED: All concepts from gpai:, ctx:, iso:, nist: merged into ai:
+#   - CONSOLIDATED: All concepts from gpai:, ctx:, iso: merged into ai:
 #   - ADDED: Missing base classes (DocumentationRequirement, DataGovernanceRequirement)
 #   - STRUCTURE: Unified ontology under ai: namespace with semantic tags
 #   - All 14 GPAI concepts now under ai: (ai:GeneralPurposeAIModel, etc.)
 #   - All 15 contextual criteria now under ai: (ai:ChildrenAndMinorsContext, etc.)
 #   - All 9 ISO 42001 concepts now under ai: (ai:ISO42001SecurityRequirement, etc.)
-#   - All 11 NIST RMF concepts now under ai: (ai:NISTGovernanceFunction, etc.)
+#   - REMOVED: NIST RMF concepts (separate US-based framework, not EU AI Act requirement)
 #   - FIXED: ai:DocumentationRequirement class definition
 #   - FIXED: ai:DataGovernanceRequirement class definition
 #   - FIXED: Corrected spelling "MisinformationAmplificationRiskContext" (was "Amplifcation")
@@ -378,74 +378,6 @@ ai:ISO42001ComplianceVerificationRequirement a ai:ComplianceRequirement ;
         "Verificación de Cumplimiento ISO 42001"@es ;
     rdfs:comment "[ISO] Compliance verification and management review per ISO/IEC 42001."@en,
         "[ISO] Verificación de cumplimiento y revisión de gestión según ISO/IEC 42001."@es .
-
-# ===== NIST AI RISK MANAGEMENT FRAMEWORK - [NIST] =====
-# Alignment with NIST AI Risk Management Framework (Draft/Final)
-
-ai:NISTGovernanceFunction a ai:ComplianceRequirement ;
-    rdfs:label "NIST Governance Function"@en,
-        "Función de Gobernanza NIST"@es ;
-    rdfs:comment "[NIST] Governance functions per NIST AI Risk Management Framework."@en,
-        "[NIST] Funciones de gobernanza según Marco de Gestión de Riesgos de IA NIST."@es .
-
-ai:NISTMapFunction a ai:TechnicalRequirement ;
-    rdfs:label "NIST Map Function"@en,
-        "Función de Mapeo NIST"@es ;
-    rdfs:comment "[NIST] Risk mapping and identification per NIST AI RMF."@en,
-        "[NIST] Mapeo e identificación de riesgos según NIST AI RMF."@es .
-
-ai:NISTMeasureFunction a ai:TechnicalRequirement ;
-    rdfs:label "NIST Measure Function"@en,
-        "Función de Medición NIST"@es ;
-    rdfs:comment "[NIST] Risk measurement and metrics per NIST AI RMF."@en,
-        "[NIST] Medición de riesgos y métricas según NIST AI RMF."@es .
-
-ai:NISTManageFunction a ai:ComplianceRequirement ;
-    rdfs:label "NIST Manage Function"@en,
-        "Función de Gestión NIST"@es ;
-    rdfs:comment "[NIST] Risk management and mitigation per NIST AI RMF."@en,
-        "[NIST] Gestión y mitigación de riesgos según NIST AI RMF."@es .
-
-ai:NISTBiasesFairnessRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Biases and Fairness Risk"@en,
-        "Riesgo de Sesgos y Equidad NIST"@es ;
-    rdfs:comment "[NIST] Identification and mitigation of biases and fairness issues per NIST framework."@en,
-        "[NIST] Identificación y mitigación de sesgos según marco NIST."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTDataAndPrivacyRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Data and Privacy Risk"@en,
-        "Riesgo de Datos y Privacidad NIST"@es ;
-    rdfs:comment "[NIST] Data quality, privacy, and protection risks per NIST framework."@en ;
-    rdfs:comment "[NIST] Riesgos de calidad de datos, privacidad y protección según NIST."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTDataBiasInjectionRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Data Bias Injection Risk"@en,
-        "Riesgo de Inyección de Sesgo en Datos NIST"@es ;
-    rdfs:comment "[NIST] Bias in training and operational data per NIST framework."@en ;
-    rdfs:comment "[NIST] Sesgo en datos de entrenamiento y operacionales según NIST."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTCybersecurityRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Cybersecurity Risk"@en,
-        "Riesgo Cibernético NIST"@es ;
-    rdfs:comment "[NIST] Cybersecurity threats and mitigations per NIST AI RMF."@en ;
-    rdfs:comment "[NIST] Amenazas cibernéticas y mitigaciones según NIST AI RMF."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTIOAccessibilityRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Input-Output Accessibility Risk"@en,
-        "Riesgo de Accesibilidad Entrada-Salida NIST"@es ;
-    rdfs:comment "[NIST] Accessibility of AI system inputs and outputs per NIST framework."@en,
-        "[NIST] Accesibilidad de entradas y salidas de sistemas de IA según NIST."@es ;
-    ai:assignsRiskLevel ai:MediumRisk .
-
-ai:NISTPerformanceMetrics a ai:TechnicalCriterion ;
-    rdfs:label "NIST Performance Metrics"@en,
-        "Métricas de Rendimiento NIST"@es ;
-    rdfs:comment "[NIST] Performance measurement and metrics per NIST AI framework."@en,
-        "[NIST] Medición y métricas de rendimiento según marco NIST AI."@es .
 
 # ===== CORE RISK LEVELS - UNCHANGED FROM v0.37.1 =====
 
@@ -1700,36 +1632,6 @@ ai:ISO42001RiskRequirement a ai:ISORequirement,
         "Requisito de Riesgo ISO 42001"@es ;
     rdfs:comment "Systems must implement risk management according to ISO/IEC 42001."@en,
         "Los sistemas deben implementar gestión de riesgos según ISO/IEC 42001."@es .
-
-# ===== NIST REQUIREMENT INSTANCES =====
-
-ai:NISTGovernanceRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Governance Requirement"@en,
-        "Requisito de Gobernanza NIST"@es ;
-    rdfs:comment "Systems must implement governance structures per NIST AI RMF."@en,
-        "Los sistemas deben implementar estructuras de gobernanza según NIST AI RMF."@es .
-
-ai:NISTMapRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Map Requirement"@en,
-        "Requisito de Mapeo NIST"@es ;
-    rdfs:comment "Systems must map risks and safeguards per NIST AI RMF."@en,
-        "Los sistemas deben mapear riesgos y salvaguardas según NIST AI RMF."@es .
-
-ai:NISTMeasureRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Measure Requirement"@en,
-        "Requisito de Medición NIST"@es ;
-    rdfs:comment "Systems must measure and monitor per NIST AI RMF."@en,
-        "Los sistemas deben medir y monitorear según NIST AI RMF."@es .
-
-ai:NISTManageRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Manage Requirement"@en,
-        "Requisito de Gestión NIST"@es ;
-    rdfs:comment "Systems must manage risks and impacts per NIST AI RMF."@en,
-        "Los sistemas deben gestionar riesgos e impactos según NIST AI RMF."@es .
 
 # ===== TRANSPARENCY LEVEL INSTANCES =====
 
