@@ -220,102 +220,102 @@ ai:AnnexVIIISafeguardsCompliance a ai:ComplianceRequirement ;
 # ===== CONTEXTUAL CRITERIA - [CONTEXT] =====
 # Advanced contextual evaluation criteria for complex AI system assessments
 
-ai:ChildrenAndMinorsVulnerabilityContext a ai:ContextualCriterion ;
+ai:ChildrenAndMinorsRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Children and Minors Vulnerability"@en,
         "Vulnerabilidad de Menores"@es ;
     rdfs:comment "[CONTEXT] AI systems affecting children or minors require enhanced protection measures."@en,
         "[CONTEXT] Los sistemas de IA que afectan a menores requieren medidas de protección mejoradas."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:ElderlyAndDisabledVulnerabilityContext a ai:ContextualCriterion ;
+ai:ElderlyAndDisabledRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Elderly and Disabled Vulnerability"@en,
         "Vulnerabilidad de Ancianos y Personas Discapacitadas"@es ;
     rdfs:comment "[CONTEXT] AI systems affecting elderly or disabled individuals require accessibility and protection provisions."@en,
         "[CONTEXT] Los sistemas de IA que afectan a personas mayores o discapacitadas requieren provisiones de accesibilidad."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:SocioeconomicVulnerabilityContext a ai:ContextualCriterion ;
+ai:SocioeconomicVulnerabilityRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Socioeconomic Vulnerability"@en,
         "Vulnerabilidad Socioeconómica"@es ;
     rdfs:comment "[CONTEXT] AI systems affecting economically disadvantaged populations require fair and equitable design."@en,
         "[CONTEXT] Los sistemas de IA que afectan a poblaciones económicamente desfavorecidas requieren diseño justo."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:AutonomousDecisionmakingContext a ai:ContextualCriterion ;
+ai:AutonomousDecisionmakingRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Autonomous Decisionmaking"@en,
         "Toma de Decisiones Autónoma"@es ;
     rdfs:comment "[CONTEXT] AI systems making autonomous decisions without human oversight present elevated risk."@en,
         "[CONTEXT] Los sistemas de IA que toman decisiones autónomas sin supervisión humana presentan riesgo elevado."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:RealTimeAutonomousContext a ai:ContextualCriterion ;
+ai:RealTimeAutonomousRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Real-Time Autonomous System"@en,
         "Sistema Autónomo en Tiempo Real"@es ;
     rdfs:comment "[CONTEXT] Real-time autonomous systems require continuous monitoring and safety mechanisms."@en,
         "[CONTEXT] Los sistemas autónomos en tiempo real requieren monitoreo continuo y mecanismos de seguridad."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:WidespreadSystemicImpactContext a ai:ContextualCriterion ;
+ai:WidespreadSystemicImpactRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Widespread Systemic Impact"@en,
         "Impacto Sistémico Generalizado"@es ;
     rdfs:comment "[CONTEXT] AI systems with potential for widespread or systemic societal impact require governance."@en,
         "[CONTEXT] Los sistemas de IA con impacto potencial sistémico requieren gobernanza."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:CriticalInfrastructureInterdependencyContext a ai:ContextualCriterion ;
+ai:CriticalInfrastructureInterdependencyRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Critical Infrastructure Interdependency"@en,
         "Interdependencia de Infraestructura Crítica"@es ;
     rdfs:comment "[CONTEXT] AI systems in critical infrastructure with interdependencies require robustness."@en ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:BlackBoxDecisionContext a ai:ContextualCriterion ;
-    rdfs:label "Black-Box Decision Context"@en,
-        "Contexto de Decisión de Caja Negra"@es ;
+ai:BlackBoxDecisionRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Black-Box Decision Risk"@en,
+        "Riesgo de Decisión de Caja Negra"@es ;
     rdfs:comment "[CONTEXT] AI systems with unexplainable decision-making require enhanced transparency."@en,
         "[CONTEXT] Los sistemas de IA con toma de decisiones inexplicable requieren transparencia mejorada."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:HighStakesDecisionWithoutAppealContext a ai:ContextualCriterion ;
+ai:HighStakesDecisionWithoutAppealRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "High-Stakes Decision Without Appeal"@en,
         "Decisión de Alto Riesgo Sin Apelación"@es ;
     rdfs:comment "[CONTEXT] AI systems making high-stakes decisions without appeal mechanisms require human oversight."@en ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:HistoricalBiasReplicationContext a ai:ContextualCriterion ;
+ai:HistoricalBiasReplicationRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Historical Bias Replication Risk"@en,
         "Riesgo de Replicación de Sesgo Histórico"@es ;
     rdfs:comment "[CONTEXT] AI systems trained on historically biased data must implement bias mitigation."@en,
         "[CONTEXT] Los sistemas de IA entrenados con datos sesgados históricamente requieren mitigación de sesgo."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:ProtectedCharacteristicInferenceContext a ai:ContextualCriterion ;
+ai:ProtectedCharacteristicInferenceRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Protected Characteristic Inference"@en,
         "Inferencia de Características Protegidas"@es ;
     rdfs:comment "[CONTEXT] AI systems capable of inferring protected characteristics require discrimination safeguards."@en,
         "[CONTEXT] Los sistemas de IA capaces de inferir características protegidas requieren salvaguardas."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:BiometricDataProcessingContext a ai:ContextualCriterion ;
+ai:BiometricDataSensitivityRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Biometric Data Processing"@en,
         "Procesamiento de Datos Biométricos"@es ;
     rdfs:comment "[CONTEXT] AI systems processing biometric data require privacy and security protections."@en,
         "[CONTEXT] Los sistemas de IA que procesan datos biométricos requieren protecciones de privacidad."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:PersonalDataRetentionContext a ai:ContextualCriterion ;
+ai:PersonalDataRetentionRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Personal Data Retention"@en,
         "Retención de Datos Personales"@es ;
     rdfs:comment "[CONTEXT] AI systems retaining personal data long-term require data governance."@en ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:LargeScaleEnvironmentalImpactContext a ai:ContextualCriterion ;
+ai:LargeScaleEnvironmentalImpactRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Large-Scale Environmental Impact"@en,
         "Impacto Ambiental a Gran Escala"@es ;
     rdfs:comment "[CONTEXT] AI systems with potential large-scale environmental impact require assessment."@en,
         "[CONTEXT] Los sistemas de IA con impacto ambiental potencial a gran escala requieren evaluación."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:MisinformationAmplificationRiskContext a ai:ContextualCriterion ;
+ai:MisinformationAmplificationRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Misinformation Amplification Risk"@en,
         "Riesgo de Amplificación de Desinformación"@es ;
     rdfs:comment "[CONTEXT] AI systems in content curation or generation with misinformation risks require safeguards."@en,
@@ -1286,58 +1286,6 @@ ai:GeneticAlgorithm a ai:AlgorithmType,
 
 # ===== CONTEXTUAL CRITERIA INSTANCES =====
 
-ai:ChildrenMinorsContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Children and Minors Context"@en,
-        "Contexto de Niños y Menores"@es ;
-    rdfs:comment "Systems used in contexts involving children or minors require special protections."@en,
-        "Sistemas utilizados en contextos que involucran niños o menores requieren protecciones especiales."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:PrivacyProtectionRequirement,
-        ai:DataGovernanceRequirement,
-        ai:ParentalConsentRequirement,
-        ai:SafetyRequirement .
-
-ai:EmploymentContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Employment Context"@en,
-        "Contexto de Empleo"@es ;
-    rdfs:comment "Systems used in employment or recruitment decisions affecting workers."@en,
-        "Sistemas utilizados en decisiones de empleo o reclutamiento que afectan a los trabajadores."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:NonDiscriminationRequirement,
-        ai:TransparencyRequirement,
-        ai:HumanOversightRequirement,
-        ai:AccuracyEvaluationRequirement .
-
-ai:LegalSystemContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Legal System Context"@en,
-        "Contexto del Sistema Legal"@es ;
-    rdfs:comment "Systems used in legal decision-making or justice processes."@en,
-        "Sistemas utilizados en toma de decisiones legales o procesos de justicia."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:TransparencyRequirement,
-        ai:HumanOversightRequirement,
-        ai:DocumentationRequirement,
-        ai:TraceabilityRequirement .
-
-ai:EssentialServicesContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Essential Services Context"@en,
-        "Contexto de Servicios Esenciales"@es ;
-    rdfs:comment "Systems critical to essential services like electricity, water, or healthcare."@en,
-        "Sistemas críticos para servicios esenciales como electricidad, agua o sanidad."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:SystemSafetyRequirement,
-        ai:RobustnessRequirement,
-        ai:MonitoringRequirement,
-        ai:DocumentationRequirement .
-
 ai:FundamentalRightsContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Fundamental Rights Context"@en,
@@ -1363,7 +1311,7 @@ ai:TransparencyContextualCriterion a ai:ContextualCriterion,
         ai:DocumentationRequirement,
         ai:HumanOversightRequirement .
 
-ai:SurveillanceContextualCriterion a ai:ContextualCriterion,
+ai:SurveillanceRiskCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Surveillance Context"@en,
         "Contexto de Vigilancia"@es ;
@@ -1376,7 +1324,7 @@ ai:SurveillanceContextualCriterion a ai:ContextualCriterion,
         ai:HumanOversightRequirement,
         ai:DataGovernanceRequirement .
 
-ai:ManipulationContextualCriterion a ai:ContextualCriterion,
+ai:ManipulationRiskCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Manipulation Risk Context"@en,
         "Contexto de Riesgo de Manipulación"@es ;
@@ -1388,19 +1336,6 @@ ai:ManipulationContextualCriterion a ai:ContextualCriterion,
         ai:UserNotificationRequirement,
         ai:DocumentationRequirement,
         ai:HumanOversightRequirement .
-
-ai:HighStakesContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "High-Stakes Context"@en,
-        "Contexto de Alto Riesgo"@es ;
-    rdfs:comment "Systems where errors have significant consequences for individuals or society."@en,
-        "Sistemas donde los errores tienen consecuencias significativas para individuos o la sociedad."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:AccuracyEvaluationRequirement,
-        ai:RobustnessRequirement,
-        ai:HumanOversightRequirement,
-        ai:MonitoringRequirement,
-        ai:DocumentationRequirement .
 
 # ===== COMPLIANCE REQUIREMENT INSTANCES =====
 
