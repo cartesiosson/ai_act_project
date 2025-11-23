@@ -41,25 +41,28 @@ export default function GraphView() {
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getNodeType = (uri: string): string => {
+  const getNodeType = (uri: string, predicateUri?: string): string => {
     if (uri.startsWith("urn:uuid:")) return "system";
     const lowerUri = uri.toLowerCase();
+    const lowerPredicate = predicateUri?.toLowerCase() || "";
 
-    // Be more specific to avoid false positives - check for exact concept names
-    if (lowerUri.includes("purpose") && !lowerUri.includes("system")) return "purpose";
-    if ((lowerUri.includes("deployment") || lowerUri.includes("context")) && !lowerUri.includes("system")) return "deployment";
-    if (lowerUri.includes("capability") && !lowerUri.includes("system")) return "capability";
+    // Check predicate first to determine category based on relationship
+    if (lowerPredicate.includes("purpose")) return "purpose";
+    if (lowerPredicate.includes("deployment") || lowerPredicate.includes("deploymentcontext")) return "deployment";
+    if (lowerPredicate.includes("capability") || lowerPredicate.includes("systemcapability")) return "capability";
+    if (lowerPredicate.includes("trainingdata") || lowerPredicate.includes("dataorigin")) return "technical";
+
+    // Then check the URI itself for more specific categorization
+    if (lowerUri.includes("purpose")) return "purpose";
+    if (lowerUri.includes("deployment") || lowerUri.includes("context")) return "deployment";
+    if (lowerUri.includes("capability")) return "capability";
     if (lowerUri.includes("criterion") || lowerUri.includes("requirement")) return "compliance";
 
-    // Technical concepts - more specific patterns
-    if (lowerUri.includes("algorithm") || lowerUri.includes("model/") || lowerUri.includes("#model")) return "technical";
-    if (lowerUri.includes("training") && (lowerUri.includes("data") || lowerUri.includes("trainingdata"))) return "technical";
-    if (lowerUri.includes("trainingdataorigin") || lowerUri.includes("trainingdatasource")) return "technical";
-    if (lowerUri.includes("inputdata") || lowerUri.includes("outputdata")) return "data";
-    if (lowerUri.includes("scale") || lowerUri.includes("metric") || lowerUri.includes("performance")) return "technical";
-
-    // Data-related
-    if (lowerUri.includes("data") && !lowerUri.includes("training")) return "data";
+    // Technical concepts
+    if (lowerUri.includes("algorithm") || lowerUri.includes("model")) return "technical";
+    if (lowerUri.includes("training")) return "technical";
+    if (lowerUri.includes("metric") || lowerUri.includes("performance") || lowerUri.includes("scale")) return "technical";
+    if (lowerUri.includes("data")) return "data";
 
     return "other";
   };
@@ -117,7 +120,7 @@ export default function GraphView() {
         const predicateLabel = predicateUri.split("#").pop() || predicateUri.split("/").pop() || predicateUri;
 
         if (!nodes.has(sourceId)) {
-          const type = getNodeType(sourceId);
+          const type = getNodeType(sourceId, predicateUri);
           nodes.set(sourceId, {
             id: sourceId,
             type,
@@ -128,7 +131,8 @@ export default function GraphView() {
         }
 
         if (!nodes.has(targetId)) {
-          const type = getNodeType(targetId);
+          // For target nodes, use the predicate to categorize what they are
+          const type = getNodeType(targetId, predicateUri);
           nodes.set(targetId, {
             id: targetId,
             type,
