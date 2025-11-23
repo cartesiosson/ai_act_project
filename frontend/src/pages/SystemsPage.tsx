@@ -11,14 +11,18 @@ export type System = {
   hasPurpose: string[];
   hasDeploymentContext: string[];
   hasTrainingDataOrigin: string[];
-  hasSystemCapabilityCriteria: string[];
   hasAlgorithmType: string[];
   hasModelScale?: string[];
   hasCapability?: string[];
+  hasActivatedCriterion?: string[];
+  hasManuallyIdentifiedCriterion?: string[];
+  hasCapabilityMetric?: string[];
+  parameterCount?: number;
+  autonomyLevel?: string;
+  isGenerallyApplicable?: boolean;
   hasGPAIClassification?: string[];
   hasContextualCriteria?: string[];
   hasISORequirements?: string[];
-  hasNISTRequirements?: string[];
   hasComplianceRequirement?: string[];
   hasTechnicalRequirement?: string[];
   hasSecurityRequirement?: string[];
@@ -51,6 +55,18 @@ export default function SystemsPage() {
     origin: "",
   });
 
+  const [showValidation, setShowValidation] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    identification: true,
+    purposes: true,
+    deployment: true,
+    technical: true,
+    capabilities: true,
+  });
+
   const [purposes, setPurposes] = useState<{ id: string; label: string }[]>([]);
   const [risks, setRisks] = useState<{ id: string; label: string }[]>([]);
   const [contexts, setContexts] = useState<{ id: string; label: string }[]>([]);
@@ -62,7 +78,6 @@ export default function SystemsPage() {
   const [gpaiClassifications, setGPAIClassifications] = useState<{ id: string; label: string }[]>([]);
   const [contextualCriteria, setContextualCriteria] = useState<{ id: string; label: string }[]>([]);
   const [isoRequirements, setISORequirements] = useState<{ id: string; label: string }[]>([]);
-  const [nistRequirements, setNISTRequirements] = useState<{ id: string; label: string }[]>([]);
   const [complianceRequirements, setComplianceRequirements] = useState<{ id: string; label: string }[]>([]);
   const [technicalRequirements, setTechnicalRequirements] = useState<{ id: string; label: string }[]>([]);
   const [securityRequirements, setSecurityRequirements] = useState<{ id: string; label: string }[]>([]);
@@ -76,14 +91,18 @@ export default function SystemsPage() {
     hasPurpose: [] as string[],
     hasDeploymentContext: [] as string[],
     hasTrainingDataOrigin: [] as string[],
-    hasSystemCapabilityCriteria: [] as string[],
     hasAlgorithmType: [] as string[],
     hasModelScale: [] as string[],
     hasCapability: [] as string[],
+    hasActivatedCriterion: [] as string[],
+    hasManuallyIdentifiedCriterion: [] as string[],
+    hasCapabilityMetric: [] as string[],
+    parameterCount: undefined as number | undefined,
+    autonomyLevel: "" as string,
+    isGenerallyApplicable: false as boolean,
     hasGPAIClassification: [] as string[],
     hasContextualCriteria: [] as string[],
     hasISORequirements: [] as string[],
-    hasNISTRequirements: [] as string[],
     hasComplianceRequirement: [] as string[],
     hasTechnicalRequirement: [] as string[],
     hasSecurityRequirement: [] as string[],
@@ -98,13 +117,31 @@ export default function SystemsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (!form.hasName.trim()) {
+      setShowValidation(true);
+      setSubmitError("System name is required");
+      return;
+    }
+
+    if (form.hasPurpose.length === 0) {
+      setShowValidation(true);
+      setSubmitError("At least one purpose is required");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
     try {
       const isModifying = loadedSystem !== null;
-      const url = isModifying 
+      const url = isModifying
         ? `${API_BASE}/systems/${encodeURIComponent(loadedSystem["ai:hasUrn"])}`
         : `${API_BASE}/systems`;
       const method = isModifying ? "PUT" : "POST";
-      
+
       const res = await fetch(url, {
         method,
         headers: {
@@ -116,22 +153,24 @@ export default function SystemsPage() {
           ...form,
         }),
       });
-      if (!res.ok) throw new Error(`${isModifying ? 'Modify' : 'Create'} failed`);
-      
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || `${isModifying ? 'Modify' : 'Create'} failed`);
+      }
+
       // Clear form, loaded system, and algorithm type/subtypes selection
       setForm({
         hasName: "",
         hasPurpose: [],
         hasDeploymentContext: [],
         hasTrainingDataOrigin: [],
-        hasSystemCapabilityCriteria: [],
         hasAlgorithmType: [],
         hasModelScale: [],
         hasCapability: [],
         hasGPAIClassification: [],
         hasContextualCriteria: [],
         hasISORequirements: [],
-        hasNISTRequirements: [],
         hasComplianceRequirement: [],
         hasTechnicalRequirement: [],
         hasSecurityRequirement: [],
@@ -144,11 +183,20 @@ export default function SystemsPage() {
         hasVersion: "",
       });
       setLoadedSystem(null);
+      setShowValidation(false);
+      setSubmitSuccess(true);
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSubmitSuccess(false), 3000);
+
       await loadSystems(0);
       setOffset(0);
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Unknown error occurred";
       console.error(`Error ${loadedSystem ? 'modifying' : 'creating'} system:`, err);
-      alert(`Failed to ${loadedSystem ? 'modify' : 'create'} system`);
+      setSubmitError(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -164,14 +212,12 @@ export default function SystemsPage() {
         hasPurpose: systemToLoad.hasPurpose || [],
         hasDeploymentContext: systemToLoad.hasDeploymentContext || [],
         hasTrainingDataOrigin: systemToLoad.hasTrainingDataOrigin || [],
-        hasSystemCapabilityCriteria: systemToLoad.hasSystemCapabilityCriteria || [],
         hasAlgorithmType: systemToLoad.hasAlgorithmType || [],
         hasModelScale: systemToLoad.hasModelScale || [],
         hasCapability: systemToLoad.hasCapability || [],
         hasGPAIClassification: systemToLoad.hasGPAIClassification || [],
         hasContextualCriteria: systemToLoad.hasContextualCriteria || [],
         hasISORequirements: systemToLoad.hasISORequirements || [],
-        hasNISTRequirements: systemToLoad.hasNISTRequirements || [],
         hasComplianceRequirement: systemToLoad.hasComplianceRequirement || [],
         hasTechnicalRequirement: systemToLoad.hasTechnicalRequirement || [],
         hasSecurityRequirement: systemToLoad.hasSecurityRequirement || [],
@@ -246,7 +292,6 @@ export default function SystemsPage() {
         gpaiClassificationsData,
         contextualCriteriaData,
         isoRequirementsData,
-        nistRequirementsData,
         complianceRequirementsData,
         technicalRequirementsData,
         securityRequirementsData,
@@ -278,7 +323,6 @@ export default function SystemsPage() {
         ]),
         fetch(`${apiBase}/vocab/contextualcriteria?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/iso?lang=en`).then(r => r.json()).catch(() => []),
-        fetch(`${apiBase}/vocab/nist?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/compliance?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/technical?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/security?lang=en`).then(r => r.json()).catch(() => []),
@@ -302,7 +346,6 @@ export default function SystemsPage() {
       setGPAIClassifications(gpaiClassificationsData);
       setContextualCriteria(contextualCriteriaData);
       setISORequirements(isoRequirementsData);
-      setNISTRequirements(nistRequirementsData);
       setComplianceRequirements(complianceRequirementsData);
       setTechnicalRequirements(technicalRequirementsData);
       setSecurityRequirements(securityRequirementsData);
@@ -328,55 +371,113 @@ export default function SystemsPage() {
         onSubmit={handleSubmit}
         className="space-y-6 mb-12"
       >
-        {/* SECTION 1: Basic Information */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">1. Basic Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block font-semibold mb-1">System Name</label>
-              <input
-                className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-                placeholder="System Name"
-                value={form.hasName}
-                onChange={(e) => setForm({ ...form, hasName: e.target.value })}
-              />
+        {/* SECTION 1: Basic Information - COLLAPSIBLE */}
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <button
+            type="button"
+            onClick={() => setExpandedSections({ ...expandedSections, identification: !expandedSections.identification })}
+            className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">📋</span>
+              <h2 className="text-xl font-bold">System Identification</h2>
             </div>
-            <div>
-              <label className="block font-semibold mb-1">Version</label>
-              <input
-                className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-                placeholder="e.g. 1.0.0"
-                value={form.hasVersion}
-                onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
-              />
+            <span className="text-xl">{expandedSections.identification ? '▼' : '▶'}</span>
+          </button>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Basic information about your AI system</p>
+
+          {expandedSections.identification && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block font-semibold">System Name *</label>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="A unique identifier for your AI system">ℹ️</span>
+                </div>
+                <input
+                  className={`w-full border rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                    showValidation && !form.hasName ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                  }`}
+                  placeholder="e.g., EduAssess-AI, BiometricAccess-System"
+                  value={form.hasName}
+                  onChange={(e) => setForm({ ...form, hasName: e.target.value })}
+                />
+                {showValidation && !form.hasName && (
+                  <p className="text-red-500 text-xs mt-1">System name is required</p>
+                )}
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block font-semibold">Version</label>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="System version (optional)">ℹ️</span>
+                </div>
+                <input
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., 1.0.0"
+                  value={form.hasVersion}
+                  onChange={(e) => setForm({ ...form, hasVersion: e.target.value })}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* SECTION 2: Technical Classification */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">2. Technical Classification</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-semibold mb-1">Purpose(s)</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasPurpose}
-              onChange={e =>
-                setForm({ ...form, hasPurpose: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {purposes.map((p) => (
-                <option key={p.id} value={p.id}>{p.label}</option>
-              ))}
-            </select>
+        {/* SECTION 1: Purposes - COLLAPSIBLE */}
+        <div className="bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700 p-6 mb-6">
+          <button
+            type="button"
+            onClick={() => setExpandedSections({ ...expandedSections, purposes: !expandedSections.purposes })}
+            className="w-full flex items-center justify-between hover:opacity-80 transition-opacity mb-3"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 mr-3">🎯</span>
+              <h2 className="text-xl font-bold">1. System Purposes</h2>
+            </div>
+            <span className="text-xl">{expandedSections.purposes ? '▼' : '▶'}</span>
+          </button>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">What is this AI system designed to do? Select all applicable primary functions.</p>
+
+          {expandedSections.purposes && (
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold">Primary Purpose(s) *</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Select the primary business function(s) of your AI system according to EU AI Act">ℹ️</span>
+              </div>
+              <select
+                multiple
+                size={6}
+                className={`w-full border rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                  showValidation && form.hasPurpose.length === 0 ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                }`}
+                value={form.hasPurpose}
+                onChange={e =>
+                  setForm({ ...form, hasPurpose: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {purposes.map((p) => (
+                  <option key={p.id} value={p.id}>{p.label}</option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">💡 Hold Ctrl/Cmd to select multiple</p>
+              {showValidation && form.hasPurpose.length === 0 && (
+                <p className="text-red-500 text-xs mt-1">At least one purpose is required</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* SECTION 2: Deployment Context */}
+        <div className="bg-purple-50 dark:bg-purple-900 rounded-lg border border-purple-200 dark:border-purple-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-purple-600 dark:text-purple-400 mr-3">📍</span>
+            <h2 className="text-xl font-bold">2. Deployment Context</h2>
           </div>
-          <div>
-            <label className="block font-semibold mb-1">Deployment Context(s)</label>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Where and how will this system be used? These contexts trigger specific regulatory requirements.</p>
+          <div className="bg-white dark:bg-gray-800 rounded p-4">
+            <label className="block font-semibold mb-2">Deployment Context(s) *</label>
             <select
               multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              size={5}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
               value={form.hasDeploymentContext}
               onChange={e =>
                 setForm({ ...form, hasDeploymentContext: Array.from(e.target.selectedOptions, (opt) => opt.value) })
@@ -387,72 +488,81 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
-          <div>
-            <label className="block font-semibold mb-1">Training Data Origin(s)</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasTrainingDataOrigin}
-              onChange={e =>
-                setForm({ ...form, hasTrainingDataOrigin: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {origins.map((o) => (
-                <option key={o.id} value={o.id}>{o.label}</option>
-              ))}
-            </select>
+        </div>
+
+        {/* SECTION 3: Technical Factors */}
+        <div className="bg-orange-50 dark:bg-orange-900 rounded-lg border border-orange-200 dark:border-orange-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-orange-600 dark:text-orange-400 mr-3">⚙️</span>
+            <h2 className="text-xl font-bold">3. Technical Factors</h2>
           </div>
-          <div>
-            <label className="block font-semibold mt-2">System Capability Criteria</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasSystemCapabilityCriteria}
-              onChange={e =>
-                setForm({ ...form, hasSystemCapabilityCriteria: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {systemCapabilityCriteria.map((c) => (
-                <option key={c.id} value={c.id}>{c.label}</option>
-              ))}
-            </select>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Technical characteristics of your AI system that impact risk assessment.</p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Algorithm Type(s)</label>
+              <select
+                multiple
+                size={4}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={form.hasAlgorithmType}
+                onChange={e => {
+                  const values = Array.from(e.target.selectedOptions, (opt) => opt.value);
+                  setForm({ ...form, hasAlgorithmType: values });
+                }}
+              >
+                {algorithmTypes.map((a) => (
+                  <option key={a.id} value={a.id}>{a.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Model Scale</label>
+              <select
+                multiple
+                size={4}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={form.hasModelScale}
+                onChange={e =>
+                  setForm({ ...form, hasModelScale: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {modelScales.map((m) => (
+                  <option key={m.id} value={m.id}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Training Data Origin(s) *</label>
+              <select
+                multiple
+                size={4}
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={form.hasTrainingDataOrigin}
+                onChange={e =>
+                  setForm({ ...form, hasTrainingDataOrigin: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {origins.map((o) => (
+                  <option key={o.id} value={o.id}>{o.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div>
-            <label className="block font-semibold mt-2">Algorithm Types</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasAlgorithmType}
-              onChange={e => {
-                const values = Array.from(e.target.selectedOptions, (opt) => opt.value);
-                setForm({ ...form, hasAlgorithmType: values });
-              }}
-            >
-              {algorithmTypes.map((a) => (
-                <option key={a.id} value={a.id}>{a.label}</option>
-              ))}
-            </select>
+        </div>
+
+        {/* SECTION 4: System Capabilities */}
+        <div className="bg-green-50 dark:bg-green-900 rounded-lg border border-green-200 dark:border-green-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-green-600 dark:text-green-400 mr-3">🚀</span>
+            <h2 className="text-xl font-bold">4. System Capabilities</h2>
           </div>
-          <div>
-            <label className="block font-semibold mt-2">Model Scale</label>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">What specific capabilities does your system have? These may trigger additional compliance requirements.</p>
+          <div className="bg-white dark:bg-gray-800 rounded p-4">
+            <label className="block font-semibold mb-2">Specific Capabilities</label>
             <select
               multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
-              value={form.hasModelScale}
-              onChange={e =>
-                setForm({ ...form, hasModelScale: Array.from(e.target.selectedOptions, (opt) => opt.value) })
-              }
-            >
-              {modelScales.map((m) => (
-                <option key={m.id} value={m.id}>{m.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mt-2">System Capabilities</label>
-            <select
-              multiple
-              className="w-full border rounded p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+              size={5}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               value={form.hasCapability}
               onChange={e =>
                 setForm({ ...form, hasCapability: Array.from(e.target.selectedOptions, (opt) => opt.value) })
@@ -463,19 +573,90 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
+        </div>
+
+        {/* SECTION 5: System Capability Metrics (Articles 51-55 GPAI Indicators) */}
+        <div className="bg-purple-50 dark:bg-purple-900 rounded-lg border border-purple-200 dark:border-purple-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-purple-600 dark:text-purple-400 mr-3">📊</span>
+            <h2 className="text-xl font-bold">5. Capability Metrics (GPAI Classification Indicators)</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+            Technical metrics that may trigger GPAI (General Purpose AI) classification under Articles 51-55 of the EU AI Act.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Parameter Count (Model Size)</label>
+              <input
+                type="number"
+                placeholder="e.g., 7000000000 for 7B parameters"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={form.parameterCount || ""}
+                onChange={e => {
+                  const val = e.target.value ? parseInt(e.target.value) : undefined;
+                  setForm({ ...form, parameterCount: val });
+                }}
+              />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Models with &gt;10B parameters are high-capability indicators</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Autonomy Level</label>
+              <select
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={form.autonomyLevel}
+                onChange={e => setForm({ ...form, autonomyLevel: e.target.value })}
+              >
+                <option value="">Select autonomy level...</option>
+                <option value="NoAutonomy">No Autonomy (Human-controlled)</option>
+                <option value="LimitedAutonomy">Limited Autonomy (Human-in-loop)</option>
+                <option value="HighAutonomy">High Autonomy (Minimal human intervention)</option>
+                <option value="FullyAutonomous">Fully Autonomous (Systemic risk indicator)</option>
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4 md:col-span-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={form.isGenerallyApplicable}
+                  onChange={e => setForm({ ...form, isGenerallyApplicable: e.target.checked })}
+                  className="mr-3 w-4 h-4 border border-gray-300 dark:border-gray-600 rounded bg-white text-purple-600 focus:ring-2 focus:ring-purple-500"
+                />
+                <span className="font-semibold">Generally Applicable to Multiple Domains (Broad Impact Indicator)</span>
+              </label>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Check if your system can be adapted to multiple use cases or domains without major retraining</p>
+            </div>
           </div>
         </div>
 
-        {/* SECTION 3: Deployment & Context */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">3. Deployment & Context</h2>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">These selections determine which contextual criteria apply to your system</p>
-        </div>
-
-        {/* SECTION 4: Capabilities */}
-        <div className="border-t pt-4 mt-4 mb-4">
-          <h2 className="text-lg font-bold mb-4">4. Capabilities</h2>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">Define the model scale and specific capabilities of your system</p>
+        {/* SECTION 6: Expert Evaluation - Manually Identified Criteria */}
+        <div className="bg-indigo-50 dark:bg-indigo-900 rounded-lg border border-indigo-200 dark:border-indigo-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mr-3">👨‍⚖️</span>
+            <h2 className="text-xl font-bold">6. Expert Evaluation - Additional Risk Criteria</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+            Manually identified criteria by experts for residual high-risk cases not covered by automated rules (Article 6(3) of EU AI Act).
+            These criteria are identified beyond what is automatically derived from Purpose/DeploymentContext.
+          </p>
+          <div className="bg-white dark:bg-gray-800 rounded p-4">
+            <label className="block font-semibold mb-2">Additional Risk Criteria (Manually Identified)</label>
+            <select
+              multiple
+              size={6}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={form.hasManuallyIdentifiedCriterion}
+              onChange={e =>
+                setForm({ ...form, hasManuallyIdentifiedCriterion: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+              }
+            >
+              {systemCapabilityCriteria.map((c) => (
+                <option key={c.id} value={c.id}>{c.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+              These criteria apply when expert evaluation identifies additional high-risk factors beyond the system's primary purpose or deployment context.
+            </p>
+          </div>
         </div>
 
         {/* Derived Classifications - Read-only Info Panel */}
@@ -500,12 +681,37 @@ export default function SystemsPage() {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {loadedSystem ? 'Modify System' : 'Create System'}
-        </button>
+        <div className="flex flex-col gap-4">
+          {submitError && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <p className="font-semibold">Error</p>
+              <p className="text-sm">{submitError}</p>
+            </div>
+          )}
+          {submitSuccess && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+              <p className="font-semibold">✓ Success</p>
+              <p className="text-sm">{loadedSystem ? 'System modified successfully' : 'System created successfully'}</p>
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            {isSubmitting ? (
+              <>
+                <span className="inline-block mr-2">⏳</span>
+                {loadedSystem ? 'Modifying System...' : 'Creating System...'}
+              </>
+            ) : (
+              <>
+                <span className="inline-block mr-2">💾</span>
+                {loadedSystem ? 'Modify System' : 'Create System'}
+              </>
+            )}
+          </button>
+        </div>
         {loadedSystem && (
           <button
             type="button"
@@ -515,14 +721,18 @@ export default function SystemsPage() {
                 hasPurpose: [],
                 hasDeploymentContext: [],
                 hasTrainingDataOrigin: [],
-                hasSystemCapabilityCriteria: [],
                 hasAlgorithmType: [],
                 hasModelScale: [],
                 hasCapability: [],
+                hasActivatedCriterion: [],
+                hasManuallyIdentifiedCriterion: [],
+                hasCapabilityMetric: [],
+                parameterCount: undefined,
+                autonomyLevel: "",
+                isGenerallyApplicable: false,
                 hasGPAIClassification: [],
                 hasContextualCriteria: [],
                 hasISORequirements: [],
-                hasNISTRequirements: [],
                 hasComplianceRequirement: [],
                 hasTechnicalRequirement: [],
                 hasSecurityRequirement: [],
@@ -555,12 +765,10 @@ export default function SystemsPage() {
             trainingDataOrigin={form.hasTrainingDataOrigin.map(o => origins.find(org => org.id === o)?.label || o)}
             algorithmType={form.hasAlgorithmType.map(a => algorithmTypes.find(at => at.id === a)?.label || a)}
             modelScale={form.hasModelScale.map(m => modelScales.find(ms => ms.id === m)?.label || m)}
-            systemCapabilityCriteria={form.hasSystemCapabilityCriteria.map(s => systemCapabilityCriteria.find(sc => sc.id === s)?.label || s)}
             capabilities={form.hasCapability.map(c => capabilities.find(cap => cap.id === c)?.label || c)}
             gpaiClassification={form.hasGPAIClassification.map(g => gpaiClassifications.find(gp => gp.id === g)?.label || g)}
             contextualCriteria={form.hasContextualCriteria.map(cc => contextualCriteria.find(c => c.id === cc)?.label || cc)}
             isoRequirements={form.hasISORequirements.map(i => isoRequirements.find(ir => ir.id === i)?.label || i)}
-            nistRequirements={form.hasNISTRequirements.map(n => nistRequirements.find(nr => nr.id === n)?.label || n)}
             complianceRequirements={form.hasComplianceRequirement.map(c => complianceRequirements.find(cr => cr.id === c)?.label || c)}
             technicalRequirements={form.hasTechnicalRequirement.map(t => technicalRequirements.find(tr => tr.id === t)?.label || t)}
             securityRequirements={form.hasSecurityRequirement.map(s => securityRequirements.find(sr => sr.id === s)?.label || s)}

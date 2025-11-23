@@ -282,15 +282,6 @@ def get_iso_requirements(lang: str = Query("en")):
         for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
     ]
 
-@app.get("/vocab/nist")
-def get_nist_requirements(lang: str = Query("en")):
-    """NIST AI RMF requirements"""
-    base = URIRef("http://ai-act.eu/ai#NISTRequirement")
-    instances = list(ont.subjects(RDF.type, base))
-    return [
-        {"id": compact_uri(uri), "label": get_label(ont, uri, lang)}
-        for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
-    ]
 
 @app.get("/vocab/transparency")
 def get_transparency_levels(lang: str = Query("en")):

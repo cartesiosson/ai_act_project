@@ -9,7 +9,7 @@ import requests
 import os
 from pymongo.errors import DuplicateKeyError
 from fastapi import Query
-from derivation import derive_classifications
+from derivation import derive_classifications, derive_requirements_from_criteria
 
 user = os.getenv("FUSEKI_USER", "admin")
 password = os.getenv("FUSEKI_PASSWORD", "admin")
@@ -315,6 +315,136 @@ async def delete_system(urn: str, db=Depends(get_database)):
         raise HTTPException(status_code=500, detail="Error deleting from Fuseki")
 
     return {"status": "deleted", "urn": urn}
+
+
+@router.put("/{urn}/manually-identified-criteria", status_code=200)
+async def set_manually_identified_criteria(
+    urn: str,
+    data: dict = Body(...),
+    db=Depends(get_database)
+):
+    """
+    Set manually identified criteria for a system and derive their associated requirements.
+
+    This endpoint allows experts to manually identify risk criteria beyond what is
+    automatically derived from Purpose/DeploymentContext (Article 6(3) residual cases).
+
+    When criteria are set, this endpoint automatically derives all compliance requirements
+    that are activated by those criteria via the ontology relationship activatesRequirement.
+
+    Request body:
+    {
+        "hasManuallyIdentifiedCriterion": ["ai:CriticalInfrastructureCriterion", ...]
+    }
+
+    Returns:
+        Updated system with manually identified criteria and derived requirements
+    """
+    try:
+        # Find existing system
+        existing = await db.systems.find_one({"ai:hasUrn": urn})
+        if not existing:
+            raise HTTPException(status_code=404, detail="System not found")
+
+        # Extract criteria from request
+        manually_identified = data.get("hasManuallyIdentifiedCriterion", [])
+        if not isinstance(manually_identified, list):
+            manually_identified = [manually_identified] if manually_identified else []
+
+        # STEP 1: Derive requirements from manually identified criteria
+        ont = get_ontology()
+        derived_requirements = derive_requirements_from_criteria(manually_identified, ont)
+        print(f"Manually identified criteria: {manually_identified}")
+        print(f"Derived requirements: {derived_requirements}")
+
+        # STEP 2: Get existing automatically derived criteria and requirements
+        existing_activated = existing.get("hasActivatedCriterion", [])
+        existing_requirements = existing.get("hasComplianceRequirement", [])
+        print(f"Existing activated criteria: {existing_activated}")
+        print(f"Existing requirements: {existing_requirements}")
+
+        # STEP 3: Merge requirements (automatic + from manual criteria)
+        # Keep existing automatic requirements and add new ones from manual criteria
+        merged_requirements = list(set(existing_requirements + derived_requirements))
+        merged_requirements.sort()
+
+        # Update in MongoDB
+        await db.systems.update_one(
+            {"ai:hasUrn": urn},
+            {
+                "$set": {
+                    "hasManuallyIdentifiedCriterion": manually_identified,
+                    "hasComplianceRequirement": merged_requirements
+                }
+            }
+        )
+
+        # Update in Fuseki: remove old hasManuallyIdentifiedCriterion triples and add new ones
+        sparql = f"""
+        DELETE {{
+          GRAPH <http://ai-act.eu/ontology/data> {{
+            <{urn}> <http://ai-act.eu/ai#hasManuallyIdentifiedCriterion> ?o .
+            <{urn}> <http://ai-act.eu/ai#hasComplianceRequirement> ?r .
+          }}
+        }} WHERE {{
+          GRAPH <http://ai-act.eu/ontology/data> {{
+            OPTIONAL {{ <{urn}> <http://ai-act.eu/ai#hasManuallyIdentifiedCriterion> ?o . }}
+            OPTIONAL {{ <{urn}> <http://ai-act.eu/ai#hasComplianceRequirement> ?r . }}
+          }}
+        }};
+        """
+
+        # Add new criteria
+        for criterion in manually_identified:
+            criterion_uri = criterion if criterion.startswith("http") else f"http://ai-act.eu/ai#{criterion.split(':')[-1]}"
+            sparql += f"""
+        INSERT DATA {{
+          GRAPH <http://ai-act.eu/ontology/data> {{
+            <{urn}> <http://ai-act.eu/ai#hasManuallyIdentifiedCriterion> <{criterion_uri}> .
+          }}
+        }};
+        """
+
+        # Add merged requirements (both automatic and from manual criteria)
+        for requirement in merged_requirements:
+            requirement_uri = requirement if requirement.startswith("http") else f"http://ai-act.eu/ai#{requirement.split(':')[-1]}"
+            sparql += f"""
+        INSERT DATA {{
+          GRAPH <http://ai-act.eu/ontology/data> {{
+            <{urn}> <http://ai-act.eu/ai#hasComplianceRequirement> <{requirement_uri}> .
+          }}
+        }};
+        """
+
+        headers = {"Content-Type": "application/sparql-update"}
+        res = requests.post(
+            f"{end_point}/{dataset}/update",
+            data=sparql,
+            headers=headers,
+            auth=(user, password)
+        )
+        if not res.ok:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error updating manually identified criteria in Fuseki: {res.text}"
+            )
+
+        return {
+            "status": "updated",
+            "urn": urn,
+            "hasManuallyIdentifiedCriterion": manually_identified,
+            "hasComplianceRequirement": merged_requirements,
+            "message": f"Set {len(manually_identified)} manual criteria and derived {len(derived_requirements)} new requirements"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error setting manually identified criteria: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error setting manually identified criteria: {str(e)}"
+        )
 
 
 

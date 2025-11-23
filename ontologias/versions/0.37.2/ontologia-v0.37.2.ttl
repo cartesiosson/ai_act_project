@@ -9,13 +9,13 @@
 
 # ===== VERSION HISTORY =====
 # v0.37.2 (2025-11-22) - UNIFIED NAMESPACE:
-#   - CONSOLIDATED: All concepts from gpai:, ctx:, iso:, nist: merged into ai:
+#   - CONSOLIDATED: All concepts from gpai:, ctx:, iso: merged into ai:
 #   - ADDED: Missing base classes (DocumentationRequirement, DataGovernanceRequirement)
 #   - STRUCTURE: Unified ontology under ai: namespace with semantic tags
 #   - All 14 GPAI concepts now under ai: (ai:GeneralPurposeAIModel, etc.)
 #   - All 15 contextual criteria now under ai: (ai:ChildrenAndMinorsContext, etc.)
 #   - All 9 ISO 42001 concepts now under ai: (ai:ISO42001SecurityRequirement, etc.)
-#   - All 11 NIST RMF concepts now under ai: (ai:NISTGovernanceFunction, etc.)
+#   - REMOVED: NIST RMF concepts (separate US-based framework, not EU AI Act requirement)
 #   - FIXED: ai:DocumentationRequirement class definition
 #   - FIXED: ai:DataGovernanceRequirement class definition
 #   - FIXED: Corrected spelling "MisinformationAmplificationRiskContext" (was "Amplifcation")
@@ -220,102 +220,102 @@ ai:AnnexVIIISafeguardsCompliance a ai:ComplianceRequirement ;
 # ===== CONTEXTUAL CRITERIA - [CONTEXT] =====
 # Advanced contextual evaluation criteria for complex AI system assessments
 
-ai:ChildrenAndMinorsVulnerabilityContext a ai:ContextualCriterion ;
+ai:ChildrenAndMinorsRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Children and Minors Vulnerability"@en,
         "Vulnerabilidad de Menores"@es ;
     rdfs:comment "[CONTEXT] AI systems affecting children or minors require enhanced protection measures."@en,
         "[CONTEXT] Los sistemas de IA que afectan a menores requieren medidas de protección mejoradas."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:ElderlyAndDisabledVulnerabilityContext a ai:ContextualCriterion ;
+ai:ElderlyAndDisabledRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Elderly and Disabled Vulnerability"@en,
         "Vulnerabilidad de Ancianos y Personas Discapacitadas"@es ;
     rdfs:comment "[CONTEXT] AI systems affecting elderly or disabled individuals require accessibility and protection provisions."@en,
         "[CONTEXT] Los sistemas de IA que afectan a personas mayores o discapacitadas requieren provisiones de accesibilidad."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:SocioeconomicVulnerabilityContext a ai:ContextualCriterion ;
+ai:SocioeconomicVulnerabilityRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Socioeconomic Vulnerability"@en,
         "Vulnerabilidad Socioeconómica"@es ;
     rdfs:comment "[CONTEXT] AI systems affecting economically disadvantaged populations require fair and equitable design."@en,
         "[CONTEXT] Los sistemas de IA que afectan a poblaciones económicamente desfavorecidas requieren diseño justo."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:AutonomousDecisionmakingContext a ai:ContextualCriterion ;
+ai:AutonomousDecisionmakingRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Autonomous Decisionmaking"@en,
         "Toma de Decisiones Autónoma"@es ;
     rdfs:comment "[CONTEXT] AI systems making autonomous decisions without human oversight present elevated risk."@en,
         "[CONTEXT] Los sistemas de IA que toman decisiones autónomas sin supervisión humana presentan riesgo elevado."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:RealTimeAutonomousContext a ai:ContextualCriterion ;
+ai:RealTimeAutonomousRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Real-Time Autonomous System"@en,
         "Sistema Autónomo en Tiempo Real"@es ;
     rdfs:comment "[CONTEXT] Real-time autonomous systems require continuous monitoring and safety mechanisms."@en,
         "[CONTEXT] Los sistemas autónomos en tiempo real requieren monitoreo continuo y mecanismos de seguridad."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:WidespreadSystemicImpactContext a ai:ContextualCriterion ;
+ai:WidespreadSystemicImpactRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Widespread Systemic Impact"@en,
         "Impacto Sistémico Generalizado"@es ;
     rdfs:comment "[CONTEXT] AI systems with potential for widespread or systemic societal impact require governance."@en,
         "[CONTEXT] Los sistemas de IA con impacto potencial sistémico requieren gobernanza."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:CriticalInfrastructureInterdependencyContext a ai:ContextualCriterion ;
+ai:CriticalInfrastructureInterdependencyRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Critical Infrastructure Interdependency"@en,
         "Interdependencia de Infraestructura Crítica"@es ;
     rdfs:comment "[CONTEXT] AI systems in critical infrastructure with interdependencies require robustness."@en ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:BlackBoxDecisionContext a ai:ContextualCriterion ;
-    rdfs:label "Black-Box Decision Context"@en,
-        "Contexto de Decisión de Caja Negra"@es ;
+ai:BlackBoxDecisionRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Black-Box Decision Risk"@en,
+        "Riesgo de Decisión de Caja Negra"@es ;
     rdfs:comment "[CONTEXT] AI systems with unexplainable decision-making require enhanced transparency."@en,
         "[CONTEXT] Los sistemas de IA con toma de decisiones inexplicable requieren transparencia mejorada."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:HighStakesDecisionWithoutAppealContext a ai:ContextualCriterion ;
+ai:HighStakesDecisionWithoutAppealRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "High-Stakes Decision Without Appeal"@en,
         "Decisión de Alto Riesgo Sin Apelación"@es ;
     rdfs:comment "[CONTEXT] AI systems making high-stakes decisions without appeal mechanisms require human oversight."@en ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:HistoricalBiasReplicationContext a ai:ContextualCriterion ;
+ai:HistoricalBiasReplicationRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Historical Bias Replication Risk"@en,
         "Riesgo de Replicación de Sesgo Histórico"@es ;
     rdfs:comment "[CONTEXT] AI systems trained on historically biased data must implement bias mitigation."@en,
         "[CONTEXT] Los sistemas de IA entrenados con datos sesgados históricamente requieren mitigación de sesgo."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:ProtectedCharacteristicInferenceContext a ai:ContextualCriterion ;
+ai:ProtectedCharacteristicInferenceRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Protected Characteristic Inference"@en,
         "Inferencia de Características Protegidas"@es ;
     rdfs:comment "[CONTEXT] AI systems capable of inferring protected characteristics require discrimination safeguards."@en,
         "[CONTEXT] Los sistemas de IA capaces de inferir características protegidas requieren salvaguardas."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:BiometricDataProcessingContext a ai:ContextualCriterion ;
+ai:BiometricDataSensitivityRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Biometric Data Processing"@en,
         "Procesamiento de Datos Biométricos"@es ;
     rdfs:comment "[CONTEXT] AI systems processing biometric data require privacy and security protections."@en,
         "[CONTEXT] Los sistemas de IA que procesan datos biométricos requieren protecciones de privacidad."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:PersonalDataRetentionContext a ai:ContextualCriterion ;
+ai:PersonalDataRetentionRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Personal Data Retention"@en,
         "Retención de Datos Personales"@es ;
     rdfs:comment "[CONTEXT] AI systems retaining personal data long-term require data governance."@en ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:LargeScaleEnvironmentalImpactContext a ai:ContextualCriterion ;
+ai:LargeScaleEnvironmentalImpactRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Large-Scale Environmental Impact"@en,
         "Impacto Ambiental a Gran Escala"@es ;
     rdfs:comment "[CONTEXT] AI systems with potential large-scale environmental impact require assessment."@en,
         "[CONTEXT] Los sistemas de IA con impacto ambiental potencial a gran escala requieren evaluación."@es ;
     ai:assignsRiskLevel ai:HighRisk .
 
-ai:MisinformationAmplificationRiskContext a ai:ContextualCriterion ;
+ai:MisinformationAmplificationRiskCriterion a ai:ContextualCriterion ;
     rdfs:label "Misinformation Amplification Risk"@en,
         "Riesgo de Amplificación de Desinformación"@es ;
     rdfs:comment "[CONTEXT] AI systems in content curation or generation with misinformation risks require safeguards."@en,
@@ -378,74 +378,6 @@ ai:ISO42001ComplianceVerificationRequirement a ai:ComplianceRequirement ;
         "Verificación de Cumplimiento ISO 42001"@es ;
     rdfs:comment "[ISO] Compliance verification and management review per ISO/IEC 42001."@en,
         "[ISO] Verificación de cumplimiento y revisión de gestión según ISO/IEC 42001."@es .
-
-# ===== NIST AI RISK MANAGEMENT FRAMEWORK - [NIST] =====
-# Alignment with NIST AI Risk Management Framework (Draft/Final)
-
-ai:NISTGovernanceFunction a ai:ComplianceRequirement ;
-    rdfs:label "NIST Governance Function"@en,
-        "Función de Gobernanza NIST"@es ;
-    rdfs:comment "[NIST] Governance functions per NIST AI Risk Management Framework."@en,
-        "[NIST] Funciones de gobernanza según Marco de Gestión de Riesgos de IA NIST."@es .
-
-ai:NISTMapFunction a ai:TechnicalRequirement ;
-    rdfs:label "NIST Map Function"@en,
-        "Función de Mapeo NIST"@es ;
-    rdfs:comment "[NIST] Risk mapping and identification per NIST AI RMF."@en,
-        "[NIST] Mapeo e identificación de riesgos según NIST AI RMF."@es .
-
-ai:NISTMeasureFunction a ai:TechnicalRequirement ;
-    rdfs:label "NIST Measure Function"@en,
-        "Función de Medición NIST"@es ;
-    rdfs:comment "[NIST] Risk measurement and metrics per NIST AI RMF."@en,
-        "[NIST] Medición de riesgos y métricas según NIST AI RMF."@es .
-
-ai:NISTManageFunction a ai:ComplianceRequirement ;
-    rdfs:label "NIST Manage Function"@en,
-        "Función de Gestión NIST"@es ;
-    rdfs:comment "[NIST] Risk management and mitigation per NIST AI RMF."@en,
-        "[NIST] Gestión y mitigación de riesgos según NIST AI RMF."@es .
-
-ai:NISTBiasesFairnessRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Biases and Fairness Risk"@en,
-        "Riesgo de Sesgos y Equidad NIST"@es ;
-    rdfs:comment "[NIST] Identification and mitigation of biases and fairness issues per NIST framework."@en,
-        "[NIST] Identificación y mitigación de sesgos según marco NIST."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTDataAndPrivacyRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Data and Privacy Risk"@en,
-        "Riesgo de Datos y Privacidad NIST"@es ;
-    rdfs:comment "[NIST] Data quality, privacy, and protection risks per NIST framework."@en ;
-    rdfs:comment "[NIST] Riesgos de calidad de datos, privacidad y protección según NIST."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTDataBiasInjectionRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Data Bias Injection Risk"@en,
-        "Riesgo de Inyección de Sesgo en Datos NIST"@es ;
-    rdfs:comment "[NIST] Bias in training and operational data per NIST framework."@en ;
-    rdfs:comment "[NIST] Sesgo en datos de entrenamiento y operacionales según NIST."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTCybersecurityRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Cybersecurity Risk"@en,
-        "Riesgo Cibernético NIST"@es ;
-    rdfs:comment "[NIST] Cybersecurity threats and mitigations per NIST AI RMF."@en ;
-    rdfs:comment "[NIST] Amenazas cibernéticas y mitigaciones según NIST AI RMF."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
-
-ai:NISTIOAccessibilityRisk a ai:NormativeCriterion ;
-    rdfs:label "NIST Input-Output Accessibility Risk"@en,
-        "Riesgo de Accesibilidad Entrada-Salida NIST"@es ;
-    rdfs:comment "[NIST] Accessibility of AI system inputs and outputs per NIST framework."@en,
-        "[NIST] Accesibilidad de entradas y salidas de sistemas de IA según NIST."@es ;
-    ai:assignsRiskLevel ai:MediumRisk .
-
-ai:NISTPerformanceMetrics a ai:TechnicalCriterion ;
-    rdfs:label "NIST Performance Metrics"@en,
-        "Métricas de Rendimiento NIST"@es ;
-    rdfs:comment "[NIST] Performance measurement and metrics per NIST AI framework."@en,
-        "[NIST] Medición y métricas de rendimiento según marco NIST AI."@es .
 
 # ===== CORE RISK LEVELS - UNCHANGED FROM v0.37.1 =====
 
@@ -680,6 +612,34 @@ ai:hasModelScale a owl:ObjectProperty ;
         "La escala o categoría de tamaño del modelo."@es ;
     rdfs:domain ai:IntelligentSystem ;
     rdfs:range ai:ModelScale .
+
+# ===== NEW CRITERION PROPERTIES (Option C - Clear Division) =====
+# These three properties replace the confusing hasSystemCapabilityCriteria
+# Each addresses a distinct EU AI Act mechanism with clear semantics
+
+ai:hasActivatedCriterion a owl:ObjectProperty ;
+    rdfs:label "has Activated Criterion"@en,
+        "tiene Criterio Activado"@es ;
+    rdfs:comment "Criterion automatically derived from Purpose or DeploymentContext through SWRL rules. Corresponds to Annex III high-risk activity triggers."@en,
+        "Criterio derivado automáticamente de Propósito o Contexto de Despliegue mediante reglas SWRL. Corresponde a disparadores de actividades de alto riesgo del Anexo III."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+ai:hasManuallyIdentifiedCriterion a owl:ObjectProperty ;
+    rdfs:label "has Manually Identified Criterion"@en,
+        "tiene Criterio Identificado Manualmente"@es ;
+    rdfs:comment "Criterion identified by expert evaluation beyond automated rules. Addresses Article 6(3) residual high-risk cases not covered by Annex III."@en,
+        "Criterio identificado por evaluación de expertos más allá de las reglas automatizadas. Aborda casos residuales de alto riesgo del Artículo 6(3) no cubiertos por el Anexo III."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+ai:hasCapabilityMetric a owl:ObjectProperty ;
+    rdfs:label "has Capability Metric"@en,
+        "tiene Métrica de Capacidad"@es ;
+    rdfs:comment "Technical capability indicator triggering General Purpose AI (GPAI) classification. Corresponds to Articles 51-55 GPAI systemic risk assessment."@en,
+        "Indicador técnico de capacidad que dispara la clasificación de IA de Propósito General (GPAI). Corresponde a la evaluación de riesgo sistémico del GPAI de los Artículos 51-55."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
 
 # ===== MISSING CRITERION DEFINITIONS =====
 # These criteria are referenced by Purpose/Context instances but were not previously defined
@@ -1326,58 +1286,6 @@ ai:GeneticAlgorithm a ai:AlgorithmType,
 
 # ===== CONTEXTUAL CRITERIA INSTANCES =====
 
-ai:ChildrenMinorsContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Children and Minors Context"@en,
-        "Contexto de Niños y Menores"@es ;
-    rdfs:comment "Systems used in contexts involving children or minors require special protections."@en,
-        "Sistemas utilizados en contextos que involucran niños o menores requieren protecciones especiales."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:PrivacyProtectionRequirement,
-        ai:DataGovernanceRequirement,
-        ai:ParentalConsentRequirement,
-        ai:SafetyRequirement .
-
-ai:EmploymentContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Employment Context"@en,
-        "Contexto de Empleo"@es ;
-    rdfs:comment "Systems used in employment or recruitment decisions affecting workers."@en,
-        "Sistemas utilizados en decisiones de empleo o reclutamiento que afectan a los trabajadores."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:NonDiscriminationRequirement,
-        ai:TransparencyRequirement,
-        ai:HumanOversightRequirement,
-        ai:AccuracyEvaluationRequirement .
-
-ai:LegalSystemContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Legal System Context"@en,
-        "Contexto del Sistema Legal"@es ;
-    rdfs:comment "Systems used in legal decision-making or justice processes."@en,
-        "Sistemas utilizados en toma de decisiones legales o procesos de justicia."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:TransparencyRequirement,
-        ai:HumanOversightRequirement,
-        ai:DocumentationRequirement,
-        ai:TraceabilityRequirement .
-
-ai:EssentialServicesContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "Essential Services Context"@en,
-        "Contexto de Servicios Esenciales"@es ;
-    rdfs:comment "Systems critical to essential services like electricity, water, or healthcare."@en,
-        "Sistemas críticos para servicios esenciales como electricidad, agua o sanidad."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
-        ai:SystemSafetyRequirement,
-        ai:RobustnessRequirement,
-        ai:MonitoringRequirement,
-        ai:DocumentationRequirement .
-
 ai:FundamentalRightsContextualCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Fundamental Rights Context"@en,
@@ -1403,7 +1311,7 @@ ai:TransparencyContextualCriterion a ai:ContextualCriterion,
         ai:DocumentationRequirement,
         ai:HumanOversightRequirement .
 
-ai:SurveillanceContextualCriterion a ai:ContextualCriterion,
+ai:SurveillanceRiskCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Surveillance Context"@en,
         "Contexto de Vigilancia"@es ;
@@ -1416,7 +1324,7 @@ ai:SurveillanceContextualCriterion a ai:ContextualCriterion,
         ai:HumanOversightRequirement,
         ai:DataGovernanceRequirement .
 
-ai:ManipulationContextualCriterion a ai:ContextualCriterion,
+ai:ManipulationRiskCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;
     rdfs:label "Manipulation Risk Context"@en,
         "Contexto de Riesgo de Manipulación"@es ;
@@ -1428,19 +1336,6 @@ ai:ManipulationContextualCriterion a ai:ContextualCriterion,
         ai:UserNotificationRequirement,
         ai:DocumentationRequirement,
         ai:HumanOversightRequirement .
-
-ai:HighStakesContextualCriterion a ai:ContextualCriterion,
-    owl:NamedIndividual ;
-    rdfs:label "High-Stakes Context"@en,
-        "Contexto de Alto Riesgo"@es ;
-    rdfs:comment "Systems where errors have significant consequences for individuals or society."@en,
-        "Sistemas donde los errores tienen consecuencias significativas para individuos o la sociedad."@es ;
-    ai:assignsRiskLevel ai:HighRisk ;
-    ai:activatesRequirement ai:AccuracyEvaluationRequirement,
-        ai:RobustnessRequirement,
-        ai:HumanOversightRequirement,
-        ai:MonitoringRequirement,
-        ai:DocumentationRequirement .
 
 # ===== COMPLIANCE REQUIREMENT INSTANCES =====
 
@@ -1672,36 +1567,6 @@ ai:ISO42001RiskRequirement a ai:ISORequirement,
         "Requisito de Riesgo ISO 42001"@es ;
     rdfs:comment "Systems must implement risk management according to ISO/IEC 42001."@en,
         "Los sistemas deben implementar gestión de riesgos según ISO/IEC 42001."@es .
-
-# ===== NIST REQUIREMENT INSTANCES =====
-
-ai:NISTGovernanceRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Governance Requirement"@en,
-        "Requisito de Gobernanza NIST"@es ;
-    rdfs:comment "Systems must implement governance structures per NIST AI RMF."@en,
-        "Los sistemas deben implementar estructuras de gobernanza según NIST AI RMF."@es .
-
-ai:NISTMapRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Map Requirement"@en,
-        "Requisito de Mapeo NIST"@es ;
-    rdfs:comment "Systems must map risks and safeguards per NIST AI RMF."@en,
-        "Los sistemas deben mapear riesgos y salvaguardas según NIST AI RMF."@es .
-
-ai:NISTMeasureRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Measure Requirement"@en,
-        "Requisito de Medición NIST"@es ;
-    rdfs:comment "Systems must measure and monitor per NIST AI RMF."@en,
-        "Los sistemas deben medir y monitorear según NIST AI RMF."@es .
-
-ai:NISTManageRequirement a ai:NISTRequirement,
-    owl:NamedIndividual ;
-    rdfs:label "NIST Manage Requirement"@en,
-        "Requisito de Gestión NIST"@es ;
-    rdfs:comment "Systems must manage risks and impacts per NIST AI RMF."@en,
-        "Los sistemas deben gestionar riesgos e impactos según NIST AI RMF."@es .
 
 # ===== TRANSPARENCY LEVEL INSTANCES =====
 
