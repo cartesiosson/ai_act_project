@@ -52,6 +52,9 @@ export default function SystemsPage() {
   });
 
   const [showValidation, setShowValidation] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     identification: true,
     purposes: true,
@@ -107,13 +110,31 @@ export default function SystemsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (!form.hasName.trim()) {
+      setShowValidation(true);
+      setSubmitError("System name is required");
+      return;
+    }
+
+    if (form.hasPurpose.length === 0) {
+      setShowValidation(true);
+      setSubmitError("At least one purpose is required");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
     try {
       const isModifying = loadedSystem !== null;
-      const url = isModifying 
+      const url = isModifying
         ? `${API_BASE}/systems/${encodeURIComponent(loadedSystem["ai:hasUrn"])}`
         : `${API_BASE}/systems`;
       const method = isModifying ? "PUT" : "POST";
-      
+
       const res = await fetch(url, {
         method,
         headers: {
@@ -125,8 +146,12 @@ export default function SystemsPage() {
           ...form,
         }),
       });
-      if (!res.ok) throw new Error(`${isModifying ? 'Modify' : 'Create'} failed`);
-      
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || `${isModifying ? 'Modify' : 'Create'} failed`);
+      }
+
       // Clear form, loaded system, and algorithm type/subtypes selection
       setForm({
         hasName: "",
@@ -153,11 +178,20 @@ export default function SystemsPage() {
         hasVersion: "",
       });
       setLoadedSystem(null);
+      setShowValidation(false);
+      setSubmitSuccess(true);
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSubmitSuccess(false), 3000);
+
       await loadSystems(0);
       setOffset(0);
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Unknown error occurred";
       console.error(`Error ${loadedSystem ? 'modifying' : 'creating'} system:`, err);
-      alert(`Failed to ${loadedSystem ? 'modify' : 'create'} system`);
+      setSubmitError(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -579,12 +613,37 @@ export default function SystemsPage() {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {loadedSystem ? 'Modify System' : 'Create System'}
-        </button>
+        <div className="flex flex-col gap-4">
+          {submitError && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <p className="font-semibold">Error</p>
+              <p className="text-sm">{submitError}</p>
+            </div>
+          )}
+          {submitSuccess && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+              <p className="font-semibold">✓ Success</p>
+              <p className="text-sm">{loadedSystem ? 'System modified successfully' : 'System created successfully'}</p>
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed font-semibold transition-colors"
+          >
+            {isSubmitting ? (
+              <>
+                <span className="inline-block mr-2">⏳</span>
+                {loadedSystem ? 'Modifying System...' : 'Creating System...'}
+              </>
+            ) : (
+              <>
+                <span className="inline-block mr-2">💾</span>
+                {loadedSystem ? 'Modify System' : 'Create System'}
+              </>
+            )}
+          </button>
+        </div>
         {loadedSystem && (
           <button
             type="button"
