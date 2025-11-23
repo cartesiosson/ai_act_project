@@ -19,11 +19,12 @@ This project implements an **automated semantic compliance evaluation platform**
 1. [Quick Start](#-quick-start)
 2. [System Architecture](#-system-architecture)
 3. [Ontology Structure](#-ontology-structure)
-4. [SWRL Reasoning Rules](#-swrl-reasoning-rules)
-5. [Reasoning Flow](#-reasoning-flow)
-6. [SHACL Validation](#-shacl-validation)
-7. [API Reference](#-api-reference)
-8. [Deployment](#-deployment)
+4. [EU AI Act Compliance Mechanisms](#️-eu-ai-act-compliance-mechanisms)
+5. [SWRL Reasoning Rules](#-swrl-reasoning-rules)
+6. [Reasoning Flow](#-reasoning-flow)
+7. [SHACL Validation](#-shacl-validation)
+8. [API Reference](#-api-reference)
+9. [Deployment](#-deployment)
 
 ---
 
@@ -192,6 +193,378 @@ Coverage:
 ✅ Data governance framework
 ✅ AIRO interoperability mappings
 ```
+
+---
+
+## ⚖️ EU AI Act Compliance Mechanisms
+
+The EU AI Act defines three distinct regulatory mechanisms to classify and manage AI system risk. This project implements a **three-part criteria system** that maps precisely to these mechanisms:
+
+### 1. **Annex III High-Risk Activities** → `hasActivatedCriterion`
+
+**Regulatory Basis**: EU AI Act **Annex III** defines 8 high-risk AI system categories based on the **primary purpose** (intended function) and **deployment context** (operational scenario).
+
+**What It Is**:
+- Risk classification based on **declared purpose** and **where the system operates**
+- Examples: biometric identification in public spaces, education evaluation systems, law enforcement decision support
+- Triggered automatically by matching system purpose/context to Annex III categories
+
+**How We Cover It**:
+```
+System declares Purpose (e.g., BiometricIdentification)
+     ↓
+SWRL Rule: Purpose.activatesCriterion
+     ↓
+Automatically derived: hasActivatedCriterion = BiometricIdentificationCriterion
+     ↓
+Risk level assigned: HighRisk
+     ↓
+Requirements activated: (DataGovernance, HumanOversight, FundamentalRights, etc.)
+```
+
+**Implementation**:
+- **SWRL Rules** (native): 12 rules in `/ontologias/rules/swrl-base-rules.ttl`
+- **Purpose Mapping**: 7 Annex III categories → 7 dedicated criteria
+- **Context Mapping**: 4 deployment scenarios → specialized criteria
+- **Result Property**: `hasActivatedCriterion` (populated by automatic derivation)
+
+**Real-World Example**:
+```json
+{
+  "hasPurpose": ["ai:BiometricIdentification"],
+  "hasDeploymentContext": ["ai:PublicSpaces"],
+  "Result → hasActivatedCriterion": ["ai:BiometricIdentificationCriterion"],
+  "Result → hasRiskLevel": "ai:HighRisk",
+  "Result → hasRequirements": [
+    "ai:DataGovernanceRequirement",
+    "ai:FundamentalRightsAssessmentRequirement",
+    "ai:HumanOversightRequirement"
+  ]
+}
+```
+
+**Coverage**:
+| Annex III Category | Criterion | Rule Status |
+|----------|----------|---------|
+| Biometric identification | BiometricIdentificationCriterion | ✅ Implemented |
+| Education evaluation | EducationEvaluationCriterion | ✅ Implemented |
+| Employment/recruitment | NonDiscriminationCriterion | ✅ Implemented |
+| Judicial/legal decisions | JudicialSupportCriterion | ✅ Implemented |
+| Law enforcement | LawEnforcementCriterion | ✅ Implemented |
+| Border/migration control | MigrationBorderCriterion | ✅ Implemented |
+| Critical infrastructure | CriticalInfrastructureCriterion | ✅ Implemented |
+| Healthcare systems | PrivacyProtectionCriterion | ✅ Implemented |
+
+---
+
+### 2. **Article 6(3) Residual Risk** → `hasManuallyIdentifiedCriterion`
+
+**Regulatory Basis**: EU AI Act **Article 6(3)** provides a residual mechanism for regulators to designate systems as high-risk even if they don't meet Annex III criteria. This addresses **unforeseen risks** and **emerging threats** not covered by categorical rules.
+
+**What It Is**:
+- Expert judgment-based risk identification
+- Applied when **Purpose/Context rules** don't capture the actual risk
+- Requires **human expert evaluation** to assess risks beyond automated classification
+- Examples: A seemingly low-risk recommendation system that could cause discrimination; a general-purpose tool repurposed for sensitive contexts
+
+**How We Cover It**:
+```
+Expert evaluation determines additional risk
+     ↓
+System marked with: hasManuallyIdentifiedCriterion
+     ↓
+Set via dedicated API endpoint:
+     PUT /systems/{system_id}/manually-identified-criteria
+     ↓
+Risk level updated: HighRisk (if not already)
+     ↓
+Requirements activated: Based on identified criterion
+```
+
+**Implementation**:
+- **Backend Endpoint** (`/backend/routers/systems.py`):
+  - `PUT /systems/{urn}/manually-identified-criteria`
+  - Updates MongoDB + Fuseki with expert decisions
+- **Property Definition** (`ontologia-v0.37.2.ttl`):
+  - `hasManuallyIdentifiedCriterion` ObjectProperty
+  - Domain: `IntelligentSystem`
+  - Range: `Criterion`
+- **Frontend Form** (`SystemsPage.tsx`):
+  - "Section 6: Expert Evaluation - Additional Risk Criteria"
+  - Multi-select interface for domain experts
+  - Clear documentation of Article 6(3) legal basis
+
+**Request Example**:
+```bash
+curl -X PUT http://localhost:8000/systems/urn:uuid:abc-123/manually-identified-criteria \
+  -H "Content-Type: application/json" \
+  -d '{
+    "hasManuallyIdentifiedCriterion": [
+      "ai:DiscriminationRiskCriterion",
+      "ai:UnintendedContextRiskCriterion"
+    ]
+  }'
+```
+
+**Real-World Example**:
+```json
+{
+  "System": {
+    "hasName": "RecommendationEngine",
+    "hasPurpose": ["ai:ContentRecommendation"],
+    "hasDeploymentContext": ["ai:Commerce"]
+  },
+  "Annex III Result": "MinimalRisk (no high-risk category applies)",
+  "Expert Evaluation (Article 6(3))": {
+    "Finding": "System can amplify political misinformation despite low-risk purpose",
+    "Decision": "Designate as High-Risk via Article 6(3)"
+  },
+  "Outcome": {
+    "hasManuallyIdentifiedCriterion": ["ai:MisinformationAmplificationRiskCriterion"],
+    "hasRiskLevel": "ai:HighRisk",
+    "hasRequirements": ["ai:TransparencyRequirement", "ai:HumanOversightRequirement"]
+  }
+}
+```
+
+**Article 6(3) Legal Text**:
+> "...the Commission may also decide on the basis of a request by the Board or following a reasoned decision of a notifying authority that AI systems the output of which is produced in such a way that it is not reasonably foreseeable what the precise content of the output is and what the reasons are for such output, shall be considered high-risk AI systems."
+
+**Why It Matters**:
+- Captures **systemic risks** that purpose-based rules miss
+- Enables **regulatory flexibility** for emerging threats
+- Requires **documented expert reasoning** for auditability
+- Can be applied **retroactively** if new risks emerge post-deployment
+
+---
+
+### 3. **Articles 51-55 GPAI Systemic Risk** → `hasCapabilityMetric`
+
+**Regulatory Basis**: EU AI Act **Articles 51-55** introduce a new category: **General Purpose AI (GPAI)** models with **systemic risk**. These are large, general-purpose models that can be adapted to many downstream applications, creating systemic risks through their broad impact potential.
+
+**What It Is**:
+- Risk assessment based on **technical capabilities** (not purpose/context)
+- Applies to **foundation models** and **large language models**
+- Triggered by measurable technical properties: parameter count, autonomy level, multi-domain applicability
+- Articles 51-55 specific compliance: documentation, transparency, post-market monitoring
+
+**How We Cover It**:
+```
+System declares technical characteristics:
+- Parameter Count (model size)
+- Autonomy Level (human control degree)
+- General Applicability (multi-domain use)
+     ↓
+Python Backend Derivation: derive_capability_metrics()
+     ↓
+Technical Capability Analysis:
+- >10B parameters? → HighParameterCountMetric
+- FoundationModelScale? → FoundationModelCapabilityMetric
+- FullyAutonomous? → FullyAutonomousCapabilityMetric
+- Real-time processing? → RealTimeProcessingCapabilityMetric
+- Multi-domain? → GenerallyApplicableCapabilityMetric
+     ↓
+Result: hasCapabilityMetric = [list of triggered metrics]
+     ↓
+GPAI Classification triggered (if metrics indicate systemic risk)
+     ↓
+Articles 51-55 Requirements Activated
+```
+
+**Implementation**:
+- **Backend Logic** (`/backend/derivation.py`):
+  - `derive_capability_metrics(data: Dict) → List[str]`
+  - Checks 5 capability indicators
+  - Returns qualified capability metrics
+  - Independent of Purpose/Context
+- **Property Definition** (`ontologia-v0.37.2.ttl`):
+  - `hasCapabilityMetric` ObjectProperty
+  - Range: `Criterion` (represents capability indicator)
+- **Frontend Form** (`SystemsPage.tsx`):
+  - "Section 5: Capability Metrics (GPAI Classification Indicators)"
+  - Parameter Count (numeric input with >10B guidance)
+  - Autonomy Level dropdown
+  - General Applicability checkbox
+- **Capability Metrics** defined as Criterion instances:
+  - `ai:HighParameterCount`
+  - `ai:FoundationModelCapability`
+  - `ai:FullyAutonomousCapability`
+  - `ai:RealTimeProcessingCapability`
+  - `ai:GenerallyApplicableCapability`
+
+**Request Example**:
+```json
+{
+  "parameterCount": 70000000000,
+  "hasModelScale": "ai:FoundationModelScale",
+  "autonomyLevel": "FullyAutonomous",
+  "isGenerallyApplicable": true,
+  "hasDeploymentContext": ["ai:RealTimeProcessing"]
+}
+```
+
+**Backend Response** (automatic derivation):
+```json
+{
+  "hasCapabilityMetric": [
+    "ai:HighParameterCount",
+    "ai:FoundationModelCapability",
+    "ai:FullyAutonomousCapability",
+    "ai:RealTimeProcessingCapability",
+    "ai:GenerallyApplicableCapability"
+  ],
+  "hasGPAIClassification": ["ai:GeneralPurposeAI"],
+  "requiresGPAICompliance": true
+}
+```
+
+**Real-World Example**:
+```json
+{
+  "System": {
+    "hasName": "GPT-4-like Foundation Model",
+    "parameterCount": 1000000000000,
+    "hasModelScale": "ai:FoundationModelScale",
+    "autonomyLevel": "FullyAutonomous",
+    "isGenerallyApplicable": true,
+    "hasPurpose": ["ai:GeneralPurposeLLM"]
+  },
+  "Capability Metrics Triggered": {
+    "HighParameterCount": "1 trillion parameters > 10B threshold",
+    "FoundationModelCapability": "Explicitly marked as foundation model",
+    "FullyAutonomousCapability": "No human-in-loop design",
+    "GenerallyApplicableCapability": "Can be adapted to any downstream task"
+  },
+  "Result": {
+    "hasCapabilityMetric": [
+      "ai:HighParameterCount",
+      "ai:FoundationModelCapability",
+      "ai:FullyAutonomousCapability",
+      "ai:GenerallyApplicableCapability"
+    ],
+    "hasGPAIClassification": ["ai:GeneralPurposeAI"],
+    "hasRiskLevel": "ai:HighRisk",
+    "hasRequirements": [
+      "ai:GPAIProviderObligationRequirement",     // Article 51
+      "ai:GPAITransparencyRequirement",           // Article 52
+      "ai:UnionDatabaseNotificationRequirement",  // Article 53
+      "ai:ModelEvaluationRequirement",            // Article 54
+      "ai:PostMarketMonitoringRequirement"        // Article 55
+    ]
+  }
+}
+```
+
+**Articles 51-55 Requirements Coverage**:
+| Article | Mechanism | Requirement |
+|---------|-----------|-------------|
+| **51** | Provider Obligations | Technical documentation, safety evaluation, risk assessment |
+| **52** | Transparency | Model characteristics, training data, limitations disclosure |
+| **53** | Union Database | High-capability GPAI providers must register |
+| **54** | Model Evaluation | Benchmarking and standards compliance |
+| **55** | Post-Market Monitoring | Continuous system monitoring after release |
+
+---
+
+### Comparison: Three Mechanisms
+
+| Aspect | Annex III (Purpose-Based) | Article 6(3) (Residual) | GPAI Articles 51-55 (Capability-Based) |
+|--------|--------------------------|----------------------|----------------------------------|
+| **Trigger** | System's declared purpose | Expert judgment | Technical characteristics |
+| **Decision** | Automatic (SWRL rules) | Manual (expert endpoint) | Automatic (Python backend) |
+| **Property** | `hasActivatedCriterion` | `hasManuallyIdentifiedCriterion` | `hasCapabilityMetric` |
+| **Examples** | Biometric ID, education eval | Unforeseen risks, emerging threats | Large LLMs, foundation models |
+| **Scope** | 8 high-risk categories | Residual/unlisted cases | Systemic risk potential |
+| **Auditability** | Full rule trace | Expert decision log | Parameter analysis trace |
+| **EU AI Act** | Annex III (categorical) | Article 6(3) (discretionary) | Articles 51-55 (capability-based) |
+
+---
+
+### Combined Three-Mechanism Example
+
+A system that demonstrates all three mechanisms:
+
+```json
+{
+  "Input System": {
+    "hasName": "AI Hiring Assistant with LLM Backbone",
+    "hasPurpose": ["ai:RecruitmentOrEmployment"],
+    "hasDeploymentContext": ["ai:HighVolume"],
+    "parameterCount": 50000000000,
+    "autonomyLevel": "LimitedAutonomy",
+    "isGenerallyApplicable": true
+  },
+
+  "Mechanism 1 - Annex III (Automatic)": {
+    "Rule Fired": "RecruitmentOrEmployment.activatesCriterion",
+    "Result": "hasActivatedCriterion = NonDiscriminationCriterion",
+    "Risk": "HighRisk"
+  },
+
+  "Mechanism 2 - Article 6(3) (Expert)": {
+    "Expert Finding": "System exhibits gender bias despite non-discrimination purpose",
+    "Decision": "Additional criterion from Article 6(3)",
+    "Result": "hasManuallyIdentifiedCriterion = GenderBiasCriterion"
+  },
+
+  "Mechanism 3 - GPAI Articles 51-55 (Capability)": {
+    "Technical Characteristics": {
+      "HighParameterCount": 50B > 10B threshold ✓",
+      "GenerallyApplicable": "LLM backbone adapts to many tasks ✓"
+    },
+    "Result": "hasCapabilityMetric = [HighParameterCount, GenerallyApplicableCapability]",
+    "GPAI": "Triggered"
+  },
+
+  "Final Outcome": {
+    "hasActivatedCriterion": ["ai:NonDiscriminationCriterion"],
+    "hasManuallyIdentifiedCriterion": ["ai:GenderBiasCriterion"],
+    "hasCapabilityMetric": ["ai:HighParameterCount", "ai:GenerallyApplicableCapability"],
+    "hasGPAIClassification": ["ai:GeneralPurposeAI"],
+    "hasRiskLevel": "ai:HighRisk",
+    "hasRequirements": [
+      "ai:AuditabilityRequirement",
+      "ai:BiasMonitoringRequirement",
+      "ai:GPAITransparencyRequirement",
+      "ai:PostMarketMonitoringRequirement"
+    ]
+  }
+}
+```
+
+---
+
+### Implementation Summary
+
+**Files Modified for Three-Mechanism Coverage**:
+
+1. **Ontology** (`ontologia-v0.37.2.ttl`):
+   - Added `hasActivatedCriterion` ObjectProperty (Annex III)
+   - Added `hasManuallyIdentifiedCriterion` ObjectProperty (Article 6(3))
+   - Added `hasCapabilityMetric` ObjectProperty (Articles 51-55)
+
+2. **SWRL Rules** (`swrl-base-rules.ttl`):
+   - 12 rules for Annex III purpose/context activation
+   - All updated to use `hasActivatedCriterion` property
+
+3. **Backend Logic** (`derivation.py`):
+   - `derive_capability_metrics()` function for Articles 51-55
+   - Python-based capability analysis (beyond SWRL scope)
+   - Independent of purpose/context derivation
+
+4. **Backend API** (`routers/systems.py`):
+   - New endpoint: `PUT /systems/{urn}/manually-identified-criteria`
+   - Allows experts to set Article 6(3) residual criteria
+   - Updates both MongoDB and Fuseki
+
+5. **Frontend Forms** (`SystemsPage.tsx`):
+   - Section 5: Capability Metrics form (GPAI indicators)
+   - Section 6: Expert Evaluation form (Article 6(3) manual entry)
+   - Clear legal basis documentation for each mechanism
+
+6. **Graph Visualization** (`GraphView.tsx`):
+   - Updated node categorization for three criteria properties
+   - Proper visualization of derived vs. manual criteria
 
 ---
 

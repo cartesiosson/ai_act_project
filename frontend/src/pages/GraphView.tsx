@@ -52,6 +52,13 @@ export default function GraphView() {
     if (lowerPredicate.includes("algorithm")) return "technical";
     if (lowerPredicate.includes("model")) return "technical";
     if (lowerPredicate.includes("scale")) return "technical";
+
+    // Option C criteria properties (new)
+    if (lowerPredicate.includes("hasactivatedcriterion")) return "compliance";
+    if (lowerPredicate.includes("hasmanuallyidentifiedcriterion")) return "compliance";
+    if (lowerPredicate.includes("hascapabilitymetric")) return "technical";
+
+    // Legacy
     if (lowerPredicate.includes("systemcapability")) return "capability";
 
     // Then check the URI itself for more specific categorization

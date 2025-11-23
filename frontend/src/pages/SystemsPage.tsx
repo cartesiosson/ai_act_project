@@ -15,6 +15,12 @@ export type System = {
   hasAlgorithmType: string[];
   hasModelScale?: string[];
   hasCapability?: string[];
+  hasActivatedCriterion?: string[];
+  hasManuallyIdentifiedCriterion?: string[];
+  hasCapabilityMetric?: string[];
+  parameterCount?: number;
+  autonomyLevel?: string;
+  isGenerallyApplicable?: boolean;
   hasGPAIClassification?: string[];
   hasContextualCriteria?: string[];
   hasISORequirements?: string[];
@@ -92,6 +98,12 @@ export default function SystemsPage() {
     hasAlgorithmType: [] as string[],
     hasModelScale: [] as string[],
     hasCapability: [] as string[],
+    hasActivatedCriterion: [] as string[],
+    hasManuallyIdentifiedCriterion: [] as string[],
+    hasCapabilityMetric: [] as string[],
+    parameterCount: undefined as number | undefined,
+    autonomyLevel: "" as string,
+    isGenerallyApplicable: false as boolean,
     hasGPAIClassification: [] as string[],
     hasContextualCriteria: [] as string[],
     hasISORequirements: [] as string[],
@@ -591,6 +603,90 @@ export default function SystemsPage() {
           </div>
         </div>
 
+        {/* SECTION 5: System Capability Metrics (Articles 51-55 GPAI Indicators) */}
+        <div className="bg-purple-50 dark:bg-purple-900 rounded-lg border border-purple-200 dark:border-purple-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-purple-600 dark:text-purple-400 mr-3">📊</span>
+            <h2 className="text-xl font-bold">5. Capability Metrics (GPAI Classification Indicators)</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+            Technical metrics that may trigger GPAI (General Purpose AI) classification under Articles 51-55 of the EU AI Act.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Parameter Count (Model Size)</label>
+              <input
+                type="number"
+                placeholder="e.g., 7000000000 for 7B parameters"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={form.parameterCount || ""}
+                onChange={e => {
+                  const val = e.target.value ? parseInt(e.target.value) : undefined;
+                  setForm({ ...form, parameterCount: val });
+                }}
+              />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">Models with &gt;10B parameters are high-capability indicators</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <label className="block font-semibold mb-2">Autonomy Level</label>
+              <select
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={form.autonomyLevel}
+                onChange={e => setForm({ ...form, autonomyLevel: e.target.value })}
+              >
+                <option value="">Select autonomy level...</option>
+                <option value="NoAutonomy">No Autonomy (Human-controlled)</option>
+                <option value="LimitedAutonomy">Limited Autonomy (Human-in-loop)</option>
+                <option value="HighAutonomy">High Autonomy (Minimal human intervention)</option>
+                <option value="FullyAutonomous">Fully Autonomous (Systemic risk indicator)</option>
+              </select>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4 md:col-span-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={form.isGenerallyApplicable}
+                  onChange={e => setForm({ ...form, isGenerallyApplicable: e.target.checked })}
+                  className="mr-3 w-4 h-4 border border-gray-300 dark:border-gray-600 rounded bg-white text-purple-600 focus:ring-2 focus:ring-purple-500"
+                />
+                <span className="font-semibold">Generally Applicable to Multiple Domains (Broad Impact Indicator)</span>
+              </label>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Check if your system can be adapted to multiple use cases or domains without major retraining</p>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 6: Expert Evaluation - Manually Identified Criteria */}
+        <div className="bg-indigo-50 dark:bg-indigo-900 rounded-lg border border-indigo-200 dark:border-indigo-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mr-3">👨‍⚖️</span>
+            <h2 className="text-xl font-bold">6. Expert Evaluation - Additional Risk Criteria</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+            Manually identified criteria by experts for residual high-risk cases not covered by automated rules (Article 6(3) of EU AI Act).
+            These criteria are identified beyond what is automatically derived from Purpose/DeploymentContext.
+          </p>
+          <div className="bg-white dark:bg-gray-800 rounded p-4">
+            <label className="block font-semibold mb-2">Additional Risk Criteria (Manually Identified)</label>
+            <select
+              multiple
+              size={6}
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={form.hasManuallyIdentifiedCriterion}
+              onChange={e =>
+                setForm({ ...form, hasManuallyIdentifiedCriterion: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+              }
+            >
+              {systemCapabilityCriteria.map((c) => (
+                <option key={c.id} value={c.id}>{c.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+              These criteria apply when expert evaluation identifies additional high-risk factors beyond the system's primary purpose or deployment context.
+            </p>
+          </div>
+        </div>
+
         {/* Derived Classifications - Read-only Info Panel */}
         {(form.hasGPAIClassification.length > 0 || form.hasContextualCriteria.length > 0) && (
           <div className="border-t pt-4 mt-4 mb-4 bg-blue-50 dark:bg-blue-900 rounded p-4">
@@ -657,6 +753,12 @@ export default function SystemsPage() {
                 hasAlgorithmType: [],
                 hasModelScale: [],
                 hasCapability: [],
+                hasActivatedCriterion: [],
+                hasManuallyIdentifiedCriterion: [],
+                hasCapabilityMetric: [],
+                parameterCount: undefined,
+                autonomyLevel: "",
+                isGenerallyApplicable: false,
                 hasGPAIClassification: [],
                 hasContextualCriteria: [],
                 hasISORequirements: [],

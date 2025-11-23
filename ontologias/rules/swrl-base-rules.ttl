@@ -21,7 +21,7 @@
                swrl:argument2 ai:Education ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:ProtectionOfMinors ] ) ] .
 
@@ -36,7 +36,7 @@
                swrl:argument2 ai:EducationAccess ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:ProtectionOfMinors ] ) ] .
 
@@ -52,7 +52,7 @@
                swrl:argument2 ai:RecruitmentOrEmployment ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:NonDiscrimination ] ) ] .
 
@@ -68,7 +68,7 @@
                swrl:argument2 ai:JudicialDecisionSupport ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:JudicialSupportCriterion ] ) ] .
 
@@ -84,7 +84,7 @@
                swrl:argument2 ai:LawEnforcementSupport ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:LawEnforcementCriterion ] ) ] .
 
@@ -100,7 +100,7 @@
                swrl:argument2 ai:MigrationControl ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:MigrationBorderCriterion ] ) ] .
 
@@ -116,7 +116,7 @@
                swrl:argument2 ai:CriticalInfrastructureOperation ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:CriticalInfrastructureCriterion ] ) ] .
 
@@ -132,7 +132,7 @@
                swrl:argument2 ai:HealthCare ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:PrivacyProtection ] ) ] .
 
@@ -148,7 +148,7 @@
                swrl:argument2 ai:EducationAccess ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasNormativeCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:EducationEvaluationCriterion ] ) ] .
 
@@ -164,7 +164,7 @@
                swrl:argument2 ai:BiometricData ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasContextualCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:BiometricSecurity ] ) ] .
 
@@ -180,7 +180,7 @@
                swrl:argument2 ai:BiometricIdentification ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasContextualCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:BiometricSecurity ] ) ] .
 
@@ -196,7 +196,7 @@
                swrl:argument2 ai:RealTimeProcessing ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasTechnicalCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:PerformanceRequirements ] ) ] .
 
@@ -212,6 +212,6 @@
                swrl:argument2 ai:HighVolumeProcessing ]
            ) ;
   swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasTechnicalCriterion ;
+               swrl:propertyPredicate ai:hasActivatedCriterion ;
                swrl:argument1 ?system ;
                swrl:argument2 ai:ScalabilityRequirements ] ) ] .

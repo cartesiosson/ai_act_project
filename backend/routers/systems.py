@@ -317,4 +317,94 @@ async def delete_system(urn: str, db=Depends(get_database)):
     return {"status": "deleted", "urn": urn}
 
 
+@router.put("/{urn}/manually-identified-criteria", status_code=200)
+async def set_manually_identified_criteria(
+    urn: str,
+    data: dict = Body(...),
+    db=Depends(get_database)
+):
+    """
+    Set manually identified criteria for a system.
+
+    This endpoint allows experts to manually identify risk criteria beyond what is
+    automatically derived from Purpose/DeploymentContext (Article 6(3) residual cases).
+
+    Request body:
+    {
+        "hasManuallyIdentifiedCriterion": ["ai:CriticalInfrastructureCriterion", ...]
+    }
+
+    Returns:
+        Updated system with manually identified criteria
+    """
+    try:
+        # Find existing system
+        existing = await db.systems.find_one({"ai:hasUrn": urn})
+        if not existing:
+            raise HTTPException(status_code=404, detail="System not found")
+
+        # Extract criteria from request
+        manually_identified = data.get("hasManuallyIdentifiedCriterion", [])
+        if not isinstance(manually_identified, list):
+            manually_identified = [manually_identified] if manually_identified else []
+
+        # Update in MongoDB
+        await db.systems.update_one(
+            {"ai:hasUrn": urn},
+            {"$set": {"hasManuallyIdentifiedCriterion": manually_identified}}
+        )
+
+        # Update in Fuseki: remove old hasManuallyIdentifiedCriterion triples and add new ones
+        sparql = f"""
+        DELETE {{
+          GRAPH <http://ai-act.eu/ontology/data> {{
+            <{urn}> <http://ai-act.eu/ai#hasManuallyIdentifiedCriterion> ?o .
+          }}
+        }} WHERE {{
+          GRAPH <http://ai-act.eu/ontology/data> {{
+            <{urn}> <http://ai-act.eu/ai#hasManuallyIdentifiedCriterion> ?o .
+          }}
+        }};
+        """
+
+        # Add new criteria
+        for criterion in manually_identified:
+            criterion_uri = criterion if criterion.startswith("http") else f"http://ai-act.eu/ai#{criterion.split(':')[-1]}"
+            sparql += f"""
+        INSERT DATA {{
+          GRAPH <http://ai-act.eu/ontology/data> {{
+            <{urn}> <http://ai-act.eu/ai#hasManuallyIdentifiedCriterion> <{criterion_uri}> .
+          }}
+        }};
+        """
+
+        headers = {"Content-Type": "application/sparql-update"}
+        res = requests.post(
+            f"{end_point}/{dataset}/update",
+            data=sparql,
+            headers=headers,
+            auth=(user, password)
+        )
+        if not res.ok:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error updating manually identified criteria in Fuseki: {res.text}"
+            )
+
+        return {
+            "status": "updated",
+            "urn": urn,
+            "hasManuallyIdentifiedCriterion": manually_identified
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error setting manually identified criteria: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error setting manually identified criteria: {str(e)}"
+        )
+
+
 

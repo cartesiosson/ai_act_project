@@ -75,15 +75,19 @@ def derive_classifications(data: Dict, graph: Graph) -> Dict:
         "hasDeploymentContext": ["ai:Education", ...],
         "hasTrainingDataOrigin": ["ai:ExternalDataset", ...],
         "hasAlgorithmType": ["ai:TransformerModel", ...],
-        "hasModelScale": "ai:FoundationModelScale"
+        "hasModelScale": "ai:FoundationModelScale",
+        "parameterCount": 1000000000,
+        "autonomyLevel": "FullyAutonomous",
+        "isGenerallyApplicable": true
     }
 
     Returns:
     {
-        "hasCriteria": [...],
+        "hasActivatedCriterion": [...],  (from Purpose/Context via SWRL)
         "hasComplianceRequirement": [...],
         "hasRiskLevel": "ai:HighRisk",
-        "hasGPAIClassification": ["ai:GeneralPurposeAI"] or []
+        "hasGPAIClassification": ["ai:GeneralPurposeAI"] or [],
+        "hasCapabilityMetric": [...]  (from technical indicators)
     }
     """
     criteria_set: Set[str] = set()
@@ -163,11 +167,17 @@ def derive_classifications(data: Dict, graph: Graph) -> Dict:
     gpai_classification = ['ai:GeneralPurposeAI'] if is_gpai else []
     logger.info(f"GPAI Classification: {gpai_classification}")
 
+    # Step 7: Derive capability metrics (Articles 51-55)
+    # These are independent technical indicators that don't depend on Purpose/Context
+    capability_metrics = derive_capability_metrics(data)
+    logger.info(f"Capability Metrics: {capability_metrics}")
+
     result = {
-        'hasCriteria': sorted(list(criteria_set)),
+        'hasActivatedCriterion': sorted(list(criteria_set)),
         'hasComplianceRequirement': sorted(list(requirements_set)),
         'hasRiskLevel': max_risk,
         'hasGPAIClassification': gpai_classification,
+        'hasCapabilityMetric': capability_metrics,
     }
 
     logger.info(f"Derivation complete. Result: {result}")
@@ -235,6 +245,77 @@ def check_gpai_classification(model_scale: Optional[str]) -> bool:
 
     logger.info(f"GPAI check for {model_scale}: {is_foundation}")
     return is_foundation
+
+
+def derive_capability_metrics(data: Dict) -> List[str]:
+    """
+    Derive capability-based metrics for GPAI classification (Articles 51-55).
+
+    These metrics indicate technical capabilities that trigger GPAI-specific
+    compliance obligations, independent of purpose/context.
+
+    Capability triggers (hasCapabilityMetric):
+    1. Parameter Count: >10B parameters = high-capability indicator
+    2. Model Scale: FoundationModelScale = GPAI classification marker
+    3. Autonomy Level: FullyAutonomous = systemic risk indicator
+    4. Real-Time Processing: Deployed in real-time scenarios = performance/safety indicator
+    5. General Applicability: Can be adapted to multiple domains = broad impact indicator
+
+    Returns:
+        List of capability metrics (e.g., ['ai:HighParameterCount', 'ai:GeneralApplicability'])
+    """
+    metrics = []
+
+    # Check parameter count if available
+    param_count = data.get('parameterCount')
+    if param_count:
+        try:
+            count = int(param_count) if isinstance(param_count, str) else param_count
+            if count > 10_000_000_000:  # 10B threshold
+                metrics.append('ai:HighParameterCount')
+                logger.info(f"Capability metric: HighParameterCount ({count} parameters)")
+        except (ValueError, TypeError):
+            logger.debug(f"Could not parse parameterCount: {param_count}")
+
+    # Check model scale - FoundationModelScale is inherently high-capability
+    model_scale = data.get('hasModelScale')
+    if model_scale:
+        if isinstance(model_scale, list):
+            model_scale = model_scale[0] if model_scale else None
+
+        normalized = str(model_scale) if model_scale else ""
+        if 'FoundationModelScale' in normalized:
+            metrics.append('ai:FoundationModelCapability')
+            logger.info("Capability metric: FoundationModelCapability")
+
+    # Check autonomy level
+    autonomy = data.get('autonomyLevel')
+    if autonomy:
+        normalized = str(autonomy).lower()
+        if 'fully' in normalized or 'autonomous' in normalized:
+            metrics.append('ai:FullyAutonomousCapability')
+            logger.info("Capability metric: FullyAutonomousCapability (systemic risk indicator)")
+
+    # Check for real-time processing deployment
+    deployment_contexts = data.get('hasDeploymentContext', [])
+    if deployment_contexts:
+        for context in deployment_contexts:
+            normalized = str(context).lower()
+            if 'realtime' in normalized or 'real-time' in normalized:
+                metrics.append('ai:RealTimeProcessingCapability')
+                logger.info("Capability metric: RealTimeProcessingCapability")
+                break
+
+    # Check for general applicability
+    # This is indicated by lack of domain-specific restrictions or multi-purpose design
+    is_general = data.get('isGenerallyApplicable')
+    if is_general:
+        normalized = str(is_general).lower()
+        if normalized in ('true', '1', 'yes'):
+            metrics.append('ai:GenerallyApplicableCapability')
+            logger.info("Capability metric: GenerallyApplicableCapability (broad impact)")
+
+    return list(set(metrics))  # Remove duplicates
 
 
 def debug_ontology_traversal(data: Dict, graph: Graph) -> Dict:

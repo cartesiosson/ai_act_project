@@ -681,6 +681,34 @@ ai:hasModelScale a owl:ObjectProperty ;
     rdfs:domain ai:IntelligentSystem ;
     rdfs:range ai:ModelScale .
 
+# ===== NEW CRITERION PROPERTIES (Option C - Clear Division) =====
+# These three properties replace the confusing hasSystemCapabilityCriteria
+# Each addresses a distinct EU AI Act mechanism with clear semantics
+
+ai:hasActivatedCriterion a owl:ObjectProperty ;
+    rdfs:label "has Activated Criterion"@en,
+        "tiene Criterio Activado"@es ;
+    rdfs:comment "Criterion automatically derived from Purpose or DeploymentContext through SWRL rules. Corresponds to Annex III high-risk activity triggers."@en,
+        "Criterio derivado automáticamente de Propósito o Contexto de Despliegue mediante reglas SWRL. Corresponde a disparadores de actividades de alto riesgo del Anexo III."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+ai:hasManuallyIdentifiedCriterion a owl:ObjectProperty ;
+    rdfs:label "has Manually Identified Criterion"@en,
+        "tiene Criterio Identificado Manualmente"@es ;
+    rdfs:comment "Criterion identified by expert evaluation beyond automated rules. Addresses Article 6(3) residual high-risk cases not covered by Annex III."@en,
+        "Criterio identificado por evaluación de expertos más allá de las reglas automatizadas. Aborda casos residuales de alto riesgo del Artículo 6(3) no cubiertos por el Anexo III."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+ai:hasCapabilityMetric a owl:ObjectProperty ;
+    rdfs:label "has Capability Metric"@en,
+        "tiene Métrica de Capacidad"@es ;
+    rdfs:comment "Technical capability indicator triggering General Purpose AI (GPAI) classification. Corresponds to Articles 51-55 GPAI systemic risk assessment."@en,
+        "Indicador técnico de capacidad que dispara la clasificación de IA de Propósito General (GPAI). Corresponde a la evaluación de riesgo sistémico del GPAI de los Artículos 51-55."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
 # ===== MISSING CRITERION DEFINITIONS =====
 # These criteria are referenced by Purpose/Context instances but were not previously defined
 # Adding definitions with their activated requirements (for Phase 3 derivation)
