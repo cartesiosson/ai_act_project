@@ -467,9 +467,17 @@ export default function GraphView() {
         </div>
       </div>
 
-      <div style={{ position: "relative", flex: 1, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "relative", flex: 1, width: "100%", height: "100%" }}>
         {isLoading && (
-          <div style={{ textAlign: "center", color: "white" }}>
+          <div style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            textAlign: "center",
+            color: "white",
+            zIndex: 20
+          }}>
             <p style={{ fontSize: "18px", marginBottom: "10px" }}>⏳ Loading graph data...</p>
             <p style={{ fontSize: "14px", color: "#aaa" }}>Fetching systems from RDF store</p>
           </div>
@@ -477,13 +485,18 @@ export default function GraphView() {
 
         {loadingError && (
           <div style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             background: "rgba(220, 38, 38, 0.1)",
             border: "1px solid #dc2626",
             color: "#fca5a5",
             padding: "20px",
             borderRadius: "8px",
             maxWidth: "500px",
-            textAlign: "center"
+            textAlign: "center",
+            zIndex: 20
           }}>
             <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "8px" }}>⚠️ Error Loading Graph</p>
             <p style={{ fontSize: "14px" }}>{loadingError}</p>
@@ -499,7 +512,6 @@ export default function GraphView() {
           height="100%"
           style={{
             display: isLoading || loadingError ? "none" : "block",
-            position: "static",
             background: "#0f0f0f"
           }}
         ></svg>
