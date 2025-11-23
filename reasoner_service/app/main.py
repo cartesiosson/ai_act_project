@@ -132,32 +132,8 @@ async def reason(
             combined_graph = base_graph + system_graph + rules_graph
             print(f"DEBUG: Grafo combinado: {len(combined_graph)} triples total")
             
-            # 5. APLICAR INFERENCIAS HÍBRIDAS (EXTERNAS + FALLBACK)
+            # 5. APLICAR INFERENCIAS (Usando reglas SWRL genéricas)
             inferences_count = 0
-            
-            # Intentar usar motor de reglas externas primero
-            try:
-                print(f"DEBUG: Intentando cargar motor de reglas externas...")
-                import sys
-                
-                # Buscar directorio de reglas  
-                ontology_dir = os.path.dirname(os.environ.get("ONTOLOGY_PATH", "/ontologias/ontologia-v0.36.0.ttl"))
-                rules_dir = os.path.join(ontology_dir, "rules")
-                
-                if os.path.exists(rules_dir):
-                    sys.path.insert(0, rules_dir)
-                    from rules_engine import rules_engine
-                    
-                    # Aplicar reglas externas
-                    external_inferences = rules_engine.apply_rules(system_graph, combined_graph)
-                    inferences_count += external_inferences
-                    print(f"DEBUG: ✅ Motor externo aplicó {external_inferences} inferencias")
-                else:
-                    print(f"DEBUG: ❌ Directorio de reglas no encontrado: {rules_dir}")
-                    raise FileNotFoundError("Reglas externas no disponibles")
-                    
-            except Exception as e:
-                print(f"DEBUG: ⚠️  Motor externo falló ({e}), usando fallback hardcodeado")
         
 
 
