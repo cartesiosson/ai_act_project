@@ -1,0 +1,357 @@
+# Forensic Compliance Queries
+# Use these SPARQL queries to identify violated requirements after a security incident
+
+PREFIX ai: <http://ai-act.eu/ai#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# ============================================================
+# QUERY 1: Reconstruct proper classification for a system
+# ============================================================
+# Given a system's purpose and context, what criteria should it have?
+# Usage: Identify if system was misclassified at time of incident
+
+QUERY: PROPER_CLASSIFICATION
+SELECT ?system ?purpose ?context ?activatedCriterion ?criterionLabel
+WHERE {
+  # Find the system
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context ;
+          rdfs:label ?systemLabel .
+
+  # What criteria should this purpose activate?
+  ?purpose ai:activatesCriterion ?activatedCriterion .
+  ?activatedCriterion rdfs:label ?criterionLabel .
+}
+ORDER BY ?system ?criterionLabel
+---
+
+
+# ============================================================
+# QUERY 2: Identify ALL mandatory requirements for a system
+# ============================================================
+# Given proper classification, what are ALL compliance requirements?
+# Usage: Identify what controls SHOULD have been implemented
+
+QUERY: MANDATORY_REQUIREMENTS
+SELECT DISTINCT ?system ?criterion ?requirement ?requirementLabel ?requirementType
+WHERE {
+  # Start with the system
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  # Get all criteria that should activate
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  # Get all requirements activated by these criteria
+  ?criterion ai:activatesRequirement ?requirement .
+  ?requirement rdfs:label ?requirementLabel ;
+               rdf:type ?requirementType .
+}
+ORDER BY ?system ?requirementLabel
+---
+
+
+# ============================================================
+# QUERY 3: Find compliance gaps (requirements not implemented)
+# ============================================================
+# Which mandatory requirements are MISSING from the actual implementation?
+# Usage: Identify specific violations and their impact
+
+QUERY: COMPLIANCE_GAPS
+SELECT ?system ?missingRequirement ?requirementLabel ?requirementType
+WHERE {
+  # System with its proper classification
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  # All criteria that SHOULD activate
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  # All requirements activated by these criteria
+  ?criterion ai:activatesRequirement ?requirement .
+  ?requirement rdfs:label ?requirementLabel ;
+               rdf:type ?requirementType .
+
+  # BUT this requirement is NOT actually implemented
+  MINUS {
+    ?system ai:hasComplianceRequirement ?requirement .
+  }
+
+  BIND(?requirement AS ?missingRequirement)
+}
+ORDER BY ?system ?requirementLabel
+---
+
+
+# ============================================================
+# QUERY 4: Security-specific compliance gaps
+# ============================================================
+# Which SECURITY requirements were not implemented?
+# Usage: Focus on controls that could have prevented the incident
+
+QUERY: MISSING_SECURITY_REQUIREMENTS
+SELECT ?system ?missingRequirement ?label
+WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  # Get SECURITY requirements specifically
+  ?criterion ai:activatesRequirement ?requirement .
+  ?requirement rdf:type ai:SecurityRequirement ;
+               rdfs:label ?label .
+
+  # Missing from implementation
+  MINUS {
+    ?system ai:hasComplianceRequirement ?requirement .
+  }
+
+  BIND(?requirement AS ?missingRequirement)
+}
+ORDER BY ?system
+---
+
+
+# ============================================================
+# QUERY 5: Article 6(3) hidden requirements
+# ============================================================
+# What extra requirements are activated ONLY by Article 6(3) criteria?
+# These are the "residual risk" requirements missed by Annex III
+
+QUERY: ARTICLE_6_3_HIDDEN_REQUIREMENTS
+SELECT ?system ?manualCriterion ?manualCriterionLabel ?hiddenRequirement ?hiddenLabel
+WHERE {
+  # System with manual criteria (Article 6(3))
+  ?system a ai:IntelligentSystem ;
+          ai:hasManuallyIdentifiedCriterion ?manualCriterion .
+
+  ?manualCriterion rdfs:label ?manualCriterionLabel ;
+                   ai:activatesRequirement ?hiddenRequirement .
+
+  ?hiddenRequirement rdfs:label ?hiddenLabel .
+
+  # Check: would Annex III have activated this?
+  # If NOT, then it's a "hidden" requirement
+  MINUS {
+    ?system ai:hasActivatedCriterion ?annex3Criterion .
+    ?annex3Criterion ai:activatesRequirement ?hiddenRequirement .
+  }
+}
+ORDER BY ?system ?manualCriterionLabel
+---
+
+
+# ============================================================
+# QUERY 6: Data handling violation detection
+# ============================================================
+# Systems processing personal data but missing data governance requirements
+
+QUERY: DATA_HANDLING_VIOLATIONS
+SELECT ?system ?dataType ?requiredRequirement ?label
+WHERE {
+  # Systems processing personal or sensitive data
+  ?system a ai:IntelligentSystem ;
+          ai:processesDataType ?dataType .
+
+  # Data types that require strict governance
+  FILTER (?dataType IN (ai:PersonalData, ai:SensitivePersonalData, ai:BiometricData))
+
+  # Data governance requirements that apply
+  ?criterion ai:activatesRequirement ?requiredRequirement .
+  ?requiredRequirement rdf:type ai:DataGovernanceRequirement ;
+                       rdfs:label ?label .
+
+  # System is MISSING this requirement
+  MINUS {
+    ?system ai:hasComplianceRequirement ?requiredRequirement .
+  }
+}
+ORDER BY ?system ?label
+---
+
+
+# ============================================================
+# QUERY 7: Human oversight violations
+# ============================================================
+# High-risk systems that should have human oversight but don't
+
+QUERY: HUMAN_OVERSIGHT_VIOLATIONS
+SELECT ?system ?riskLevel ?requiredOversight
+WHERE {
+  # High-risk systems
+  ?system a ai:IntelligentSystem ;
+          ai:hasRiskLevel ai:HighRisk ;
+          ai:hasPurpose ?purpose .
+
+  # What human oversight is required?
+  ?purpose ai:activatesCriterion ?criterion .
+  ?criterion ai:activatesRequirement ai:HumanOversightRequirement .
+
+  # Is it actually implemented?
+  MINUS {
+    ?system ai:hasComplianceRequirement ai:HumanOversightRequirement .
+  }
+
+  BIND("HumanOversightRequirement" AS ?requiredOversight)
+  BIND(ai:HighRisk AS ?riskLevel)
+}
+ORDER BY ?system
+---
+
+
+# ============================================================
+# QUERY 8: Timeline reconstruction
+# ============================================================
+# What compliance state should system have been in at incident date?
+# (Requires temporal data: ai:effectiveDate, ai:modificationDate)
+
+QUERY: HISTORICAL_COMPLIANCE_STATE
+SELECT ?system ?requirement ?shouldHaveBeenImplementedBy ?wasImplemented
+WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context ;
+          ai:effectiveDate ?deployDate .
+
+  # Required requirements
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  ?criterion ai:activatesRequirement ?requirement .
+
+  # Grace period for compliance (assume 6 months)
+  BIND(CONCAT(SUBSTR(STR(?deployDate), 1, 7), "-06") AS ?complianceDeadline)
+
+  # Was it actually implemented by incident date?
+  OPTIONAL {
+    ?system ai:hasComplianceRequirement ?requirement ;
+            ai:requirementImplementedDate ?implDate .
+    FILTER (?implDate <= ?complianceDeadline)
+    BIND(true AS ?wasImplemented)
+  }
+
+  BIND(COALESCE(?wasImplemented, false) AS ?implemented)
+}
+ORDER BY ?system ?requirement
+---
+
+
+# ============================================================
+# QUERY 9: Cross-system vulnerability pattern detection
+# ============================================================
+# Identify other systems with same compliance gap that caused this incident
+# Usage: Proactive remediation across similar systems
+
+QUERY: SIMILAR_VULNERABILITY_PATTERNS
+SELECT ?otherSystem ?commonGap ?systemCount
+WHERE {
+  # First, identify the violation pattern from this incident
+  # Example: missing biometric security requirement
+  ?incidentSystem a ai:IntelligentSystem ;
+                  ai:hasPurpose ai:BiometricIdentification ;
+                  ai:hasDeploymentContext ?context .
+
+  # The missing requirement that caused the incident
+  # (Would be: ai:BiometricSecurityRequirement, ai:EncryptionRequirement, etc.)
+
+  # Now find OTHER systems with same gap
+  ?otherSystem a ai:IntelligentSystem ;
+               ai:hasDeploymentContext ?context ;
+               ai:hasPurpose ?purpose .
+
+  FILTER (?otherSystem != ?incidentSystem)
+
+  # Check if they have the same missing requirement
+  # Same purpose/context = same criteria = same required requirements
+  ?purpose ai:activatesCriterion ?criterion .
+  ?criterion ai:activatesRequirement ?commonGap .
+
+  MINUS {
+    ?otherSystem ai:hasComplianceRequirement ?commonGap .
+  }
+}
+GROUP BY ?commonGap
+ORDER BY DESC(?systemCount)
+---
+
+
+# ============================================================
+# QUERY 10: Enforcement severity assessment
+# ============================================================
+# Determine severity level based on compliance gaps
+
+QUERY: ENFORCEMENT_SEVERITY
+SELECT ?system ?violationCount ?riskLevel ?estimatedFineCategory
+WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasRiskLevel ?riskLevel .
+
+  # Count how many requirements are missing
+  {
+    SELECT ?system (COUNT(?missingReq) AS ?violationCount)
+    WHERE {
+      ?system a ai:IntelligentSystem ;
+              ai:hasPurpose ?purpose ;
+              ai:hasDeploymentContext ?context .
+
+      { ?purpose ai:activatesCriterion ?criterion }
+      UNION
+      { ?context ai:triggersCriterion ?criterion }
+
+      ?criterion ai:activatesRequirement ?missingReq .
+
+      MINUS {
+        ?system ai:hasComplianceRequirement ?missingReq .
+      }
+    }
+    GROUP BY ?system
+  }
+
+  # Map violation count to fine category
+  BIND(
+    IF(?violationCount >= 10 AND ?riskLevel = ai:HighRisk,
+      "Category A (€10M+)",
+      IF(?violationCount >= 5,
+        "Category B (€5M-10M)",
+        "Category C (<€5M)"
+      )
+    ) AS ?estimatedFineCategory
+  )
+}
+ORDER BY DESC(?violationCount)
+---
+
+
+# ============================================================
+# USAGE EXAMPLES FOR SML INTEGRATION
+# ============================================================
+
+# Example 1: Complete forensic analysis workflow
+# 1. PROPER_CLASSIFICATION → Identify what system SHOULD be
+# 2. MANDATORY_REQUIREMENTS → Get complete requirement list
+# 3. COMPLIANCE_GAPS → Find violations
+# 4. MISSING_SECURITY_REQUIREMENTS → Focus on security
+# 5. ENFORCEMENT_SEVERITY → Determine fine amount
+
+# Example 2: Proactive vulnerability detection
+# 1. SIMILAR_VULNERABILITY_PATTERNS → Find at-risk systems
+# 2. MISSING_SECURITY_REQUIREMENTS → Prioritize highest risk
+# 3. HUMAN_OVERSIGHT_VIOLATIONS → Manual remediation needed
+
+# Example 3: Historical compliance reconstruction
+# 1. HISTORICAL_COMPLIANCE_STATE → What SHOULD have been done
+# 2. ARTICLE_6_3_HIDDEN_REQUIREMENTS → What WAS overlooked
+# 3. ENFORCEMENT_SEVERITY → Determine if willful negligence
