@@ -44,12 +44,23 @@ export default function GraphView() {
   const getNodeType = (uri: string): string => {
     if (uri.startsWith("urn:uuid:")) return "system";
     const lowerUri = uri.toLowerCase();
-    if (lowerUri.includes("purpose")) return "purpose";
-    if (lowerUri.includes("deployment") || lowerUri.includes("context")) return "deployment";
-    if (lowerUri.includes("algorithm") || lowerUri.includes("model") || lowerUri.includes("data") || lowerUri.includes("training")) return "technical";
-    if (lowerUri.includes("capabilit")) return "capability";
+
+    // Be more specific to avoid false positives - check for exact concept names
+    if (lowerUri.includes("purpose") && !lowerUri.includes("system")) return "purpose";
+    if ((lowerUri.includes("deployment") || lowerUri.includes("context")) && !lowerUri.includes("system")) return "deployment";
+    if (lowerUri.includes("capability") && !lowerUri.includes("system")) return "capability";
     if (lowerUri.includes("criterion") || lowerUri.includes("requirement")) return "compliance";
+
+    // Technical concepts - more specific patterns
+    if (lowerUri.includes("algorithm") || lowerUri.includes("model/") || lowerUri.includes("#model")) return "technical";
+    if (lowerUri.includes("training") && (lowerUri.includes("data") || lowerUri.includes("trainingdata"))) return "technical";
+    if (lowerUri.includes("trainingdataorigin") || lowerUri.includes("trainingdatasource")) return "technical";
+    if (lowerUri.includes("inputdata") || lowerUri.includes("outputdata")) return "data";
     if (lowerUri.includes("scale") || lowerUri.includes("metric") || lowerUri.includes("performance")) return "technical";
+
+    // Data-related
+    if (lowerUri.includes("data") && !lowerUri.includes("training")) return "data";
+
     return "other";
   };
 
