@@ -24,7 +24,6 @@ const NODE_CATEGORIES: { [key: string]: { color: string; icon: string; label: st
   deployment: { color: "#ec4899", icon: "📍", label: "Despliegue" },
   technical: { color: "#f97316", icon: "⚙️", label: "Técnico" },
   capability: { color: "#10b981", icon: "🚀", label: "Capacidad" },
-  data: { color: "#06b6d4", icon: "📊", label: "Dato" },
   compliance: { color: "#14b8a6", icon: "✅", label: "Cumplimiento" },
   other: { color: "#6b7280", icon: "◦", label: "Otro" },
 };
@@ -58,11 +57,11 @@ export default function GraphView() {
     if (lowerUri.includes("capability")) return "capability";
     if (lowerUri.includes("criterion") || lowerUri.includes("requirement")) return "compliance";
 
-    // Technical concepts
+    // Technical concepts - includes data, algorithms, models, training, etc.
     if (lowerUri.includes("algorithm") || lowerUri.includes("model")) return "technical";
     if (lowerUri.includes("training")) return "technical";
+    if (lowerUri.includes("data")) return "technical";
     if (lowerUri.includes("metric") || lowerUri.includes("performance") || lowerUri.includes("scale")) return "technical";
-    if (lowerUri.includes("data")) return "data";
 
     return "other";
   };
