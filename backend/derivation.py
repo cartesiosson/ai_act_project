@@ -318,6 +318,38 @@ def derive_capability_metrics(data: Dict) -> List[str]:
     return list(set(metrics))  # Remove duplicates
 
 
+def derive_requirements_from_criteria(criteria: List[str], graph: Graph) -> List[str]:
+    """
+    Derive compliance requirements from a list of criteria.
+
+    This function traverses the ontology to find all requirements activated by
+    the given criteria. It works for both automatically derived criteria (Annex III)
+    and manually identified criteria (Article 6(3)).
+
+    Args:
+        criteria: List of criterion URIs (e.g., ['ai:BiometricIdentificationCriterion'])
+        graph: The RDF graph to traverse
+
+    Returns:
+        List of requirement URIs activated by these criteria
+    """
+    requirements_set: Set[str] = set()
+
+    for criterion in criteria:
+        logger.info(f"Deriving requirements from criterion: {criterion}")
+
+        # Get requirements activated by this criterion
+        requirements = get_ontology_values(
+            criterion,
+            "http://ai-act.eu/ai#activatesRequirement",
+            graph
+        )
+        logger.info(f"  -> activatesRequirement: {requirements}")
+        requirements_set.update(requirements)
+
+    return sorted(list(requirements_set))
+
+
 def debug_ontology_traversal(data: Dict, graph: Graph) -> Dict:
     """
     Debug function to show step-by-step ontology traversal
