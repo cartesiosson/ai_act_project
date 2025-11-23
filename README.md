@@ -274,25 +274,36 @@ Expert evaluation determines additional risk
 System marked with: hasManuallyIdentifiedCriterion
      ↓
 Set via dedicated API endpoint:
-     PUT /systems/{system_id}/manually-identified-criteria
+     PUT /systems/{urn}/manually-identified-criteria
      ↓
-Risk level updated: HighRisk (if not already)
+Backend automatically derives requirements:
+     Criterion.activatesRequirement → Requirements
      ↓
-Requirements activated: Based on identified criterion
+Persist both criteria + derived requirements:
+     hasManuallyIdentifiedCriterion + hasComplianceRequirement
+     ↓
+Updates: MongoDB + Fuseki (synchronized)
 ```
 
 **Implementation**:
+- **Backend Derivation** (`/backend/derivation.py`):
+  - `derive_requirements_from_criteria()` function
+  - Traverses ontology to find all requirements activated by criteria
+  - Works identically for Annex III and Article 6(3) criteria
 - **Backend Endpoint** (`/backend/routers/systems.py`):
   - `PUT /systems/{urn}/manually-identified-criteria`
-  - Updates MongoDB + Fuseki with expert decisions
-- **Property Definition** (`ontologia-v0.37.2.ttl`):
-  - `hasManuallyIdentifiedCriterion` ObjectProperty
-  - Domain: `IntelligentSystem`
-  - Range: `Criterion`
+  - Calls derivation function to compute requirements from manual criteria
+  - Merges with existing automatically derived requirements
+  - Persists merged requirements to both MongoDB and Fuseki
+- **Property Definitions** (`ontologia-v0.37.2.ttl`):
+  - `hasManuallyIdentifiedCriterion` ObjectProperty (expert-selected criteria)
+  - `activatesRequirement` ObjectProperty (criterion → requirement relationship)
+  - Domain: `Criterion`, Range: `ComplianceRequirement`
 - **Frontend Form** (`SystemsPage.tsx`):
   - "Section 6: Expert Evaluation - Additional Risk Criteria"
   - Multi-select interface for domain experts
   - Clear documentation of Article 6(3) legal basis
+  - Auto-updates derived requirements display
 
 **Request Example**:
 ```bash
@@ -306,6 +317,25 @@ curl -X PUT http://localhost:8000/systems/urn:uuid:abc-123/manually-identified-c
   }'
 ```
 
+**Response Example**:
+```json
+{
+  "status": "updated",
+  "urn": "urn:uuid:abc-123",
+  "hasManuallyIdentifiedCriterion": [
+    "ai:DiscriminationRiskCriterion",
+    "ai:UnintendedContextRiskCriterion"
+  ],
+  "hasComplianceRequirement": [
+    "ai:BiasMonitoringRequirement",      // from DiscriminationRiskCriterion
+    "ai:HumanOversightRequirement",      // from both criteria
+    "ai:TransparencyRequirement",        // from UnintendedContextRiskCriterion
+    "ai:DataGovernanceRequirement"       // merged with existing auto-derived
+  ],
+  "message": "Set 2 manual criteria and derived 3 new requirements"
+}
+```
+
 **Real-World Example**:
 ```json
 {
@@ -314,15 +344,28 @@ curl -X PUT http://localhost:8000/systems/urn:uuid:abc-123/manually-identified-c
     "hasPurpose": ["ai:ContentRecommendation"],
     "hasDeploymentContext": ["ai:Commerce"]
   },
-  "Annex III Result": "MinimalRisk (no high-risk category applies)",
-  "Expert Evaluation (Article 6(3))": {
-    "Finding": "System can amplify political misinformation despite low-risk purpose",
-    "Decision": "Designate as High-Risk via Article 6(3)"
+  "Annex III Automatic Classification": {
+    "Result": "MinimalRisk (no high-risk purpose/context applies)",
+    "hasActivatedCriterion": []
   },
-  "Outcome": {
+  "Expert Evaluation (Article 6(3)) - MANUAL": {
+    "Finding": "System can amplify political misinformation despite low-risk purpose",
+    "Decision": "Designate as High-Risk via Article 6(3)",
+    "ManualCriteria": ["ai:MisinformationAmplificationRiskCriterion"]
+  },
+  "Automatic Requirement Derivation": {
+    "Process": "MisinformationAmplificationRiskCriterion.activatesRequirement → Requirements",
+    "DerivedRequirements": ["ai:TransparencyRequirement", "ai:HumanOversightRequirement", "ai:ContentModerationRequirement"]
+  },
+  "Final System State": {
+    "hasActivatedCriterion": [],
     "hasManuallyIdentifiedCriterion": ["ai:MisinformationAmplificationRiskCriterion"],
     "hasRiskLevel": "ai:HighRisk",
-    "hasRequirements": ["ai:TransparencyRequirement", "ai:HumanOversightRequirement"]
+    "hasComplianceRequirement": [
+      "ai:TransparencyRequirement",
+      "ai:HumanOversightRequirement",
+      "ai:ContentModerationRequirement"
+    ]
   }
 }
 ```
@@ -470,13 +513,15 @@ Articles 51-55 Requirements Activated
 
 | Aspect | Annex III (Purpose-Based) | Article 6(3) (Residual) | GPAI Articles 51-55 (Capability-Based) |
 |--------|--------------------------|----------------------|----------------------------------|
-| **Trigger** | System's declared purpose | Expert judgment | Technical characteristics |
-| **Decision** | Automatic (SWRL rules) | Manual (expert endpoint) | Automatic (Python backend) |
-| **Property** | `hasActivatedCriterion` | `hasManuallyIdentifiedCriterion` | `hasCapabilityMetric` |
+| **Criteria Selection** | Automatic (SWRL rules from Purpose/Context) | Manual (expert decision) | Automatic (technical indicators) |
+| **Criteria Property** | `hasActivatedCriterion` | `hasManuallyIdentifiedCriterion` | `hasCapabilityMetric` |
+| **Requirement Derivation** | Automatic from criteria | **Automatic from criteria** | Automatic from metrics |
+| **Requirements Property** | `hasComplianceRequirement` | **`hasComplianceRequirement`** | `hasComplianceRequirement` |
 | **Examples** | Biometric ID, education eval | Unforeseen risks, emerging threats | Large LLMs, foundation models |
 | **Scope** | 8 high-risk categories | Residual/unlisted cases | Systemic risk potential |
-| **Auditability** | Full rule trace | Expert decision log | Parameter analysis trace |
-| **EU AI Act** | Annex III (categorical) | Article 6(3) (discretionary) | Articles 51-55 (capability-based) |
+| **Auditability** | Full rule trace | Expert decision log + criteria trace | Parameter analysis trace |
+| **EU AI Act Basis** | Annex III (categorical) | Article 6(3) (discretionary) | Articles 51-55 (capability-based) |
+| **Implementation** | SWRL + RDF traversal | API endpoint + ontology traversal | Python backend + RDF traversal |
 
 ---
 
