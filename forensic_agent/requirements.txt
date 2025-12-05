@@ -1,0 +1,29 @@
+# Forensic Analysis Agent Dependencies
+
+# Web Framework
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# LLM Integration
+anthropic==0.40.0  # Claude API
+# ollama==0.4.5  # Optional: For Llama 3.2 local
+
+# Semantic Web / RDF
+rdflib==7.1.1
+SPARQLWrapper==2.0.0
+
+# HTTP Client
+httpx==0.28.1
+aiohttp==3.11.10
+
+# Utilities
+python-dateutil==2.9.0
+python-dotenv==1.0.1
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+pytest-mock==3.14.0

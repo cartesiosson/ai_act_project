@@ -66,6 +66,43 @@ services:
       - "${REASONER_PORT}:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # Para GPU (descomentar si tienes GPU NVIDIA):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  forensic_agent:
+    build: ./forensic_agent
+    depends_on:
+      - fuseki
+      - ollama
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-ollama}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OLLAMA_ENDPOINT=${OLLAMA_ENDPOINT:-http://ollama:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
+      - FUSEKI_ENDPOINT=${FUSEKI_ENDPOINT}
+      - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
+      - MAPPINGS_PATH=/ontologias/mappings
+      - FORENSIC_PORT=${FORENSIC_PORT:-8001}
+    volumes:
+      - ./forensic_agent/app:/app/app
+      - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
+      - ./ontologias/mappings:/ontologias/mappings:ro
+    ports:
+      - "${FORENSIC_PORT:-8001}:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
 
   ontologias:
     build: ./ontologias
@@ -102,3 +139,4 @@ volumes:
   fuseki_data:
   mongo_data:
   frontend_node_modules:
+  ollama_data:
