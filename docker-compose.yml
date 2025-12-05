@@ -52,6 +52,7 @@ services:
     volumes:
       - ./backend:/app
       - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
+      - ./ontologias/mappings:/ontologias/mappings:ro
 
   reasoner:
     build: ./reasoner_service
@@ -60,6 +61,7 @@ services:
     volumes:
       - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
       - ./ontologias/rules:/ontologias/rules:ro
+      - ./ontologias/mappings:/ontologias/mappings:ro
     ports:
       - "${REASONER_PORT}:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000

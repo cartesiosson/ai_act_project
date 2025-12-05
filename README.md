@@ -402,22 +402,25 @@ ai_act_project/
 - [x] React frontend for system registration
 - [x] MongoDB + Fuseki dual storage
 - [x] Docker containerization
+- [x] ISO 42001 core mappings (15 mappings, Phase 2)
+- [x] NIST AI RMF mappings (16 mappings, Phase 3)
+- [x] Multi-framework documentation (31 total mappings)
 
 ### 🚧 In Progress
 
 - [ ] **Forensic Analysis Agent** (Post-incident compliance auditing)
+  - [ ] Agent architecture design
   - [ ] Incident extraction service (LLM-based)
   - [ ] SPARQL forensic queries
   - [ ] Compliance gap analyzer
-  - [ ] Report generation
+  - [ ] Multi-framework report generation
 
 ### 📅 Planned
 
 - [ ] Advanced SHACL shapes (100% coverage)
 - [ ] MCP (Model Context Protocol) integration
+- [ ] ISO 42001 full control framework (30+ controls beyond core 15)
 - [ ] AIRO ontology export/import
-- [ ] ISO 42001 mappings
-- [ ] NIST AI RMF alignment
 - [ ] Automated penalty calculation
 - [ ] Multi-language support (French, German)
 
@@ -451,6 +454,126 @@ ai_act_project/
 - System registration forms
 - Compliance visualization
 - Requirement tracking
+
+✅ **Multi-Framework Compliance** (NEW)
+- 31 total mappings across ISO 42001 and NIST AI RMF
+- Cross-jurisdictional incident analysis (EU + US)
+- Corporate compliance integration (ISO 42001 certifications)
+- Historical incident evaluation (pre-EU AI Act)
+- Comparative analysis (mandatory vs voluntary frameworks)
+
+### Multi-Framework Integration
+
+The platform supports **multi-framework compliance analysis** for comprehensive incident evaluation and global benchmarking.
+
+**Current Coverage:**
+
+| Framework | Type | Mappings | Confidence | Status |
+|-----------|------|----------|------------|--------|
+| **EU AI Act** | Mandatory regulation | Base ontology | - | ✅ Active |
+| **ISO 42001** | Certification standard | 15 | 87% HIGH | ✅ Complete |
+| **NIST AI RMF** | Voluntary guidance | 16 | 100% HIGH | ✅ Complete |
+| **Total** | Multi-framework | **31** | **94% HIGH** | **Ready for forensic agent** |
+
+---
+
+#### ISO 42001 Integration
+
+**Current Status:** ✅ Phase 2 Complete
+
+The platform now includes **15 core ISO 42001 mappings** for multi-framework forensic analysis:
+
+**Mapping Coverage:**
+- 15 bidirectional mappings between EU AI Act requirements and ISO 42001 controls
+- 87% HIGH confidence, 13% MEDIUM confidence
+- Covers ISO sections: 5.1, 8.1-8.7, 9.1-9.2, 10.1
+
+**ISO Sections Mapped:**
+- **8.1** - Risk assessment and treatment
+- **8.2** - Performance evaluation (accuracy, robustness)
+- **8.3** - Data governance and bias detection
+- **8.4** - Documentation and audit trails
+- **8.5** - Information security (biometric, cybersecurity)
+- **8.6** - Human oversight
+- **8.7** - Transparency and explainability
+- **9.1** - Monitoring and measurement
+- **9.2** - Internal audit (conformity assessment)
+- **10.1** - Incident management
+
+**Why ISO 42001?**
+- Most EU enterprises already certified or pursuing ISO 42001
+- Enables corporate compliance integration
+- Strengthens forensic analysis: "ISO certified but EU non-compliant"
+- Provides evidence trail for enforcement actions
+- Detects certification gaps during incident investigation
+
+**Files:**
+- `ontologias/mappings/iso-42001-mappings.ttl` (15 mappings)
+- `ontologias/mappings/README.md` (comprehensive documentation)
+
+**Implementation Timeline:**
+- ✅ **Phase 1:** Basic ISO concepts in ontology (v0.37.2)
+- ✅ **Phase 2 (COMPLETE):** Core 15 mappings for forensic agent
+- 📅 **Phase 3 (Future):** Full ISO 42001 control framework (30+ controls)
+
+---
+
+#### NIST AI RMF Integration
+
+**Current Status:** ✅ Phase 3 Complete
+
+The platform now includes **16 NIST AI RMF mappings** for global incident analysis and cross-jurisdictional compliance:
+
+**Mapping Coverage:**
+- 16 bidirectional mappings between EU AI Act requirements and NIST AI RMF functions
+- 100% HIGH confidence
+- Covers 4 NIST functions with 12 key categories
+
+**NIST Functions Mapped:**
+- **GOVERN** (3 mappings) - Legal requirements, accountability, transparency
+- **MAP** (4 mappings) - Context of use, risk categorization, data quality/fairness
+- **MEASURE** (4 mappings) - Performance metrics, testing, bias monitoring
+- **MANAGE** (5 mappings) - Human oversight, monitoring, incident response, security
+
+**Applicability Contexts:**
+- `GLOBAL_INCIDENTS`: 13 mappings (81%) - Worldwide AI incidents
+- `US_INCIDENTS`: 8 mappings (50%) - US-specific incidents
+- `COMPARATIVE_ANALYSIS`: 7 mappings (44%) - Mandatory vs voluntary frameworks
+- `VOLUNTARY_COMPLIANCE`: 5 mappings (31%) - Best practices adoption
+
+**Use Cases:**
+- **Global Incidents:** Analyze US-based AI incidents (e.g., Amazon Rekognition, Clearview AI)
+- **Historical Analysis:** Evaluate pre-2024 incidents using NIST best practices available at the time
+- **Benchmarking:** Compare US voluntary framework vs EU mandatory regulations
+- **Multinational Systems:** Identify gaps between US NIST compliance and EU AI Act requirements
+- **Negligence Detection:** "System ignored voluntary NIST guidance that would have prevented incident"
+
+**Why NIST AI RMF?**
+- ~45% of AIAAIC incidents are US-based
+- Many EU multinational companies also follow NIST guidance
+- Enables comparative analysis: "System followed NIST but would fail EU AI Act"
+- Useful for retroactive analysis of pre-regulation incidents
+- NIST AI RMF 1.0 published January 2023 (predates EU AI Act enforcement)
+
+**Files:**
+- `ontologias/mappings/nist-ai-rmf-mappings.ttl` (16 mappings)
+- `ontologias/mappings/README.md` (comprehensive documentation with usage examples)
+
+**Implementation Timeline:**
+- ✅ **Phase 1 (v0.37.1):** NIST concepts existed, removed in v0.37.2 for simplification
+- ✅ **Phase 2:** ISO 42001 prioritized for EU compliance
+- ✅ **Phase 3 (COMPLETE):** NIST AI RMF mappings (4 functions, 12 categories)
+  - Contextual activation for US/global incidents
+  - Comparative analysis mode
+  - Separate mapping file with applicability contexts
+
+**Note:** NIST AI RMF is **voluntary guidance** (not legally binding in EU), used primarily for:
+- Analyzing incidents outside EU jurisdiction
+- Comparative framework studies
+- Multinational corporate compliance strategies
+- Historical incident analysis (pre-EU AI Act enforcement)
+
+---
 
 ### Technology Stack
 
