@@ -1,69 +1,84 @@
 # Forensic Agent Benchmark
 
-Sistema de benchmarking para evaluar el rendimiento y calidad del agente forense sobre 100 incidentes sintéticos.
+Sistema de benchmarking para evaluar el rendimiento y calidad del agente forense.
+
+## Tipos de Benchmark
+
+### 1. Benchmark Sintético
+100 incidentes generados basados en patrones reales de AIAAIC.
+
+### 2. Benchmark Real (AIAAIC)
+Incidentes reales del repositorio [AIAAIC](https://www.aiaaic.org/aiaaic-repository).
 
 ## Estructura
 
 ```
 benchmark/
-├── generate_incidents.py      # Generador de incidentes sintéticos
-├── run_benchmark.py           # Ejecutor del benchmark
-├── upload_to_fuseki.py        # Subida de resultados a Fuseki
-├── benchmark_incidents.json   # 100 incidentes generados
-├── benchmark_output.log       # Log de ejecución
-└── results/                   # Resultados del benchmark
-    ├── benchmark_results_*.json    # Resultados completos
-    └── benchmark_stats_*.json      # Estadísticas agregadas
+├── run_benchmark_sintetico.py    # Benchmark con datos sintéticos
+├── run_benchmark_real.py         # Benchmark con datos reales AIAAIC
+├── generate_synthetic_incidents.py # Generador de incidentes sintéticos
+├── upload_to_fuseki.py           # Subida de resultados a Fuseki
+├── analyze_results.py            # Análisis de resultados
+├── benchmark_incidents.json      # 100 incidentes sintéticos pre-generados
+└── results/                      # Resultados de benchmarks
+    ├── benchmark_results_*.json       # Resultados sintéticos
+    ├── benchmark_stats_*.json         # Estadísticas sintéticas
+    ├── real_benchmark_results_*.json  # Resultados reales
+    └── real_benchmark_stats_*.json    # Estadísticas reales
 ```
 
 ## Uso
 
-### 1. Generar Incidentes Sintéticos
+### Benchmark Sintético
+
+#### 1. Generar Incidentes Sintéticos (opcional)
 
 ```bash
-python3 generate_incidents.py
+python3 generate_synthetic_incidents.py
 ```
 
-Genera 100 incidentes sintéticos basados en patrones reales de AIAAIC:
-- 40 discriminación
-- 30 safety_failure
-- 20 privacy_violation
-- 10 bias
+Genera 100 incidentes sintéticos basados en patrones reales:
+- Discriminación (40%)
+- Safety failures (30%)
+- Privacy violations (20%)
+- Bias (10%)
 
-Tipos de sistemas cubiertos:
-- Facial Recognition Bias
-- Hiring Discrimination
-- Credit Scoring Bias
-- Healthcare AI Errors
-- Predictive Policing
-- Data Breaches
-- Emotion Recognition
-- Social Scoring
-- Deepfakes
-- Autonomous Vehicles
-
-### 2. Ejecutar Benchmark
+#### 2. Ejecutar Benchmark Sintético
 
 ```bash
-python3 run_benchmark.py
+python3 run_benchmark_sintetico.py
 ```
 
-Ejecuta análisis forense sobre los 100 incidentes y recolecta:
+Analiza los 100 incidentes sintéticos de `benchmark_incidents.json`.
 
-**Métricas de Rendimiento:**
-- Tiempo de procesamiento (mean, median, min, max, stdev)
-- Tasa de éxito
-- Tasa de fallo
+### Benchmark Real (AIAAIC)
 
-**Métricas de Calidad:**
-- Confidence scores (mean, median, min, max, stdev)
-- Distribución de niveles de riesgo (Unacceptable, HighRisk, etc.)
-- Distribución de tipos de incidente
+```bash
+python3 run_benchmark_real.py
+```
 
-**Salidas:**
-- `results/benchmark_results_TIMESTAMP.json` - Resultados completos
-- `results/benchmark_stats_TIMESTAMP.json` - Estadísticas agregadas
-- `benchmark_output.log` - Log de ejecución
+El script:
+1. Descarga incidentes reales del [AIAAIC Repository](https://docs.google.com/spreadsheets/d/1Bn55B4xz21-_Rgdr8BBb2lt0n_4rzLGxFADMlVW0PYI/)
+2. Pregunta cuántos casos analizar
+3. Ejecuta el análisis forense
+4. Genera reportes de resultados
+
+**Ejemplo de uso:**
+```
+======================================================================
+AIAAIC Real Incident Benchmark
+======================================================================
+
+Fetching AIAAIC incidents from Google Sheets...
+Loaded 543 real incidents from AIAAIC
+
+Total available incidents: 543
+
+Number of cases to analyze (1-543, or 'all'): 20
+
+Selected 20 incidents for analysis
+...
+```
 
 ### 3. Subir Resultados a Fuseki
 
@@ -71,69 +86,64 @@ Ejecuta análisis forense sobre los 100 incidentes y recolecta:
 python3 upload_to_fuseki.py
 ```
 
-Convierte los resultados del análisis forense a RDF y los sube a Fuseki.
+Convierte los resultados a RDF y los sube al triplestore.
 
-Para cada sistema exitosamente analizado, crea:
-- Sistema AI con propiedades (nombre, organización, propósito, riesgo)
-- Incidente asociado (tipo, severidad, fecha, poblaciones afectadas)
-- Requisitos EU AI Act aplicables
-- Gaps de compliance identificados
-- Confianza de extracción
+## Métricas Recolectadas
 
-**Namespaces:**
-- `http://ai-act.eu/ai#` - Ontología EU AI Act
-- `http://ai-act.eu/forensic#` - Extensión forense
+**Rendimiento:**
+- Tiempo de procesamiento (mean, median, min, max, stdev)
+- Tasa de éxito / fallo
+- Throughput (incidentes/minuto)
 
-**Named Graphs:**
-- `http://ai-act.eu/forensic/systems/{incident_id}` - Un grafo por sistema
+**Calidad de Extracción:**
+- Confidence scores por dimensión:
+  - `purpose` (peso 2.0) - Propósito del sistema
+  - `deployment` (peso 1.5) - Contexto de despliegue
+  - `data_types` (peso 1.5) - Tipos de datos procesados
+  - `incident` (peso 1.0) - Clasificación del incidente
+  - `affected` (peso 1.0) - Poblaciones afectadas
+  - `timeline` (peso 0.5) - Información temporal
+
+**Clasificación EU AI Act:**
+- Distribución de niveles de riesgo (Unacceptable, HighRisk, LimitedRisk, MinimalRisk)
+- Requisitos identificados
+- Gaps de compliance
+
+**Distribución de Incidentes:**
+- Por tipo (discrimination, bias, privacy_violation, safety_failure, etc.)
+- Por sector (healthcare, finance, law enforcement, etc.)
+- Por país/región
+
+## Comparación: Sintético vs Real
+
+| Aspecto | Sintético | Real (AIAAIC) |
+|---------|-----------|---------------|
+| Fuente | Generado | AIAAIC Repository |
+| Casos | 100 fijos | 500+ (seleccionables) |
+| Calidad narrativa | Estructurada | Variable |
+| Cobertura | Templates predefinidos | Casos diversos |
+| Reproducibilidad | 100% | Depende de datos disponibles |
+| Uso | Validación de extracción | Validación real |
 
 ## Requisitos
 
 - Forensic Agent corriendo en `http://localhost:8002`
 - Apache Jena Fuseki en `http://localhost:3030`
 - Python 3.9+
-- Dependencias: requests, rdflib
+- Dependencias: `requests`, `rdflib`
+- Conexión a internet (para benchmark real)
 
-## Métricas Esperadas
-
-Con Llama 3.2 (3B) en Ollama:
+## Métricas Esperadas (Llama 3.2 - 3B en Ollama)
 
 **Rendimiento:**
-- Tiempo medio: 15-20 segundos/incidente
-- Tiempo total: ~25 minutos para 100 incidentes
-- Throughput: 3-4 incidentes/minuto
+- Tiempo medio: 30-35 segundos/incidente
+- Tiempo total (100 incidentes): ~55 minutos
+- Throughput: ~2 incidentes/minuto
 
 **Calidad:**
-- Success rate: >95%
-- Confidence promedio: 0.80-0.87
-- Distribución de riesgo: mayoría HighRisk (sistemas biométricos, policing, healthcare)
-
-**Compliance:**
-- Requisitos promedio por sistema: 4-6
-- Gaps críticos: 1-3 por sistema
-- Tipos de requisitos: Data Governance, Transparency, Human Oversight, etc.
-
-## Comparación Ollama vs Claude
-
-| Métrica | Llama 3.2 (Ollama) | Claude Sonnet 4.5 |
-|---------|-------------------|-------------------|
-| Velocidad | 15-20s | 5-10s |
-| Confianza | 80-87% | 90-95% |
-| Costo | Gratis | ~$1.50 (100 incidentes) |
-| Privacidad | Local | Cloud |
-| Precisión timeline | Buena (año) | Excelente (fecha) |
-| Clasificación riesgo | Muy buena | Excelente |
-
-## Análisis de Resultados
-
-El benchmark genera reportes completos que incluyen:
-
-1. **Summary**: Total, éxitos, fallos, tasa de éxito
-2. **Performance**: Tiempos de procesamiento (distribución estadística)
-3. **Quality**: Confidence scores (distribución estadística)
-4. **Risk Distribution**: Unacceptable, HighRisk, LimitedRisk, MinimalRisk
-5. **Incident Distribution**: bias, discrimination, privacy_violation, safety_failure
-6. **Errors**: Detalles de fallos si los hay
+- Success rate: >90%
+- Confidence promedio: 0.80-0.90
+- Distribución de riesgo: mayoría HighRisk y Unknown
 
 ## Troubleshooting
 
@@ -143,10 +153,15 @@ docker-compose logs forensic_agent
 docker-compose restart forensic_agent
 ```
 
+### Error al descargar datos AIAAIC
+- Verificar conexión a internet
+- El Google Sheet puede tener restricciones temporales
+- Probar acceso manual: https://docs.google.com/spreadsheets/d/1Bn55B4xz21-_Rgdr8BBb2lt0n_4rzLGxFADMlVW0PYI/
+
 ### Ollama lento
 - Verificar CPU/memoria disponible
-- Considerar usar GPU (descomentar en docker-compose.yml)
-- Reducir batch size en benchmark
+- Considerar usar GPU
+- Reducir número de casos en benchmark real
 
 ### Fuseki no acepta uploads
 ```bash
@@ -159,10 +174,25 @@ curl -X POST http://localhost:3030/$/datasets \
   --data "dbName=aiact&dbType=tdb2"
 ```
 
-## Próximos Pasos
+## Fuentes de Datos y Atribución
 
-1. Ejecutar benchmark con Claude Sonnet 4.5 para comparación
-2. Analizar distribución de requisitos más frecuentes
-3. Identificar patrones en gaps de compliance
-4. Mejorar prompts basándose en errores
-5. Crear visualizaciones de resultados
+### AIAAIC Repository
+
+Este benchmark utiliza datos del [AIAAIC Repository](https://www.aiaaic.org/aiaaic-repository), una colección independiente de incidentes y controversias relacionadas con IA, algoritmos y automatización.
+
+**Versión de datos utilizada:** Diciembre 2025 (2,139 incidentes)
+
+**Licencia:** [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (Attribution-ShareAlike 4.0 International)
+
+**Atribución requerida:**
+> Datos de incidentes proporcionados por [AIAAIC](https://www.aiaaic.org/aiaaic-repository) bajo licencia CC BY-SA 4.0.
+
+**Enlaces:**
+- AIAAIC Repository: https://www.aiaaic.org/aiaaic-repository
+- Google Sheet: https://docs.google.com/spreadsheets/d/1Bn55B4xz21-_Rgdr8BBb2lt0n_4rzLGxFADMlVW0PYI/
+- Términos de uso: https://www.aiaaic.org/terms
+
+### Otras fuentes (alternativas)
+
+- AI Incident Database: https://incidentdatabase.ai/
+- OECD AI Incidents Monitor: https://oecd.ai/en/incidents

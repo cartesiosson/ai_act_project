@@ -31,7 +31,7 @@ export default function ReasoningPage() {
   useEffect(() => {
     fetchSystems()
       .then((data) => setSystems(data))
-      .catch((e) => setError("Error cargando sistemas: " + e.message));
+      .catch((e) => setError("Error loading systems: " + e.message));
   }, []);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function ReasoningPage() {
 
     try {
       if (!selectedSystem) {
-        throw new Error("Selecciona un sistema válido");
+        throw new Error("Please select a valid system");
       }
 
       // Usar el ID correcto del sistema
@@ -78,7 +78,7 @@ export default function ReasoningPage() {
       setResult(reasoningResult);
 
     } catch (e: any) {
-      setError(e.message || "Error durante el razonamiento");
+      setError(e.message || "Error during reasoning");
     } finally {
       setLoading(false);
     }
@@ -86,11 +86,11 @@ export default function ReasoningPage() {
 
   const formatRelationshipName = (name: string): string => {
     const translations: Record<string, string> = {
-      hasNormativeCriterion: "Criterios Normativos",
-      hasTechnicalCriterion: "Criterios Técnicos",
-      hasContextualCriterion: "Criterios Contextuales",
-      hasRequirement: "Requisitos Generales",
-      hasTechnicalRequirement: "Requisitos Técnicos"
+      hasNormativeCriterion: "Normative Criteria",
+      hasTechnicalCriterion: "Technical Criteria",
+      hasContextualCriterion: "Contextual Criteria",
+      hasRequirement: "General Requirements",
+      hasTechnicalRequirement: "Technical Requirements"
     };
     return translations[name] || name;
   };
@@ -102,11 +102,11 @@ export default function ReasoningPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 text-gray-900 dark:text-white">
-      <h2 className="text-3xl font-bold mb-8 text-center">Razonamiento Semántico AI Act</h2>
+      <h2 className="text-3xl font-bold mb-8 text-center">AI Act Semantic Reasoning</h2>
 
       {/* Selector de sistema */}
       <div className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
-        <label className="block mb-3 text-lg font-medium">Selecciona un sistema para análisis:</label>
+        <label className="block mb-3 text-lg font-medium">Select a system for analysis:</label>
 
         {error && (
           <div className="mb-4 text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/20 p-3 rounded border border-red-300 dark:border-red-500">
@@ -119,7 +119,7 @@ export default function ReasoningPage() {
           onChange={(e: any) => setSelectedSystemId(e.target.value)}
           className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="">-- Selecciona un sistema --</option>
+          <option value="">-- Select a system --</option>
           {systems.map((sys: any, idx: number) => (
             <option key={sys._id || sys["ai:hasUrn"] || sys.hasName || idx} value={sys._id || sys["ai:hasUrn"] || sys.hasName}>
               {sys.hasName} {sys["ai:hasUrn"] ? `(${sys["ai:hasUrn"]})` : ""}
@@ -129,13 +129,13 @@ export default function ReasoningPage() {
 
         {selectedSystem && (
           <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
-            <h4 className="font-medium text-blue-700 dark:text-blue-300 mb-2">Sistema seleccionado:</h4>
-            <p className="text-gray-700 dark:text-gray-300"><strong>Nombre:</strong> {selectedSystem.hasName}</p>
+            <h4 className="font-medium text-blue-700 dark:text-blue-300 mb-2">Selected system:</h4>
+            <p className="text-gray-700 dark:text-gray-300"><strong>Name:</strong> {selectedSystem.hasName}</p>
             {selectedSystem.hasPurpose?.length > 0 && (
-              <p className="text-gray-700 dark:text-gray-300"><strong>Propósitos:</strong> {selectedSystem.hasPurpose.join(", ")}</p>
+              <p className="text-gray-700 dark:text-gray-300"><strong>Purposes:</strong> {selectedSystem.hasPurpose.join(", ")}</p>
             )}
             {selectedSystem.hasDeploymentContext?.length > 0 && (
-              <p className="text-gray-700 dark:text-gray-300"><strong>Contextos:</strong> {selectedSystem.hasDeploymentContext.join(", ")}</p>
+              <p className="text-gray-700 dark:text-gray-300"><strong>Contexts:</strong> {selectedSystem.hasDeploymentContext.join(", ")}</p>
             )}
           </div>
         )}
@@ -145,28 +145,28 @@ export default function ReasoningPage() {
           disabled={!selectedSystemId || loading}
           onClick={handleReasoning}
         >
-          {loading ? "Procesando..." : "Ejecutar Razonamiento"}
+          {loading ? "Processing..." : "Run Reasoning"}
         </button>
       </div>
 
       {/* Resultados del razonamiento */}
       {result && (
         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-xl font-bold mb-4 text-green-700 dark:text-green-400">Razonamiento Completado</h3>
+          <h3 className="text-xl font-bold mb-4 text-green-700 dark:text-green-400">Reasoning Complete</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
-              <p className="text-gray-700 dark:text-gray-300"><strong>Sistema:</strong> {result.system_name}</p>
-              <p className="text-gray-700 dark:text-gray-300"><strong>Inferencias aplicadas:</strong> {result.rules_applied}</p>
+              <p className="text-gray-700 dark:text-gray-300"><strong>System:</strong> {result.system_name}</p>
+              <p className="text-gray-700 dark:text-gray-300"><strong>Inferences applied:</strong> {result.rules_applied}</p>
               <p className="text-gray-700 dark:text-gray-300">
-                <strong>Estado:</strong> {result.reasoning_completed ? " Exitoso" : " Parcial"}
+                <strong>Status:</strong> {result.reasoning_completed ? " Successful" : " Partial"}
               </p>
             </div>
           </div>
 
           {/* Relaciones inferidas */}
           <div className="mb-6">
-            <h4 className="text-lg font-medium mb-3 text-amber-700 dark:text-amber-400">Relaciones Inferidas:</h4>
+            <h4 className="text-lg font-medium mb-3 text-amber-700 dark:text-amber-400">Inferred Relationships:</h4>
             <div className="space-y-3">
               {Object.entries(result.inferred_relationships).map(([relType, values]) => (
                 values.length > 0 && (
@@ -191,13 +191,13 @@ export default function ReasoningPage() {
               onClick={() => setShowRawTTL(!showRawTTL)}
               className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-white px-4 py-2 rounded-lg transition-colors"
             >
-              {showRawTTL ? "Ocultar TTL Raw" : "Ver TTL Raw"}
+              {showRawTTL ? "Hide Raw TTL" : "Show Raw TTL"}
             </button>
           </div>
 
           {showRawTTL && (
             <div className="bg-gray-900 dark:bg-black p-4 rounded-lg overflow-x-auto border border-gray-700">
-              <h4 className="text-sm font-medium mb-2 text-gray-400">Grafo RDF Completo (TTL):</h4>
+              <h4 className="text-sm font-medium mb-2 text-gray-400">Complete RDF Graph (TTL):</h4>
               <pre className="text-xs text-green-400 whitespace-pre-wrap font-mono">
                 {result.raw_ttl}
               </pre>

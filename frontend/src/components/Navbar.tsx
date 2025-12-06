@@ -19,10 +19,10 @@ export function Navbar() {
       {/* Navigation Links */}
       <div className="flex gap-6">
         <Link to="/" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Dashboard</Link>
-        <Link to="/systems" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Systems</Link>
-        <Link to="/graph" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Graph View</Link>
+        <Link to="/systems" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">AI Systems DB</Link>
+        <Link to="/graph" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">AI Knowledge Graph</Link>
         <Link to="/ontology" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Ontology Docs</Link>
-        <Link to="/reasoning" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Reasoning</Link>
+        <Link to="/reasoning" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">AI Symbolic Reasoning</Link>
       </div>
     </nav>
   );

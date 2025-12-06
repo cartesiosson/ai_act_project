@@ -19,13 +19,13 @@ interface LinkData {
 }
 
 const NODE_CATEGORIES: { [key: string]: { color: string; icon: string; label: string } } = {
-  system: { color: "#3b82f6", icon: "🏢", label: "Sistema" },
-  purpose: { color: "#8b5cf6", icon: "🎯", label: "Propósito" },
-  deployment: { color: "#ec4899", icon: "📍", label: "Despliegue" },
-  technical: { color: "#f97316", icon: "⚙️", label: "Técnico" },
-  capability: { color: "#10b981", icon: "🚀", label: "Capacidad" },
-  compliance: { color: "#14b8a6", icon: "✅", label: "Cumplimiento" },
-  other: { color: "#6b7280", icon: "◦", label: "Otro" },
+  system: { color: "#3b82f6", icon: "🏢", label: "System" },
+  purpose: { color: "#8b5cf6", icon: "🎯", label: "Purpose" },
+  deployment: { color: "#ec4899", icon: "📍", label: "Deployment" },
+  technical: { color: "#f97316", icon: "⚙️", label: "Technical" },
+  capability: { color: "#10b981", icon: "🚀", label: "Capability" },
+  compliance: { color: "#14b8a6", icon: "✅", label: "Compliance" },
+  other: { color: "#6b7280", icon: "◦", label: "Other" },
 };
 
 export default function GraphView() {
@@ -433,7 +433,7 @@ export default function GraphView() {
             value={selectedSystem || ""}
             className="p-2 text-sm rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">-- Seleccionar Sistema --</option>
+            <option value="">-- Select System --</option>
             {systems.map((name) => (
               <option key={name} value={name}>
                 {name}
@@ -443,7 +443,7 @@ export default function GraphView() {
 
           <input
             type="text"
-            placeholder="Buscar nodos..."
+            placeholder="Search nodes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="p-2 text-sm rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[150px]"
@@ -458,7 +458,7 @@ export default function GraphView() {
                   : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
               }`}
             >
-              Todos
+              All
             </button>
             {Object.entries(NODE_CATEGORIES).map(([key, { icon, label, color }]) => (
               <button
@@ -486,17 +486,17 @@ export default function GraphView() {
       <div className="relative flex-1 w-full h-full">
         {isLoading && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-20">
-            <p className="text-lg mb-2 text-gray-700 dark:text-gray-300">Cargando datos del grafo...</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Obteniendo sistemas del almacén RDF</p>
+            <p className="text-lg mb-2 text-gray-700 dark:text-gray-300">Loading graph data...</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Fetching systems from RDF store</p>
           </div>
         )}
 
         {loadingError && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-400 p-5 rounded-lg max-w-md text-center z-20">
-            <p className="text-base font-semibold mb-2">Error cargando el grafo</p>
+            <p className="text-base font-semibold mb-2">Error loading graph</p>
             <p className="text-sm">{loadingError}</p>
             <p className="text-xs mt-3 text-red-600 dark:text-red-500">
-              Revisa la consola para más detalles
+              Check the console for more details
             </p>
           </div>
         )}
@@ -514,11 +514,11 @@ export default function GraphView() {
               {selectedSystemData.name}
             </h3>
             <div className="text-sm leading-relaxed space-y-1">
-              <p><strong>Nivel de Riesgo:</strong> {selectedSystemData.riskLevel}</p>
-              <p><strong>Propósito(s):</strong> {selectedSystemData.purpose}</p>
-              <p><strong>Contexto(s) de Despliegue:</strong> {selectedSystemData.deploymentContext}</p>
-              <p><strong>Origen de Datos:</strong> {selectedSystemData.trainingDataOrigin}</p>
-              <p><strong>Versión:</strong> {selectedSystemData.version}</p>
+              <p><strong>Risk Level:</strong> {selectedSystemData.riskLevel}</p>
+              <p><strong>Purpose(s):</strong> {selectedSystemData.purpose}</p>
+              <p><strong>Deployment Context(s):</strong> {selectedSystemData.deploymentContext}</p>
+              <p><strong>Data Origin:</strong> {selectedSystemData.trainingDataOrigin}</p>
+              <p><strong>Version:</strong> {selectedSystemData.version}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
                 <strong>URN:</strong> <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">{selectedSystemData.urn}</code>
               </p>
