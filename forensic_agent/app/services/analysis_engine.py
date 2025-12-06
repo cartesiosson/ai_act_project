@@ -1,6 +1,6 @@
 """Multi-framework forensic analysis engine"""
 
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from datetime import datetime
 
 from ..models.incident import ExtractedIncident
@@ -142,7 +142,7 @@ class ForensicAnalysisEngine:
             nist_mappings = {}
 
         # Step 5: Analyze compliance gaps
-        print("\n[5/6] Analyzing compliance gaps...")
+        print("\n[5/7] Analyzing compliance gaps...")
         try:
             gaps = await self.sparql.analyze_compliance_gaps(
                 mandatory_requirements=eu_req_uris,
@@ -166,15 +166,34 @@ class ForensicAnalysisEngine:
                 "severity": "UNKNOWN"
             }
 
-        # Step 6: Generate multi-framework report
-        print("\n[6/6] Generating multi-framework forensic report...")
+        # Step 6: Query applicable inference rules
+        print("\n[6/7] Querying applicable inference rules...")
+        try:
+            inference_rules = await self.sparql.get_applicable_rules(incident.dict())
+
+            print(f"   ✓ Applicable rules: {inference_rules.get('total_applicable', 0)}")
+            print(f"   ✓ Navigation rules: {inference_rules.get('total_navigation', 0)}")
+
+        except Exception as e:
+            print(f"   ✗ Inference rules query failed: {e}")
+            inference_rules = {
+                "applicable_rules": [],
+                "navigation_rules": [],
+                "total_applicable": 0,
+                "total_navigation": 0,
+                "explanation": f"Rules not available: {e}"
+            }
+
+        # Step 7: Generate multi-framework report
+        print("\n[7/7] Generating multi-framework forensic report...")
         try:
             report = self._generate_report(
                 incident=incident,
                 eu_requirements=eu_requirements,
                 iso_mappings=iso_mappings,
                 nist_mappings=nist_mappings,
-                gaps=gaps
+                gaps=gaps,
+                inference_rules=inference_rules
             )
 
             print(f"   ✓ Report generated ({len(report)} characters)")
@@ -286,10 +305,12 @@ class ForensicAnalysisEngine:
                         eu_requirements: Dict,
                         iso_mappings: Dict,
                         nist_mappings: Dict,
-                        gaps: Dict) -> str:
+                        gaps: Dict,
+                        inference_rules: Dict = None) -> str:
         """
         Generate human-readable multi-framework forensic report
         """
+        inference_rules = inference_rules or {}
 
         # Temporal applicability check
         is_pre_regulation = incident.timeline.discovery_date < "2024"
@@ -386,12 +407,28 @@ Total Requirements: {eu_requirements["total_requirements"]}
 
 ---
 
-## 6. ROOT CAUSE ANALYSIS
+## 6. INFERENCE RULES ANALYSIS
 
-### 6.1 Primary Failure Points
+This section explains the reasoning rules that were applied to determine the system's
+risk classification, compliance requirements, and regulatory obligations.
+
+### 6.1 Applicable Condition-Based Rules
+{self._format_inference_rules(inference_rules)}
+
+### 6.2 Transitive Navigation Rules
+{self._format_navigation_rules(inference_rules)}
+
+### 6.3 Reasoning Chain Explanation
+{inference_rules.get('explanation', 'No explanation available')}
+
+---
+
+## 7. ROOT CAUSE ANALYSIS
+
+### 7.1 Primary Failure Points
 {self._infer_root_causes(incident, gaps)}
 
-### 6.2 Incident Impact
+### 7.2 Incident Impact
 - **Affected Populations:** {", ".join(incident.incident.affected_populations) if incident.incident.affected_populations else "Not specified"}
 - **Affected Count:** {incident.incident.affected_count if incident.incident.affected_count else "Unknown"}
 - **Public Disclosure:** {"Yes" if incident.incident.public_disclosure else "No"}
@@ -399,33 +436,33 @@ Total Requirements: {eu_requirements["total_requirements"]}
 
 ---
 
-## 7. ENFORCEMENT RECOMMENDATION
+## 8. ENFORCEMENT RECOMMENDATION
 
-### 7.1 Temporal Applicability
+### 8.1 Temporal Applicability
 **Incident Date:** {incident.timeline.discovery_date}
 **EU AI Act Enforcement:** August 2, 2024
 
 {self._generate_temporal_analysis(incident)}
 
-### 7.2 Violation Assessment
+### 8.2 Violation Assessment
 {self._assess_violations(incident, gaps)}
 
-### 7.3 Recommended Actions
+### 8.3 Recommended Actions
 {self._generate_recommendations(incident, gaps)}
 
 ---
 
-## 8. ORGANIZATION RESPONSE EVALUATION
+## 9. ORGANIZATION RESPONSE EVALUATION
 
-### 8.1 Actions Taken
+### 9.1 Actions Taken
 {self._format_organization_response(incident.response)}
 
-### 8.2 Adequacy Assessment
+### 9.2 Adequacy Assessment
 {self._assess_response_adequacy(incident.response, gaps)}
 
 ---
 
-## 9. EXPERT REVIEW REQUIREMENTS
+## 10. EXPERT REVIEW REQUIREMENTS
 
 **This report requires expert validation for:**
 - [ ] Verify extraction accuracy from narrative
@@ -614,3 +651,68 @@ Further investigation recommended to determine enforcement action."""
             return f"**Adequate:** {len(response.actions_taken)} actions taken including systemic improvements."
 
         return f"**Partial:** {len(response.actions_taken)} actions taken but systemic improvements not clearly documented."
+
+    def _format_inference_rules(self, inference_rules: Dict) -> str:
+        """Format applicable inference rules for the report"""
+        applicable = inference_rules.get("applicable_rules", [])
+
+        if not applicable:
+            return "*No specific condition-based rules were identified as applicable to this incident.*"
+
+        lines = [f"**{len(applicable)} rules applied:**\n"]
+
+        for rule in applicable[:8]:  # Limit to first 8
+            lines.append(f"**{rule['rule_name']}** ({rule['category']})")
+            lines.append(f"- Trigger: {rule['reason']}")
+
+            # Show conditions
+            conditions = rule.get('conditions', [])
+            if conditions:
+                cond_str = ", ".join([
+                    f"{c['property'].replace('ai:', '')} {c['operator']} {c['value']}"
+                    for c in conditions[:2]
+                ])
+                lines.append(f"- Conditions: {cond_str}")
+
+            # Show consequences
+            consequences = rule.get('consequences', [])
+            if consequences:
+                cons_str = ", ".join([
+                    f"{c['property'].replace('ai:', '')} = {c['value'].replace('ai:', '')}"
+                    for c in consequences[:2]
+                ])
+                lines.append(f"- Effect: {cons_str}")
+
+            lines.append("")
+
+        if len(applicable) > 8:
+            lines.append(f"... and {len(applicable) - 8} more rules")
+
+        return "\n".join(lines)
+
+    def _format_navigation_rules(self, inference_rules: Dict) -> str:
+        """Format navigation rules for the report"""
+        nav_rules = inference_rules.get("navigation_rules", [])
+
+        if not nav_rules:
+            return "*No navigation rules available.*"
+
+        lines = [f"**{len(nav_rules)} transitive inference rules active:**\n"]
+
+        for rule in nav_rules:
+            nav_type = rule.get("navigation_type", "transitive")
+            source = rule.get("source_property", "").replace("ai:", "")
+            link = rule.get("link_property", "").replace("ai:", "")
+            target = rule.get("target_property", "").replace("ai:", "")
+
+            if nav_type == "transitive":
+                lines.append(f"- **{rule['name']}**")
+                lines.append(f"  Chain: {source} → {link} → {target}")
+            else:
+                lines.append(f"- **{rule['name']}**")
+                lines.append(f"  Direct: {source} → {target}")
+
+        lines.append("")
+        lines.append("*These rules enable transitive reasoning: if a system has a purpose that activates a criterion, and that criterion activates requirements, the system inherits those requirements.*")
+
+        return "\n".join(lines)

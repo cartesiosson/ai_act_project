@@ -46,13 +46,11 @@ async def startup_event():
     # Get configuration from environment
     llm_provider = os.getenv("LLM_PROVIDER", "anthropic")
     anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-    ontology_path = os.getenv("ONTOLOGY_PATH", "/ontologias/ontologia-v0.37.2.ttl")
-    mappings_path = os.getenv("MAPPINGS_PATH", "/ontologias/mappings")
+    mcp_server_url = os.getenv("MCP_SERVER_URL", "http://mcp_sparql:8080")
 
     print(f"\nConfiguration:")
     print(f"  LLM Provider: {llm_provider}")
-    print(f"  Ontology Path: {ontology_path}")
-    print(f"  Mappings Path: {mappings_path}")
+    print(f"  MCP Server URL: {mcp_server_url}")
     print()
 
     # Initialize services
@@ -64,20 +62,18 @@ async def startup_event():
         )
         print("✓ Incident Extractor initialized")
 
-        print("\nInitializing SPARQL Query Service...")
-        sparql_service = ForensicSPARQLService(
-            ontology_path=ontology_path,
-            mappings_path=mappings_path
-        )
-        print("✓ SPARQL Query Service initialized")
+        print("\nInitializing SPARQL Query Service (via MCP)...")
+        sparql_service = ForensicSPARQLService(mcp_url=mcp_server_url)
+        await sparql_service.ensure_connected()
+        print("✓ SPARQL Query Service initialized (MCP client)")
 
-        # Get stats
-        stats = sparql_service.get_stats()
-        print(f"\nOntology Stats:")
-        print(f"  Total triples: {stats['total_triples']}")
-        print(f"  Ontology loaded: {stats['ontology_loaded']}")
-        print(f"  ISO mappings loaded: {stats['iso_mappings_loaded']}")
-        print(f"  NIST mappings loaded: {stats['nist_mappings_loaded']}")
+        # Get stats via MCP
+        stats = await sparql_service.get_stats()
+        print(f"\nOntology Stats (via MCP):")
+        print(f"  MCP Connected: {sparql_service._connected}")
+        if stats:
+            for key, value in stats.items():
+                print(f"  {key}: {value}")
 
         print("\nInitializing Analysis Engine...")
         analysis_engine = ForensicAnalysisEngine(
@@ -136,7 +132,7 @@ async def health_check():
     if not all([extractor_service, sparql_service, analysis_engine]):
         raise HTTPException(status_code=503, detail="Services not initialized")
 
-    stats = sparql_service.get_stats()
+    stats = await sparql_service.get_stats()
 
     return {
         "status": "healthy",
@@ -145,11 +141,9 @@ async def health_check():
             "sparql": "operational",
             "analysis_engine": "operational"
         },
-        "ontology": {
-            "loaded": stats["ontology_loaded"],
-            "triples": stats["total_triples"],
-            "iso_mappings": stats["iso_mappings_loaded"],
-            "nist_mappings": stats["nist_mappings_loaded"]
+        "mcp": {
+            "connected": sparql_service._connected,
+            "stats": stats
         }
     }
 
@@ -202,14 +196,12 @@ async def get_stats():
     if not sparql_service:
         raise HTTPException(status_code=503, detail="SPARQL service not initialized")
 
-    stats = sparql_service.get_stats()
+    stats = await sparql_service.get_stats()
 
     return {
-        "ontology": {
-            "total_triples": stats["total_triples"],
-            "ontology_loaded": stats["ontology_loaded"],
-            "iso_42001_mappings_loaded": stats["iso_mappings_loaded"],
-            "nist_ai_rmf_mappings_loaded": stats["nist_mappings_loaded"]
+        "mcp": {
+            "connected": sparql_service._connected,
+            "ontology_stats": stats
         },
         "services": {
             "extractor_ready": extractor_service is not None,

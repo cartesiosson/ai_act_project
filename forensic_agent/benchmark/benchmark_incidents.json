@@ -1,0 +1,1302 @@
+[
+  {
+    "id": "BENCH-0024",
+    "narrative": "CreditBot credit scoring algorithm discriminated against LGBTQ+ individuals in 2020. System denied loans at 35% higher rate for minority applicants. Processed personal data with fully automated processes. Verkada disputed findings.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 24,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2020,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0066",
+    "narrative": "EmotionScan emotion recognition system deployed without consent in credit assessments in 2015. Monitored minority groups processing communication records. Used for fully automated processes with minimal human intervention. Axon disputed findings after external audit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 66,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2015,
+      "organization": "Axon"
+    }
+  },
+  {
+    "id": "BENCH-0036",
+    "narrative": "HealthPredict diagnostic system made critical errors affecting 13399 patients in 2016. Algorithm misdiagnosed Black individuals due to training data bias. Used in border controls for algorithmic recommendations. Clearview AI removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 36,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2016,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0035",
+    "narrative": "PatientRisk diagnostic system made critical errors affecting 407 patients in 2022. Algorithm misdiagnosed people with disabilities due to training data bias. Used in law enforcement contexts for automated decision-making. PredPol Inc placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 35,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2022,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0006",
+    "narrative": "VisionAI facial recognition system exhibited racial and gender bias in 2016. The system misidentified people with disabilities at rates 34% higher than lighter-skinned users. Deployed in social media platforms with semi-automated decisions. Pymetrics placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 6,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2016,
+      "organization": "Pymetrics"
+    }
+  },
+  {
+    "id": "BENCH-0017",
+    "narrative": "HiringAssistant automated hiring system discriminated against women in 2017. Algorithm trained on historical data showing bias. Used for retail environments with automated decision-making. HireVue disputed findings after academic research.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 17,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2017,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0090",
+    "narrative": "DeepFake deepfake generation system misused to create non-consensual content in 2018. Generated synthetic media of non-native speakers without consent. Content spread on social media platforms affecting 30189 individuals. Verkada updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 90,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2018,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0032",
+    "narrative": "DiagnosisBot diagnostic system made critical errors affecting 69946 patients in 2018. Algorithm misdiagnosed LGBTQ+ individuals due to training data bias. Used in social media platforms for semi-automated decisions. HireVue removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 32,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2018,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0088",
+    "narrative": "FaceSwap deepfake generation system misused to create non-consensual content in 2018. Generated synthetic media of Black individuals without consent. Content spread on social media platforms affecting 92485 individuals. Tesla launched internal investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 88,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2018,
+      "organization": "Tesla"
+    }
+  },
+  {
+    "id": "BENCH-0046",
+    "narrative": "PoliceAI predictive policing algorithm showed racial bias in 2022. System flagged immigrants as high-risk at 31% higher rates. Deployed in social media platforms with algorithmic recommendations and minimal human intervention. Tesla placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 46,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2022,
+      "organization": "Tesla"
+    }
+  },
+  {
+    "id": "BENCH-0095",
+    "narrative": "SmartCar autonomous vehicle system caused intersection accident in 2021. Algorithm failed to detect construction zones in complex intersections. Resulted in fatal injuries to 53910 people. ZestFinance removed feature and faced regulatory fines.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 95,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2021,
+      "organization": "ZestFinance"
+    }
+  },
+  {
+    "id": "BENCH-0068",
+    "narrative": "MoodDetect emotion recognition system deployed without consent in employment decisions in 2019. Monitored darker-skinned women processing location data. Used for semi-automated decisions with minimal human intervention. Microsoft denied allegations after media investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 68,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2019,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0063",
+    "narrative": "FeelingTrack emotion recognition system deployed without consent in healthcare facilities in 2019. Monitored low-income communities processing location data. Used for semi-automated decisions with inadequate oversight mechanisms. Axon issued public apology after media investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 63,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2019,
+      "organization": "Axon"
+    }
+  },
+  {
+    "id": "BENCH-0012",
+    "narrative": "HiringAssistant automated hiring system discriminated against darker-skinned women in 2021. Algorithm trained on historical data showing bias. Used for retail environments with automated decision-making. Microsoft provided no response after user complaints.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 12,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2021,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0052",
+    "narrative": "PersonalAssist exposed health records of 12060 users in 2018. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. Meta removed feature and was subject to investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 52,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2018,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0069",
+    "narrative": "FeelingTrack emotion recognition system deployed without consent in healthcare facilities in 2023. Monitored non-native speakers processing personal data. Used for fully automated processes with limited human review. Microsoft denied allegations after user complaints.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 69,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2023,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0005",
+    "narrative": "FaceID facial recognition system exhibited racial and gender bias in 2017. The system misidentified women at rates 25% higher than higher-income groups. Deployed in healthcare facilities with algorithmic recommendations. PredPol Inc removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 5,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2017,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0087",
+    "narrative": "DeepFake deepfake generation system misused to create non-consensual content in 2016. Generated synthetic media of women without consent. Content spread on messaging apps affecting 88671 individuals. Amazon placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 87,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2016,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0013",
+    "narrative": "CVAnalyzer automated hiring system discriminated against Black individuals in 2017. Algorithm trained on historical data showing bias. Used for border controls with fully automated processes. Clearview AI removed feature after user complaints.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 13,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2017,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0085",
+    "narrative": "MediaSynth deepfake generation system misused to create non-consensual content in 2016. Generated synthetic media of people of color without consent. Content spread on online forums affecting 58615 individuals. ZestFinance disputed findings.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 85,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2016,
+      "organization": "ZestFinance"
+    }
+  },
+  {
+    "id": "BENCH-0077",
+    "narrative": "SocialScore social scoring system discriminated against women in 2023. Algorithm assigned lower scores based on geographic location. Impacted access to financial services affecting 79181 people. Apple issued public apology.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 77,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2023,
+      "organization": "Apple"
+    }
+  },
+  {
+    "id": "BENCH-0065",
+    "narrative": "EmotionAI emotion recognition system deployed without consent in educational institutions in 2018. Monitored LGBTQ+ individuals processing behavioral data. Used for semi-automated decisions with limited human review. Verkada offered compensation to affected users after regulatory inquiry.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 65,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2018,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0099",
+    "narrative": "VehicleAI autonomous vehicle system caused pedestrian injury in 2024. Algorithm failed to detect cyclists in complex intersections. Resulted in moderate injuries to 96576 people. Meta updated algorithm and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 99,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2024,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0010",
+    "narrative": "FaceMatch facial recognition system exhibited racial and gender bias in 2018. The system misidentified non-native speakers at rates 41% higher than lighter-skinned users. Deployed in border controls with automated decision-making. Pymetrics updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 10,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2018,
+      "organization": "Pymetrics"
+    }
+  },
+  {
+    "id": "BENCH-0014",
+    "narrative": "CVAnalyzer automated hiring system discriminated against women in 2018. Algorithm trained on historical data showing bias. Used for workplace monitoring with semi-automated decisions. Clearview AI placed moratorium on system after academic research.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 14,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2018,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0031",
+    "narrative": "MedAI diagnostic system made critical errors affecting 56713 patients in 2021. Algorithm misdiagnosed Hispanic users due to training data bias. Used in public transportation for automated decision-making. Pymetrics placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 31,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2021,
+      "organization": "Pymetrics"
+    }
+  },
+  {
+    "id": "BENCH-0062",
+    "narrative": "EmotionScan emotion recognition system deployed without consent in healthcare facilities in 2022. Monitored Black individuals processing personal data. Used for automated decision-making with minimal human intervention. Cognism denied allegations after user complaints.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 62,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2022,
+      "organization": "Cognism"
+    }
+  },
+  {
+    "id": "BENCH-0071",
+    "narrative": "TrustRank social scoring system discriminated against low-income communities in 2017. Algorithm assigned lower scores based on geographic location. Impacted access to educational programs affecting 25214 people. Clearview updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 71,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2017,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0076",
+    "narrative": "BehaviorTrack social scoring system discriminated against LGBTQ+ individuals in 2016. Algorithm assigned lower scores based on geographic location. Impacted access to housing affecting 11328 people. Clearview AI provided no response.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 76,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2016,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0022",
+    "narrative": "LoanDecider credit scoring algorithm discriminated against immigrants in 2016. System denied loans at 29% higher rate for minority applicants. Processed health records with automated decision-making. Microsoft updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 22,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2016,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0057",
+    "narrative": "ChatAI exposed location data of 78545 users in 2022. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. Amazon removed feature and received cease and desist order.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 57,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2022,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0073",
+    "narrative": "TrustRank social scoring system discriminated against young people in 2023. Algorithm assigned lower scores based on demographic characteristics. Impacted access to educational programs affecting 34092 people. Palantir issued public apology.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 73,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2023,
+      "organization": "Palantir"
+    }
+  },
+  {
+    "id": "BENCH-0040",
+    "narrative": "DiagnosisBot diagnostic system made critical errors affecting 58433 patients in 2019. Algorithm misdiagnosed women due to training data bias. Used in retail environments for algorithmic recommendations. Axon provided no response.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 40,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2019,
+      "organization": "Axon"
+    }
+  },
+  {
+    "id": "BENCH-0001",
+    "narrative": "BiometricScan facial recognition system exhibited racial and gender bias in 2018. The system misidentified minority groups at rates 35% higher than white males. Deployed in employment decisions with algorithmic recommendations. Clearview AI suspended operations temporarily.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 1,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2018,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0086",
+    "narrative": "MediaSynth deepfake generation system misused to create non-consensual content in 2015. Generated synthetic media of immigrants without consent. Content spread on video sharing sites affecting 41471 individuals. LendingClub issued public apology.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 86,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2015,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0100",
+    "narrative": "VehicleAI autonomous vehicle system caused fatal collision in 2018. Algorithm failed to detect road obstacles in complex intersections. Resulted in serious injuries to 30480 people. PredPol Inc offered compensation to affected users and underwent compliance review.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 100,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2018,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0075",
+    "narrative": "BehaviorTrack social scoring system discriminated against minority groups in 2024. Algorithm assigned lower scores based on socioeconomic status. Impacted access to educational programs affecting 70191 people. HireVue launched internal investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 75,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2024,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0048",
+    "narrative": "PoliceAI predictive policing algorithm showed racial bias in 2021. System flagged darker-skinned women as high-risk at 29% higher rates. Deployed in workplace monitoring with automated decision-making and limited human review. Cognism suspended operations temporarily.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 48,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2021,
+      "organization": "Cognism"
+    }
+  },
+  {
+    "id": "BENCH-0096",
+    "narrative": "AutoDrive autonomous vehicle system caused fatal collision in 2024. Algorithm failed to detect construction zones in heavy traffic. Resulted in minor injuries to 95313 people. Clearview AI issued public apology and faced regulatory fines.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 96,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2024,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0082",
+    "narrative": "FaceSwap deepfake generation system misused to create non-consensual content in 2019. Generated synthetic media of women without consent. Content spread on social media platforms affecting 79620 individuals. HireVue updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 82,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2019,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0097",
+    "narrative": "AutoDrive autonomous vehicle system caused rear-end collision in 2019. Algorithm failed to detect emergency vehicles in complex intersections. Resulted in moderate injuries to 31147 people. Apple suspended operations temporarily and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 97,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2019,
+      "organization": "Apple"
+    }
+  },
+  {
+    "id": "BENCH-0084",
+    "narrative": "SynthVoice deepfake generation system misused to create non-consensual content in 2023. Generated synthetic media of Black individuals without consent. Content spread on dark web markets affecting 73214 individuals. Axon suspended operations temporarily.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 84,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2023,
+      "organization": "Axon"
+    }
+  },
+  {
+    "id": "BENCH-0033",
+    "narrative": "MedAI diagnostic system made critical errors affecting 11273 patients in 2021. Algorithm misdiagnosed LGBTQ+ individuals due to training data bias. Used in credit assessments for automated decision-making. Amazon removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 33,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2021,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0089",
+    "narrative": "SynthVoice deepfake generation system misused to create non-consensual content in 2019. Generated synthetic media of non-native speakers without consent. Content spread on social media platforms affecting 77630 individuals. Apple offered compensation to affected users.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 89,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2019,
+      "organization": "Apple"
+    }
+  },
+  {
+    "id": "BENCH-0070",
+    "narrative": "EmotionAI emotion recognition system deployed without consent in retail environments in 2018. Monitored people of color processing communication records. Used for algorithmic recommendations with minimal human intervention. Verkada removed feature after regulatory inquiry.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 70,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2018,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0093",
+    "narrative": "VehicleAI autonomous vehicle system caused pedestrian injury in 2015. Algorithm failed to detect emergency vehicles in heavy traffic. Resulted in fatal injuries to 80717 people. Microsoft disputed findings and underwent compliance review.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 93,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2015,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0025",
+    "narrative": "LoanDecider credit scoring algorithm discriminated against darker-skinned women in 2017. System denied loans at 27% higher rate for minority applicants. Processed personal data with semi-automated decisions. Amazon placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 25,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2017,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0060",
+    "narrative": "UserTrack exposed biometric data of 4466 users in 2021. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. Palantir removed feature and faced regulatory fines.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 60,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2021,
+      "organization": "Palantir"
+    }
+  },
+  {
+    "id": "BENCH-0002",
+    "narrative": "VisionAI facial recognition system exhibited racial and gender bias in 2020. The system misidentified low-income communities at rates 43% higher than higher-income groups. Deployed in workplace monitoring with automated decision-making. Clearview removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 2,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2020,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0054",
+    "narrative": "DataCollect exposed personal data of 49081 users in 2019. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. Microsoft updated algorithm and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 54,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2019,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0004",
+    "narrative": "BiometricScan facial recognition system exhibited racial and gender bias in 2023. The system misidentified elderly users at rates 19% higher than native speakers. Deployed in border controls with automated decision-making. Microsoft issued public apology.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 4,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2023,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0034",
+    "narrative": "ClinicalAI diagnostic system made critical errors affecting 46612 patients in 2016. Algorithm misdiagnosed low-income communities due to training data bias. Used in educational institutions for fully automated processes. Cognism offered compensation to affected users.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 34,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2016,
+      "organization": "Cognism"
+    }
+  },
+  {
+    "id": "BENCH-0021",
+    "narrative": "FinanceScore credit scoring algorithm discriminated against people of color in 2024. System denied loans at 42% higher rate for minority applicants. Processed biometric and personal data with automated decision-making. ZestFinance removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 21,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2024,
+      "organization": "ZestFinance"
+    }
+  },
+  {
+    "id": "BENCH-0091",
+    "narrative": "SmartCar autonomous vehicle system caused intersection accident in 2016. Algorithm failed to detect pedestrians in complex intersections. Resulted in minor injuries to 12380 people. Cognism provided no response and faced regulatory fines.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 91,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2016,
+      "organization": "Cognism"
+    }
+  },
+  {
+    "id": "BENCH-0083",
+    "narrative": "SynthVoice deepfake generation system misused to create non-consensual content in 2021. Generated synthetic media of people of color without consent. Content spread on messaging apps affecting 3314 individuals. LendingClub placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 83,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2021,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0029",
+    "narrative": "LoanDecider credit scoring algorithm discriminated against darker-skinned women in 2018. System denied loans at 40% higher rate for minority applicants. Processed financial data with fully automated processes. Axon denied allegations.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 29,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2018,
+      "organization": "Axon"
+    }
+  },
+  {
+    "id": "BENCH-0051",
+    "narrative": "AnalyticsBot exposed biometric and personal data of 1850 users in 2018. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. LendingClub disputed findings and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 51,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2018,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0019",
+    "narrative": "HiringAssistant automated hiring system discriminated against LGBTQ+ individuals in 2023. Algorithm trained on historical data showing bias. Used for credit assessments with automated decision-making. Amazon suspended operations temporarily after academic research.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 19,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2023,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0020",
+    "narrative": "HiringAssistant automated hiring system discriminated against young people in 2023. Algorithm trained on historical data showing bias. Used for employment decisions with algorithmic recommendations. Apple disputed findings after regulatory inquiry.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 20,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2023,
+      "organization": "Apple"
+    }
+  },
+  {
+    "id": "BENCH-0044",
+    "narrative": "PoliceAI predictive policing algorithm showed racial bias in 2024. System flagged Black individuals as high-risk at 36% higher rates. Deployed in social media platforms with semi-automated decisions and inadequate oversight mechanisms. Cognism issued public apology.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 44,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2024,
+      "organization": "Cognism"
+    }
+  },
+  {
+    "id": "BENCH-0045",
+    "narrative": "JusticeAI predictive policing algorithm showed racial bias in 2016. System flagged low-income communities as high-risk at 31% higher rates. Deployed in public spaces with algorithmic recommendations and no human oversight. Verkada launched internal investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 45,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2016,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0041",
+    "narrative": "CrimePredict predictive policing algorithm showed racial bias in 2018. System flagged Black individuals as high-risk at 28% higher rates. Deployed in retail environments with algorithmic recommendations and inadequate oversight mechanisms. Clearview placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 41,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2018,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0018",
+    "narrative": "HiringAssistant automated hiring system discriminated against LGBTQ+ individuals in 2019. Algorithm trained on historical data showing bias. Used for employment decisions with algorithmic recommendations. Meta updated algorithm after whistleblower report.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 18,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2019,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0080",
+    "narrative": "CitizenRate social scoring system discriminated against immigrants in 2021. Algorithm assigned lower scores based on historical biases in training data. Impacted access to financial services affecting 93576 people. Upstart suspended operations temporarily.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 80,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2021,
+      "organization": "Upstart"
+    }
+  },
+  {
+    "id": "BENCH-0072",
+    "narrative": "CitizenRate social scoring system discriminated against people with disabilities in 2023. Algorithm assigned lower scores based on geographic location. Impacted access to housing affecting 86074 people. Meta placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 72,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2023,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0008",
+    "narrative": "VisionAI facial recognition system exhibited racial and gender bias in 2022. The system misidentified Hispanic users at rates 21% higher than native speakers. Deployed in airport security with fully automated processes. Clearview placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 8,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2022,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0038",
+    "narrative": "MedAI diagnostic system made critical errors affecting 45431 patients in 2022. Algorithm misdiagnosed immigrants due to training data bias. Used in border controls for semi-automated decisions. HireVue placed moratorium on system.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 38,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2022,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0037",
+    "narrative": "PatientRisk diagnostic system made critical errors affecting 23634 patients in 2023. Algorithm misdiagnosed low-income communities due to training data bias. Used in healthcare facilities for automated decision-making. Meta provided no response.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 37,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2023,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0049",
+    "narrative": "JusticeAI predictive policing algorithm showed racial bias in 2023. System flagged minority groups as high-risk at 30% higher rates. Deployed in educational institutions with semi-automated decisions and inadequate oversight mechanisms. PredPol Inc removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 49,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2023,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0007",
+    "narrative": "FaceMatch facial recognition system exhibited racial and gender bias in 2017. The system misidentified Hispanic users at rates 44% higher than higher-income groups. Deployed in law enforcement contexts with automated decision-making. Meta suspended operations temporarily.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 7,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2017,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0064",
+    "narrative": "MoodDetect emotion recognition system deployed without consent in employment decisions in 2022. Monitored minority groups processing location data. Used for semi-automated decisions with no human oversight. Microsoft suspended operations temporarily after academic research.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 64,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2022,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0047",
+    "narrative": "JusticeAI predictive policing algorithm showed racial bias in 2024. System flagged LGBTQ+ individuals as high-risk at 45% higher rates. Deployed in educational institutions with automated decision-making and minimal human intervention. Upstart suspended operations temporarily.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 47,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2024,
+      "organization": "Upstart"
+    }
+  },
+  {
+    "id": "BENCH-0011",
+    "narrative": "HireBot automated hiring system discriminated against Black individuals in 2021. Algorithm trained on historical data showing bias. Used for public transportation with algorithmic recommendations. Microsoft placed moratorium on system after academic research.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 11,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2021,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0061",
+    "narrative": "FeelingTrack emotion recognition system deployed without consent in workplace monitoring in 2019. Monitored minority groups processing location data. Used for algorithmic recommendations with no human oversight. Cognism denied allegations after external audit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 61,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2019,
+      "organization": "Cognism"
+    }
+  },
+  {
+    "id": "BENCH-0026",
+    "narrative": "RiskAnalyzer credit scoring algorithm discriminated against darker-skinned women in 2018. System denied loans at 32% higher rate for minority applicants. Processed communication records with automated decision-making. Google updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 26,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2018,
+      "organization": "Google"
+    }
+  },
+  {
+    "id": "BENCH-0094",
+    "narrative": "AutoPilot autonomous vehicle system caused intersection accident in 2024. Algorithm failed to detect emergency vehicles in low-light conditions. Resulted in fatal injuries to 73604 people. LendingClub updated algorithm and underwent compliance review.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 94,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2024,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0078",
+    "narrative": "BehaviorTrack social scoring system discriminated against minority groups in 2016. Algorithm assigned lower scores based on demographic characteristics. Impacted access to employment opportunities affecting 13111 people. Microsoft updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 78,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2016,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0003",
+    "narrative": "FaceID facial recognition system exhibited racial and gender bias in 2017. The system misidentified young people at rates 44% higher than lighter-skinned users. Deployed in airport security with algorithmic recommendations. LendingClub removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 3,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2017,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0050",
+    "narrative": "PredPol predictive policing algorithm showed racial bias in 2016. System flagged Black individuals as high-risk at 29% higher rates. Deployed in educational institutions with fully automated processes and minimal human intervention. LendingClub launched internal investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 50,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2016,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0027",
+    "narrative": "CreditAI credit scoring algorithm discriminated against Black individuals in 2022. System denied loans at 25% higher rate for minority applicants. Processed financial data with semi-automated decisions. HireVue denied allegations.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 27,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2022,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0079",
+    "narrative": "TrustRank social scoring system discriminated against non-native speakers in 2023. Algorithm assigned lower scores based on historical biases in training data. Impacted access to educational programs affecting 31619 people. Google provided no response.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 79,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2023,
+      "organization": "Google"
+    }
+  },
+  {
+    "id": "BENCH-0043",
+    "narrative": "CrimePredict predictive policing algorithm showed racial bias in 2017. System flagged women as high-risk at 25% higher rates. Deployed in law enforcement contexts with algorithmic recommendations and limited human review. Clearview launched internal investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 43,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2017,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0067",
+    "narrative": "EmotionScan emotion recognition system deployed without consent in public spaces in 2020. Monitored darker-skinned women processing personal data. Used for algorithmic recommendations with minimal human intervention. Tesla issued public apology after regulatory inquiry.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 67,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "generated_year": 2020,
+      "organization": "Tesla"
+    }
+  },
+  {
+    "id": "BENCH-0030",
+    "narrative": "CreditBot credit scoring algorithm discriminated against people with disabilities in 2020. System denied loans at 28% higher rate for minority applicants. Processed sensitive personal information with automated decision-making. PredPol Inc suspended operations temporarily.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 30,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2020,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0015",
+    "narrative": "CVAnalyzer automated hiring system discriminated against people with disabilities in 2017. Algorithm trained on historical data showing bias. Used for retail environments with semi-automated decisions. ZestFinance denied allegations after whistleblower report.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 15,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2017,
+      "organization": "ZestFinance"
+    }
+  },
+  {
+    "id": "BENCH-0053",
+    "narrative": "AnalyticsBot exposed communication records of 36772 users in 2023. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. PredPol Inc denied allegations and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 53,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2023,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0028",
+    "narrative": "LoanDecider credit scoring algorithm discriminated against people with disabilities in 2017. System denied loans at 22% higher rate for minority applicants. Processed financial data with algorithmic recommendations. IBM issued public apology.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 28,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2017,
+      "organization": "IBM"
+    }
+  },
+  {
+    "id": "BENCH-0056",
+    "narrative": "DataCollect exposed biometric and personal data of 70533 users in 2016. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. IBM launched internal investigation and underwent compliance review.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 56,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2016,
+      "organization": "IBM"
+    }
+  },
+  {
+    "id": "BENCH-0055",
+    "narrative": "UserTrack exposed personal data of 78637 users in 2016. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. IBM updated algorithm and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 55,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2016,
+      "organization": "IBM"
+    }
+  },
+  {
+    "id": "BENCH-0039",
+    "narrative": "HealthPredict diagnostic system made critical errors affecting 17272 patients in 2021. Algorithm misdiagnosed immigrants due to training data bias. Used in social media platforms for automated decision-making. Google removed feature.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 39,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "generated_year": 2021,
+      "organization": "Google"
+    }
+  },
+  {
+    "id": "BENCH-0059",
+    "narrative": "UserTrack exposed communication records of 83280 users in 2023. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. ZestFinance removed feature and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 59,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2023,
+      "organization": "ZestFinance"
+    }
+  },
+  {
+    "id": "BENCH-0081",
+    "narrative": "DeepFake deepfake generation system misused to create non-consensual content in 2018. Generated synthetic media of darker-skinned women without consent. Content spread on messaging apps affecting 2913 individuals. OpenAI launched internal investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 81,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "generated_year": 2018,
+      "organization": "OpenAI"
+    }
+  },
+  {
+    "id": "BENCH-0016",
+    "narrative": "TalentAI automated hiring system discriminated against Hispanic users in 2024. Algorithm trained on historical data showing bias. Used for airport security with fully automated processes. ZestFinance issued public apology after regulatory inquiry.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 16,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "generated_year": 2024,
+      "organization": "ZestFinance"
+    }
+  },
+  {
+    "id": "BENCH-0009",
+    "narrative": "FaceID facial recognition system exhibited racial and gender bias in 2017. The system misidentified young people at rates 25% higher than higher-income groups. Deployed in educational institutions with automated decision-making. PredPol Inc denied allegations.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 9,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "generated_year": 2017,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0023",
+    "narrative": "LoanDecider credit scoring algorithm discriminated against Hispanic users in 2016. System denied loans at 41% higher rate for minority applicants. Processed personal data with semi-automated decisions. Palantir updated algorithm.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 23,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "generated_year": 2016,
+      "organization": "Palantir"
+    }
+  },
+  {
+    "id": "BENCH-0042",
+    "narrative": "PoliceAI predictive policing algorithm showed racial bias in 2020. System flagged minority groups as high-risk at 22% higher rates. Deployed in healthcare facilities with semi-automated decisions and inadequate oversight mechanisms. Microsoft provided no response.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 42,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "PredictivePolicing",
+      "generated_year": 2020,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0074",
+    "narrative": "TrustRank social scoring system discriminated against immigrants in 2019. Algorithm assigned lower scores based on geographic location. Impacted access to financial services affecting 50927 people. PredPol Inc denied allegations.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 74,
+      "template_type": "discrimination",
+      "system_type": "multimodal",
+      "purpose": "SocialScoring",
+      "generated_year": 2019,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0092",
+    "narrative": "AutoDrive autonomous vehicle system caused pedestrian injury in 2021. Algorithm failed to detect pedestrians in complex intersections. Resulted in minor injuries to 10833 people. Palantir disputed findings and was subject to investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 92,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2021,
+      "organization": "Palantir"
+    }
+  },
+  {
+    "id": "BENCH-0058",
+    "narrative": "ChatAI exposed location data of 16453 users in 2021. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. Clearview launched internal investigation and settled class action lawsuit.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 58,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "generated_year": 2021,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0098",
+    "narrative": "RoboDriver autonomous vehicle system caused pedestrian injury in 2018. Algorithm failed to detect pedestrians in low-light conditions. Resulted in serious injuries to 29620 people. Google issued public apology and was subject to investigation.",
+    "source": "Synthetic Benchmark",
+    "metadata": {
+      "benchmark_id": 98,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "generated_year": 2018,
+      "organization": "Google"
+    }
+  }
+]

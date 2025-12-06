@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "total_incidents": 100,
+    "successful": 62,
+    "low_confidence": 0,
+    "failed": 38,
+    "success_rate": 62.0
+  },
+  "performance": {
+    "mean_time": 218.3190851288457,
+    "median_time": 43.66747450828552,
+    "min_time": 23.11408519744873,
+    "max_time": 1075.631352186203,
+    "stdev_time": 302.74448033896203
+  },
+  "quality": {
+    "mean_confidence": 0.9005376344086023,
+    "median_confidence": 0.9066666666666668,
+    "min_confidence": 0.7866666666666667,
+    "max_confidence": 0.9066666666666668,
+    "stdev_confidence": 0.02067348334950406
+  },
+  "risk_distribution": {
+    "MinimalRisk": 46,
+    "HighRisk": 15,
+    "Unknown": 1
+  },
+  "incident_distribution": {
+    "discrimination": 19,
+    "bias": 30,
+    "privacy_violation": 9,
+    "discrimination|bias": 2,
+    "safety_failure": 2
+  },
+  "errors": [
+    "BENCH-0017: Unknown",
+    "BENCH-0088: Unknown",
+    "BENCH-0095: Unknown",
+    "BENCH-0068: Unknown",
+    "BENCH-0063: Unknown",
+    "BENCH-0012: Unknown",
+    "BENCH-0052: Unknown",
+    "BENCH-0087: Unknown",
+    "BENCH-0065: Unknown",
+    "BENCH-0099: Unknown",
+    "BENCH-0014: Unknown",
+    "BENCH-0057: Unknown",
+    "BENCH-0086: Unknown",
+    "BENCH-0100: Unknown",
+    "BENCH-0096: Unknown",
+    "BENCH-0097: Unknown",
+    "BENCH-0084: Unknown",
+    "BENCH-0033: Unknown",
+    "BENCH-0089: Unknown",
+    "BENCH-0093: Unknown",
+    "BENCH-0054: Unknown",
+    "BENCH-0091: Unknown",
+    "BENCH-0083: Unknown",
+    "BENCH-0051: Unknown",
+    "BENCH-0019: Unknown",
+    "BENCH-0018: Unknown",
+    "BENCH-0037: Unknown",
+    "BENCH-0061: Unknown",
+    "BENCH-0026: Unknown",
+    "BENCH-0050: Unknown",
+    "BENCH-0027: Unknown",
+    "BENCH-0015: Unknown",
+    "BENCH-0053: Unknown",
+    "BENCH-0055: Unknown",
+    "BENCH-0059: Unknown",
+    "BENCH-0081: Unknown",
+    "BENCH-0092: Unknown",
+    "BENCH-0058: Unknown"
+  ]
+}

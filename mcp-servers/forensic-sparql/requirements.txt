@@ -1,0 +1,3 @@
+# MCP Server Dependencies - FastMCP 2.0
+fastmcp>=2.0.0
+httpx>=0.24.0

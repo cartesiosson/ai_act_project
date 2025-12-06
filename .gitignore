@@ -156,6 +156,14 @@ backend/**/*.pyc
 reasoner_service/__pycache__/
 reasoner_service/**/__pycache__/
 reasoner_service/**/*.pyc
+forensic_agent/__pycache__/
+forensic_agent/**/__pycache__/
+forensic_agent/**/*.pyc
+mcp-servers/**/__pycache__/
+mcp-servers/**/*.pyc
+
+# Temporary forensic results
+forensic_result_*.json
 
 # Database
 *.db

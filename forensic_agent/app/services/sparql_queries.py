@@ -1,89 +1,46 @@
-"""SPARQL query service for forensic compliance analysis"""
+"""SPARQL query service for forensic compliance analysis - MCP Client version"""
 
 import os
-from typing import Dict, List, Optional, Set
-from rdflib import Graph, Namespace, URIRef, Literal
-from rdflib.plugins.sparql import prepareQuery
-from pathlib import Path
+from typing import Dict, List, Optional
+from .mcp_client import MCPClient
 
-AI = Namespace("http://ai-act.eu/ai#")
-ISO = Namespace("http://iso.org/42001#")
-NIST = Namespace("http://nist.gov/ai-rmf#")
-RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
-RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+AI_PREFIX = "http://ai-act.eu/ai#"
 
 
 class ForensicSPARQLService:
     """
-    SPARQL query service for forensic compliance analysis
-    with multi-framework support (EU AI Act + ISO 42001 + NIST AI RMF)
+    SPARQL query service for forensic compliance analysis.
+    Uses MCP server for all ontology queries.
     """
 
-    def __init__(self, ontology_path: Optional[str] = None, mappings_path: Optional[str] = None):
+    def __init__(self, mcp_url: Optional[str] = None):
         """
-        Initialize with ontology and mappings paths
+        Initialize with MCP client.
 
         Args:
-            ontology_path: Path to EU AI Act ontology file
-            mappings_path: Path to mappings directory
+            mcp_url: URL of MCP SPARQL server
         """
-        self.ontology_path = ontology_path or os.getenv("ONTOLOGY_PATH", "/ontologias/ontologia-v0.37.2.ttl")
-        self.mappings_path = mappings_path or os.getenv("MAPPINGS_PATH", "/ontologias/mappings")
+        self.mcp = MCPClient(mcp_url)
+        self._connected = False
 
-        # Initialize RDF graph
-        self.graph = Graph()
-
-        # Bind namespaces
-        self.graph.bind("ai", AI)
-        self.graph.bind("iso", ISO)
-        self.graph.bind("nist", NIST)
-        self.graph.bind("rdfs", RDFS)
-        self.graph.bind("rdf", RDF)
-
-        # Load ontology and mappings
-        self._load_ontology()
-
-    def _load_ontology(self):
-        """Load ontology and mappings from files"""
-        try:
-            # Load main ontology
-            if os.path.exists(self.ontology_path):
-                print(f"Loading ontology from: {self.ontology_path}")
-                self.graph.parse(self.ontology_path, format="turtle")
-                print(f"✓ Ontology loaded: {len(self.graph)} triples")
+    async def ensure_connected(self) -> bool:
+        """Verify MCP server is available."""
+        if not self._connected:
+            self._connected = await self.mcp.health_check()
+            if self._connected:
+                print("✓ Connected to MCP SPARQL server")
             else:
-                print(f"⚠ Ontology file not found: {self.ontology_path}")
+                print("⚠ MCP server not available, will retry on queries")
+        return self._connected
 
-            # Load ISO 42001 mappings
-            iso_mappings = os.path.join(self.mappings_path, "iso-42001-mappings.ttl")
-            if os.path.exists(iso_mappings):
-                print(f"Loading ISO 42001 mappings from: {iso_mappings}")
-                self.graph.parse(iso_mappings, format="turtle")
-                print(f"✓ ISO mappings loaded")
-            else:
-                print(f"⚠ ISO mappings not found: {iso_mappings}")
-
-            # Load NIST AI RMF mappings
-            nist_mappings = os.path.join(self.mappings_path, "nist-ai-rmf-mappings.ttl")
-            if os.path.exists(nist_mappings):
-                print(f"Loading NIST AI RMF mappings from: {nist_mappings}")
-                self.graph.parse(nist_mappings, format="turtle")
-                print(f"✓ NIST mappings loaded")
-            else:
-                print(f"⚠ NIST mappings not found: {nist_mappings}")
-
-            print(f"✓ Total triples loaded: {len(self.graph)}")
-
-        except Exception as e:
-            print(f"✗ Error loading ontology/mappings: {e}")
-            raise
-
-    async def query_mandatory_requirements(self,
-                                          purpose: str,
-                                          contexts: List[str],
-                                          data_types: List[str]) -> Dict:
+    async def query_mandatory_requirements(
+        self,
+        purpose: str,
+        contexts: List[str],
+        data_types: List[str]
+    ) -> Dict:
         """
-        Query ontology for mandatory EU AI Act requirements
+        Query ontology for mandatory EU AI Act requirements via MCP.
 
         Args:
             purpose: Primary purpose (e.g., "BiometricIdentification")
@@ -93,15 +50,11 @@ class ForensicSPARQLService:
         Returns:
             Dict with criteria, requirements, and risk level
         """
-
-        # Build purpose URI
-        purpose_uri = AI[purpose] if purpose else None
-
-        # Build context URIs
-        context_uris = [AI[ctx] for ctx in contexts if ctx]
-
         # Build SPARQL query
-        query_str = f"""
+        purpose_uri = f"ai:{purpose}" if purpose else ""
+        context_values = " ".join([f"ai:{ctx}" for ctx in contexts if ctx])
+
+        query = f"""
         PREFIX ai: <http://ai-act.eu/ai#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -109,14 +62,14 @@ class ForensicSPARQLService:
         WHERE {{
           {{
             # Purpose-based criteria
-            {f"<{purpose_uri}> ai:activatesCriterion ?criterion ." if purpose_uri else ""}
+            {f"{purpose_uri} ai:activatesCriterion ?criterion ." if purpose else ""}
           }}
-          UNION
-          {{
+          {"UNION" if purpose and context_values else ""}
+          {f'''{{
             # Context-based criteria
-            VALUES ?context {{ {" ".join([f"<{ctx}>" for ctx in context_uris])} }}
+            VALUES ?context {{ {context_values} }}
             ?context ai:triggersCriterion ?criterion .
-          }}
+          }}''' if context_values else ""}
 
           # Get requirements from criteria
           ?criterion ai:activatesRequirement ?requirement .
@@ -130,31 +83,36 @@ class ForensicSPARQLService:
         """
 
         try:
-            results = self.graph.query(query_str)
+            result = await self.mcp.query_ontology(query)
 
-            # Parse results
+            if "error" in result:
+                print(f"⚠ MCP query error: {result['error']}")
+                return self._empty_requirements_result()
+
+            # Parse SPARQL results
+            bindings = result.get("results", {}).get("bindings", [])
+
             requirements = []
             criteria = set()
-            seen_requirements = set()  # Avoid duplicates
+            seen_requirements = set()
 
-            for row in results:
-                req_uri = str(row.requirement)
+            for row in bindings:
+                req_uri = row.get("requirement", {}).get("value", "")
 
-                # Skip duplicates
                 if req_uri in seen_requirements:
                     continue
                 seen_requirements.add(req_uri)
 
                 requirements.append({
                     "uri": req_uri,
-                    "label": str(row.requirementLabel) if row.requirementLabel else req_uri.split("#")[-1],
-                    "criterion": str(row.criterion) if row.criterion else ""
+                    "label": row.get("requirementLabel", {}).get("value", req_uri.split("#")[-1]),
+                    "criterion": row.get("criterion", {}).get("value", "")
                 })
 
-                if row.criterion:
-                    criteria.add(str(row.criterion))
+                criterion = row.get("criterion", {}).get("value")
+                if criterion:
+                    criteria.add(criterion)
 
-            # Determine risk level
             risk_level = self._determine_risk_level(list(criteria))
 
             return {
@@ -165,17 +123,12 @@ class ForensicSPARQLService:
             }
 
         except Exception as e:
-            print(f"Error querying mandatory requirements: {e}")
-            return {
-                "criteria": [],
-                "requirements": [],
-                "risk_level": "Unknown",
-                "total_requirements": 0
-            }
+            print(f"✗ Error querying mandatory requirements: {e}")
+            return self._empty_requirements_result()
 
     async def query_iso_42001_mappings(self, eu_requirements: List[str]) -> Dict:
         """
-        Query ISO 42001 mappings for EU AI Act requirements
+        Query ISO 42001 mappings for EU AI Act requirements via MCP.
 
         Args:
             eu_requirements: List of EU AI Act requirement URIs
@@ -183,120 +136,81 @@ class ForensicSPARQLService:
         Returns:
             Dict with ISO controls mapped to each requirement
         """
+        iso_mappings = {}
 
-        query_str = """
-        PREFIX ai: <http://ai-act.eu/ai#>
-        PREFIX iso: <http://iso.org/42001#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        for req_uri in eu_requirements[:10]:  # Limit to avoid too many calls
+            req_name = req_uri.split("#")[-1] if "#" in req_uri else req_uri
 
-        SELECT ?requirement ?isoControl ?isoSection ?isoDescription ?confidence
-        WHERE {
-          ?requirement ai:equivalentToISOControl ?isoControl ;
-                       ai:isoSection ?isoSection ;
-                       ai:isoControlDescription ?isoDescription ;
-                       ai:mappingConfidence ?confidence .
-        }
+            try:
+                result = await self.mcp.query_iso_mappings(req_name)
+
+                if "error" not in result:
+                    bindings = result.get("results", {}).get("bindings", [])
+                    for row in bindings:
+                        iso_mappings[req_uri] = {
+                            "iso_control": row.get("isoControl", {}).get("value", ""),
+                            "iso_section": row.get("isoSection", {}).get("value", ""),
+                            "description": row.get("description", {}).get("value", ""),
+                            "confidence": row.get("confidence", {}).get("value", "HIGH")
+                        }
+            except Exception as e:
+                print(f"⚠ ISO mapping query failed for {req_name}: {e}")
+
+        return iso_mappings
+
+    async def query_nist_ai_rmf_mappings(
+        self,
+        eu_requirements: List[str],
+        jurisdiction: str = "GLOBAL"
+    ) -> Dict:
         """
-
-        try:
-            results = self.graph.query(query_str)
-
-            iso_mappings = {}
-            for row in results:
-                req_uri = str(row.requirement)
-                req_name = req_uri.split("#")[-1]
-
-                # Check if this requirement is in our list
-                if any(req in req_uri or req_name in req for req in eu_requirements):
-                    iso_mappings[req_uri] = {
-                        "iso_control": str(row.isoControl),
-                        "iso_section": str(row.isoSection),
-                        "description": str(row.isoDescription),
-                        "confidence": str(row.confidence)
-                    }
-
-            return iso_mappings
-
-        except Exception as e:
-            print(f"Error querying ISO 42001 mappings: {e}")
-            return {}
-
-    async def query_nist_ai_rmf_mappings(self,
-                                        eu_requirements: List[str],
-                                        jurisdiction: str = "GLOBAL") -> Dict:
-        """
-        Query NIST AI RMF mappings for EU AI Act requirements
+        Query NIST AI RMF mappings for EU AI Act requirements via MCP.
 
         Args:
             eu_requirements: List of EU AI Act requirement URIs
-            jurisdiction: "US", "GLOBAL", or "EU" (for applicability filtering)
+            jurisdiction: "US", "GLOBAL", or "EU"
 
         Returns:
             Dict with NIST functions mapped to each requirement
         """
+        nist_mappings = {}
 
-        query_str = """
-        PREFIX ai: <http://ai-act.eu/ai#>
-        PREFIX nist: <http://nist.gov/ai-rmf#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        for req_uri in eu_requirements[:10]:  # Limit to avoid too many calls
+            req_name = req_uri.split("#")[-1] if "#" in req_uri else req_uri
 
-        SELECT ?requirement ?nistFunction ?nistCategory ?nistDescription
-               ?confidence ?applicability
-        WHERE {
-          ?requirement ai:equivalentToNISTFunction ?nistFunction ;
-                       ai:nistCategory ?nistCategory ;
-                       ai:nistCategoryDescription ?nistDescription ;
-                       ai:nistMappingConfidence ?confidence ;
-                       ai:nistApplicabilityContext ?applicability .
-        }
+            try:
+                result = await self.mcp.query_nist_mappings(req_name)
+
+                if "error" not in result:
+                    bindings = result.get("results", {}).get("bindings", [])
+                    for row in bindings:
+                        nist_mappings[req_uri] = {
+                            "nist_function": row.get("nistFunction", {}).get("value", ""),
+                            "nist_category": row.get("category", {}).get("value", ""),
+                            "description": row.get("description", {}).get("value", ""),
+                            "confidence": row.get("confidence", {}).get("value", "HIGH"),
+                            "applicability": row.get("applicability", {}).get("value", jurisdiction)
+                        }
+            except Exception as e:
+                print(f"⚠ NIST mapping query failed for {req_name}: {e}")
+
+        return nist_mappings
+
+    async def analyze_compliance_gaps(
+        self,
+        mandatory_requirements: List[str],
+        incident_properties: Dict
+    ) -> Dict:
         """
-
-        try:
-            results = self.graph.query(query_str)
-
-            nist_mappings = {}
-            for row in results:
-                req_uri = str(row.requirement)
-                req_name = req_uri.split("#")[-1]
-                applicability = str(row.applicability)
-
-                # Filter by jurisdiction
-                if jurisdiction == "US" and "US_INCIDENTS" not in applicability:
-                    continue
-                if jurisdiction == "EU" and "GLOBAL_INCIDENTS" not in applicability:
-                    continue
-                # GLOBAL accepts all
-
-                # Check if this requirement is in our list
-                if any(req in req_uri or req_name in req for req in eu_requirements):
-                    nist_mappings[req_uri] = {
-                        "nist_function": str(row.nistFunction),
-                        "nist_category": str(row.nistCategory),
-                        "description": str(row.nistDescription),
-                        "confidence": str(row.confidence),
-                        "applicability": applicability
-                    }
-
-            return nist_mappings
-
-        except Exception as e:
-            print(f"Error querying NIST AI RMF mappings: {e}")
-            return {}
-
-    async def analyze_compliance_gaps(self,
-                                     mandatory_requirements: List[str],
-                                     incident_properties: Dict) -> Dict:
-        """
-        Analyze compliance gaps based on incident properties
+        Analyze compliance gaps based on incident properties.
 
         Args:
             mandatory_requirements: List of required requirement URIs
-            incident_properties: Incident details (to infer what was implemented)
+            incident_properties: Incident details
 
         Returns:
             Gap analysis with missing requirements
         """
-
         # Infer implemented requirements from incident response
         implemented = self._infer_implemented_requirements(incident_properties)
 
@@ -322,10 +236,9 @@ class ForensicSPARQLService:
         }
 
     def _determine_risk_level(self, criteria: List[str]) -> str:
-        """Determine risk level from activated criteria"""
+        """Determine risk level from activated criteria."""
         criteria_str = " ".join(criteria).lower()
 
-        # Check for high-risk indicators (Annex III)
         high_risk_keywords = [
             "biometric", "lawenforcement", "migration", "employment",
             "education", "criticalinfrastructure", "emotionrecognition",
@@ -336,10 +249,7 @@ class ForensicSPARQLService:
             if keyword in criteria_str:
                 return "HighRisk"
 
-        # Check for limited risk indicators
-        limited_risk_keywords = [
-            "limitedemotion", "deepfake", "contentclassification"
-        ]
+        limited_risk_keywords = ["limitedemotion", "deepfake", "contentclassification"]
 
         for keyword in limited_risk_keywords:
             if keyword in criteria_str:
@@ -348,49 +258,32 @@ class ForensicSPARQLService:
         return "MinimalRisk"
 
     def _infer_implemented_requirements(self, incident_properties: Dict) -> List[str]:
-        """
-        Infer which requirements were implemented based on incident description
-
-        This is heuristic-based - can be enhanced with LLM reasoning
-        """
+        """Infer implemented requirements from incident description."""
         implemented = []
 
         response = incident_properties.get("response", {})
         actions = response.get("actions_taken", [])
-
-        # Simple keyword matching (can be improved)
         action_str = " ".join(actions).lower()
 
-        # Documentation
-        if "documentation" in action_str or "record" in action_str or "log" in action_str:
-            implemented.append("http://ai-act.eu/ai#DocumentationRequirement")
+        requirement_keywords = {
+            "DocumentationRequirement": ["documentation", "record", "log"],
+            "TransparencyRequirement": ["transparency", "disclosure", "inform"],
+            "MonitoringRequirement": ["monitoring", "audit", "review"],
+            "DataGovernanceRequirement": ["data quality", "data governance"],
+            "HumanOversightRequirement": ["human oversight", "human review"],
+            "AccuracyRequirement": ["test", "accuracy", "validation"]
+        }
 
-        # Transparency
-        if "transparency" in action_str or "disclosure" in action_str or "inform" in action_str:
-            implemented.append("http://ai-act.eu/ai#TransparencyRequirement")
+        for req, keywords in requirement_keywords.items():
+            for keyword in keywords:
+                if keyword in action_str:
+                    implemented.append(f"{AI_PREFIX}{req}")
+                    break
 
-        # Monitoring
-        if "monitoring" in action_str or "audit" in action_str or "review" in action_str:
-            implemented.append("http://ai-act.eu/ai#MonitoringRequirement")
-
-        # Data governance
-        if "data" in action_str and ("quality" in action_str or "governance" in action_str):
-            implemented.append("http://ai-act.eu/ai#DataGovernanceRequirement")
-
-        # Human oversight
-        if "human" in action_str and ("oversight" in action_str or "review" in action_str):
-            implemented.append("http://ai-act.eu/ai#HumanOversightRequirement")
-
-        # Accuracy/Testing
-        if "test" in action_str or "accuracy" in action_str or "validation" in action_str:
-            implemented.append("http://ai-act.eu/ai#AccuracyRequirement")
-
-        # Note: Most incidents show lack of implementation, so default is minimal
-        # This is intentionally conservative - assumes nothing unless explicitly mentioned
         return implemented
 
     def _categorize_critical_gaps(self, missing: List[str]) -> List[Dict]:
-        """Categorize missing requirements by criticality"""
+        """Categorize missing requirements by criticality."""
         critical_keywords = [
             ("Biometric", "Critical: Biometric data protection requirement"),
             ("Security", "Critical: Security requirement"),
@@ -408,16 +301,13 @@ class ForensicSPARQLService:
 
             for keyword, reason in critical_keywords:
                 if keyword.lower() in req_name.lower():
-                    critical.append({
-                        "requirement": req,
-                        "reason": reason
-                    })
+                    critical.append({"requirement": req, "reason": reason})
                     break
 
         return critical
 
     def _assess_gap_severity(self, missing_count: int, total_count: int) -> str:
-        """Assess severity of compliance gaps"""
+        """Assess severity of compliance gaps."""
         if total_count == 0:
             return "UNKNOWN"
 
@@ -434,27 +324,163 @@ class ForensicSPARQLService:
         else:
             return "COMPLIANT"
 
-    async def query_similar_systems_at_risk(self,
-                                           incident_type: str,
-                                           missing_requirement: str) -> List[Dict]:
-        """
-        Find other systems with same compliance gap
-
-        Note: This requires a database of registered systems.
-        Currently returns empty list as placeholder.
-        """
-        # TODO: Implement when system database is available
-        # This would query Fuseki for systems with:
-        # - Same purpose/context as incident
-        # - Missing the same requirement
-        return []
-
-    def get_stats(self) -> Dict:
-        """Get statistics about loaded ontology"""
+    def _empty_requirements_result(self) -> Dict:
+        """Return empty requirements result structure."""
         return {
-            "total_triples": len(self.graph),
-            "namespaces": list(self.graph.namespaces()),
-            "ontology_loaded": os.path.exists(self.ontology_path),
-            "iso_mappings_loaded": os.path.exists(os.path.join(self.mappings_path, "iso-42001-mappings.ttl")),
-            "nist_mappings_loaded": os.path.exists(os.path.join(self.mappings_path, "nist-ai-rmf-mappings.ttl"))
+            "criteria": [],
+            "requirements": [],
+            "risk_level": "Unknown",
+            "total_requirements": 0
         }
+
+    async def get_stats(self) -> Dict:
+        """Get ontology statistics via MCP."""
+        try:
+            result = await self.mcp.get_ontology_stats()
+            if "error" not in result:
+                return result
+        except Exception as e:
+            print(f"⚠ Stats query failed: {e}")
+
+        return {
+            "total_triples": 0,
+            "mcp_connected": self._connected
+        }
+
+    async def get_inference_rules(self) -> Dict:
+        """
+        Get all inference rules from the reasoning engine via MCP.
+
+        Returns:
+            Dict with condition_consequence_rules, navigation_rules, and metadata
+        """
+        try:
+            result = await self.mcp.get_inference_rules()
+            if "error" not in result:
+                return result
+        except Exception as e:
+            print(f"⚠ Inference rules query failed: {e}")
+
+        return {
+            "condition_consequence_rules": [],
+            "navigation_rules": [],
+            "metadata": {"error": "Failed to load rules"}
+        }
+
+    async def get_applicable_rules(self, incident_properties: Dict) -> Dict:
+        """
+        Get inference rules that apply to a specific incident based on its properties.
+
+        Args:
+            incident_properties: Extracted incident details
+
+        Returns:
+            Dict with applicable rules and explanations
+        """
+        try:
+            all_rules = await self.get_inference_rules()
+
+            if "error" in all_rules.get("metadata", {}):
+                return {"applicable_rules": [], "explanation": "Rules not available"}
+
+            applicable = []
+            system = incident_properties.get("system", {})
+
+            # Check condition/consequence rules
+            for rule in all_rules.get("condition_consequence_rules", []):
+                applies, reason = self._check_rule_applicability(rule, system)
+                if applies:
+                    applicable.append({
+                        "rule_id": rule["id"],
+                        "rule_name": rule["name"],
+                        "category": rule.get("category", "unknown"),
+                        "reason": reason,
+                        "conditions": rule.get("conditions", []),
+                        "consequences": rule.get("consequences", [])
+                    })
+
+            # Navigation rules always apply for transitive inference
+            nav_rules = all_rules.get("navigation_rules", [])
+
+            return {
+                "applicable_rules": applicable,
+                "navigation_rules": nav_rules,
+                "total_applicable": len(applicable),
+                "total_navigation": len(nav_rules),
+                "explanation": self._generate_rules_explanation(applicable, nav_rules)
+            }
+
+        except Exception as e:
+            print(f"⚠ Applicable rules query failed: {e}")
+            return {"applicable_rules": [], "explanation": f"Error: {e}"}
+
+    def _check_rule_applicability(self, rule: Dict, system: Dict) -> tuple:
+        """
+        Check if a rule applies to the system based on its conditions.
+
+        Returns:
+            (applies: bool, reason: str)
+        """
+        rule_name = rule.get("name", rule.get("id", "unknown"))
+        category = rule.get("category", "unknown")
+
+        # Get system properties
+        purpose = system.get("primary_purpose", "").lower()
+        contexts = [c.lower() for c in system.get("deployment_context", [])]
+        data_types = [d.lower() for d in system.get("processes_data_types", [])]
+        model_scale = system.get("model_scale", "").lower()
+        has_oversight = system.get("has_human_oversight", True)
+
+        # Purpose-based rules
+        if "biometric" in purpose or "biometric" in " ".join(contexts):
+            if "biometric" in rule_name.lower() or category in ["base_contextual"]:
+                return True, f"System purpose '{purpose}' triggers this rule"
+
+        # Context-based rules
+        if "lawenforcement" in " ".join(contexts) or "publicspaces" in " ".join(contexts):
+            if category in ["base_contextual", "cascade"]:
+                return True, "Deployment context triggers high-risk classification"
+
+        # Technical rules based on model scale
+        if model_scale and "foundation" in model_scale:
+            if "gpai" in rule_name.lower() or "foundation" in rule_name.lower() or "scale" in rule_name.lower():
+                return True, "Foundation model scale triggers GPAI rules"
+
+        # Human oversight rules
+        if not has_oversight:
+            if "oversight" in rule_name.lower() or "autonomy" in rule_name.lower():
+                return True, "Lack of human oversight triggers this rule"
+
+        # Data type rules
+        if "biometricdata" in " ".join(data_types):
+            if "data" in rule_name.lower() or category == "base_contextual":
+                return True, "Biometric data processing triggers data governance rules"
+
+        # Emotion recognition
+        if "emotion" in purpose:
+            if "emotion" in rule_name.lower():
+                return True, "Emotion recognition purpose triggers specific rules"
+
+        return False, ""
+
+    def _generate_rules_explanation(self, applicable: List[Dict], nav_rules: List[Dict]) -> str:
+        """Generate human-readable explanation of applicable rules."""
+        if not applicable and not nav_rules:
+            return "No inference rules were determined to be applicable to this incident."
+
+        lines = []
+
+        if applicable:
+            lines.append(f"**{len(applicable)} condition-based rules apply:**")
+            for rule in applicable[:5]:  # Limit to first 5
+                lines.append(f"- **{rule['rule_name']}** ({rule['category']})")
+                lines.append(f"  Reason: {rule['reason']}")
+            if len(applicable) > 5:
+                lines.append(f"  ... and {len(applicable) - 5} more rules")
+
+        if nav_rules:
+            lines.append(f"\n**{len(nav_rules)} navigation rules for transitive inference:**")
+            for rule in nav_rules[:3]:
+                lines.append(f"- {rule['name']}: {rule.get('description', '')}")
+
+        return "\n".join(lines)

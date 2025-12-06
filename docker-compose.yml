@@ -81,19 +81,26 @@ services:
     #           count: 1
     #           capabilities: [gpu]
 
+  init_ollama:
+    build: ./init_ollama
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_ENDPOINT=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
+
   forensic_agent:
     build: ./forensic_agent
     depends_on:
       - fuseki
-      - ollama
+      - init_ollama
+      - mcp_sparql
     environment:
       - LLM_PROVIDER=${LLM_PROVIDER:-ollama}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OLLAMA_ENDPOINT=${OLLAMA_ENDPOINT:-http://ollama:11434}
       - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
-      - FUSEKI_ENDPOINT=${FUSEKI_ENDPOINT}
-      - ONTOLOGY_PATH=/ontologias/ontologia-v${CURRENT_RELEASE}.ttl
-      - MAPPINGS_PATH=/ontologias/mappings
+      - MCP_SERVER_URL=http://mcp_sparql:8080
       - FORENSIC_PORT=${FORENSIC_PORT:-8001}
     volumes:
       - ./forensic_agent/app:/app/app
@@ -103,6 +110,18 @@ services:
       - "${FORENSIC_PORT:-8001}:8000"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
+  mcp_sparql:
+    build: ./mcp-servers/forensic-sparql
+    depends_on:
+      - fuseki
+    environment:
+      - FUSEKI_URL=http://fuseki:3030
+      - FUSEKI_DATASET=${FUSEKI_DATASET:-ds}
+      - FUSEKI_GRAPH=${FUSEKI_GRAPH:-http://ai-act.eu/ontology}
+    ports:
+      - "${MCP_PORT:-8080}:8080"
+    volumes:
+      - ./forensic_agent/benchmark:/app/benchmark:ro
 
   ontologias:
     build: ./ontologias

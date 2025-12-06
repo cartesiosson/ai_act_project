@@ -95,7 +95,7 @@ Extract the following information in JSON format:
   "system": {{
     "system_name": "Name of the AI system",
     "system_type": "vision|nlp|tabular|multimodal|other",
-    "primary_purpose": "Main purpose of the system (use EU AI Act ontology terms when possible: BiometricIdentification, EmotionRecognition, etc.)",
+    "primary_purpose": "REQUIRED - Main purpose of the system. MUST always provide a value - infer from system type if not explicit. Use EU AI Act ontology terms when possible.",
     "processes_data_types": ["BiometricData", "PersonalData", "HealthData", "LocationData", "FinancialData", etc.],
     "deployment_context": ["PublicSpaces", "HighVolume", "RealTime", "CriticalInfrastructure", "EducationContext", "EmploymentContext", "LawEnforcementContext", "HealthcareContext", "MigrationContext", etc.],
     "is_automated_decision": true/false,
@@ -131,8 +131,8 @@ Extract the following information in JSON format:
 }}
 
 IMPORTANT EXTRACTION RULES:
-- Extract ONLY information explicitly stated in the narrative
-- Use null for unknown information - DO NOT guess or infer
+- Extract information from the narrative
+- Use null for unknown information EXCEPT for primary_purpose (see below)
 - For data_types, map to EU AI Act ontology classes when possible:
   * Biometric data (face, fingerprint, iris, etc.) → BiometricData
   * Personal information, names, emails → PersonalData
@@ -145,9 +145,19 @@ IMPORTANT EXTRACTION RULES:
   * RealTime: real-time decision making
   * CriticalInfrastructure: used in critical systems
   * EducationContext, EmploymentContext, LawEnforcementContext, etc.
-- For primary_purpose, prefer EU AI Act ontology terms:
-  * BiometricIdentification, EmotionRecognition, SocialScoring,
-    PredictivePolicing, CreditScoring, etc.
+- For primary_purpose (REQUIRED - NEVER return null):
+  * If explicitly stated, use the stated purpose
+  * If not explicit, INFER from system type and context:
+    - "autonomous vehicle" → "Autonomous driving and vehicle navigation"
+    - "emotion recognition" → "Emotion detection and analysis"
+    - "facial recognition" → "BiometricIdentification"
+    - "credit scoring" → "CreditScoring and financial risk assessment"
+    - "recruitment/hiring" → "Employment candidate screening"
+    - "deepfake/synthetic media" → "Synthetic media generation"
+    - "predictive policing" → "PredictivePolicing"
+    - "social scoring" → "SocialScoring"
+  * Prefer EU AI Act ontology terms: BiometricIdentification, EmotionRecognition,
+    SocialScoring, PredictivePolicing, CreditScoring, etc.
 - For incident_type:
   * discrimination: unfair treatment of protected groups
   * bias: algorithmic bias leading to unfair outcomes
@@ -195,6 +205,20 @@ Respond with ONLY valid JSON, no additional text or markdown formatting.
         else:
             raise NotImplementedError(f"LLM provider {self.llm_provider} not supported")
 
+    def _normalize_to_list(self, value, field_name: str) -> list:
+        """Normalize a value to a list (handles LLM returning strings instead of lists)"""
+        if value is None:
+            return []
+        if isinstance(value, list):
+            return value
+        if isinstance(value, str):
+            # If it's a comma-separated string, split it
+            if "," in value:
+                return [v.strip() for v in value.split(",") if v.strip()]
+            # Single value - wrap in list
+            return [value] if value.strip() else []
+        return []
+
     def _parse_llm_response(self, response: str) -> ExtractedIncident:
         """Parse and validate LLM JSON response"""
 
@@ -214,12 +238,41 @@ Respond with ONLY valid JSON, no additional text or markdown formatting.
         except json.JSONDecodeError as e:
             raise ValueError(f"Failed to parse LLM response as JSON: {e}\nResponse: {response[:500]}")
 
+        # Normalize system data - ensure list fields are actually lists
+        system_data = data.get("system", {})
+        system_data["processes_data_types"] = self._normalize_to_list(
+            system_data.get("processes_data_types"), "processes_data_types"
+        )
+        system_data["deployment_context"] = self._normalize_to_list(
+            system_data.get("deployment_context"), "deployment_context"
+        )
+
+        # Normalize incident data
+        incident_data = data.get("incident", {})
+        incident_data["affected_populations"] = self._normalize_to_list(
+            incident_data.get("affected_populations"), "affected_populations"
+        )
+
+        # Clean up response data - convert null to appropriate defaults for required boolean fields
+        response_data = data.get("response", {})
+        if response_data.get("compensation_provided") is None:
+            response_data["compensation_provided"] = False
+        if response_data.get("public_apology") is None:
+            response_data["public_apology"] = False
+        # Normalize list fields in response
+        response_data["actions_taken"] = self._normalize_to_list(
+            response_data.get("actions_taken"), "actions_taken"
+        )
+        response_data["systemic_improvements"] = self._normalize_to_list(
+            response_data.get("systemic_improvements"), "systemic_improvements"
+        ) or None  # Keep None if empty for optional field
+
         # Build ExtractedIncident
         return ExtractedIncident(
-            system=SystemProperties(**data["system"]),
-            incident=IncidentClassification(**data["incident"]),
-            timeline=Timeline(**data["timeline"]),
-            response=OrganizationResponse(**data["response"]),
+            system=SystemProperties(**system_data),
+            incident=IncidentClassification(**incident_data),
+            timeline=Timeline(**data.get("timeline", {})),
+            response=OrganizationResponse(**response_data),
             confidence=ExtractionConfidence(
                 system_type=0.0,  # Will be computed
                 purpose=0.0,
@@ -237,52 +290,83 @@ Respond with ONLY valid JSON, no additional text or markdown formatting.
                           narrative: str,
                           extracted: ExtractedIncident) -> ExtractionConfidence:
         """
-        Compute confidence scores for extraction based on heuristics
+        Compute confidence scores for extraction based on AI Act ontology alignment.
 
-        This is a simple heuristic-based confidence scoring.
-        Can be enhanced with LLM self-assessment in future iterations.
+        Weights are derived from the EU AI Act ontology (ai-act.eu/ai-act#):
+        - hasPurpose -> expectedRiskLevel: Purpose directly determines risk classification
+        - hasDeploymentContext: Context affects regulatory requirements
+        - Data types: Determines if special categories (biometric, health) apply
+        - Incident type: Maps to specific AI Act violations
+        - Affected populations: Relevant for fundamental rights impact
+        - Timeline: Supporting evidence, less critical for classification
+
+        Weight rationale (based on ontology relationships):
+        - purpose_weight = 2.0: hasPurpose -> expectedRiskLevel is the primary classifier
+        - deployment_weight = 1.5: hasDeploymentContext triggers specific criteria (Art. 6)
+        - data_types_weight = 1.5: Special data categories trigger stricter requirements
+        - incident_weight = 1.0: Type of incident (evidence of violation)
+        - affected_weight = 1.0: Fundamental rights impact assessment
+        - timeline_weight = 0.5: Contextual, not determinant for classification
         """
 
-        # System type confidence
+        # === AI Act Ontology-Aligned Weights ===
+        # Derived from ontology property relationships:
+        # - hasPurpose -> expectedRiskLevel (direct risk determination)
+        # - hasDeploymentContext -> Criterion -> assignsRiskLevel (contextual risk)
+        # - processesDataTypes -> triggers BiometricData/HealthData criteria
+        PURPOSE_WEIGHT = 2.0      # Primary risk classifier per Art. 6
+        DEPLOYMENT_WEIGHT = 1.5   # Context-based criteria per Annex III
+        DATA_TYPES_WEIGHT = 1.5   # Special categories per Art. 10
+        INCIDENT_WEIGHT = 1.0     # Evidence of violation
+        AFFECTED_WEIGHT = 1.0     # Fundamental rights impact
+        TIMELINE_WEIGHT = 0.5     # Supporting context
+
+        # System type confidence (proxy for deployment context)
         system_type_conf = 1.0 if extracted.system.system_type != "other" else 0.5
 
-        # Purpose confidence (higher if matches known ontology terms)
+        # Purpose confidence - AI Act ontology terms that map to hasPurpose -> expectedRiskLevel
+        # These are the Purpose subclasses that directly determine risk level
         purpose_terms = [
             "Biometric", "Emotion", "Social", "Predictive", "Credit",
-            "Recognition", "Classification", "Identification"
+            "Recognition", "Classification", "Identification", "Scoring",
+            "Autonomous", "Medical", "Recruitment", "Migration", "Policing"
         ]
         purpose_conf = 0.9 if any(term in extracted.system.primary_purpose for term in purpose_terms) else 0.6
         if not extracted.system.primary_purpose or len(extracted.system.primary_purpose) < 5:
             purpose_conf = 0.3
 
-        # Data types confidence
-        data_types_conf = 0.9 if len(extracted.system.processes_data_types) > 0 else 0.4
+        # Data types confidence - maps to ontology special category data
+        # Higher confidence if recognized AI Act data categories are present
+        special_data_types = ["BiometricData", "HealthData", "LocationData", "FinancialData"]
+        has_special_data = any(dt in extracted.system.processes_data_types for dt in special_data_types)
+        data_types_conf = 0.95 if has_special_data else (0.8 if len(extracted.system.processes_data_types) > 0 else 0.4)
 
-        # Incident classification confidence
+        # Incident classification confidence - maps to AI Act violation categories
         known_types = [
             "discrimination", "bias", "safety_failure", "privacy_violation",
             "transparency_failure", "data_leakage", "adversarial_attack"
         ]
         incident_conf = 0.9 if extracted.incident.incident_type in known_types else 0.6
 
-        # Affected populations confidence
+        # Affected populations confidence - fundamental rights impact
         affected_conf = 0.8 if len(extracted.incident.affected_populations) > 0 else 0.5
 
-        # Timeline confidence (higher if date is specific)
+        # Timeline confidence (supporting evidence)
         timeline_conf = 0.9 if extracted.timeline.discovery_date and len(extracted.timeline.discovery_date) >= 7 else 0.5
         if not extracted.timeline.discovery_date:
             timeline_conf = 0.3
 
-        # Compute overall as weighted average (timeline less important)
+        # Compute overall as ontology-weighted average
         scores = [
-            system_type_conf * 1.2,  # More important
-            purpose_conf * 1.2,      # More important
-            data_types_conf * 1.0,
-            incident_conf * 1.2,     # More important
-            affected_conf * 0.8,
-            timeline_conf * 0.6      # Less important
+            purpose_conf * PURPOSE_WEIGHT,
+            system_type_conf * DEPLOYMENT_WEIGHT,  # system_type as proxy for deployment
+            data_types_conf * DATA_TYPES_WEIGHT,
+            incident_conf * INCIDENT_WEIGHT,
+            affected_conf * AFFECTED_WEIGHT,
+            timeline_conf * TIMELINE_WEIGHT
         ]
-        overall = sum(scores) / sum([1.2, 1.2, 1.0, 1.2, 0.8, 0.6])
+        weights_sum = PURPOSE_WEIGHT + DEPLOYMENT_WEIGHT + DATA_TYPES_WEIGHT + INCIDENT_WEIGHT + AFFECTED_WEIGHT + TIMELINE_WEIGHT
+        overall = sum(scores) / weights_sum
 
         # Clamp to [0, 1]
         overall = max(0.0, min(1.0, overall))

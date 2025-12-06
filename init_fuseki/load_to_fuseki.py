@@ -74,16 +74,24 @@ def upload_turtle(file_path):
 # Procesar todos los archivos en /app/ontologias
 from pathlib import Path
 ontologies_path = Path(ONTOLOGY_PATH)
-ttl_files = list(ontologies_path.glob("*.ttl"))
+mappings_path = Path("/app/ontologias/mappings")
+rules_path = Path("/app/ontologias/rules")
 
-if not ttl_files:
+# Collect TTL files from versions, mappings, and rules
+ttl_files = list(ontologies_path.glob("*.ttl"))
+mapping_files = list(mappings_path.glob("*.ttl")) if mappings_path.exists() else []
+rules_files = list(rules_path.glob("*.ttl")) if rules_path.exists() else []
+
+all_ttl_files = ttl_files + mapping_files + rules_files
+
+if not all_ttl_files:
     print("No se encontraron archivos TTL en /app/ontologias.")
 else:
     print("Archivos TTL encontrados:")
-    for ttl_file in ttl_files:
+    for ttl_file in all_ttl_files:
         print(f" - {ttl_file.name}")
     if graph_has_data():
-                print("ℹ️ El grafo ya contiene datos. No se realizará la carga.")
+        print("ℹ️ El grafo ya contiene datos. No se realizará la carga.")
     else:
-        for ttl_file in ttl_files:
+        for ttl_file in all_ttl_files:
             upload_turtle(ttl_file)
