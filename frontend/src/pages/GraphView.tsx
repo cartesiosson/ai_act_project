@@ -19,13 +19,13 @@ interface LinkData {
 }
 
 const NODE_CATEGORIES: { [key: string]: { color: string; icon: string; label: string } } = {
-  system: { color: "#3b82f6", icon: "🏢", label: "Sistema" },
-  purpose: { color: "#8b5cf6", icon: "🎯", label: "Propósito" },
-  deployment: { color: "#ec4899", icon: "📍", label: "Despliegue" },
-  technical: { color: "#f97316", icon: "⚙️", label: "Técnico" },
-  capability: { color: "#10b981", icon: "🚀", label: "Capacidad" },
-  compliance: { color: "#14b8a6", icon: "✅", label: "Cumplimiento" },
-  other: { color: "#6b7280", icon: "◦", label: "Otro" },
+  system: { color: "#3b82f6", icon: "🏢", label: "System" },
+  purpose: { color: "#8b5cf6", icon: "🎯", label: "Purpose" },
+  deployment: { color: "#ec4899", icon: "📍", label: "Deployment" },
+  technical: { color: "#f97316", icon: "⚙️", label: "Technical" },
+  capability: { color: "#10b981", icon: "🚀", label: "Capability" },
+  compliance: { color: "#14b8a6", icon: "✅", label: "Compliance" },
+  other: { color: "#6b7280", icon: "◦", label: "Other" },
 };
 
 export default function GraphView() {
@@ -120,6 +120,12 @@ export default function GraphView() {
       console.error("SVG ref not available");
       return;
     }
+
+    // Detect dark mode
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#ffffff' : '#1f2937';
+    const linkColor = isDark ? '#6b7280' : '#9ca3af';
+    const linkLabelColor = isDark ? '#9ca3af' : '#6b7280';
 
     const nodes = new Map<string, NodeData>();
     const links: LinkData[] = [];
@@ -240,7 +246,7 @@ export default function GraphView() {
       .data(linksToRender)
       .enter()
       .append("line")
-      .attr("stroke", "#888")
+      .attr("stroke", linkColor)
       .attr("stroke-width", 2)
       .attr("stroke-opacity", 0.6)
       .attr("marker-end", "url(#arrowhead)");
@@ -256,7 +262,7 @@ export default function GraphView() {
       .attr("orient", "auto")
       .append("polygon")
       .attr("points", "0 0, 10 3, 0 6")
-      .attr("fill", "#888");
+      .attr("fill", linkColor);
 
     const linkLabels = g
       .append("g")
@@ -266,7 +272,7 @@ export default function GraphView() {
       .append("text")
       .text((d) => d.predicateLabel)
       .attr("font-size", 11)
-      .attr("fill", "#bbb")
+      .attr("fill", linkLabelColor)
       .attr("text-anchor", "middle")
       .attr("dy", -5);
 
@@ -278,7 +284,7 @@ export default function GraphView() {
       .append("circle")
       .attr("r", (d: any) => d.size)
       .attr("fill", (d: any) => NODE_CATEGORIES[d.category].color)
-      .attr("stroke", "#fff")
+      .attr("stroke", isDark ? "#374151" : "#fff")
       .attr("stroke-width", 2)
       .attr("opacity", 0.85)
       .style("cursor", "pointer")
@@ -317,7 +323,7 @@ export default function GraphView() {
       .attr("font-size", 12)
       .attr("font-weight", "bold")
       .attr("text-anchor", "middle")
-      .attr("fill", "white")
+      .attr("fill", textColor)
       .attr("pointer-events", "none")
       .attr("dy", ".35em");
 
@@ -418,22 +424,16 @@ export default function GraphView() {
   }, [selectedSystem, store, activeFilter, searchQuery]);
 
   return (
-    <div ref={containerRef} style={{ width: "100vw", height: "calc(100vh - 64px)", background: "#1a1a1a", color: "white", overflow: "hidden", display: "flex", flexDirection: "column", marginLeft: "-16px", marginRight: "-16px", marginBottom: "-16px" }}>
-      <div style={{ position: "relative", top: 0, left: 0, right: 0, zIndex: 10, background: "rgba(26, 26, 26, 0.95)", padding: "12px", borderBottom: "1px solid #444" }}>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+    <div ref={containerRef} className="w-full h-[calc(100vh-120px)] bg-white dark:bg-gray-900 text-gray-900 dark:text-white overflow-hidden flex flex-col -mx-4 -mb-4">
+      {/* Header Controls */}
+      <div className="relative z-10 bg-gray-50 dark:bg-gray-800 p-3 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex gap-3 items-center flex-wrap">
           <select
             onChange={(e) => setSelectedSystem(e.target.value)}
             value={selectedSystem || ""}
-            style={{
-              padding: "8px 12px",
-              fontSize: "14px",
-              borderRadius: "6px",
-              backgroundColor: "#333",
-              color: "white",
-              border: "1px solid #555",
-            }}
+            className="p-2 text-sm rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">-- Seleccionar Sistema --</option>
+            <option value="">-- Select System --</option>
             {systems.map((name) => (
               <option key={name} value={name}>
                 {name}
@@ -443,48 +443,35 @@ export default function GraphView() {
 
           <input
             type="text"
-            placeholder="🔍 Buscar nodos..."
+            placeholder="Search nodes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              fontSize: "14px",
-              borderRadius: "6px",
-              backgroundColor: "#333",
-              color: "white",
-              border: "1px solid #555",
-              minWidth: "150px",
-            }}
+            className="p-2 text-sm rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[150px]"
           />
 
-          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setActiveFilter(null)}
-              style={{
-                padding: "6px 12px",
-                fontSize: "12px",
-                borderRadius: "4px",
-                backgroundColor: activeFilter === null ? "#3b82f6" : "#444",
-                color: "white",
-                border: "1px solid #555",
-                cursor: "pointer",
-              }}
+              className={`px-3 py-1.5 text-xs rounded border transition-colors ${
+                activeFilter === null
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
+              }`}
             >
-              Todos
+              All
             </button>
-            {Object.entries(NODE_CATEGORIES).map(([key, { icon, label }]) => (
+            {Object.entries(NODE_CATEGORIES).map(([key, { icon, label, color }]) => (
               <button
                 key={key}
                 onClick={() => setActiveFilter(activeFilter === key ? null : key)}
+                className={`px-3 py-1.5 text-xs rounded border transition-colors ${
+                  activeFilter === key
+                    ? "text-white"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                }`}
                 style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  borderRadius: "4px",
-                  backgroundColor: activeFilter === key ? NODE_CATEGORIES[key].color : "#444",
-                  color: "white",
-                  border: `1px solid ${NODE_CATEGORIES[key].color}`,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
+                  backgroundColor: activeFilter === key ? color : undefined,
+                  borderColor: color,
                 }}
                 title={label}
               >
@@ -495,40 +482,20 @@ export default function GraphView() {
         </div>
       </div>
 
-      <div style={{ position: "relative", flex: 1, width: "100%", height: "100%" }}>
+      {/* Graph Container */}
+      <div className="relative flex-1 w-full h-full">
         {isLoading && (
-          <div style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            textAlign: "center",
-            color: "white",
-            zIndex: 20
-          }}>
-            <p style={{ fontSize: "18px", marginBottom: "10px" }}>⏳ Loading graph data...</p>
-            <p style={{ fontSize: "14px", color: "#aaa" }}>Fetching systems from RDF store</p>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-20">
+            <p className="text-lg mb-2 text-gray-700 dark:text-gray-300">Loading graph data...</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Fetching systems from RDF store</p>
           </div>
         )}
 
         {loadingError && (
-          <div style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "rgba(220, 38, 38, 0.1)",
-            border: "1px solid #dc2626",
-            color: "#fca5a5",
-            padding: "20px",
-            borderRadius: "8px",
-            maxWidth: "500px",
-            textAlign: "center",
-            zIndex: 20
-          }}>
-            <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "8px" }}>⚠️ Error Loading Graph</p>
-            <p style={{ fontSize: "14px" }}>{loadingError}</p>
-            <p style={{ fontSize: "12px", marginTop: "12px", color: "#fda29b" }}>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-400 p-5 rounded-lg max-w-md text-center z-20">
+            <p className="text-base font-semibold mb-2">Error loading graph</p>
+            <p className="text-sm">{loadingError}</p>
+            <p className="text-xs mt-3 text-red-600 dark:text-red-500">
               Check the console for more details
             </p>
           </div>
@@ -538,38 +505,22 @@ export default function GraphView() {
           ref={svgRef}
           width="100%"
           height="100%"
-          style={{
-            display: isLoading || loadingError ? "none" : "block",
-            background: "#0f0f0f"
-          }}
+          className={`${isLoading || loadingError ? "hidden" : "block"} bg-gray-100 dark:bg-gray-950`}
         ></svg>
 
         {selectedSystemData && (
-          <div style={{
-            position: "absolute",
-            bottom: "20px",
-            right: "20px",
-            width: "360px",
-            maxHeight: "400px",
-            background: "rgba(255, 255, 255, 0.95)",
-            color: "#1a1a1a",
-            padding: "16px",
-            borderRadius: "8px",
-            boxShadow: "0 10px 40px rgba(0, 0, 0, 0.3)",
-            overflow: "auto",
-            zIndex: 5,
-          }}>
-            <h3 style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "12px", borderBottom: "2px solid #3b82f6", paddingBottom: "8px" }}>
+          <div className="absolute bottom-5 right-5 w-[360px] max-h-[400px] bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-auto z-10">
+            <h3 className="text-base font-bold mb-3 pb-2 border-b-2 border-blue-500">
               {selectedSystemData.name}
             </h3>
-            <div style={{ fontSize: "13px", lineHeight: "1.6" }}>
-              <p><strong>Nivel de Riesgo:</strong> {selectedSystemData.riskLevel}</p>
-              <p><strong>Propósito(s):</strong> {selectedSystemData.purpose}</p>
-              <p><strong>Contexto(s) de Despliegue:</strong> {selectedSystemData.deploymentContext}</p>
-              <p><strong>Origen de Datos:</strong> {selectedSystemData.trainingDataOrigin}</p>
-              <p><strong>Versión:</strong> {selectedSystemData.version}</p>
-              <p style={{ fontSize: "11px", color: "#666", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid #ccc" }}>
-                <strong>URN:</strong> <code>{selectedSystemData.urn}</code>
+            <div className="text-sm leading-relaxed space-y-1">
+              <p><strong>Risk Level:</strong> {selectedSystemData.riskLevel}</p>
+              <p><strong>Purpose(s):</strong> {selectedSystemData.purpose}</p>
+              <p><strong>Deployment Context(s):</strong> {selectedSystemData.deploymentContext}</p>
+              <p><strong>Data Origin:</strong> {selectedSystemData.trainingDataOrigin}</p>
+              <p><strong>Version:</strong> {selectedSystemData.version}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                <strong>URN:</strong> <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">{selectedSystemData.urn}</code>
               </p>
             </div>
           </div>

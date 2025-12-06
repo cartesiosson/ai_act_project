@@ -52,6 +52,7 @@ class ExternalRulesEngine:
         self.ml_traditional_rules = []
         self.logic_based_rules = []
         self.statistical_rules = []
+        self.navigation_rules = []  # NEW: Generic ontology navigation rules
         self.all_rules = []
         self._load_rules()
     
@@ -119,7 +120,16 @@ class ExternalRulesEngine:
             print(f"❌ Error cargando reglas estadísticas: {e}")
             self.statistical_rules = []
 
-        # Combinar todas las reglas
+        # Cargar reglas de navegación genéricas
+        try:
+            nav_module = self._load_module(os.path.join(rules_dir, "navigation_rules.py"), "navigation_rules")
+            self.navigation_rules = nav_module.NAVIGATION_RULES
+            print(f"✅ Cargadas {len(self.navigation_rules)} reglas de navegación")
+        except Exception as e:
+            print(f"❌ Error cargando reglas de navegación: {e}")
+            self.navigation_rules = []
+
+        # Combinar todas las reglas (navigation_rules tienen formato diferente, se procesan aparte)
         self.all_rules = (
             self.base_rules +
             self.technical_rules +
@@ -129,7 +139,8 @@ class ExternalRulesEngine:
             self.logic_based_rules +
             self.statistical_rules
         )
-        print(f"📊 Total reglas cargadas: {len(self.all_rules)}")
+        print(f"📊 Total reglas condition/consequence: {len(self.all_rules)}")
+        print(f"📊 Total reglas de navegación: {len(self.navigation_rules)}")
     
     def _load_module(self, file_path: str, module_name: str):
         """Carga dinámicamente un módulo Python desde archivo."""
@@ -293,7 +304,7 @@ class ExternalRulesEngine:
     def get_rules_summary(self) -> Dict[str, Any]:
         """Retorna un resumen de todas las reglas cargadas."""
         return {
-            "total_rules": len(self.all_rules),
+            "total_rules": len(self.all_rules) + len(self.navigation_rules),
             "base_rules": len(self.base_rules),
             "technical_rules": len(self.technical_rules),
             "cascade_rules": len(self.cascade_rules),
@@ -301,7 +312,38 @@ class ExternalRulesEngine:
             "ml_traditional_rules": len(self.ml_traditional_rules),
             "logic_based_rules": len(self.logic_based_rules),
             "statistical_rules": len(self.statistical_rules),
-            "rules_by_id": {rule["id"]: rule["name"] for rule in self.all_rules}
+            "navigation_rules": len(self.navigation_rules),
+            "rules_by_id": {rule["id"]: rule["name"] for rule in self.all_rules},
+            "navigation_rules_by_id": {rule["id"]: rule["name"] for rule in self.navigation_rules}
+        }
+
+    def get_all_rules_for_export(self) -> Dict[str, Any]:
+        """Retorna todas las reglas en formato exportable para el agente forense."""
+        return {
+            "condition_consequence_rules": [
+                {
+                    "id": rule["id"],
+                    "name": rule["name"],
+                    "description": rule.get("description", ""),
+                    "conditions": rule["conditions"],
+                    "consequences": rule["consequences"]
+                }
+                for rule in self.all_rules
+            ],
+            "navigation_rules": self.navigation_rules,
+            "metadata": {
+                "total_condition_rules": len(self.all_rules),
+                "total_navigation_rules": len(self.navigation_rules),
+                "categories": {
+                    "base": len(self.base_rules),
+                    "technical": len(self.technical_rules),
+                    "cascade": len(self.cascade_rules),
+                    "capability": len(self.capability_rules),
+                    "ml_traditional": len(self.ml_traditional_rules),
+                    "logic_based": len(self.logic_based_rules),
+                    "statistical": len(self.statistical_rules)
+                }
+            }
         }
 
 

@@ -1,217 +1,436 @@
 @prefix ai: <http://ai-act.eu/ai#> .
 @prefix swrl: <http://www.w3.org/2003/11/swrl#> .
+@prefix swrlb: <http://www.w3.org/2003/11/swrlb#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # =============================================================
-# REGLAS SWRL BÁSICAS - CONTEXTUALES Y NORMATIVAS (1-12)
+# REGLAS SWRL UNIFICADAS - EU AI ACT ONTOLOGY
+# Sincronizadas con ontologias/rules/*.py
+# Version: 1.0.0 - Unified
 # =============================================================
 
-# REGLA 1: Education Context/Purpose -> ProtectionOfMinors
-[ rdf:type swrl:Imp ;
-  rdfs:label "Education Context triggers Protection of Minors" ;
-  rdfs:comment "Systems in educational context or with educational purpose must protect minors" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasDeploymentContext ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:Education ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:ProtectionOfMinors ] ) ] .
+# =============================================================
+# SECCIÓN 1: REGLAS DE MODEL SCALE (GPAI Classification)
+# =============================================================
 
-[ rdf:type swrl:Imp ;
-  rdfs:label "Education Purpose triggers Protection of Minors" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:EducationAccess ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:ProtectionOfMinors ] ) ] .
+# REGLA MS1: FLOPs < 1e12 -> SmallModelScale
+ai:SmallModelScaleRule a swrl:Imp ;
+    rdfs:label "Small model scale based on FLOPs" ;
+    rdfs:comment "Systems with FLOPs < 10^12 are classified as small scale models" ;
+    ai:ruleId "rule_model_scale_small" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasFLOPS ; swrl:argument1 ?system ; swrl:argument2 ?flops ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ?flops "1000000000000"^^xsd:double ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasModelScale ; swrl:argument1 ?system ; swrl:argument2 ai:SmallModelScale ]
+    ) .
 
-# REGLA 2: RecruitmentOrEmployment -> NonDiscrimination
-[ rdf:type swrl:Imp ;
-  rdfs:label "Recruitment systems require non-discrimination" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:RecruitmentOrEmployment ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:NonDiscrimination ] ) ] .
+# REGLA MS2: 1e12 <= FLOPs < 1e16 -> RegularModelScale
+ai:RegularModelScaleRule a swrl:Imp ;
+    rdfs:label "Regular model scale based on FLOPs" ;
+    rdfs:comment "Systems with 10^12 <= FLOPs < 10^16 are classified as regular scale models" ;
+    ai:ruleId "rule_model_scale_regular" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasFLOPS ; swrl:argument1 ?system ; swrl:argument2 ?flops ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ?flops "1000000000000"^^xsd:double ) ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ?flops "10000000000000000"^^xsd:double ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasModelScale ; swrl:argument1 ?system ; swrl:argument2 ai:RegularModelScale ]
+    ) .
+
+# REGLA MS3: FLOPs >= 1e16 -> FoundationModelScale
+ai:FoundationModelScaleRule a swrl:Imp ;
+    rdfs:label "Foundation model scale based on FLOPs" ;
+    rdfs:comment "Systems with FLOPs >= 10^16 are classified as foundation scale models (GPAI)" ;
+    ai:ruleId "rule_model_scale_foundation" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasFLOPS ; swrl:argument1 ?system ; swrl:argument2 ?flops ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThanOrEqual ; swrl:arguments ( ?flops "10000000000000000"^^xsd:double ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasModelScale ; swrl:argument1 ?system ; swrl:argument2 ai:FoundationModelScale ]
+    ) .
+
+# REGLA MS4: FoundationModelScale -> GPAI Classification
+ai:GPAIClassificationRule a swrl:Imp ;
+    rdfs:label "Foundation models are classified as GPAI" ;
+    rdfs:comment "Systems with FoundationModelScale are classified as General Purpose AI" ;
+    ai:ruleId "rule_gpai_classification" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasModelScale ; swrl:argument1 ?system ; swrl:argument2 ai:FoundationModelScale ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasGPAIClassification ; swrl:argument1 ?system ; swrl:argument2 ai:GeneralPurposeAI ]
+    ) .
+
+# =============================================================
+# SECCIÓN 2: REGLAS DE NAVEGACIÓN GENÉRICAS
+# =============================================================
+
+# REGLA NAV1: Purpose -> activatesCriterion -> hasCriteria
+ai:PurposeCriterionDerivationRule a swrl:Imp ;
+    rdfs:label "Purpose activates criterion derivation" ;
+    rdfs:comment "If a system has a purpose that activates a criterion, the system has that criterion" ;
+    ai:ruleId "rule_nav_purpose_criterion" ;
+    swrl:body (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ?purpose ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:activatesCriterion ; swrl:argument1 ?purpose ; swrl:argument2 ?criterion ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasCriteria ; swrl:argument1 ?system ; swrl:argument2 ?criterion ]
+    ) .
+
+# REGLA NAV2: DeploymentContext -> triggersCriterion -> hasCriteria
+ai:ContextCriterionDerivationRule a swrl:Imp ;
+    rdfs:label "Context triggers criterion derivation" ;
+    rdfs:comment "If a system has a deployment context that triggers a criterion, the system has that criterion" ;
+    ai:ruleId "rule_nav_context_criterion" ;
+    swrl:body (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ?context ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:triggersCriterion ; swrl:argument1 ?context ; swrl:argument2 ?criterion ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasCriteria ; swrl:argument1 ?system ; swrl:argument2 ?criterion ]
+    ) .
+
+# REGLA NAV3: SystemCapabilityCriteria -> hasCriteria
+ai:SystemCapabilityCriterionRule a swrl:Imp ;
+    rdfs:label "System capability as criterion" ;
+    rdfs:comment "System capability criteria are treated as regular criteria" ;
+    ai:ruleId "rule_nav_capability_criterion" ;
+    swrl:body (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasSystemCapabilityCriteria ; swrl:argument1 ?system ; swrl:argument2 ?capability ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasCriteria ; swrl:argument1 ?system ; swrl:argument2 ?capability ]
+    ) .
+
+# REGLA NAV4: Criterion -> activatesRequirement -> hasComplianceRequirement
+ai:CriterionRequirementDerivationRule a swrl:Imp ;
+    rdfs:label "Criterion activates requirement derivation" ;
+    rdfs:comment "If a system has a criterion that activates a requirement, the system has that requirement" ;
+    ai:ruleId "rule_nav_criterion_requirement" ;
+    swrl:body (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasCriteria ; swrl:argument1 ?system ; swrl:argument2 ?criterion ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:activatesRequirement ; swrl:argument1 ?criterion ; swrl:argument2 ?requirement ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasComplianceRequirement ; swrl:argument1 ?system ; swrl:argument2 ?requirement ]
+    ) .
+
+# REGLA NAV5: Criterion -> assignsRiskLevel -> hasRiskLevel
+ai:CriterionRiskLevelRule a swrl:Imp ;
+    rdfs:label "Criterion assigns risk level" ;
+    rdfs:comment "If a system has a criterion that assigns a risk level, the system has that risk level" ;
+    ai:ruleId "rule_nav_criterion_risk" ;
+    swrl:body (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasCriteria ; swrl:argument1 ?system ; swrl:argument2 ?criterion ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:assignsRiskLevel ; swrl:argument1 ?criterion ; swrl:argument2 ?riskLevel ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasRiskLevel ; swrl:argument1 ?system ; swrl:argument2 ?riskLevel ]
+    ) .
+
+# =============================================================
+# SECCIÓN 3: REGLAS BÁSICAS CONTEXTUALES (base_rules.py)
+# =============================================================
+
+# REGLA 1A: Education Context -> ProtectionOfMinors
+ai:EducationContextProtectionRule a swrl:Imp ;
+    rdfs:label "Education context triggers protection of minors" ;
+    rdfs:comment "Systems in educational context must protect minors" ;
+    ai:ruleId "rule01a_education_context_minors" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:Education ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:ProtectionOfMinors ]
+    ) .
+
+# REGLA 1B: Education Purpose -> ProtectionOfMinors
+ai:EducationPurposeProtectionRule a swrl:Imp ;
+    rdfs:label "Education purpose triggers protection of minors" ;
+    rdfs:comment "Systems with educational purpose must protect minors" ;
+    ai:ruleId "rule01b_education_purpose_minors" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:EducationAccess ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:ProtectionOfMinors ]
+    ) .
+
+# REGLA 2: Recruitment -> NonDiscrimination
+ai:RecruitmentNonDiscriminationRule a swrl:Imp ;
+    rdfs:label "Recruitment systems require non-discrimination" ;
+    rdfs:comment "Employment systems must ensure non-discriminatory practices" ;
+    ai:ruleId "rule02_recruitment_nondiscrimination" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:RecruitmentOrEmployment ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:NonDiscrimination ]
+    ) .
 
 # REGLA 3: JudicialDecisionSupport -> JudicialSupportCriterion
-[ rdf:type swrl:Imp ;
-  rdfs:label "Judicial support systems trigger judicial criteria" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:JudicialDecisionSupport ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:JudicialSupportCriterion ] ) ] .
+ai:JudicialSupportRule a swrl:Imp ;
+    rdfs:label "Judicial support systems trigger specialized criteria" ;
+    rdfs:comment "Systems supporting judicial decisions require due process" ;
+    ai:ruleId "rule03_judicial_support" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:JudicialDecisionSupport ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:JudicialSupportCriterion ]
+    ) .
 
 # REGLA 4: LawEnforcementSupport -> LawEnforcementCriterion
-[ rdf:type swrl:Imp ;
-  rdfs:label "Law enforcement systems trigger specialized criteria" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:LawEnforcementSupport ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:LawEnforcementCriterion ] ) ] .
+ai:LawEnforcementSupportRule a swrl:Imp ;
+    rdfs:label "Law enforcement systems trigger specialized criteria" ;
+    rdfs:comment "Systems supporting law enforcement require strict oversight" ;
+    ai:ruleId "rule04_law_enforcement" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:LawEnforcementSupport ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:LawEnforcementCriterion ]
+    ) .
 
 # REGLA 5: MigrationControl -> MigrationBorderCriterion
-[ rdf:type swrl:Imp ;
-  rdfs:label "Migration control systems trigger border criteria" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:MigrationControl ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:MigrationBorderCriterion ] ) ] .
+ai:MigrationControlRule a swrl:Imp ;
+    rdfs:label "Migration systems trigger border control criteria" ;
+    rdfs:comment "Migration control systems require human rights protection" ;
+    ai:ruleId "rule05_migration_control" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:MigrationControl ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:MigrationBorderCriterion ]
+    ) .
 
-# REGLA 6: CriticalInfrastructureOperation -> CriticalInfrastructureCriterion
-[ rdf:type swrl:Imp ;
-  rdfs:label "Critical infrastructure systems trigger specialized criteria" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:CriticalInfrastructureOperation ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:CriticalInfrastructureCriterion ] ) ] .
+# REGLA 6: CriticalInfrastructure -> CriticalInfrastructureCriterion
+ai:CriticalInfrastructureRule a swrl:Imp ;
+    rdfs:label "Critical infrastructure systems trigger specialized criteria" ;
+    rdfs:comment "Systems managing critical infrastructure require high reliability" ;
+    ai:ruleId "rule06_critical_infrastructure" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:CriticalInfrastructureOperation ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:CriticalInfrastructureCriterion ]
+    ) .
 
-# REGLA 7: HealthCare Purpose -> PrivacyProtection
-[ rdf:type swrl:Imp ;
-  rdfs:label "Healthcare systems require privacy protection" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:HealthCare ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:PrivacyProtection ] ) ] .
+# REGLA 7: HealthCare -> PrivacyProtection
+ai:HealthCarePrivacyRule a swrl:Imp ;
+    rdfs:label "Healthcare systems require privacy protection" ;
+    rdfs:comment "Healthcare systems must protect patient privacy" ;
+    ai:ruleId "rule07_healthcare_privacy" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:HealthCare ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasNormativeCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:PrivacyProtection ]
+    ) .
 
-# REGLA 8: EducationAccess Purpose -> EducationEvaluationCriterion
-[ rdf:type swrl:Imp ;
-  rdfs:label "Education access systems trigger evaluation criteria" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:EducationAccess ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:EducationEvaluationCriterion ] ) ] .
+# REGLA 8A: BiometricData Processing -> BiometricSecurity
+ai:BiometricDataSecurityRule a swrl:Imp ;
+    rdfs:label "Biometric data processing requires security measures" ;
+    rdfs:comment "Systems processing biometric data need enhanced security" ;
+    ai:ruleId "rule08a_biometric_data_security" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:processesDataType ; swrl:argument1 ?system ; swrl:argument2 ai:BiometricData ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasContextualCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:BiometricSecurity ]
+    ) .
 
-# REGLA 9: BiometricData Processing -> BiometricSecurity
-[ rdf:type swrl:Imp ;
-  rdfs:label "Biometric data processing requires security measures" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:processesDataType ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:BiometricData ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:BiometricSecurity ] ) ] .
+# REGLA 8B: BiometricIdentification -> BiometricSecurity
+ai:BiometricIdentificationSecurityRule a swrl:Imp ;
+    rdfs:label "Biometric identification triggers security criteria" ;
+    rdfs:comment "Biometric identification systems require enhanced security" ;
+    ai:ruleId "rule08b_biometric_purpose_security" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:BiometricIdentification ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasContextualCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:BiometricSecurity ]
+    ) .
 
-# REGLA 10: BiometricIdentification Purpose -> BiometricSecurity
-[ rdf:type swrl:Imp ;
-  rdfs:label "Biometric identification purpose triggers security criteria" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasPurpose ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:BiometricIdentification ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:BiometricSecurity ] ) ] .
+# REGLA 9: RealTimeProcessing -> PerformanceRequirements
+ai:RealTimePerformanceRule a swrl:Imp ;
+    rdfs:label "Real-time processing requires performance criteria" ;
+    rdfs:comment "Real-time systems need strict performance guarantees" ;
+    ai:ruleId "rule09_realtime_performance" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:RealTimeProcessing ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:PerformanceRequirements ]
+    ) .
 
-# REGLA 11: RealTimeProcessing Context -> PerformanceRequirements
-[ rdf:type swrl:Imp ;
-  rdfs:label "Real-time processing requires performance criteria" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasDeploymentContext ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:RealTimeProcessing ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:PerformanceRequirements ] ) ] .
+# REGLA 10: HighVolumeProcessing -> ScalabilityRequirements
+ai:HighVolumeScalabilityRule a swrl:Imp ;
+    rdfs:label "High volume processing requires scalability" ;
+    rdfs:comment "High volume systems need scalability measures" ;
+    ai:ruleId "rule10_highvolume_scalability" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:HighVolumeProcessing ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:ScalabilityRequirements ]
+    ) .
 
-# REGLA 12: HighVolumeProcessing Context -> ScalabilityRequirements
-[ rdf:type swrl:Imp ;
-  rdfs:label "High volume processing requires scalability" ;
-  swrl:body ( [ rdf:type swrl:ClassAtom ;
-               swrl:classPredicate ai:IntelligentSystem ;
-               swrl:argument1 ?system ]
-             [ rdf:type swrl:DatavaluedPropertyAtom ;
-               swrl:propertyPredicate ai:hasDeploymentContext ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:HighVolumeProcessing ]
-           ) ;
-  swrl:head ( [ rdf:type swrl:IndividualPropertyAtom ;
-               swrl:propertyPredicate ai:hasActivatedCriterion ;
-               swrl:argument1 ?system ;
-               swrl:argument2 ai:ScalabilityRequirements ] ) ] .
+# =============================================================
+# SECCIÓN 4: REGLAS TÉCNICAS GPAI (technical_rules.py)
+# =============================================================
+
+# REGLA 13: FLOPs > 10^25 -> SystemicRisk
+ai:FlopsSystemicRiskRule a swrl:Imp ;
+    rdfs:label "High computational FLOPs trigger systemic risk" ;
+    rdfs:comment "Models with computation >10^25 FLOPs are classified as systemic risk (Article 51)" ;
+    ai:ruleId "rule13_flops_systemic_risk" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasComputationFLOPs ; swrl:argument1 ?system ; swrl:argument2 ?flops ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ?flops "1e25"^^xsd:double ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:SystemicRisk ]
+    ) .
+
+# REGLA 14: Parameters > 1B -> HighImpactCapabilities
+ai:HighParameterImpactRule a swrl:Imp ;
+    rdfs:label "High parameter count triggers high impact capabilities" ;
+    rdfs:comment "Models with >1 billion parameters have high impact capabilities" ;
+    ai:ruleId "rule14_params_high_impact" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasParameterCount ; swrl:argument1 ?system ; swrl:argument2 ?params ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ?params "1000000000"^^xsd:integer ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:HighImpactCapabilities ]
+    ) .
+
+# REGLA 15: Autonomy > 0.8 -> LacksHumanOversight
+ai:HighAutonomyOversightRule a swrl:Imp ;
+    rdfs:label "High autonomy indicates lack of human oversight" ;
+    rdfs:comment "Systems with autonomy level >0.8 lack adequate human oversight" ;
+    ai:ruleId "rule15_autonomy_oversight" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasAutonomyLevel ; swrl:argument1 ?system ; swrl:argument2 ?autonomy ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ?autonomy "0.8"^^xsd:double ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:LacksHumanOversight ]
+    ) .
+
+# REGLA 16: Adaptive System -> AdaptiveCapability
+ai:AdaptiveCapabilityRule a swrl:Imp ;
+    rdfs:label "Adaptive systems trigger adaptive capability criteria" ;
+    rdfs:comment "Systems that continue learning after deployment" ;
+    ai:ruleId "rule16_adaptive_capability" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:isAdaptiveSystem ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:AdaptiveCapability ]
+    ) .
+
+# REGLA 17: Market Reach > 10000 -> SystemicRisk
+ai:MarketReachSystemicRule a swrl:Imp ;
+    rdfs:label "High market reach triggers systemic risk" ;
+    rdfs:comment "Systems with >10,000 users have systemic risk potential" ;
+    ai:ruleId "rule17_market_reach_systemic" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasMarketReach ; swrl:argument1 ?system ; swrl:argument2 ?reach ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:greaterThan ; swrl:arguments ( ?reach "10000"^^xsd:integer ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:SystemicRisk ]
+    ) .
+
+# REGLA 18: Accuracy < 0.85 -> AccuracyLevel
+ai:LowAccuracyRule a swrl:Imp ;
+    rdfs:label "Low accuracy triggers accuracy level criteria" ;
+    rdfs:comment "Systems with accuracy <0.85 require accuracy evaluation" ;
+    ai:ruleId "rule18_accuracy_level" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:DatavaluedPropertyAtom ; swrl:propertyPredicate ai:hasAccuracyRate ; swrl:argument1 ?system ; swrl:argument2 ?accuracy ]
+        [ a swrl:BuiltinAtom ; swrl:builtin swrlb:lessThan ; swrl:arguments ( ?accuracy "0.85"^^xsd:double ) ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:AccuracyLevel ]
+    ) .
+
+# REGLA 19A: FoundationModel -> ModelComplexity
+ai:FoundationModelComplexityRule a swrl:Imp ;
+    rdfs:label "Foundation models trigger complexity criteria" ;
+    rdfs:comment "Foundation models have inherent complexity" ;
+    ai:ruleId "rule19a_foundation_complexity" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasAlgorithmType ; swrl:argument1 ?system ; swrl:argument2 ai:FoundationModel ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:ModelComplexity ]
+    ) .
+
+# REGLA 19B: TransformerModel -> ModelComplexity
+ai:TransformerModelComplexityRule a swrl:Imp ;
+    rdfs:label "Transformer models trigger complexity criteria" ;
+    ai:ruleId "rule19b_transformer_complexity" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasAlgorithmType ; swrl:argument1 ?system ; swrl:argument2 ai:TransformerModel ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:ModelComplexity ]
+    ) .
+
+# REGLA 19C: GenerativeModel -> ModelComplexity
+ai:GenerativeModelComplexityRule a swrl:Imp ;
+    rdfs:label "Generative models trigger complexity criteria" ;
+    ai:ruleId "rule19c_generative_complexity" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasAlgorithmType ; swrl:argument1 ?system ; swrl:argument2 ai:GenerativeModel ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasTechnicalCriterion ; swrl:argument1 ?system ; swrl:argument2 ai:ModelComplexity ]
+    ) .
+
+# =============================================================
+# METADATA
+# =============================================================
+
+ai:SwrlRulesMetadata a owl:NamedIndividual ;
+    rdfs:label "SWRL Rules Metadata" ;
+    ai:version "1.0.0-unified" ;
+    ai:totalRules "25"^^xsd:integer ;
+    ai:categories "model_scale, navigation, base_contextual, technical_gpai" ;
+    rdfs:comment "Unified SWRL rules synchronized with ontologias/rules/*.py" .

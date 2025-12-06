@@ -3,6 +3,68 @@
 # Formato simplificado para procesamiento Python
 # =============================================================
 
+# =============================================================
+# REGLAS DE ASIGNACIÓN DE MODEL SCALE SEGÚN FLOPS
+# (Sincronizadas desde swrl_rules.py)
+# =============================================================
+
+# REGLA MS1: FLOPs < 1e12 -> SmallModelScale
+RULE_MODEL_SCALE_SMALL = {
+    "id": "rule_model_scale_small",
+    "name": "Small model scale based on FLOPs",
+    "description": "Systems with FLOPs < 10^12 are classified as small scale models",
+    "conditions": [
+        {"property": "ai:hasFLOPS", "operator": "<", "value": 1e12, "type": "float"}
+    ],
+    "consequences": [
+        {"property": "ai:hasModelScale", "value": "ai:SmallModelScale"}
+    ]
+}
+
+# REGLA MS2: 1e12 <= FLOPs < 1e16 -> RegularModelScale
+RULE_MODEL_SCALE_REGULAR = {
+    "id": "rule_model_scale_regular",
+    "name": "Regular model scale based on FLOPs",
+    "description": "Systems with 10^12 <= FLOPs < 10^16 are classified as regular scale models",
+    "conditions": [
+        {"property": "ai:hasFLOPS", "operator": ">=", "value": 1e12, "type": "float"},
+        {"property": "ai:hasFLOPS", "operator": "<", "value": 1e16, "type": "float"}
+    ],
+    "consequences": [
+        {"property": "ai:hasModelScale", "value": "ai:RegularModelScale"}
+    ]
+}
+
+# REGLA MS3: FLOPs >= 1e16 -> FoundationModelScale
+RULE_MODEL_SCALE_FOUNDATION = {
+    "id": "rule_model_scale_foundation",
+    "name": "Foundation model scale based on FLOPs",
+    "description": "Systems with FLOPs >= 10^16 are classified as foundation scale models (GPAI)",
+    "conditions": [
+        {"property": "ai:hasFLOPS", "operator": ">=", "value": 1e16, "type": "float"}
+    ],
+    "consequences": [
+        {"property": "ai:hasModelScale", "value": "ai:FoundationModelScale"}
+    ]
+}
+
+# REGLA MS4: FoundationModelScale -> GPAI Classification
+RULE_GPAI_CLASSIFICATION = {
+    "id": "rule_gpai_classification",
+    "name": "Foundation models are classified as GPAI",
+    "description": "Systems with FoundationModelScale are classified as General Purpose AI",
+    "conditions": [
+        {"property": "ai:hasModelScale", "operator": "==", "value": "ai:FoundationModelScale", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasGPAIClassification", "value": "ai:GeneralPurposeAI"}
+    ]
+}
+
+# =============================================================
+# REGLAS TÉCNICAS GPAI EXISTENTES
+# =============================================================
+
 # REGLA 13: Modelos con >10^25 FLOPs -> SystemicRisk
 RULE_13 = {
     "id": "rule13_flops_systemic_risk",
@@ -120,6 +182,10 @@ RULE_19C = {
 
 # Lista de todas las reglas técnicas
 TECHNICAL_RULES = [
-    RULE_13, RULE_14, RULE_15, RULE_16, RULE_17, 
+    # Model Scale rules
+    RULE_MODEL_SCALE_SMALL, RULE_MODEL_SCALE_REGULAR,
+    RULE_MODEL_SCALE_FOUNDATION, RULE_GPAI_CLASSIFICATION,
+    # GPAI technical rules
+    RULE_13, RULE_14, RULE_15, RULE_16, RULE_17,
     RULE_18, RULE_19A, RULE_19B, RULE_19C
 ]
