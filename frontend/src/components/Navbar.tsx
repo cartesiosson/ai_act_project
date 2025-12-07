@@ -23,6 +23,7 @@ export function Navbar() {
         <Link to="/graph" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">AI Knowledge Graph</Link>
         <Link to="/ontology" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Ontology Docs</Link>
         <Link to="/reasoning" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">AI Symbolic Reasoning</Link>
+        <Link to="/forensic" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Forensic AI Agent</Link>
       </div>
     </nav>
   );

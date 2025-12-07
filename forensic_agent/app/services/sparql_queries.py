@@ -6,6 +6,93 @@ from .mcp_client import MCPClient
 
 AI_PREFIX = "http://ai-act.eu/ai#"
 
+# Valid ontology Purpose IRIs - exact match takes precedence
+VALID_PURPOSE_IRIS = {
+    "BiometricIdentification",
+    "LawEnforcementSupport",
+    "MigrationControl",
+    "EducationAccess",
+    "RecruitmentOrEmployment",
+    "WorkforceEvaluationPurpose",
+    "CriticalInfrastructureOperation",
+    "HealthCare",
+    "JudicialDecisionSupport",
+    "PublicServiceAllocation"
+}
+
+# Mapping from extracted purposes to ontology IRIs
+# Keys are lowercase patterns, values are ontology IRI names
+PURPOSE_MAPPING = {
+    # Biometric identification
+    "biometric": "BiometricIdentification",
+    "facial recognition": "BiometricIdentification",
+    "face recognition": "BiometricIdentification",
+    "fingerprint": "BiometricIdentification",
+    "iris scan": "BiometricIdentification",
+    "voice recognition": "BiometricIdentification",
+    "identity verification": "BiometricIdentification",
+    # Law enforcement
+    "law enforcement": "LawEnforcementSupport",
+    "police": "LawEnforcementSupport",
+    "criminal": "LawEnforcementSupport",
+    "security surveillance": "LawEnforcementSupport",
+    "predictive policing": "LawEnforcementSupport",
+    # Migration and border
+    "migration": "MigrationControl",
+    "border": "MigrationControl",
+    "asylum": "MigrationControl",
+    "immigration": "MigrationControl",
+    # Education
+    "education": "EducationAccess",
+    "student": "EducationAccess",
+    "academic": "EducationAccess",
+    "school": "EducationAccess",
+    "university": "EducationAccess",
+    "exam": "EducationAccess",
+    "grading": "EducationAccess",
+    # Employment and recruitment
+    "recruitment": "RecruitmentOrEmployment",
+    "employment": "RecruitmentOrEmployment",
+    "hiring": "RecruitmentOrEmployment",
+    "hr": "RecruitmentOrEmployment",
+    "job": "RecruitmentOrEmployment",
+    "resume": "RecruitmentOrEmployment",
+    "cv screening": "RecruitmentOrEmployment",
+    # Workforce evaluation
+    "worker evaluation": "WorkforceEvaluationPurpose",
+    "employee monitoring": "WorkforceEvaluationPurpose",
+    "performance evaluation": "WorkforceEvaluationPurpose",
+    "productivity": "WorkforceEvaluationPurpose",
+    # Critical infrastructure
+    "critical infrastructure": "CriticalInfrastructureOperation",
+    "energy": "CriticalInfrastructureOperation",
+    "power grid": "CriticalInfrastructureOperation",
+    "water supply": "CriticalInfrastructureOperation",
+    "transport": "CriticalInfrastructureOperation",
+    "autonomous driving": "CriticalInfrastructureOperation",
+    "self-driving": "CriticalInfrastructureOperation",
+    "autonomous vehicle": "CriticalInfrastructureOperation",
+    # Healthcare
+    "healthcare": "HealthCare",
+    "health care": "HealthCare",
+    "medical": "HealthCare",
+    "diagnosis": "HealthCare",
+    "clinical": "HealthCare",
+    "patient": "HealthCare",
+    # Judicial
+    "judicial": "JudicialDecisionSupport",
+    "court": "JudicialDecisionSupport",
+    "legal": "JudicialDecisionSupport",
+    "sentencing": "JudicialDecisionSupport",
+    "recidivism": "JudicialDecisionSupport",
+    # Public services
+    "public service": "PublicServiceAllocation",
+    "social benefit": "PublicServiceAllocation",
+    "welfare": "PublicServiceAllocation",
+    "credit scoring": "PublicServiceAllocation",
+    "insurance": "PublicServiceAllocation",
+}
+
 
 class ForensicSPARQLService:
     """
@@ -50,9 +137,15 @@ class ForensicSPARQLService:
         Returns:
             Dict with criteria, requirements, and risk level
         """
-        # Build SPARQL query
-        purpose_uri = f"ai:{purpose}" if purpose else ""
-        context_values = " ".join([f"ai:{ctx}" for ctx in contexts if ctx])
+        # Build SPARQL query - map purpose to ontology IRI
+        purpose_mapped = self._map_purpose_to_ontology(purpose) if purpose else ""
+        purpose_uri = f"ai:{purpose_mapped}" if purpose_mapped else ""
+        # Sanitize contexts too
+        context_values = " ".join([f"ai:{self._sanitize_to_iri(ctx)}" for ctx in contexts if ctx])
+
+        print(f"   → Purpose mapped: '{purpose}' → '{purpose_mapped}'")
+        if context_values:
+            print(f"   → Contexts: {context_values}")
 
         query = f"""
         PREFIX ai: <http://ai-act.eu/ai#>
@@ -113,7 +206,12 @@ class ForensicSPARQLService:
                 if criterion:
                     criteria.add(criterion)
 
-            risk_level = self._determine_risk_level(list(criteria))
+            # Determine risk level from ontology criteria OR from input keywords
+            if criteria:
+                risk_level = self._determine_risk_level(list(criteria))
+            else:
+                # Fallback: determine from input keywords when ontology has no data
+                risk_level = self._determine_risk_from_inputs(purpose, contexts, data_types)
 
             return {
                 "criteria": list(criteria),
@@ -257,6 +355,73 @@ class ForensicSPARQLService:
 
         return "MinimalRisk"
 
+    def _determine_risk_from_inputs(
+        self,
+        purpose: str,
+        contexts: List[str],
+        data_types: List[str]
+    ) -> str:
+        """
+        Determine EU AI Act risk level based on input keywords.
+        This is a fallback when the ontology doesn't have matching data.
+
+        Based on EU AI Act Article 6 and Annex III high-risk categories.
+        """
+        # Combine all inputs for keyword matching
+        all_text = " ".join([
+            purpose or "",
+            " ".join(contexts or []),
+            " ".join(data_types or [])
+        ]).lower()
+
+        # PROHIBITED (Unacceptable Risk) - Article 5
+        prohibited_keywords = [
+            "social scoring", "socialscoring", "social credit",
+            "subliminal", "manipulation", "exploit vulnerability",
+            "predictive policing", "predictivepolicing",
+            "mass surveillance", "real-time remote biometric"
+        ]
+        for keyword in prohibited_keywords:
+            if keyword in all_text:
+                return "Unacceptable"
+
+        # HIGH RISK - Annex III categories
+        high_risk_keywords = [
+            # Biometric identification
+            "biometric", "facial recognition", "face recognition",
+            "fingerprint", "iris scan", "voice recognition",
+            # Law enforcement
+            "law enforcement", "lawenforcement", "police", "criminal",
+            "border", "migration", "asylum",
+            # Critical infrastructure
+            "critical infrastructure", "criticalinfrastructure",
+            "energy", "water supply", "transport",
+            # Education and employment
+            "education", "student", "recruitment", "employment",
+            "hiring", "worker", "performance evaluation",
+            # Essential services
+            "credit scoring", "creditscoring", "insurance",
+            "social benefit", "emergency services",
+            # Justice and democracy
+            "court", "judicial", "election", "voting"
+        ]
+        for keyword in high_risk_keywords:
+            if keyword in all_text:
+                return "HighRisk"
+
+        # LIMITED RISK - Article 52 transparency obligations
+        limited_risk_keywords = [
+            "chatbot", "emotion recognition", "emotionrecognition",
+            "deepfake", "synthetic", "generated content",
+            "virtual assistant", "conversational"
+        ]
+        for keyword in limited_risk_keywords:
+            if keyword in all_text:
+                return "LimitedRisk"
+
+        # Default to Minimal Risk
+        return "MinimalRisk"
+
     def _infer_implemented_requirements(self, incident_properties: Dict) -> List[str]:
         """Infer implemented requirements from incident description."""
         implemented = []
@@ -332,6 +497,48 @@ class ForensicSPARQLService:
             "risk_level": "Unknown",
             "total_requirements": 0
         }
+
+    def _map_purpose_to_ontology(self, purpose: str) -> str:
+        """
+        Map an extracted purpose text to the ontology IRI name.
+
+        Args:
+            purpose: The extracted purpose (e.g., "facial recognition", "autonomous driving")
+                     OR an already valid ontology IRI (e.g., "BiometricIdentification")
+
+        Returns:
+            The ontology IRI name (e.g., "BiometricIdentification") or sanitized version
+        """
+        if not purpose:
+            return ""
+
+        # If already a valid ontology IRI, return as-is
+        if purpose in VALID_PURPOSE_IRIS:
+            return purpose
+
+        purpose_lower = purpose.lower()
+
+        # Try to match against known patterns
+        for pattern, iri_name in PURPOSE_MAPPING.items():
+            if pattern in purpose_lower:
+                return iri_name
+
+        # Fallback: sanitize to IRI format
+        return self._sanitize_to_iri(purpose)
+
+    def _sanitize_to_iri(self, value: str) -> str:
+        """
+        Sanitize a string to be a valid IRI local name.
+        Converts 'Plan violent assault' to 'PlanViolentAssault'.
+        """
+        if not value:
+            return ""
+        # Remove special characters, keep alphanumeric and spaces
+        import re
+        cleaned = re.sub(r'[^a-zA-Z0-9\s]', '', value)
+        # Convert to CamelCase
+        words = cleaned.split()
+        return ''.join(word.capitalize() for word in words)
 
     async def get_stats(self) -> Dict:
         """Get ontology statistics via MCP."""

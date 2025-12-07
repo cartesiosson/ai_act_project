@@ -95,7 +95,7 @@ Extract the following information in JSON format:
   "system": {{
     "system_name": "Name of the AI system",
     "system_type": "vision|nlp|tabular|multimodal|other",
-    "primary_purpose": "REQUIRED - Main purpose of the system. MUST always provide a value - infer from system type if not explicit. Use EU AI Act ontology terms when possible.",
+    "primary_purpose": "REQUIRED - Main purpose. MUST be one of these EU AI Act ontology values: BiometricIdentification, LawEnforcementSupport, MigrationControl, EducationAccess, RecruitmentOrEmployment, WorkforceEvaluationPurpose, CriticalInfrastructureOperation, HealthCare, JudicialDecisionSupport, PublicServiceAllocation. Choose the closest match.",
     "processes_data_types": ["BiometricData", "PersonalData", "HealthData", "LocationData", "FinancialData", etc.],
     "deployment_context": ["PublicSpaces", "HighVolume", "RealTime", "CriticalInfrastructure", "EducationContext", "EmploymentContext", "LawEnforcementContext", "HealthcareContext", "MigrationContext", etc.],
     "is_automated_decision": true/false,
@@ -146,18 +146,18 @@ IMPORTANT EXTRACTION RULES:
   * CriticalInfrastructure: used in critical systems
   * EducationContext, EmploymentContext, LawEnforcementContext, etc.
 - For primary_purpose (REQUIRED - NEVER return null):
-  * If explicitly stated, use the stated purpose
-  * If not explicit, INFER from system type and context:
-    - "autonomous vehicle" → "Autonomous driving and vehicle navigation"
-    - "emotion recognition" → "Emotion detection and analysis"
-    - "facial recognition" → "BiometricIdentification"
-    - "credit scoring" → "CreditScoring and financial risk assessment"
-    - "recruitment/hiring" → "Employment candidate screening"
-    - "deepfake/synthetic media" → "Synthetic media generation"
-    - "predictive policing" → "PredictivePolicing"
-    - "social scoring" → "SocialScoring"
-  * Prefer EU AI Act ontology terms: BiometricIdentification, EmotionRecognition,
-    SocialScoring, PredictivePolicing, CreditScoring, etc.
+  * MUST use EXACTLY one of these ontology IRIs:
+    - BiometricIdentification: facial recognition, fingerprint, iris scan, voice ID
+    - LawEnforcementSupport: police systems, criminal investigation, predictive policing
+    - MigrationControl: border control, asylum processing, immigration
+    - EducationAccess: student evaluation, exam grading, educational AI
+    - RecruitmentOrEmployment: hiring, CV screening, job applications
+    - WorkforceEvaluationPurpose: employee monitoring, performance evaluation
+    - CriticalInfrastructureOperation: autonomous vehicles, energy, transport, water
+    - HealthCare: medical diagnosis, clinical decision support, patient care
+    - JudicialDecisionSupport: court decisions, sentencing, recidivism prediction
+    - PublicServiceAllocation: credit scoring, social benefits, insurance, welfare
+  * Map the described purpose to the closest matching IRI above
 - For incident_type:
   * discrimination: unfair treatment of protected groups
   * bias: algorithmic bias leading to unfair outcomes

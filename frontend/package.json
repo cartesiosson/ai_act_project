@@ -15,6 +15,7 @@
     "rdflib": "^2.2.37",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-markdown": "^9.0.1",
     "react-router-dom": "^7.6.2",
     "vis-network": "^9.1.12"
   },
