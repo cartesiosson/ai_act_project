@@ -1,35 +1,48 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as d3 from "d3";
-import { graph, NamedNode, literal, sym } from "rdflib";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import ForceGraph3D from "react-force-graph-3d";
+import { graph, literal, sym } from "rdflib";
 import { Parser as N3Parser } from "n3";
+import * as THREE from "three";
 
 interface NodeData {
   id: string;
   type: string;
   category: string;
   label: string;
+  fullLabel: string;
   size: number;
+  color: string;
+  x?: number;
+  y?: number;
+  z?: number;
 }
 
 interface LinkData {
-  source: string;
-  target: string;
+  source: string | NodeData;
+  target: string | NodeData;
   predicate: string;
   predicateLabel: string;
+  color: string;
+}
+
+interface GraphData {
+  nodes: NodeData[];
+  links: LinkData[];
 }
 
 const NODE_CATEGORIES: { [key: string]: { color: string; icon: string; label: string } } = {
-  system: { color: "#3b82f6", icon: "🏢", label: "System" },
-  purpose: { color: "#8b5cf6", icon: "🎯", label: "Purpose" },
-  deployment: { color: "#ec4899", icon: "📍", label: "Deployment" },
-  technical: { color: "#f97316", icon: "⚙️", label: "Technical" },
-  capability: { color: "#10b981", icon: "🚀", label: "Capability" },
-  compliance: { color: "#14b8a6", icon: "✅", label: "Compliance" },
-  other: { color: "#6b7280", icon: "◦", label: "Other" },
+  system: { color: "#3b82f6", icon: "S", label: "System" },
+  purpose: { color: "#8b5cf6", icon: "P", label: "Purpose" },
+  deployment: { color: "#ec4899", icon: "D", label: "Deployment" },
+  technical: { color: "#f97316", icon: "T", label: "Technical" },
+  capability: { color: "#10b981", icon: "C", label: "Capability" },
+  compliance: { color: "#14b8a6", icon: "R", label: "Compliance" },
+  other: { color: "#6b7280", icon: "O", label: "Other" },
 };
 
 export default function GraphView() {
-  const svgRef = useRef<SVGSVGElement | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fgRef = useRef<any>(undefined);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [systems, setSystems] = useState<string[]>([]);
   const [selectedSystem, setSelectedSystem] = useState<string | null>(null);
@@ -39,39 +52,41 @@ export default function GraphView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [graphData, setGraphData] = useState<GraphData>({ nodes: [], links: [] });
+  const [hoveredNode, setHoveredNode] = useState<NodeData | null>(null);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [showLabels, setShowLabels] = useState(true);
+  const [showLinkLabels, setShowLinkLabels] = useState(true);
+  const [linkDistance, setLinkDistance] = useState(100);
+
+  // Detect dark mode
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+  const bgColor = isDark ? "#030712" : "#f3f4f6";
+  const linkColor = isDark ? "#4b5563" : "#9ca3af";
 
   const getNodeType = (uri: string, predicateUri?: string): string => {
-    if (uri.startsWith("urn:uuid:")) return "system";
+    if (uri.startsWith("urn:uuid:") || uri.startsWith("urn:forensic:")) return "system";
     const lowerUri = uri.toLowerCase();
     const lowerPredicate = predicateUri?.toLowerCase() || "";
 
-    // Check predicate first to determine category based on relationship
     if (lowerPredicate.includes("purpose")) return "purpose";
     if (lowerPredicate.includes("deployment") || lowerPredicate.includes("deploymentcontext")) return "deployment";
     if (lowerPredicate.includes("trainingdata") || lowerPredicate.includes("dataorigin")) return "technical";
     if (lowerPredicate.includes("algorithm")) return "technical";
     if (lowerPredicate.includes("model")) return "technical";
     if (lowerPredicate.includes("scale")) return "technical";
-
-    // Option C criteria properties (new)
     if (lowerPredicate.includes("hasactivatedcriterion")) return "compliance";
     if (lowerPredicate.includes("hasmanuallyidentifiedcriterion")) return "compliance";
     if (lowerPredicate.includes("hascapabilitymetric")) return "technical";
-
-    // Legacy
     if (lowerPredicate.includes("systemcapability")) return "capability";
 
-    // Then check the URI itself for more specific categorization
-    // Technical concepts first (more specific)
     if (lowerUri.includes("algorithmtype") || lowerUri.includes("algorithm")) return "technical";
-    if (lowerUri.includes("modelscale") || lowerUri.includes("model") && lowerUri.includes("scale")) return "technical";
+    if (lowerUri.includes("modelscale") || (lowerUri.includes("model") && lowerUri.includes("scale"))) return "technical";
     if (lowerUri.includes("training")) return "technical";
     if (lowerUri.includes("data")) return "technical";
     if (lowerUri.includes("metric") || lowerUri.includes("performance")) return "technical";
     if (lowerUri.includes("scale")) return "technical";
     if (lowerUri.includes("criterion") && lowerUri.includes("capability")) return "technical";
-
-    // Then check for other categories
     if (lowerUri.includes("purpose")) return "purpose";
     if (lowerUri.includes("deployment") || lowerUri.includes("context")) return "deployment";
     if (lowerUri.includes("capability")) return "capability";
@@ -84,13 +99,17 @@ export default function GraphView() {
     return NODE_CATEGORIES[type] ? type : "other";
   };
 
-  const truncateLabel = (text: string, maxLength: number = 20): string => {
-    const label = text.split("/").pop() || text;
+  const extractLabel = (uri: string): string => {
+    const label = uri.split("#").pop() || uri.split("/").pop() || uri;
+    return label;
+  };
+
+  const truncateLabel = (text: string, maxLength: number = 18): string => {
+    const label = extractLabel(text);
     return label.length > maxLength ? label.substring(0, maxLength) + "..." : label;
   };
 
   const fetchGraph = async (): Promise<string> => {
-    // Try to fetch from the specific graph first, then fall back to all graphs
     const query = `
       CONSTRUCT { ?s ?p ?o }
       WHERE {
@@ -115,18 +134,7 @@ export default function GraphView() {
     return response.text();
   };
 
-  const renderGraph = (triples: any[]) => {
-    if (!svgRef.current) {
-      console.error("SVG ref not available");
-      return;
-    }
-
-    // Detect dark mode
-    const isDark = document.documentElement.classList.contains('dark');
-    const textColor = isDark ? '#ffffff' : '#1f2937';
-    const linkColor = isDark ? '#6b7280' : '#9ca3af';
-    const linkLabelColor = isDark ? '#9ca3af' : '#6b7280';
-
+  const buildGraphData = useCallback((triples: any[]): GraphData => {
     const nodes = new Map<string, NodeData>();
     const links: LinkData[] = [];
     const nodeCount = new Map<string, number>();
@@ -136,28 +144,33 @@ export default function GraphView() {
         const sourceId = triple.subject.value;
         const targetId = triple.object.value;
         const predicateUri = triple.predicate.value;
-        const predicateLabel = predicateUri.split("#").pop() || predicateUri.split("/").pop() || predicateUri;
+        const predicateLabel = extractLabel(predicateUri);
 
         if (!nodes.has(sourceId)) {
           const type = getNodeType(sourceId, predicateUri);
+          const category = getNodeCategory(type);
           nodes.set(sourceId, {
             id: sourceId,
             type,
-            category: getNodeCategory(type),
+            category,
             label: truncateLabel(sourceId),
-            size: 15,
+            fullLabel: extractLabel(sourceId),
+            size: 8,
+            color: NODE_CATEGORIES[category].color,
           });
         }
 
         if (!nodes.has(targetId)) {
-          // For target nodes, use the predicate to categorize what they are
           const type = getNodeType(targetId, predicateUri);
+          const category = getNodeCategory(type);
           nodes.set(targetId, {
             id: targetId,
             type,
-            category: getNodeCategory(type),
+            category,
             label: truncateLabel(targetId),
-            size: 15,
+            fullLabel: extractLabel(targetId),
+            size: 8,
+            color: NODE_CATEGORIES[category].color,
           });
         }
 
@@ -169,181 +182,181 @@ export default function GraphView() {
           target: targetId,
           predicate: predicateUri,
           predicateLabel,
+          color: linkColor,
         });
       }
     });
 
+    // Adjust node sizes based on connections
     nodeCount.forEach((count, nodeId) => {
       const node = nodes.get(nodeId);
       if (node) {
-        node.size = Math.min(30, 15 + count * 2);
+        node.size = Math.min(15, 6 + count * 1.5);
       }
     });
 
-    let nodeArray = Array.from(nodes.values());
-    let linksToRender = links;
+    return {
+      nodes: Array.from(nodes.values()),
+      links,
+    };
+  }, [linkColor]);
+
+  // Filter graph data based on active filter and search
+  const filteredGraphData = useMemo(() => {
+    let filteredNodes = graphData.nodes;
+    let filteredLinks = graphData.links;
 
     // Apply category filter
     if (activeFilter) {
-      linksToRender = links.filter(
-        (l) =>
-          nodes.get(l.source)?.category === activeFilter ||
-          nodes.get(l.target)?.category === activeFilter
-      );
-      const nodeIdsInLinks = new Set<string>();
-      linksToRender.forEach((l) => {
-        nodeIdsInLinks.add(l.source);
-        nodeIdsInLinks.add(l.target);
+      filteredLinks = graphData.links.filter((l) => {
+        const sourceNode = graphData.nodes.find(n => n.id === (typeof l.source === 'string' ? l.source : l.source.id));
+        const targetNode = graphData.nodes.find(n => n.id === (typeof l.target === 'string' ? l.target : l.target.id));
+        return sourceNode?.category === activeFilter || targetNode?.category === activeFilter;
       });
-      nodeArray = nodeArray.filter((n) => nodeIdsInLinks.has(n.id));
+
+      const nodeIdsInLinks = new Set<string>();
+      filteredLinks.forEach((l) => {
+        nodeIdsInLinks.add(typeof l.source === 'string' ? l.source : l.source.id);
+        nodeIdsInLinks.add(typeof l.target === 'string' ? l.target : l.target.id);
+      });
+      filteredNodes = graphData.nodes.filter((n) => nodeIdsInLinks.has(n.id));
     }
 
     // Apply search filter
     if (searchQuery) {
-      nodeArray = nodeArray.filter((n) =>
-        n.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        n.id.toLowerCase().includes(searchQuery.toLowerCase())
+      const query = searchQuery.toLowerCase();
+      filteredNodes = filteredNodes.filter((n) =>
+        n.label.toLowerCase().includes(query) ||
+        n.fullLabel.toLowerCase().includes(query) ||
+        n.id.toLowerCase().includes(query)
       );
-      linksToRender = linksToRender.filter(
-        (l) =>
-          nodeArray.some((n) => n.id === l.source) &&
-          nodeArray.some((n) => n.id === l.target)
-      );
+      const filteredNodeIds = new Set(filteredNodes.map(n => n.id));
+      filteredLinks = filteredLinks.filter((l) => {
+        const sourceId = typeof l.source === 'string' ? l.source : l.source.id;
+        const targetId = typeof l.target === 'string' ? l.target : l.target.id;
+        return filteredNodeIds.has(sourceId) && filteredNodeIds.has(targetId);
+      });
     }
 
-    console.log(`Rendering graph: ${nodeArray.length} nodes, ${linksToRender.length} links`);
+    return { nodes: filteredNodes, links: filteredLinks };
+  }, [graphData, activeFilter, searchQuery]);
 
-    const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove();
+  // Create text sprite for node labels
+  const createTextSprite = useCallback((text: string, color: string, size: number = 4) => {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) return null;
 
-    // Get actual dimensions from SVG element
-    const svgElement = svgRef.current;
-    const width = svgElement.clientWidth || window.innerWidth;
-    const height = svgElement.clientHeight || window.innerHeight;
+    canvas.width = 256;
+    canvas.height = 64;
 
-    console.log(`SVG dimensions: ${width}x${height}`);
+    context.fillStyle = 'transparent';
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-    const simulation = d3
-      .forceSimulation(nodeArray as any)
-      .force("link", d3.forceLink(linksToRender as any).id((d: any) => d.id).distance(120))
-      .force("charge", d3.forceManyBody().strength(-500))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collision", d3.forceCollide().radius(40));
+    context.font = 'Bold 24px Arial';
+    context.fillStyle = isDark ? '#ffffff' : '#1f2937';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(text, canvas.width / 2, canvas.height / 2);
 
-    const g = svg.append("g");
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
 
-    const zoom = d3
-      .zoom<SVGSVGElement, unknown>()
-      .on("zoom", (event) => {
-        g.attr("transform", event.transform);
-      });
-
-    svg.call(zoom);
-
-    const link = g
-      .append("g")
-      .selectAll("line")
-      .data(linksToRender)
-      .enter()
-      .append("line")
-      .attr("stroke", linkColor)
-      .attr("stroke-width", 2)
-      .attr("stroke-opacity", 0.6)
-      .attr("marker-end", "url(#arrowhead)");
-
-    svg
-      .append("defs")
-      .append("marker")
-      .attr("id", "arrowhead")
-      .attr("markerWidth", 10)
-      .attr("markerHeight", 10)
-      .attr("refX", 25)
-      .attr("refY", 3)
-      .attr("orient", "auto")
-      .append("polygon")
-      .attr("points", "0 0, 10 3, 0 6")
-      .attr("fill", linkColor);
-
-    const linkLabels = g
-      .append("g")
-      .selectAll("text")
-      .data(linksToRender)
-      .enter()
-      .append("text")
-      .text((d) => d.predicateLabel)
-      .attr("font-size", 11)
-      .attr("fill", linkLabelColor)
-      .attr("text-anchor", "middle")
-      .attr("dy", -5);
-
-    const node = g
-      .append("g")
-      .selectAll("circle")
-      .data(nodeArray)
-      .enter()
-      .append("circle")
-      .attr("r", (d: any) => d.size)
-      .attr("fill", (d: any) => NODE_CATEGORIES[d.category].color)
-      .attr("stroke", isDark ? "#374151" : "#fff")
-      .attr("stroke-width", 2)
-      .attr("opacity", 0.85)
-      .style("cursor", "pointer")
-      .call(
-        d3
-          .drag<SVGCircleElement, any>()
-          .on("start", (event, d) => {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-          })
-          .on("drag", (event, d) => {
-            d.fx = event.x;
-            d.fy = event.y;
-          })
-          .on("end", (event, d) => {
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-          })
-      )
-      .on("mouseover", function () {
-        d3.select(this).transition().duration(200).attr("stroke-width", 3).attr("opacity", 1);
-      })
-      .on("mouseout", function () {
-        d3.select(this).transition().duration(200).attr("stroke-width", 2).attr("opacity", 0.85);
-      });
-
-    const text = g
-      .append("g")
-      .selectAll("text")
-      .data(nodeArray)
-      .enter()
-      .append("text")
-      .text((d: any) => d.label)
-      .attr("font-size", 12)
-      .attr("font-weight", "bold")
-      .attr("text-anchor", "middle")
-      .attr("fill", textColor)
-      .attr("pointer-events", "none")
-      .attr("dy", ".35em");
-
-    simulation.on("tick", () => {
-      link
-        .attr("x1", (d: any) => d.source.x)
-        .attr("y1", (d: any) => d.source.y)
-        .attr("x2", (d: any) => d.target.x)
-        .attr("y2", (d: any) => d.target.y);
-
-      node.attr("cx", (d: any) => d.x).attr("cy", (d: any) => d.y);
-      text.attr("x", (d: any) => d.x).attr("y", (d: any) => d.y);
-      linkLabels
-        .attr("x", (d: any) => (d.source.x + d.target.x) / 2)
-        .attr("y", (d: any) => (d.source.y + d.target.y) / 2);
+    const spriteMaterial = new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      depthTest: false,
     });
-  };
 
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(size * 4, size, 1);
+
+    return sprite;
+  }, [isDark]);
+
+  // Custom node rendering with 3D sphere and label
+  const nodeThreeObject = useCallback((node: NodeData) => {
+    const group = new THREE.Group();
+
+    // Create sphere
+    const geometry = new THREE.SphereGeometry(node.size, 16, 16);
+    const material = new THREE.MeshLambertMaterial({
+      color: node.color,
+      transparent: true,
+      opacity: 0.9,
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    group.add(sphere);
+
+    // Add label if enabled
+    if (showLabels) {
+      const sprite = createTextSprite(node.label, node.color, node.size);
+      if (sprite) {
+        sprite.position.set(0, node.size + 5, 0);
+        group.add(sprite);
+      }
+    }
+
+    return group;
+  }, [showLabels, createTextSprite]);
+
+  // Custom link rendering with labels
+  const linkThreeObject = useCallback((link: LinkData) => {
+    if (!showLinkLabels) return null;
+
+    const sprite = createTextSprite(link.predicateLabel, linkColor, 3);
+    return sprite;
+  }, [showLinkLabels, createTextSprite, linkColor]);
+
+  const linkPositionUpdate = useCallback((sprite: any, { start, end }: { start: any; end: any }) => {
+    if (sprite) {
+      const middlePos = {
+        x: (start.x + end.x) / 2,
+        y: (start.y + end.y) / 2,
+        z: (start.z + end.z) / 2,
+      };
+      Object.assign(sprite.position, middlePos);
+    }
+  }, []);
+
+  // Handle node click
+  const handleNodeClick = useCallback((node: NodeData) => {
+    if (fgRef.current) {
+      // Focus camera on node
+      const distance = 150;
+      const distRatio = 1 + distance / Math.hypot(node.x || 0, node.y || 0, node.z || 0);
+
+      fgRef.current.cameraPosition(
+        {
+          x: (node.x || 0) * distRatio,
+          y: (node.y || 0) * distRatio,
+          z: (node.z || 0) * distRatio,
+        },
+        { x: node.x || 0, y: node.y || 0, z: node.z || 0 },
+        1000
+      );
+    }
+  }, []);
+
+  // Update dimensions on resize
   useEffect(() => {
-    const store = graph();
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        setDimensions({
+          width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight,
+        });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  // Load graph data
+  useEffect(() => {
+    const graphStore = graph();
     setIsLoading(true);
     setLoadingError(null);
 
@@ -365,16 +378,20 @@ export default function GraphView() {
             ? literal(t.object.value)
             : sym(t.object.id || t.object.value);
 
-          store.add(subject, predicate, object);
+          graphStore.add(subject, predicate, object);
         });
 
-        setStore(store);
+        setStore(graphStore);
 
-        const systems = store
+        const systemNames = graphStore
           .statementsMatching(undefined, sym("http://ai-act.eu/ai#hasName"))
           .map((st) => st.object.value);
-        const uniqueNames = Array.from(new Set(systems));
+        const uniqueNames = Array.from(new Set(systemNames));
         setSystems(uniqueNames);
+
+        // Build initial graph data
+        const data = buildGraphData(triples);
+        setGraphData(data);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -382,19 +399,21 @@ export default function GraphView() {
         setLoadingError(`Error loading graph: ${error instanceof Error ? error.message : "Unknown error"}`);
         setIsLoading(false);
       });
-  }, []);
+  }, [buildGraphData]);
 
+  // Update graph when system is selected
   useEffect(() => {
     if (store && selectedSystem) {
       const subjects = store
         .statementsMatching(undefined, sym("http://ai-act.eu/ai#hasName"), literal(selectedSystem))
-        .map((st) => st.subject);
+        .map((st: any) => st.subject);
 
-      const filteredTriples = store.statements.filter((st) =>
-        subjects.some((subj) => subj.equals(st.subject))
+      const filteredTriples = store.statements.filter((st: any) =>
+        subjects.some((subj: any) => subj.equals(st.subject))
       );
 
-      renderGraph(filteredTriples);
+      const data = buildGraphData(filteredTriples);
+      setGraphData(data);
 
       const subject = subjects[0];
       if (subject) {
@@ -406,22 +425,38 @@ export default function GraphView() {
           riskLevel: get("hasRiskLevel"),
           purpose: store
             .each(subject, sym("http://ai-act.eu/ai#hasPurpose"))
-            .map((o) => o.value)
+            .map((o: any) => extractLabel(o.value))
             .join(", ") || "N/A",
           deploymentContext: store
             .each(subject, sym("http://ai-act.eu/ai#hasDeploymentContext"))
-            .map((o) => o.value)
+            .map((o: any) => extractLabel(o.value))
             .join(", ") || "N/A",
           trainingDataOrigin: store
             .each(subject, sym("http://ai-act.eu/ai#hasTrainingDataOrigin"))
-            .map((o) => o.value)
+            .map((o: any) => o.value)
             .join(", ") || "N/A",
           version: get("hasVersion"),
-          urn: store.any(subject, sym("http://ai-act.eu/ai#hasUrn"))?.value ?? "N/A",
+          urn: store.any(subject, sym("http://ai-act.eu/ai#hasUrn"))?.value ??
+               subject.value ?? "N/A",
         });
       }
     }
-  }, [selectedSystem, store, activeFilter, searchQuery]);
+  }, [selectedSystem, store, buildGraphData]);
+
+  // Reset view
+  const resetView = useCallback(() => {
+    if (fgRef.current) {
+      fgRef.current.cameraPosition({ x: 0, y: 0, z: 500 }, { x: 0, y: 0, z: 0 }, 1000);
+    }
+  }, []);
+
+  // Update link distance when slider changes
+  useEffect(() => {
+    if (fgRef.current) {
+      fgRef.current.d3Force('link')?.distance(linkDistance);
+      fgRef.current.d3ReheatSimulation();
+    }
+  }, [linkDistance]);
 
   return (
     <div ref={containerRef} className="w-full h-[calc(100vh-120px)] bg-white dark:bg-gray-900 text-gray-900 dark:text-white overflow-hidden flex flex-col -mx-4 -mb-4">
@@ -429,7 +464,7 @@ export default function GraphView() {
       <div className="relative z-10 bg-gray-50 dark:bg-gray-800 p-3 border-b border-gray-200 dark:border-gray-700">
         <div className="flex gap-3 items-center flex-wrap">
           <select
-            onChange={(e) => setSelectedSystem(e.target.value)}
+            onChange={(e) => setSelectedSystem(e.target.value || null)}
             value={selectedSystem || ""}
             className="p-2 text-sm rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -479,6 +514,45 @@ export default function GraphView() {
               </button>
             ))}
           </div>
+
+          <div className="flex gap-4 ml-auto items-center">
+            <label className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+              <span>Distance:</span>
+              <input
+                type="range"
+                min="30"
+                max="300"
+                value={linkDistance}
+                onChange={(e) => setLinkDistance(Number(e.target.value))}
+                className="w-20 h-1 accent-blue-500"
+              />
+              <span className="w-8 text-center">{linkDistance}</span>
+            </label>
+            <label className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
+              <input
+                type="checkbox"
+                checked={showLabels}
+                onChange={(e) => setShowLabels(e.target.checked)}
+                className="rounded"
+              />
+              Node Labels
+            </label>
+            <label className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
+              <input
+                type="checkbox"
+                checked={showLinkLabels}
+                onChange={(e) => setShowLinkLabels(e.target.checked)}
+                className="rounded"
+              />
+              Link Labels
+            </label>
+            <button
+              onClick={resetView}
+              className="px-3 py-1.5 text-xs rounded border bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
+            >
+              Reset View
+            </button>
+          </div>
         </div>
       </div>
 
@@ -501,30 +575,76 @@ export default function GraphView() {
           </div>
         )}
 
-        <svg
-          ref={svgRef}
-          width="100%"
-          height="100%"
-          className={`${isLoading || loadingError ? "hidden" : "block"} bg-gray-100 dark:bg-gray-950`}
-        ></svg>
+        {!isLoading && !loadingError && (
+          <ForceGraph3D
+            ref={fgRef}
+            width={dimensions.width}
+            height={dimensions.height - 60}
+            graphData={filteredGraphData}
+            backgroundColor={bgColor}
+            nodeThreeObject={nodeThreeObject}
+            nodeThreeObjectExtend={false}
+            linkColor={() => linkColor}
+            linkWidth={1.5}
+            linkOpacity={0.6}
+            linkDirectionalArrowLength={4}
+            linkDirectionalArrowRelPos={1}
+            linkThreeObject={linkThreeObject}
+            linkPositionUpdate={linkPositionUpdate}
+            linkThreeObjectExtend={true}
+            onNodeClick={handleNodeClick}
+            onNodeHover={(node) => setHoveredNode(node as NodeData | null)}
+            enableNodeDrag={true}
+            enableNavigationControls={true}
+            showNavInfo={false}
+          />
+        )}
 
+        {/* Hover tooltip */}
+        {hoveredNode && (
+          <div className="absolute top-5 left-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10 max-w-sm">
+            <p className="font-bold text-sm" style={{ color: hoveredNode.color }}>
+              {hoveredNode.fullLabel}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Category: {NODE_CATEGORIES[hoveredNode.category]?.label || "Other"}
+            </p>
+          </div>
+        )}
+
+        {/* System Info Panel */}
         {selectedSystemData && (
           <div className="absolute bottom-5 right-5 w-[360px] max-h-[400px] bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-auto z-10">
             <h3 className="text-base font-bold mb-3 pb-2 border-b-2 border-blue-500">
               {selectedSystemData.name}
             </h3>
             <div className="text-sm leading-relaxed space-y-1">
-              <p><strong>Risk Level:</strong> {selectedSystemData.riskLevel}</p>
+              <p><strong>Risk Level:</strong> {extractLabel(selectedSystemData.riskLevel)}</p>
               <p><strong>Purpose(s):</strong> {selectedSystemData.purpose}</p>
               <p><strong>Deployment Context(s):</strong> {selectedSystemData.deploymentContext}</p>
               <p><strong>Data Origin:</strong> {selectedSystemData.trainingDataOrigin}</p>
               <p><strong>Version:</strong> {selectedSystemData.version}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
-                <strong>URN:</strong> <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">{selectedSystemData.urn}</code>
+                <strong>URN:</strong> <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded break-all">{selectedSystemData.urn}</code>
               </p>
             </div>
           </div>
         )}
+
+        {/* Stats */}
+        <div className="absolute bottom-5 left-5 bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-xs z-10">
+          <span className="font-semibold">{filteredGraphData.nodes.length}</span> nodes |
+          <span className="font-semibold ml-1">{filteredGraphData.links.length}</span> links
+        </div>
+
+        {/* 3D Controls Help */}
+        <div className="absolute top-5 right-5 bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 px-3 py-2 rounded-lg text-xs z-10">
+          <p><strong>Controls:</strong></p>
+          <p>Left-click + drag: Rotate</p>
+          <p>Right-click + drag: Pan</p>
+          <p>Scroll: Zoom</p>
+          <p>Click node: Focus</p>
+        </div>
       </div>
     </div>
   );
