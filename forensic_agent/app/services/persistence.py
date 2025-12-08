@@ -62,6 +62,9 @@ class PersistenceService:
         incident_info = extraction.get("incident", {})
         eu_ai_act = analysis_result.get("eu_ai_act", {})
         compliance_gaps = analysis_result.get("compliance_gaps", {})
+        iso_42001 = analysis_result.get("iso_42001", {})
+        nist_ai_rmf = analysis_result.get("nist_ai_rmf", {})
+        report = analysis_result.get("report", "")
 
         # Generate URN for the system
         urn = f"urn:forensic:{uuid.uuid4()}"
@@ -110,7 +113,25 @@ class PersistenceService:
             "analysisTimestamp": analysis_result.get("analysis_timestamp", datetime.utcnow().isoformat()),
             "extractionConfidence": extraction.get("confidence", {}).get("overall", 0.0),
             "requiresExpertReview": analysis_result.get("requires_expert_review", True),
-            "createdAt": datetime.utcnow().isoformat()
+            "createdAt": datetime.utcnow().isoformat(),
+
+            # ISO 42001 Assessment
+            "iso_42001": {
+                "total_mapped": iso_42001.get("total_mapped", 0),
+                "certification_gap_detected": iso_42001.get("certification_gap_detected", False),
+                "mappings": iso_42001.get("mappings", {})
+            },
+
+            # NIST AI RMF Assessment
+            "nist_ai_rmf": {
+                "total_mapped": nist_ai_rmf.get("total_mapped", 0),
+                "jurisdiction_applicable": nist_ai_rmf.get("jurisdiction_applicable", False),
+                "voluntary_guidance_ignored": nist_ai_rmf.get("voluntary_guidance_ignored", False),
+                "mappings": nist_ai_rmf.get("mappings", {})
+            },
+
+            # Full markdown report
+            "report": report
         }
 
         # Add external IDs if provided

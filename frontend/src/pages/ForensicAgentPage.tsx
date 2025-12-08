@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Markdown from "react-markdown";
 import type { Incident, ForensicAnalysisResult, ForensicSystem } from "../lib/forensicApi";
 import {
@@ -54,6 +54,65 @@ export default function ForensicAgentPage() {
   const [forensicError, setForensicError] = useState<string | null>(null);
   const [selectedForensicSystem, setSelectedForensicSystem] = useState<ForensicSystem | null>(null);
   const forensicLimit = 10;
+
+  // Ref for PDF export
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  // Export report to PDF using print dialog
+  const handleExportPdf = () => {
+    if (!reportRef.current || !selectedForensicSystem) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const content = reportRef.current.innerHTML;
+    const systemName = selectedForensicSystem.hasName;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Forensic Report - ${systemName}</title>
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #333;
+          }
+          h1 { font-size: 24px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+          h2 { font-size: 20px; color: #444; margin-top: 30px; }
+          h3 { font-size: 16px; color: #555; }
+          p { margin: 10px 0; }
+          ul, ol { margin: 10px 0; padding-left: 25px; }
+          li { margin: 5px 0; }
+          hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+          strong { color: #222; }
+          code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; }
+          pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }
+          img { max-width: 200px; height: auto; }
+          @media print {
+            body { padding: 20px; }
+            @page { margin: 20mm; }
+          }
+        </style>
+      </head>
+      <body>
+        ${content}
+      </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  };
 
   // Load incidents on mount
   useEffect(() => {
@@ -777,13 +836,12 @@ export default function ForensicAgentPage() {
             <table className="min-w-full border dark:border-gray-700 mb-4 table-fixed">
               <thead>
                 <tr className="bg-purple-100 dark:bg-purple-900">
-                  <th className="p-2 text-left w-[25%]">System Name</th>
-                  <th className="p-2 text-left w-[15%]">Organization</th>
-                  <th className="p-2 text-left w-[12%]">Risk Level</th>
-                  <th className="p-2 text-left w-[12%]">Compliance</th>
-                  <th className="p-2 text-left w-[12%]">Source</th>
+                  <th className="p-2 text-left w-[28%]">System Name</th>
+                  <th className="p-2 text-left w-[18%]">Organization</th>
+                  <th className="p-2 text-left w-[14%]">Risk Level</th>
+                  <th className="p-2 text-left w-[14%]">Source</th>
                   <th className="p-2 text-left w-[12%]">Date</th>
-                  <th className="p-2 text-left w-[12%]">Actions</th>
+                  <th className="p-2 text-left w-[14%]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -806,28 +864,14 @@ export default function ForensicAgentPage() {
                         {fs.hasRiskLevel.replace("ai:", "")}
                       </span>
                     </td>
-                    <td className="p-2">
-                      <div className="flex items-center">
-                        <div className="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2 mr-2">
-                          <div
-                            className={`h-2 rounded-full ${
-                              fs.complianceRatio >= 0.7 ? "bg-green-500" :
-                              fs.complianceRatio >= 0.4 ? "bg-yellow-500" : "bg-red-500"
-                            }`}
-                            style={{ width: `${Math.round(fs.complianceRatio * 100)}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-xs">{Math.round(fs.complianceRatio * 100)}%</span>
-                      </div>
-                    </td>
                     <td className="p-2 text-sm truncate" title={fs.source}>{fs.source}</td>
                     <td className="p-2 text-sm">
                       {new Date(fs.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="p-2 space-x-2">
+                    <td className="p-2 whitespace-nowrap">
                       <button
                         onClick={() => setSelectedForensicSystem(fs)}
-                        className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                        className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm mr-1"
                       >
                         View
                       </button>
@@ -959,7 +1003,72 @@ export default function ForensicAgentPage() {
                 </div>
               )}
 
+              {/* ISO 42001 Assessment */}
+              {selectedForensicSystem.iso_42001 && (
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2 text-purple-600 dark:text-purple-400">ISO 42001 Assessment</h4>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Controls Mapped</p>
+                        <p className="font-medium">{selectedForensicSystem.iso_42001.total_mapped}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Certification Gap</p>
+                        <p className={`font-medium ${selectedForensicSystem.iso_42001.certification_gap_detected ? 'text-amber-600' : 'text-green-600'}`}>
+                          {selectedForensicSystem.iso_42001.certification_gap_detected ? '⚠ Gap Detected' : '✓ No Gap'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* NIST AI RMF Assessment */}
+              {selectedForensicSystem.nist_ai_rmf && (
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2 text-blue-600 dark:text-blue-400">NIST AI RMF Assessment</h4>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Functions Mapped</p>
+                        <p className="font-medium">{selectedForensicSystem.nist_ai_rmf.total_mapped}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Jurisdiction Applicable</p>
+                        <p className="font-medium">{selectedForensicSystem.nist_ai_rmf.jurisdiction_applicable ? 'Yes' : 'No'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Full Report */}
+              {selectedForensicSystem.report && (
+                <div className="mb-6">
+                  <details>
+                    <summary className="cursor-pointer font-semibold mb-2 text-green-600 dark:text-green-400 hover:underline">
+                      📄 View Full Analysis Report
+                    </summary>
+                    <div ref={reportRef} className="bg-gray-50 dark:bg-gray-900 p-4 rounded mt-2 prose prose-sm dark:prose-invert max-w-none max-h-[400px] overflow-y-auto">
+                      <Markdown>{selectedForensicSystem.report}</Markdown>
+                    </div>
+                  </details>
+                </div>
+              )}
+
               <div className="flex justify-end space-x-4 pt-4 border-t dark:border-gray-700">
+                {selectedForensicSystem.report && (
+                  <button
+                    onClick={handleExportPdf}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Export PDF
+                  </button>
+                )}
                 <button
                   onClick={() => setSelectedForensicSystem(null)}
                   className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"

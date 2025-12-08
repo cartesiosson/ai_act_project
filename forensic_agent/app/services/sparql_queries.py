@@ -340,7 +340,8 @@ class ForensicSPARQLService:
         high_risk_keywords = [
             "biometric", "lawenforcement", "migration", "employment",
             "education", "criticalinfrastructure", "emotionrecognition",
-            "socialscoring", "predictivepolicing"
+            "socialscoring", "predictivepolicing", "healthcare", "health",
+            "recruitment", "judicial", "essential"
         ]
 
         for keyword in high_risk_keywords:
@@ -396,9 +397,13 @@ class ForensicSPARQLService:
             # Critical infrastructure
             "critical infrastructure", "criticalinfrastructure",
             "energy", "water supply", "transport",
+            "autonomous", "self-driving", "autonomous vehicle",
             # Education and employment
             "education", "student", "recruitment", "employment",
             "hiring", "worker", "performance evaluation",
+            # Healthcare - Annex III, point 5(a): medical devices
+            "healthcare", "health care", "medical", "diagnosis",
+            "clinical", "patient", "therapeutic", "health",
             # Essential services
             "credit scoring", "creditscoring", "insurance",
             "social benefit", "emergency services",

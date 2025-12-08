@@ -774,6 +774,22 @@ ai:MigrationBorderCriterion a ai:NormativeCriterion ;
         ai:AccuracyEvaluationRequirement,
         ai:BiasDetectionRequirement .
 
+ai:HealthCareCriterion a ai:NormativeCriterion ;
+    rdfs:label "Health Care Criterion"@en,
+        "Criterio de Atención Sanitaria"@es ;
+    rdfs:comment "[ANNEX III - Point 5(a)] AI systems intended to be used as medical devices or as safety components of medical devices. High-risk due to direct impact on health, safety and wellbeing of individuals."@en,
+        "[ANEXO III - Punto 5(a)] Sistemas de IA destinados a ser utilizados como productos sanitarios o como componentes de seguridad de productos sanitarios. Alto riesgo por impacto directo en la salud, seguridad y bienestar de las personas."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:DocumentationRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:RobustnessRequirement,
+        ai:TraceabilityRequirement .
+
 ai:RecruitmentEmploymentCriterion a ai:NormativeCriterion ;
     rdfs:label "Recruitment and Employment Criterion"@en,
         "Criterio de Reclutamiento y Empleo"@es ;
@@ -837,8 +853,10 @@ ai:CriticalInfrastructureOperation a ai:Purpose,
     owl:NamedIndividual ;
     rdfs:label "Critical Infrastructure Operation"@en,
         "Operación de Infraestructura Crítica"@es ;
-    rdfs:comment "Referenced in Annex III, point 1(a)."@en,
-        "Referenciado en el Anexo III, punto 1(a)."@es ;
+    rdfs:comment "[ANNEX III - Point 2] AI systems for management and operation of critical infrastructure including road traffic, water, gas, heating, electricity supply, autonomous vehicles. High-risk due to impact on essential services and public safety."@en,
+        "[ANEXO III - Punto 2] Sistemas de IA para gestión y operación de infraestructura crítica incluyendo tráfico, agua, gas, calefacción, electricidad, vehículos autónomos. Alto riesgo por impacto en servicios esenciales y seguridad pública."@es ;
+    ai:activatesCriterion ai:CriticalInfrastructureCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
     ai:triggersCriterion ai:CriticalInfrastructureCriterion .
 
 ai:EducationAccess a ai:Purpose,
@@ -855,25 +873,31 @@ ai:HealthCare a ai:Purpose,
     owl:NamedIndividual ;
     rdfs:label "Health Care"@en,
         "Atención Sanitaria"@es ;
-    rdfs:comment "Purpose for healthcare and medical AI systems."@en,
-        "Propósito para sistemas de IA sanitarios y médicos."@es ;
-    ai:expectedRiskLevel ai:HighRisk .
+    rdfs:comment "[ANNEX III - Point 5(a)] Purpose for healthcare and medical AI systems, including medical diagnosis, clinical decision support, and patient care. High-risk due to impact on health and safety."@en,
+        "[ANEXO III - Punto 5(a)] Propósito para sistemas de IA sanitarios y médicos, incluyendo diagnóstico médico, apoyo a decisiones clínicas y atención al paciente. Alto riesgo por impacto en salud y seguridad."@es ;
+    ai:activatesCriterion ai:HealthCareCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:HealthCareCriterion .
 
 ai:JudicialDecisionSupport a ai:Purpose,
     owl:NamedIndividual ;
     rdfs:label "Judicial Decision Support"@en,
         "Apoyo a la decisión judicial"@es ;
-    ai:triggersCriterion ai:JudicialSupportCriterion ;
-    rdfs:comment "Referenced in Annex III, point 6."@en,
-        "Referenciado en el Anexo III, punto 6."@es .
+    rdfs:comment "[ANNEX III - Point 8] AI systems for administration of justice and democratic processes, including research and interpretation of facts and law, sentencing decisions, recidivism prediction. High-risk due to impact on fundamental rights and access to justice."@en,
+        "[ANEXO III - Punto 8] Sistemas de IA para administración de justicia y procesos democráticos, incluyendo investigación e interpretación de hechos y derecho, decisiones de sentencia, predicción de reincidencia. Alto riesgo por impacto en derechos fundamentales y acceso a la justicia."@es ;
+    ai:activatesCriterion ai:JudicialSupportCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:JudicialSupportCriterion .
 
 ai:LawEnforcementSupport a ai:Purpose,
     owl:NamedIndividual ;
     rdfs:label "Law Enforcement Support"@en,
         "Apoyo a la aplicación de la ley"@es ;
+    rdfs:comment "[ANNEX III - Point 6] AI systems for law enforcement purposes, including individual risk assessment, polygraphs, evidence reliability, crime analytics, profiling. High-risk due to impact on liberty, privacy, and fundamental rights."@en,
+        "[ANEXO III - Punto 6] Sistemas de IA para aplicación de la ley, incluyendo evaluación de riesgo individual, polígrafos, fiabilidad de pruebas, análisis criminal, perfilado. Alto riesgo por impacto en libertad, privacidad y derechos fundamentales."@es ;
     ai:activatesCriterion ai:LawEnforcementCriterion ;
-    rdfs:comment "Referenced in Annex III, point 7."@en,
-        "Referenciado en el Anexo III, punto 7."@es .
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:LawEnforcementCriterion .
 
 ai:MigrationControl a ai:Purpose,
     owl:NamedIndividual ;
@@ -899,9 +923,11 @@ ai:RecruitmentOrEmployment a ai:Purpose,
     owl:NamedIndividual ;
     rdfs:label "Recruitment and Employment"@en,
         "Reclutamiento y empleo"@es ;
+    rdfs:comment "[ANNEX III - Point 4] AI systems for recruitment and selection of candidates, job advertisements, CV screening, candidate evaluation, interview decisions. High-risk due to impact on employment rights and non-discrimination."@en,
+        "[ANEXO III - Punto 4] Sistemas de IA para reclutamiento y selección de candidatos, anuncios de empleo, filtrado de CV, evaluación de candidatos, decisiones de entrevistas. Alto riesgo por impacto en derechos laborales y no discriminación."@es ;
     ai:activatesCriterion ai:RecruitmentEmploymentCriterion ;
-    rdfs:comment "Referenced in Annex III, point 4."@en,
-        "Referenciado en el Anexo III, punto 4."@es .
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:RecruitmentEmploymentCriterion .
 
 ai:WorkforceEvaluationPurpose a ai:Purpose,
     owl:NamedIndividual ;
