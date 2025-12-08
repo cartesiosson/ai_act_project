@@ -16,8 +16,8 @@ export function Navbar() {
           className="h-10 object-contain"
         />
         <span className="text-gray-400 dark:text-gray-500">|</span>
-        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-          TFM - Semantic Regulation Intelligence System
+        <span className="text-base font-bold text-gray-700 dark:text-gray-200">
+          Semantic Regulation Intelligence System
         </span>
       </div>
 

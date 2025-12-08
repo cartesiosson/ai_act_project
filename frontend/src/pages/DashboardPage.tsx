@@ -92,6 +92,16 @@ export default function DashboardPage() {
                     {children}
                   </em>
                 ),
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  >
+                    {children}
+                  </a>
+                ),
               }}
             >
               {welcomeContent}
@@ -155,6 +165,23 @@ export default function DashboardPage() {
             <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">Ollama + Llama3</span>
           </div>
         </div>
+      </div>
+
+      {/* License */}
+      <div className="mt-8 text-center">
+        <a
+          href="https://creativecommons.org/licenses/by-sa/4.0/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+        >
+          <img
+            src="https://licensebuttons.net/l/by-sa/4.0/88x31.png"
+            alt="CC BY-SA 4.0"
+            className="h-6"
+          />
+          <span>This work is licensed under CC BY-SA 4.0</span>
+        </a>
       </div>
     </div>
   );
