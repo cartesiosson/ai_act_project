@@ -1,7 +1,7 @@
 # Forensic Analysis Agent Dependencies
 
 # Web Framework
-fastapi==0.115.5
+fastapi==0.124.0
 uvicorn[standard]==0.32.1
 pydantic==2.10.3
 pydantic-settings==2.6.1
@@ -16,6 +16,9 @@ fastmcp>=2.3.0
 # HTTP Client
 httpx==0.28.1
 aiohttp==3.11.10
+
+# Database
+motor==3.6.0  # Async MongoDB driver
 
 # Utilities
 python-dateutil==2.9.0

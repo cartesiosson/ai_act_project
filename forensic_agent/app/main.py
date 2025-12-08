@@ -9,7 +9,8 @@ from typing import Optional, Dict
 from .services import (
     IncidentExtractorService,
     ForensicSPARQLService,
-    ForensicAnalysisEngine
+    ForensicAnalysisEngine,
+    PersistenceService
 )
 
 # Initialize FastAPI app
@@ -32,12 +33,13 @@ app.add_middleware(
 extractor_service: Optional[IncidentExtractorService] = None
 sparql_service: Optional[ForensicSPARQLService] = None
 analysis_engine: Optional[ForensicAnalysisEngine] = None
+persistence_service: Optional[PersistenceService] = None
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup"""
-    global extractor_service, sparql_service, analysis_engine
+    global extractor_service, sparql_service, analysis_engine, persistence_service
 
     print("=" * 80)
     print("FORENSIC COMPLIANCE AGENT - STARTING UP")
@@ -81,6 +83,11 @@ async def startup_event():
             sparql=sparql_service
         )
         print("✓ Analysis Engine initialized")
+
+        print("\nInitializing Persistence Service...")
+        persistence_service = PersistenceService()
+        await persistence_service.ensure_connected()
+        print("✓ Persistence Service initialized (MongoDB + Fuseki)")
 
         print("\n" + "=" * 80)
         print("FORENSIC COMPLIANCE AGENT - READY")
@@ -180,6 +187,29 @@ async def analyze_incident(request: IncidentAnalysisRequest):
 
         result["source"] = request.source
 
+        # Persist to MongoDB and Fuseki if analysis was successful
+        if result.get("status") == "COMPLETED" and persistence_service:
+            print("\n[PERSISTENCE] Saving analyzed system to MongoDB and Fuseki...")
+            persist_result = await persistence_service.persist_analyzed_system(
+                analysis_result=result,
+                source=request.source,
+                metadata=request.metadata
+            )
+
+            if persist_result.get("success"):
+                result["persisted"] = {
+                    "success": True,
+                    "urn": persist_result.get("urn"),
+                    "message": "System saved to MongoDB and Fuseki"
+                }
+                print(f"   ✓ System persisted with URN: {persist_result.get('urn')}")
+            else:
+                result["persisted"] = {
+                    "success": False,
+                    "error": persist_result.get("error")
+                }
+                print(f"   ✗ Persistence failed: {persist_result.get('error')}")
+
         return result
 
     except Exception as e:
@@ -209,6 +239,51 @@ async def get_stats():
             "analysis_engine_ready": analysis_engine is not None
         }
     }
+
+
+@app.get("/forensic/systems")
+async def list_analyzed_systems(
+    limit: int = 20,
+    offset: int = 0,
+    source: Optional[str] = None,
+    risk_level: Optional[str] = None
+):
+    """List all analyzed AI systems stored in MongoDB."""
+    if not persistence_service:
+        raise HTTPException(status_code=503, detail="Persistence service not initialized")
+
+    return await persistence_service.get_analyzed_systems(
+        limit=limit,
+        offset=offset,
+        source=source,
+        risk_level=risk_level
+    )
+
+
+@app.get("/forensic/systems/{urn:path}")
+async def get_analyzed_system(urn: str):
+    """Get a specific analyzed system by URN."""
+    if not persistence_service:
+        raise HTTPException(status_code=503, detail="Persistence service not initialized")
+
+    system = await persistence_service.get_system_by_urn(urn)
+    if not system:
+        raise HTTPException(status_code=404, detail="System not found")
+
+    return system
+
+
+@app.delete("/forensic/systems/{urn:path}")
+async def delete_analyzed_system(urn: str):
+    """Delete an analyzed system from MongoDB and Fuseki."""
+    if not persistence_service:
+        raise HTTPException(status_code=503, detail="Persistence service not initialized")
+
+    deleted = await persistence_service.delete_system(urn)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="System not found")
+
+    return {"status": "deleted", "urn": urn}
 
 
 if __name__ == "__main__":

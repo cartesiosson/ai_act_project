@@ -165,6 +165,9 @@ mcp-servers/**/*.pyc
 # Temporary forensic results
 forensic_result_*.json
 
+# Ollama models (persisted locally for docker)
+ollama_models/
+
 # Database
 *.db
 *.sqlite

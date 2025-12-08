@@ -485,6 +485,179 @@ async def reason_system(
             detail=f"Error en el proceso de razonamiento: {str(e)}"
         )
 
+def forensic_system_to_ttl(system: Dict[str, Any]) -> str:
+    """Convierte un sistema forense a formato TTL para razonamiento"""
+    prefixes = get_basic_prefixes()
+
+    # Usar el URN del sistema forense
+    system_urn = system.get("urn") or system.get("@id") or f"urn:forensic:{system.get('_id', 'unknown')}"
+    subject = f"<{system_urn}>"
+
+    # Construir propiedades
+    properties = []
+    properties.append(f"{subject} a ai:IntelligentSystem")
+
+    # Propiedades básicas
+    if system.get("hasName"):
+        properties.append(f'{subject} ai:hasName "{system["hasName"]}"')
+
+    if system.get("hasOrganization"):
+        properties.append(f'{subject} ai:hasOrganization "{system["hasOrganization"]}"')
+
+    # Propósitos (formato diferente en forensic systems)
+    for purpose in system.get("hasPurpose", []):
+        purpose_uri = purpose if purpose.startswith("ai:") else f"ai:{purpose}"
+        properties.append(f"{subject} ai:hasPurpose {purpose_uri}")
+
+    # Contextos de despliegue
+    for context in system.get("hasDeploymentContext", []):
+        context_uri = context if context.startswith("ai:") else f"ai:{context}"
+        properties.append(f"{subject} ai:hasDeploymentContext {context_uri}")
+
+    # Tipos de datos procesados -> convertir a algo razonable
+    for data_type in system.get("processesDataTypes", []):
+        if "Biometric" in data_type:
+            properties.append(f"{subject} ai:hasTrainingDataOrigin ai:BiometricData")
+        elif "Personal" in data_type:
+            properties.append(f"{subject} ai:hasTrainingDataOrigin ai:PersonalData")
+
+    # Criterios ya identificados
+    for criterion in system.get("hasCriteria", []):
+        # Extraer el nombre del criterio de la URI
+        crit_name = criterion.split("#")[-1] if "#" in criterion else criterion.split("/")[-1]
+        crit_uri = f"ai:{crit_name}" if not criterion.startswith("ai:") else criterion
+        properties.append(f"{subject} ai:hasSystemCapabilityCriteria {crit_uri}")
+
+    # Nivel de riesgo si existe
+    if system.get("hasRiskLevel"):
+        risk_level = system["hasRiskLevel"]
+        if not risk_level.startswith("ai:"):
+            risk_level = f"ai:{risk_level.split(':')[-1] if ':' in risk_level else risk_level}"
+        properties.append(f"{subject} ai:hasRiskLevel {risk_level}")
+
+    # Si es decisión automatizada
+    if system.get("isAutomatedDecision"):
+        properties.append(f"{subject} ai:hasCapability ai:AutomatedDecisionMaking")
+
+    # Escala del modelo
+    if system.get("modelScale"):
+        scale = system["modelScale"]
+        if scale.lower() == "large":
+            properties.append(f"{subject} ai:hasModelScale ai:LargeScale")
+        elif scale.lower() == "medium":
+            properties.append(f"{subject} ai:hasModelScale ai:MediumScale")
+
+    # Combinar prefijos y propiedades
+    ttl_content = prefixes + "\n" + " .\n".join(properties) + " .\n"
+
+    return ttl_content
+
+
+@router.post("/forensic/{urn:path}")
+async def reason_forensic_system(
+    urn: str,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """
+    Ejecuta razonamiento semántico sobre un sistema forense
+    Los sistemas forenses están en la colección 'forensic_systems'
+    """
+    try:
+        # 0. Cargar SHACL shapes
+        shapes_graph = load_shacl_shapes()
+
+        # Decodificar URN si está URL-encoded
+        urn = unquote(urn)
+
+        # 1. Obtener sistema forense de la base de datos
+        system = await db.forensic_systems.find_one({"urn": urn})
+        if not system:
+            # Intentar también con @id
+            system = await db.forensic_systems.find_one({"@id": urn})
+
+        if not system:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Sistema forense no encontrado: {urn}"
+            )
+
+        logger.info(f"Sistema forense encontrado: {system.get('hasName', 'Unknown')}")
+
+        # 2. Convertir sistema forense a TTL
+        system_ttl = forensic_system_to_ttl(system)
+        logger.info(f"Sistema forense convertido a TTL:\n{system_ttl[:500]}...")
+
+        # 2.5. PRE-VALIDACIÓN SHACL
+        logger.info("Iniciando pre-validación SHACL para sistema forense...")
+        is_valid, validation_error = validate_system_pre(system_ttl, shapes_graph)
+
+        if not is_valid:
+            logger.warning(f"Pre-validación fallida (continuando): {validation_error[:200]}")
+        else:
+            logger.info("Pre-validación SHACL completada ✓")
+
+        # 3. Obtener reglas SWRL y conceptos
+        swrl_rules = get_basic_prefixes() + get_ai_act_concepts() + get_swrl_rules()
+        logger.info(f"Reglas SWRL y conceptos cargados")
+
+        # 4. Ejecutar razonamiento
+        reasoner_response = await call_reasoner_service(system_ttl, swrl_rules)
+        logger.info(f"Razonamiento completado, inferencias: {reasoner_response.get('rules_applied', 0)}")
+
+        # 4.5. POST-VALIDACIÓN SHACL
+        raw_ttl = reasoner_response.get("raw_ttl", "")
+        shacl_post_validation = validate_results_post(raw_ttl, shapes_graph)
+
+        # 5. Extraer relaciones inferidas
+        relationships = reasoner_response.get("inferred_relationships", {
+            "hasNormativeCriterion": [],
+            "hasTechnicalCriterion": [],
+            "hasContextualCriterion": [],
+            "hasRequirement": [],
+            "hasTechnicalRequirement": [],
+            "hasCriteria": [],
+            "hasComplianceRequirement": [],
+            "hasRiskLevel": [],
+            "hasGPAIClassification": []
+        })
+
+        rules_applied = reasoner_response.get("rules_applied", sum(len(values) for values in relationships.values()))
+
+        # 6. Retornar resultado
+        return {
+            "system_id": urn,
+            "system_name": system.get("hasName", "Unknown Forensic System"),
+            "system_type": "forensic",
+            "organization": system.get("hasOrganization", "Unknown"),
+            "original_risk_level": system.get("hasRiskLevel", "Unknown"),
+            "reasoning_completed": True,
+            "inferred_relationships": relationships,
+            "raw_ttl": raw_ttl,
+            "rules_applied": rules_applied,
+            "shacl_validation": {
+                "pre_validation": {
+                    "status": "passed" if is_valid else "warning",
+                    "enabled": ENABLE_SHACL_VALIDATION and SHACL_AVAILABLE
+                },
+                "post_validation": {
+                    "status": "passed" if shacl_post_validation["valid"] else "failed",
+                    "valid": shacl_post_validation["valid"],
+                    "message": shacl_post_validation["message"],
+                    "enabled": ENABLE_SHACL_VALIDATION and SHACL_AVAILABLE
+                }
+            }
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in forensic reasoning process: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error en el proceso de razonamiento forense: {str(e)}"
+        )
+
+
 @router.get("/rules")
 async def get_available_rules():
     """

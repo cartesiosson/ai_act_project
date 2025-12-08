@@ -4,6 +4,7 @@ import SystemsPage from "../pages/SystemsPage";
 import GraphView from "../pages/GraphView";
 import OntologyDocs from "../pages/OntologyDocs";
 import ReasoningPage from "../pages/ReasoningPage";
+import ForensicAgentPage from "../pages/ForensicAgentPage";
 
 export function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ export function AppRoutes() {
       <Route path="/graph" element={<GraphView />} />
       <Route path="/ontology" element={<OntologyDocs />} />
       <Route path="/reasoning" element={<ReasoningPage />} />
+      <Route path="/forensic" element={<ForensicAgentPage />} />
     </Routes>
   );
 }
