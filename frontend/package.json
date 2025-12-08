@@ -16,14 +16,18 @@
     "rdflib": "^2.2.37",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-force-graph-3d": "^1.29.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^7.6.2",
+    "three": "^0.181.2",
     "vis-network": "^9.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@types/n3": "^1.26.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/three": "^0.181.0",
     "@vitejs/plugin-react": "^4.4.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.25.0",
