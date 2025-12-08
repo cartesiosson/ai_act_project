@@ -3,16 +3,21 @@ import { Link } from "react-router-dom";
 export function Navbar() {
   return (
     <nav className="bg-white shadow-md dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
-      {/* Logo UNIR */}
+      {/* Logos UNIR + SERAMIS */}
       <div className="flex items-center gap-4">
         <img
           src="/logo-unir.png"
           alt="UNIR - Universidad Internacional de La Rioja"
           className="h-10 object-contain"
         />
+        <img
+          src="/seramis-logo.svg"
+          alt="SERAMIS - Semantic Regulation Intelligence System"
+          className="h-10 object-contain"
+        />
         <span className="text-gray-400 dark:text-gray-500">|</span>
         <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-          TFM - AI Act Compliance
+          TFM - Semantic Regulation Intelligence System
         </span>
       </div>
 
