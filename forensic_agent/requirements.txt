@@ -17,6 +17,9 @@ fastmcp>=2.3.0
 httpx==0.28.1
 aiohttp==3.11.10
 
+# Database
+motor==3.6.0  # Async MongoDB driver
+
 # Utilities
 python-dateutil==2.9.0
 python-dotenv>=1.1.0

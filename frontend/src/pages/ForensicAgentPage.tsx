@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Markdown from "react-markdown";
-import type { Incident, ForensicAnalysisResult } from "../lib/forensicApi";
+import type { Incident, ForensicAnalysisResult, ForensicSystem } from "../lib/forensicApi";
 import {
   loadIncidents,
   analyzeIncident,
   buildNarrative,
   getUniqueValues,
   checkHealth,
+  getForensicSystems,
+  deleteForensicSystem,
 } from "../lib/forensicApi";
 
 const ITEMS_PER_PAGE = 20;
@@ -43,6 +45,15 @@ export default function ForensicAgentPage() {
 
   // Service health
   const [serviceHealthy, setServiceHealthy] = useState<boolean | null>(null);
+
+  // Forensic analyzed systems state
+  const [forensicSystems, setForensicSystems] = useState<ForensicSystem[]>([]);
+  const [forensicLoading, setForensicLoading] = useState(true);
+  const [forensicTotal, setForensicTotal] = useState(0);
+  const [forensicOffset, setForensicOffset] = useState(0);
+  const [forensicError, setForensicError] = useState<string | null>(null);
+  const [selectedForensicSystem, setSelectedForensicSystem] = useState<ForensicSystem | null>(null);
+  const forensicLimit = 10;
 
   // Load incidents on mount
   useEffect(() => {
@@ -101,6 +112,53 @@ export default function ForensicAgentPage() {
   useEffect(() => {
     setPage(1);
   }, [filters]);
+
+  // Load forensic systems
+  const loadForensicSystems = async (customOffset?: number) => {
+    setForensicLoading(true);
+    setForensicError(null);
+    try {
+      const result = await getForensicSystems(
+        forensicLimit,
+        customOffset !== undefined ? customOffset : forensicOffset
+      );
+      setForensicSystems(result.items);
+      setForensicTotal(result.total);
+    } catch (err) {
+      console.error("Failed to load forensic systems:", err);
+      setForensicError(err instanceof Error ? err.message : "Failed to load forensic systems");
+    } finally {
+      setForensicLoading(false);
+    }
+  };
+
+  // Handle delete forensic system
+  const handleDeleteForensicSystem = async (urn: string) => {
+    const confirmed = confirm(`Are you sure you want to delete this analyzed system?`);
+    if (!confirmed) return;
+
+    try {
+      await deleteForensicSystem(urn);
+      await loadForensicSystems();
+    } catch (err) {
+      console.error("Error deleting forensic system:", err);
+      alert("Failed to delete forensic system");
+    }
+  };
+
+  // Load forensic systems on mount and when pagination changes
+  useEffect(() => {
+    loadForensicSystems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [forensicOffset]);
+
+  // Reload forensic systems after analysis completes
+  useEffect(() => {
+    if (!analyzing && results.size > 0) {
+      loadForensicSystems();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analyzing]);
 
   // Selection handlers
   const handleSelectAll = () => {
@@ -684,6 +742,232 @@ export default function ForensicAgentPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Forensic Analyzed Systems Section */}
+      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-20">
+        <h3 className="text-xl font-semibold mb-4 flex items-center">
+          <span className="mr-2">🔬</span>
+          Analyzed Systems Database
+        </h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          AI systems that have been analyzed and persisted for compliance tracking.
+        </p>
+
+        {forensicError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <p className="font-semibold">Error loading analyzed systems</p>
+            <p className="text-sm">{forensicError}</p>
+          </div>
+        )}
+
+        {forensicLoading ? (
+          <p className="text-gray-500 dark:text-gray-400">Loading analyzed systems...</p>
+        ) : forensicSystems.length === 0 ? (
+          <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-6 text-center">
+            <p className="text-gray-600 dark:text-gray-400">No analyzed systems yet.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+              Select incidents above and run forensic analysis to populate this database.
+            </p>
+          </div>
+        ) : (
+          <div>
+            <table className="min-w-full border dark:border-gray-700 mb-4 table-fixed">
+              <thead>
+                <tr className="bg-purple-100 dark:bg-purple-900">
+                  <th className="p-2 text-left w-[25%]">System Name</th>
+                  <th className="p-2 text-left w-[15%]">Organization</th>
+                  <th className="p-2 text-left w-[12%]">Risk Level</th>
+                  <th className="p-2 text-left w-[12%]">Compliance</th>
+                  <th className="p-2 text-left w-[12%]">Source</th>
+                  <th className="p-2 text-left w-[12%]">Date</th>
+                  <th className="p-2 text-left w-[12%]">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {forensicSystems.map((fs) => (
+                  <tr key={fs.urn} className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="p-2">
+                      <div className="truncate font-medium" title={fs.hasName}>{fs.hasName}</div>
+                      {fs.aiaaic_id && (
+                        <span className="text-xs text-purple-600 dark:text-purple-400">{fs.aiaaic_id}</span>
+                      )}
+                    </td>
+                    <td className="p-2 truncate" title={fs.hasOrganization}>{fs.hasOrganization}</td>
+                    <td className="p-2">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        fs.hasRiskLevel.includes("High") ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
+                        fs.hasRiskLevel.includes("Limited") ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" :
+                        fs.hasRiskLevel.includes("Minimal") ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" :
+                        "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                      }`}>
+                        {fs.hasRiskLevel.replace("ai:", "")}
+                      </span>
+                    </td>
+                    <td className="p-2">
+                      <div className="flex items-center">
+                        <div className="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2 mr-2">
+                          <div
+                            className={`h-2 rounded-full ${
+                              fs.complianceRatio >= 0.7 ? "bg-green-500" :
+                              fs.complianceRatio >= 0.4 ? "bg-yellow-500" : "bg-red-500"
+                            }`}
+                            style={{ width: `${Math.round(fs.complianceRatio * 100)}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs">{Math.round(fs.complianceRatio * 100)}%</span>
+                      </div>
+                    </td>
+                    <td className="p-2 text-sm truncate" title={fs.source}>{fs.source}</td>
+                    <td className="p-2 text-sm">
+                      {new Date(fs.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-2 space-x-2">
+                      <button
+                        onClick={() => setSelectedForensicSystem(fs)}
+                        className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleDeleteForensicSystem(fs.urn)}
+                        className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Forensic Pagination */}
+            <div className="flex justify-between items-center">
+              <button
+                disabled={forensicOffset === 0}
+                onClick={() => setForensicOffset((o) => Math.max(o - forensicLimit, 0))}
+                className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span>
+                Showing {forensicOffset + 1} to {Math.min(forensicOffset + forensicLimit, forensicTotal)} of {forensicTotal}
+              </span>
+              <button
+                disabled={forensicOffset + forensicLimit >= forensicTotal}
+                onClick={() => setForensicOffset((o) => o + forensicLimit)}
+                className="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Forensic System Detail Modal */}
+      {selectedForensicSystem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {selectedForensicSystem.hasName}
+                </h3>
+                <button
+                  onClick={() => setSelectedForensicSystem(null)}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+
+              {selectedForensicSystem.headline && (
+                <p className="text-gray-600 dark:text-gray-400 mb-4 italic">
+                  "{selectedForensicSystem.headline}"
+                </p>
+              )}
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Organization</p>
+                  <p className="font-medium">{selectedForensicSystem.hasOrganization}</p>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Risk Level</p>
+                  <p className="font-medium">{selectedForensicSystem.hasRiskLevel.replace("ai:", "")}</p>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Compliance Ratio</p>
+                  <p className="font-medium">{Math.round(selectedForensicSystem.complianceRatio * 100)}%</p>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Jurisdiction</p>
+                  <p className="font-medium">{selectedForensicSystem.jurisdiction}</p>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Source</p>
+                  <p className="font-medium">{selectedForensicSystem.source}</p>
+                </div>
+                {selectedForensicSystem.aiaaic_id && (
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">AIAAIC ID</p>
+                    <p className="font-medium">{selectedForensicSystem.aiaaic_id}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Incident Info */}
+              {selectedForensicSystem.incident && (
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2 text-red-600 dark:text-red-400">Incident Details</h4>
+                  <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Type</p>
+                      <p className="font-medium">{selectedForensicSystem.incident.type || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Severity</p>
+                      <p className="font-medium">{selectedForensicSystem.incident.severity || "N/A"}</p>
+                    </div>
+                    {selectedForensicSystem.incident.affectedPopulations?.length > 0 && (
+                      <div className="col-span-2">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Affected Populations</p>
+                        <p className="font-medium">{selectedForensicSystem.incident.affectedPopulations.join(", ")}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Compliance Gaps */}
+              {selectedForensicSystem.missingRequirements?.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2 text-orange-600 dark:text-orange-400">Missing Requirements ({selectedForensicSystem.missingRequirements.length})</h4>
+                  <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded">
+                    <ul className="list-disc list-inside space-y-1 text-sm">
+                      {selectedForensicSystem.missingRequirements.slice(0, 10).map((req, i) => (
+                        <li key={i}>{req}</li>
+                      ))}
+                      {selectedForensicSystem.missingRequirements.length > 10 && (
+                        <li className="text-gray-500">...and {selectedForensicSystem.missingRequirements.length - 10} more</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end space-x-4 pt-4 border-t dark:border-gray-700">
+                <button
+                  onClick={() => setSelectedForensicSystem(null)}
+                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

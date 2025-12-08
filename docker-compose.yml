@@ -71,7 +71,8 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      - ollama_data:/root/.ollama
+      # Bind mount local para persistir modelos fuera de docker-compose down -v
+      - ./ollama_models:/root/.ollama
     # Para GPU (descomentar si tienes GPU NVIDIA):
     # deploy:
     #   resources:
@@ -159,4 +160,3 @@ volumes:
   fuseki_data:
   mongo_data:
   frontend_node_modules:
-  ollama_data:
