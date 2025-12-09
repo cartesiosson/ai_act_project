@@ -833,15 +833,14 @@ export default function ForensicAgentPage() {
           </div>
         ) : (
           <div>
-            <table className="min-w-full border dark:border-gray-700 mb-4 table-fixed">
+            <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-4">
+            <table className="min-w-full table-fixed">
               <thead>
                 <tr className="bg-purple-100 dark:bg-purple-900">
-                  <th className="p-2 text-left w-[28%]">System Name</th>
-                  <th className="p-2 text-left w-[18%]">Organization</th>
-                  <th className="p-2 text-left w-[14%]">Risk Level</th>
-                  <th className="p-2 text-left w-[14%]">Source</th>
-                  <th className="p-2 text-left w-[12%]">Date</th>
-                  <th className="p-2 text-left w-[14%]">Actions</th>
+                  <th className="p-2 text-left w-[40%]">System Name</th>
+                  <th className="p-2 text-left w-[25%]">Organization</th>
+                  <th className="p-2 text-left w-[18%]">Risk Level</th>
+                  <th className="p-2 text-left w-[17%]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -853,7 +852,7 @@ export default function ForensicAgentPage() {
                         <span className="text-xs text-purple-600 dark:text-purple-400">{fs.aiaaic_id}</span>
                       )}
                     </td>
-                    <td className="p-2 truncate" title={fs.hasOrganization}>{fs.hasOrganization}</td>
+                    <td className="p-2 truncate" title={fs.hasOrganization}>{fs.hasOrganization || "-"}</td>
                     <td className="p-2">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
                         fs.hasRiskLevel.includes("High") ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
@@ -863,10 +862,6 @@ export default function ForensicAgentPage() {
                       }`}>
                         {fs.hasRiskLevel.replace("ai:", "")}
                       </span>
-                    </td>
-                    <td className="p-2 text-sm truncate" title={fs.source}>{fs.source}</td>
-                    <td className="p-2 text-sm">
-                      {new Date(fs.createdAt).toLocaleDateString()}
                     </td>
                     <td className="p-2 whitespace-nowrap">
                       <button
@@ -886,6 +881,7 @@ export default function ForensicAgentPage() {
                 ))}
               </tbody>
             </table>
+            </div>
 
             {/* Forensic Pagination */}
             <div className="flex justify-between items-center">
