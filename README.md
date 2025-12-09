@@ -31,7 +31,7 @@ Este proyecto ha sido desarrollado como **Trabajo Fin de Máster** del programa 
 
 | Rol | Nombre |
 |-----|--------|
-| **Autores** | David Fernández González, Mariano Ortega de Mues |
+| **Autores** | David Fernández González, Dr. Mariano Ortega de Mues |
 | **Directora** | Dra. Xiomara Patricia Blanco Valencia |
 | **Co-Director** | Dr. Sergio Castillo |
 
