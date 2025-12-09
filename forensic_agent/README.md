@@ -567,6 +567,19 @@ pytest tests/ -v --cov=app --cov-report=html
 
 ---
 
+## Agradecimientos
+
+Este proyecto utiliza datos del **AI, Algorithmic, and Automation Incidents and Controversies (AIAAIC) Repository**, una base de datos independiente y de acceso abierto que documenta incidentes relacionados con sistemas de IA a nivel mundial.
+
+Agradecemos a **Charlie Pownall** y al equipo de AIAAIC por su trabajo en la recopilación y mantenimiento de este recurso invaluable para la investigación y el análisis de incidentes de IA.
+
+- **AIAAIC Repository:** https://www.aiaaic.org/aiaaic-repository
+- **GitHub:** https://github.com/AIAAIC/AIAAIC-Repository
+
+Este proyecto ha sido desarrollado con la asistencia de **Claude Sonnet** (Anthropic), utilizado como herramienta de desarrollo para la generación de código, documentación y diseño de arquitectura.
+
+---
+
 ## License
 
 Part of the SERAMIS project - EU AI Act Unified Ontology.
