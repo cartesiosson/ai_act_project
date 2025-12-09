@@ -1,0 +1,287 @@
+# Third-Party Licenses
+
+This document lists the open source licenses for all third-party dependencies used in the SERAMIS project.
+
+---
+
+## Project License
+
+**SERAMIS** (Semantic Reasoning and AI Management Intelligent System) ha sido desarrollado como Trabajo Fin de Máster en el programa de **Máster en Inteligencia Artificial** de la **Universidad Internacional de La Rioja (UNIR)**.
+
+La ontología y los recursos semánticos están licenciados bajo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+
+El código fuente está disponible bajo los términos definidos por UNIR para Trabajos Fin de Máster, cumpliendo con la normativa de propiedad intelectual de la universidad.
+
+---
+
+## Python Dependencies
+
+### FastAPI
+- **License:** MIT
+- **URL:** https://github.com/tiangolo/fastapi
+- **Copyright:** © 2018 Sebastián Ramírez
+
+### Uvicorn
+- **License:** BSD-3-Clause
+- **URL:** https://github.com/encode/uvicorn
+- **Copyright:** © Encode OSS Ltd
+
+### Pydantic
+- **License:** MIT
+- **URL:** https://github.com/pydantic/pydantic
+- **Copyright:** © 2017-present Pydantic Services Inc.
+
+### Motor (Async MongoDB Driver)
+- **License:** Apache-2.0
+- **URL:** https://github.com/mongodb/motor
+- **Copyright:** © MongoDB, Inc.
+
+### PyMongo
+- **License:** Apache-2.0
+- **URL:** https://github.com/mongodb/mongo-python-driver
+- **Copyright:** © MongoDB, Inc.
+
+### RDFLib
+- **License:** BSD-3-Clause
+- **URL:** https://github.com/RDFLib/rdflib
+- **Copyright:** © Daniel Krech and RDFLib Team
+
+### HTTPX
+- **License:** BSD-3-Clause
+- **URL:** https://github.com/encode/httpx
+- **Copyright:** © Encode OSS Ltd
+
+### AIOHTTP
+- **License:** Apache-2.0
+- **URL:** https://github.com/aio-libs/aiohttp
+- **Copyright:** © aio-libs contributors
+
+### Anthropic Python SDK
+- **License:** MIT
+- **URL:** https://github.com/anthropics/anthropic-sdk-python
+- **Copyright:** © Anthropic
+
+### FastMCP
+- **License:** MIT
+- **URL:** https://github.com/jlowin/fastmcp
+- **Copyright:** © Jeremiah Lowin
+
+### Owlready2
+- **License:** LGPL-3.0
+- **URL:** https://bitbucket.org/jibalamy/owlready2
+- **Copyright:** © Jean-Baptiste Lamy
+
+### pySHACL
+- **License:** Apache-2.0
+- **URL:** https://github.com/RDFLib/pySHACL
+- **Copyright:** © RDFLib Team
+
+### PyLD (JSON-LD)
+- **License:** BSD-3-Clause
+- **URL:** https://github.com/digitalbazaar/pyld
+- **Copyright:** © Digital Bazaar, Inc.
+
+### JPype1
+- **License:** Apache-2.0
+- **URL:** https://github.com/jpype-project/jpype
+- **Copyright:** © JPype Project
+
+### python-dateutil
+- **License:** BSD-3-Clause / Apache-2.0
+- **URL:** https://github.com/dateutil/dateutil
+- **Copyright:** © dateutil contributors
+
+### python-dotenv
+- **License:** BSD-3-Clause
+- **URL:** https://github.com/theskumar/python-dotenv
+- **Copyright:** © Saurabh Kumar
+
+### Requests
+- **License:** Apache-2.0
+- **URL:** https://github.com/psf/requests
+- **Copyright:** © Kenneth Reitz
+
+### Pytest
+- **License:** MIT
+- **URL:** https://github.com/pytest-dev/pytest
+- **Copyright:** © Holger Krekel and pytest-dev team
+
+### pytest-asyncio
+- **License:** Apache-2.0
+- **URL:** https://github.com/pytest-dev/pytest-asyncio
+- **Copyright:** © Tin Tvrtković
+
+### pytest-cov
+- **License:** MIT
+- **URL:** https://github.com/pytest-dev/pytest-cov
+- **Copyright:** © Marc Schlaich
+
+### pytest-mock
+- **License:** MIT
+- **URL:** https://github.com/pytest-dev/pytest-mock
+- **Copyright:** © Bruno Oliveira
+
+---
+
+## JavaScript/TypeScript Dependencies
+
+### React
+- **License:** MIT
+- **URL:** https://github.com/facebook/react
+- **Copyright:** © Meta Platforms, Inc.
+
+### React DOM
+- **License:** MIT
+- **URL:** https://github.com/facebook/react
+- **Copyright:** © Meta Platforms, Inc.
+
+### React Router DOM
+- **License:** MIT
+- **URL:** https://github.com/remix-run/react-router
+- **Copyright:** © Remix Software Inc.
+
+### Vite
+- **License:** MIT
+- **URL:** https://github.com/vitejs/vite
+- **Copyright:** © Evan You
+
+### TypeScript
+- **License:** Apache-2.0
+- **URL:** https://github.com/microsoft/TypeScript
+- **Copyright:** © Microsoft Corporation
+
+### Tailwind CSS
+- **License:** MIT
+- **URL:** https://github.com/tailwindlabs/tailwindcss
+- **Copyright:** © Tailwind Labs, Inc.
+
+### PostCSS
+- **License:** MIT
+- **URL:** https://github.com/postcss/postcss
+- **Copyright:** © Andrey Sitnik
+
+### Autoprefixer
+- **License:** MIT
+- **URL:** https://github.com/postcss/autoprefixer
+- **Copyright:** © Andrey Sitnik
+
+### D3.js
+- **License:** ISC
+- **URL:** https://github.com/d3/d3
+- **Copyright:** © Mike Bostock
+
+### Three.js
+- **License:** MIT
+- **URL:** https://github.com/mrdoob/three.js
+- **Copyright:** © three.js authors
+
+### react-force-graph-3d
+- **License:** MIT
+- **URL:** https://github.com/vasturiano/react-force-graph
+- **Copyright:** © Vasco Asturiano
+
+### vis-network
+- **License:** MIT / Apache-2.0
+- **URL:** https://github.com/visjs/vis-network
+- **Copyright:** © vis.js contributors
+
+### N3.js
+- **License:** MIT
+- **URL:** https://github.com/rdfjs/N3.js
+- **Copyright:** © Ruben Verborgh
+
+### rdflib.js
+- **License:** MIT
+- **URL:** https://github.com/linkeddata/rdflib.js
+- **Copyright:** © Tim Berners-Lee and contributors
+
+### React Markdown
+- **License:** MIT
+- **URL:** https://github.com/remarkjs/react-markdown
+- **Copyright:** © Espen Hovlandsdal
+
+### html2pdf.js
+- **License:** MIT
+- **URL:** https://github.com/eKoopmans/html2pdf.js
+- **Copyright:** © Erik Koopmans
+
+### ESLint
+- **License:** MIT
+- **URL:** https://github.com/eslint/eslint
+- **Copyright:** © OpenJS Foundation
+
+---
+
+## Infrastructure & Services
+
+### Apache Jena Fuseki
+- **License:** Apache-2.0
+- **URL:** https://jena.apache.org/
+- **Copyright:** © The Apache Software Foundation
+
+### MongoDB
+- **License:** SSPL (Server Side Public License)
+- **URL:** https://www.mongodb.com/
+- **Copyright:** © MongoDB, Inc.
+- **Note:** Used as database service via official Docker image
+
+### Ollama
+- **License:** MIT
+- **URL:** https://github.com/ollama/ollama
+- **Copyright:** © Ollama
+
+### Docker
+- **License:** Apache-2.0
+- **URL:** https://www.docker.com/
+- **Copyright:** © Docker, Inc.
+
+---
+
+## Data Sources
+
+### AIAAIC Repository
+- **License:** Open access database
+- **URL:** https://www.aiaaic.org/aiaaic-repository
+- **Copyright:** © Charlie Pownall and AIAAIC Team
+- **Note:** Used for incident data in forensic analysis
+
+---
+
+## Fonts & Icons
+
+### Heroicons (via Tailwind)
+- **License:** MIT
+- **URL:** https://heroicons.com/
+- **Copyright:** © Tailwind Labs, Inc.
+
+---
+
+## Summary of Licenses
+
+| License Type | Count |
+|--------------|-------|
+| MIT | 28 |
+| Apache-2.0 | 10 |
+| BSD-3-Clause | 7 |
+| ISC | 1 |
+| LGPL-3.0 | 1 |
+| SSPL | 1 |
+
+---
+
+## Full License Texts
+
+The full text of each license can be found at:
+
+- **MIT:** https://opensource.org/licenses/MIT
+- **Apache-2.0:** https://www.apache.org/licenses/LICENSE-2.0
+- **BSD-3-Clause:** https://opensource.org/licenses/BSD-3-Clause
+- **ISC:** https://opensource.org/licenses/ISC
+- **LGPL-3.0:** https://www.gnu.org/licenses/lgpl-3.0.html
+- **SSPL:** https://www.mongodb.com/licensing/server-side-public-license
+- **CC BY 4.0:** https://creativecommons.org/licenses/by/4.0/
+
+---
+
+**Last Updated:** December 2025
+**SERAMIS Version:** 1.0.0

@@ -31,13 +31,15 @@ Este proyecto ha sido desarrollado como **Trabajo Fin de Máster** del programa 
 
 | Rol | Nombre |
 |-----|--------|
-| **Autores** | David Fernández González, Mariano Ortega de Mues |
+| **Autores** | David Fernández González, Dr. Mariano Ortega de Mues |
 | **Directora** | Dra. Xiomara Patricia Blanco Valencia |
 | **Co-Director** | Dr. Sergio Castillo |
 
 ### Agradecimientos
 
-Este software fue parcialmente desarrollado empleando **Claude Sonnet 4.5** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
+Este proyecto utiliza datos del **[AIAAIC Repository](https://www.aiaaic.org/aiaaic-repository)** (AI, Algorithmic, and Automation Incidents and Controversies), una base de datos independiente que documenta incidentes de IA a nivel mundial. Agradecemos a **Charlie Pownall** y al equipo de AIAAIC por este recurso invaluable.
+
+Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
 
 ---
 
