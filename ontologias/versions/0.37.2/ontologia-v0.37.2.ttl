@@ -1787,12 +1787,78 @@ ai:DueProcess rdfs:seeAlso airo:ProcessFairness ;
 ai:PrivacyProtection rdfs:seeAlso airo:Privacy ;
     rdfs:comment "Privacy requirements aligned in both frameworks."@en .
 
+# ===== AIRO STAKEHOLDER OBJECT PROPERTIES =====
+# These properties link AI systems to AIRO stakeholder classes
+# Enables responsibility traceability per EU AI Act Articles 3.3-3.4
+
+# Provider (Art. 3.3) - places AI system on the market
+ai:hasProvider a owl:ObjectProperty ;
+    rdfs:label "has provider"@en, "tiene proveedor"@es ;
+    rdfs:comment "Links an AI system to its provider (Art. 3.3 EU AI Act). Uses airo:AIProvider."@en,
+        "Vincula un sistema de IA con su proveedor (Art. 3.3 EU AI Act). Usa airo:AIProvider."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIProvider .
+
+# Deployer (Art. 3.4) - uses AI system under their authority
+ai:hasDeployer a owl:ObjectProperty ;
+    rdfs:label "has deployer"@en, "tiene desplegador"@es ;
+    rdfs:comment "Links an AI system to its deployer (Art. 3.4 EU AI Act). Uses airo:AIDeployer."@en,
+        "Vincula un sistema de IA con su desplegador (Art. 3.4 EU AI Act). Usa airo:AIDeployer."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIDeployer .
+
+# User - natural person interacting with the AI system
+ai:hasUser a owl:ObjectProperty ;
+    rdfs:label "has user"@en, "tiene usuario"@es ;
+    rdfs:comment "Links an AI system to its users. Uses airo:AIUser."@en,
+        "Vincula un sistema de IA con sus usuarios. Usa airo:AIUser."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIUser .
+
+# Subject (Art. 86) - person subject to AI system decisions
+ai:hasSubject a owl:ObjectProperty ;
+    rdfs:label "has subject"@en, "tiene sujeto"@es ;
+    rdfs:comment "Links an AI system to affected subjects (Art. 86 EU AI Act). Uses airo:AISubject."@en,
+        "Vincula un sistema de IA con los sujetos afectados (Art. 86 EU AI Act). Usa airo:AISubject."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AISubject .
+
+# Developer - organization that develops AI components
+ai:hasDeveloper a owl:ObjectProperty ;
+    rdfs:label "has developer"@en, "tiene desarrollador"@es ;
+    rdfs:comment "Links an AI system to its developer organization. Uses airo:AIDeveloper."@en,
+        "Vincula un sistema de IA con su organización desarrolladora. Usa airo:AIDeveloper."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIDeveloper .
+
+# Oversight Body - regulatory authority
+ai:hasOversightBody a owl:ObjectProperty ;
+    rdfs:label "has oversight body"@en, "tiene organismo de supervisión"@es ;
+    rdfs:comment "Links an AI system to its regulatory oversight body. Uses airo:Regulator."@en,
+        "Vincula un sistema de IA con su organismo de supervisión regulatorio. Usa airo:Regulator."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:Regulator .
+
+# ===== AIRO Stakeholder Class Annotations =====
+# Add EU AI Act article references to AIRO classes when used in this context
+
+airo:AIProvider rdfs:comment "Provider per Art. 3.3 EU AI Act: natural/legal person that develops an AI system or GPAI model, or has an AI system or GPAI model developed, and places it on the market or puts it into service under their own name or trademark."@en,
+    "Proveedor según Art. 3.3 EU AI Act: persona física/jurídica que desarrolla un sistema de IA o modelo GPAI, o lo hace desarrollar, y lo comercializa o pone en servicio bajo su nombre o marca."@es .
+
+airo:AIDeployer rdfs:comment "Deployer per Art. 3.4 EU AI Act: natural/legal person using an AI system under their authority, except where the system is used in the course of a personal non-professional activity."@en,
+    "Desplegador según Art. 3.4 EU AI Act: persona física/jurídica que utiliza un sistema de IA bajo su autoridad, excepto cuando se utiliza en el curso de una actividad personal no profesional."@es .
+
+airo:AISubject rdfs:comment "Subject per Art. 86 EU AI Act: natural person subject to an AI system, who has the right to obtain clear and meaningful explanations of the role of the AI system in the decision-making procedure."@en,
+    "Sujeto según Art. 86 EU AI Act: persona física sujeta a un sistema de IA, que tiene derecho a obtener explicaciones claras y significativas del papel del sistema de IA en el procedimiento de toma de decisiones."@es .
+
 # ===== AIRO MAPPING STATISTICS =====
 # Total mapped concepts: 30+
 # Equivalent classes (owl:equivalentClass): 10
 # SubClass relationships (rdfs:subClassOf): 8
 # Related concepts (rdfs:seeAlso): 15+
+# Object properties using AIRO range: 6 (hasProvider, hasDeployer, hasUser, hasSubject, hasDeveloper, hasOversightBody)
 # Coverage: ~67% of main AI Act concepts
+# AIRO Stakeholder classes used: airo:AIProvider, airo:AIDeployer, airo:AIUser, airo:AISubject, airo:AIDeveloper, airo:Regulator
 # Enables: Cross-ontology reasoning, semantic interoperability, SPARQL federation
 
 # ===== END OF UNIFIED ONTOLOGY v0.37.2 =====
