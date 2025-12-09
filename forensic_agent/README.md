@@ -55,6 +55,7 @@ flowchart TB
     subgraph Agent["Forensic Agent :8002"]
         IE[Incident Extractor<br/>LLM + Ollama]
         AE[Analysis Engine<br/>Multi-Framework]
+        MC[MCP Client<br/>SPARQL Tools]
         PS[Persistence Service<br/>MongoDB + Fuseki]
     end
 
@@ -63,14 +64,17 @@ flowchart TB
         FK[(Fuseki :3030<br/>RDF/SPARQL)]
     end
 
-    subgraph Services["Services"]
+    subgraph Services["External Services"]
         OL[Ollama :11434<br/>Llama 3.2]
+        MCP[MCP Server :8080<br/>FastMCP 2.0]
     end
 
     FA -->|POST /forensic/analyze| IE
     IE -->|Extract| OL
     IE --> AE
-    AE -->|SPARQL| FK
+    AE --> MC
+    MC -->|MCP Protocol| MCP
+    MCP -->|SPARQL| FK
     AE --> PS
     PS --> MG
     PS -->|RDF Triples| FK
@@ -86,6 +90,7 @@ flowchart TB
 | Componente | Puerto | Descripción |
 |------------|--------|-------------|
 | **Forensic Agent** | 8002 | API REST FastAPI |
+| **MCP Server** | 8080 | Model Context Protocol (SPARQL tools) |
 | **Ollama** | 11434 | Runtime LLM local |
 | **MongoDB** | 27017 | Persistencia de documentos |
 | **Fuseki** | 3030 | Almacenamiento RDF/SPARQL |
@@ -103,7 +108,8 @@ sequenceDiagram
     participant IE as IncidentExtractor
     participant LLM as Ollama/Llama3.2
     participant AE as AnalysisEngine
-    participant FK as Fuseki SPARQL
+    participant MCP as MCP Server :8080
+    participant FK as Fuseki :3030
     participant PS as Persistence
     participant MG as MongoDB
 
@@ -118,16 +124,20 @@ sequenceDiagram
     API->>AE: analyze(extraction)
 
     par EU AI Act Analysis
-        AE->>FK: SPARQL: criterios por propósito
-        FK-->>AE: Criterios activados
-        AE->>FK: SPARQL: requisitos por criterios
-        FK-->>AE: Requisitos obligatorios
+        AE->>MCP: call_tool(query_ontology)
+        MCP->>FK: SPARQL: criterios por propósito
+        FK-->>MCP: Criterios activados
+        MCP-->>AE: Results
     and ISO 42001 Analysis
-        AE->>FK: SPARQL: mappings ISO 42001
-        FK-->>AE: 15 controles mapeados
+        AE->>MCP: call_tool(query_iso_mappings)
+        MCP->>FK: SPARQL: mappings ISO 42001
+        FK-->>MCP: 15 controles mapeados
+        MCP-->>AE: Results
     and NIST AI RMF Analysis
-        AE->>FK: SPARQL: mappings NIST
-        FK-->>AE: 18 funciones mapeadas
+        AE->>MCP: call_tool(query_nist_mappings)
+        MCP->>FK: SPARQL: mappings NIST
+        FK-->>MCP: 18 funciones mapeadas
+        MCP-->>AE: Results
     end
 
     AE->>AE: Calcular gaps de compliance
@@ -180,17 +190,19 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant AE as AnalysisEngine
-    participant FK as Fuseki
+    participant MCP as MCP Server :8080
+    participant FK as Fuseki :3030
     participant CL as Classifier
 
-    AE->>FK: Query: propósitos del sistema
-    FK-->>AE: [BiometricIdentification, ...]
+    AE->>MCP: call_tool(determine_risk_level)
+    MCP->>FK: SPARQL: propósitos del sistema
+    FK-->>MCP: [BiometricIdentification, ...]
+    MCP-->>AE: purposes
 
-    AE->>FK: Query: contextos de despliegue
-    FK-->>AE: [LawEnforcement, PublicSpaces, ...]
-
-    AE->>FK: Query: tipos de datos procesados
-    FK-->>AE: [BiometricData, PersonalData, ...]
+    AE->>MCP: call_tool(query_ontology)
+    MCP->>FK: SPARQL: contextos de despliegue
+    FK-->>MCP: [LawEnforcement, PublicSpaces, ...]
+    MCP-->>AE: contexts
 
     AE->>CL: classify(purposes, contexts, data_types)
 
@@ -207,8 +219,10 @@ sequenceDiagram
         CL-->>AE: MinimalRisk
     end
 
-    AE->>FK: Query: requisitos por nivel de riesgo
-    FK-->>AE: Requisitos obligatorios
+    AE->>MCP: call_tool(get_requirements_for_system)
+    MCP->>FK: SPARQL: requisitos por nivel
+    FK-->>MCP: Requisitos obligatorios
+    MCP-->>AE: requirements[]
 ```
 
 ### Flujo de Persistencia Dual
