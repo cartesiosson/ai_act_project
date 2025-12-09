@@ -103,8 +103,10 @@ Extract the following information in JSON format:
     "model_scale": "FoundationModel|Large|Medium|Small",
     "parameter_count": "if mentioned, otherwise null",
     "training_data_description": "if mentioned, otherwise null",
-    "organization": "Company/Organization name",
-    "jurisdiction": "EU|US|Global|Other"
+    "organization": "Company/Organization name (legacy field - also fill deployer/developer if known)",
+    "jurisdiction": "EU|US|Global|Other",
+    "deployer": "Entity that deploys/operates the AI system (Art. 3.4 EU AI Act) - may differ from developer",
+    "developer": "Entity that developed/created the AI system - may differ from deployer"
   }},
   "incident": {{
     "incident_type": "discrimination|bias|safety_failure|privacy_violation|transparency_failure|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|other",
@@ -170,6 +172,16 @@ IMPORTANT EXTRACTION RULES:
   * high: significant harm to many people
   * medium: moderate harm or limited scope
   * low: minimal harm or quickly resolved
+- For deployer/developer (AIRO stakeholder alignment):
+  * deployer: The entity that uses/operates the AI system under their authority (Art. 3.4 EU AI Act)
+    - Example: A bank using a credit scoring AI → deployer is the bank
+    - Example: A police department using facial recognition → deployer is the police department
+  * developer: The entity that created/built the AI system
+    - Example: OpenAI creates ChatGPT → developer is OpenAI
+    - Example: A bank uses a vendor's AI → developer is the vendor
+  * If the same entity both developed and deploys the system, set both to the same value
+  * These map to AIRO ontology: airo:AIDeployer and airo:AIDeveloper
+  * Use null only if truly unknown from the narrative
 
 Respond with ONLY valid JSON, no additional text or markdown formatting.
 """

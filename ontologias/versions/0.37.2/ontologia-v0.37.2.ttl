@@ -1735,20 +1735,79 @@ ai:MachineLearningAlgorithm rdfs:seeAlso airo:MachineLearning ;
 ai:KnowledgeBasedAlgorithm rdfs:seeAlso airo:KnowledgeBasedSystem ;
     rdfs:comment "Knowledge-based approaches in AIRO."@en .
 
-# ===== Actor/Stakeholder Mappings =====
+# ===== AIRO STAKEHOLDER HIERARCHY (Imported) =====
+# Using AIRO stakeholder classes directly for interoperability
+# Reference: https://w3id.org/airo# (Golpayegani et al., 2022)
+# EU AI Act roles map to AIRO stakeholder hierarchy
+
+# Core stakeholder class - all AI Act actors are AIRO stakeholders
 ai:Actor owl:equivalentClass airo:Stakeholder ;
-    rdfs:seeAlso airo:Stakeholder ;
     rdfs:comment "AI Act actors correspond to AIRO stakeholders."@en,
         "Los actores del AI Act corresponden a stakeholders de AIRO."@es .
 
-ai:Provider rdfs:seeAlso airo:Provider ;
-    rdfs:comment "Provider role in both frameworks."@en .
+# === AI Operators (Art. 3) - Using AIRO hierarchy ===
 
-ai:Deployer rdfs:seeAlso airo:Deployer ;
-    rdfs:comment "Deployer role aligned in frameworks."@en .
+# Provider (Art. 3.3) - develops or places AI system on market
+ai:hasProvider a owl:ObjectProperty ;
+    rdfs:label "has provider"@en, "tiene proveedor"@es ;
+    rdfs:comment "Links an AI system to its provider (Art. 3.3 EU AI Act). Uses airo:AIProvider."@en,
+        "Vincula un sistema de IA con su proveedor (Art. 3.3 EU AI Act). Usa airo:AIProvider."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIProvider .
 
-ai:OversightBody rdfs:seeAlso airo:Regulator ;
-    rdfs:comment "Regulatory oversight bodies in AIRO."@en .
+# Deployer (Art. 3.4) - uses AI system under their authority
+ai:hasDeployer a owl:ObjectProperty ;
+    rdfs:label "has deployer"@en, "tiene desplegador"@es ;
+    rdfs:comment "Links an AI system to its deployer (Art. 3.4 EU AI Act). Uses airo:AIDeployer."@en,
+        "Vincula un sistema de IA con su desplegador (Art. 3.4 EU AI Act). Usa airo:AIDeployer."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIDeployer .
+
+# === Other Stakeholders ===
+
+# User - person interacting with AI system
+ai:hasUser a owl:ObjectProperty ;
+    rdfs:label "has user"@en, "tiene usuario"@es ;
+    rdfs:comment "Links an AI system to its users. Uses airo:AIUser."@en,
+        "Vincula un sistema de IA con sus usuarios. Usa airo:AIUser."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIUser .
+
+# Subject - person affected by AI system decisions
+ai:hasSubject a owl:ObjectProperty ;
+    rdfs:label "has subject"@en, "tiene sujeto"@es ;
+    rdfs:comment "Links an AI system to affected subjects (Art. 86 EU AI Act). Uses airo:AISubject."@en,
+        "Vincula un sistema de IA con sujetos afectados (Art. 86 EU AI Act). Usa airo:AISubject."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AISubject .
+
+# Developer - organization that develops AI components
+ai:hasDeveloper a owl:ObjectProperty ;
+    rdfs:label "has developer"@en, "tiene desarrollador"@es ;
+    rdfs:comment "Links an AI system to its developer organization. Uses airo:AIDeveloper."@en,
+        "Vincula un sistema de IA con su organización desarrolladora. Usa airo:AIDeveloper."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIDeveloper .
+
+# Regulator/Oversight - market surveillance authorities
+ai:hasOversightBody a owl:ObjectProperty ;
+    rdfs:label "has oversight body"@en, "tiene organismo de supervisión"@es ;
+    rdfs:comment "Links an AI system to its oversight/regulatory body (Art. 70 EU AI Act)."@en,
+        "Vincula un sistema de IA con su organismo de supervisión (Art. 70 EU AI Act)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:Regulator .
+
+# === AIRO Stakeholder Annotations for EU AI Act Compliance ===
+# These annotations clarify EU AI Act obligations per stakeholder type
+
+airo:AIProvider rdfs:comment "Provider per Art. 3.3 EU AI Act: natural/legal person who develops an AI system or GPAI model, or has one developed, and places it on the market or puts it into service under their own name/trademark."@en,
+    "Proveedor según Art. 3.3 EU AI Act: persona física/jurídica que desarrolla un sistema de IA o modelo GPAI, o encarga su desarrollo, y lo comercializa o pone en servicio bajo su propio nombre/marca."@es .
+
+airo:AIDeployer rdfs:comment "Deployer per Art. 3.4 EU AI Act: natural/legal person using an AI system under their authority, except where the system is used in the course of a personal non-professional activity."@en,
+    "Desplegador según Art. 3.4 EU AI Act: persona física/jurídica que utiliza un sistema de IA bajo su autoridad, excepto cuando el sistema se utiliza en el curso de una actividad personal no profesional."@es .
+
+airo:AISubject rdfs:comment "Affected person per Art. 86 EU AI Act: natural person subject to a decision made by a high-risk AI system who has the right to explanation."@en,
+    "Persona afectada según Art. 86 EU AI Act: persona física sujeta a una decisión tomada por un sistema de IA de alto riesgo que tiene derecho a explicación."@es .
 
 # ===== Deployment Context Mappings =====
 ai:DeploymentContext owl:equivalentClass airo:Context ;
@@ -1788,14 +1847,16 @@ ai:PrivacyProtection rdfs:seeAlso airo:Privacy ;
     rdfs:comment "Privacy requirements aligned in both frameworks."@en .
 
 # ===== AIRO MAPPING STATISTICS =====
-# Total mapped concepts: 30+
+# Total mapped concepts: 36+
 # Equivalent classes (owl:equivalentClass): 10
 # SubClass relationships (rdfs:subClassOf): 8
+# Object properties using AIRO range: 6 (hasProvider, hasDeployer, hasUser, hasSubject, hasDeveloper, hasOversightBody)
 # Related concepts (rdfs:seeAlso): 15+
-# Coverage: ~67% of main AI Act concepts
-# Enables: Cross-ontology reasoning, semantic interoperability, SPARQL federation
+# AIRO Stakeholder classes used: airo:AIProvider, airo:AIDeployer, airo:AIUser, airo:AISubject, airo:AIDeveloper, airo:Regulator
+# Coverage: ~75% of main AI Act concepts
+# Enables: Cross-ontology reasoning, semantic interoperability, SPARQL federation, stakeholder traceability
 
 # ===== END OF UNIFIED ONTOLOGY v0.37.2 =====
 # All concepts consolidated under ai: namespace
-# AIRO interoperability mappings fully integrated
-# Future modularization can occur in post-v0.37.2 versions
+# AIRO stakeholder hierarchy imported for interoperability (not redefined)
+# Reference: Golpayegani, D., Pandit, H.J., Lewis, D. (2022). AIRO: An Ontology for Representing AI Risks
