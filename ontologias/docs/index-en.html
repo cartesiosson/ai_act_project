@@ -17,7 +17,7 @@
 
 
 <!-- SCHEMA.ORG METADATA -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"http://ai-act.eu/ai-act","image":"http://vowl.visualdataweb.org/webvowl/#iri=http://ai-act.eu/ai-act","name":"AI Act Ontology", "headline":"Document describing the ontology http://ai-act.eu/ai-act", "dateReleased":"2025-06-22", "version":"Versión 0.36.0 publicada el 2025-06-22", "license":"https://creativecommons.org/licenses/by/4.0/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"http://ai-act.eu/ai-act","image":"http://vowl.visualdataweb.org/webvowl/#iri=http://ai-act.eu/ai-act","name":"AI Act Ontology", "headline":"Document describing the ontology http://ai-act.eu/ai-act", "dateReleased":"2025-11-22", "version":"Version 0.37.2 released on 2025-11-22", "license":"https://creativecommons.org/licenses/by/4.0/", "author":[{"@type":"Person","name":"David Fernández González"},{"@type":"Person","name":"Dr. Mariano Ortega de Mues"}]}</script>
 
 <script src="resources/jquery.js"></script> 
 <script src="resources/marked.min.js"></script> 
@@ -66,17 +66,18 @@ $(function(){
 <div class="head">
 <div style="float:right">language <a href="index-en.html"><b>en</b></a> <a href="index-es.html"><b>es</b></a> </div>
 <h1>AI Act Ontology</h1>
-<h2>Release: 2025-06-22</h2>
-
+<h2>Release: 2025-11-22</h2>
 
 <dl>
+<dt>Authors:</dt>
+<dd>David Fernández González, Dr. Mariano Ortega de Mues</dd>
 <dt>This version:</dt>
-<dd><a href="http://ai-act.eu/ai-act/0.36.0">http://ai-act.eu/ai-act/0.36.0</a></dd>
+<dd><a href="http://ai-act.eu/ai-act/0.37.2">http://ai-act.eu/ai-act/0.37.2</a></dd>
 <dt>Revision:</dt>
-<dd>Versión 0.36.0 publicada el 2025-06-22</dd>
+<dd>Version 0.37.2 released on 2025-11-22</dd>
 <dt>Download serialization:</dt><dd><span><a href="ontology.jsonld" target="_blank"><img src="https://img.shields.io/badge/Format-JSON_LD-blue.svg" alt="JSON-LD" /></a> </span><span><a href="ontology.owl" target="_blank"><img src="https://img.shields.io/badge/Format-RDF/XML-blue.svg" alt="RDF/XML" /></a> </span><span><a href="ontology.nt" target="_blank"><img src="https://img.shields.io/badge/Format-N_Triples-blue.svg" alt="N-Triples" /></a> </span><span><a href="ontology.ttl" target="_blank"><img src="https://img.shields.io/badge/Format-TTL-blue.svg" alt="TTL" /></a> </span></dd><dt>License:</dt><dd><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank"><img src="https://img.shields.io/badge/License-https://creativecommons.org/licenses/by/4.0/-blue.svg" alt="https://creativecommons.org/licenses/by/4.0/" /></a>
 </dd><dt>Evaluation:</dt><dd><a href="OOPSevaluation/oopsEval.html#" target="_blank"><img src="https://img.shields.io/badge/Evaluate_with-OOPS! (OntOlogy Pitfall Scanner!)-blue.svg" alt="Evaluate with OOPS!" /></a></dd><dt>Cite as:</dt>
-<dd> AI Act Ontology. Revision: Versión 0.36.0 publicada el 2025-06-22. Retrieved from: http://ai-act.eu/ai-act/0.36.0</dd>
+<dd>Fernández González, D., & Ortega de Mues, M. (2025). AI Act Ontology, Version 0.37.2. Retrieved from: http://ai-act.eu/ai-act/0.37.2</dd>
 </dl>
 
 <a href="provenance/provenance-en.html" target="_blank">Provenance of this page</a><hr/>
@@ -86,14 +87,61 @@ $(function(){
 <span>Ontology Specification Draft</span>
 </div>
 </div>     <div id="abstract"><h2>Abstract</h2><span class="markdown">
-This is a placeholder text for the abstract. The abstract should contain a couple of sentences summarizing the ontology and its purpose.</span>
+The **AI Act Ontology** provides a formal semantic model for representing concepts, relationships, and compliance requirements defined in the European Union's Artificial Intelligence Act (Regulation 2024/1689). This ontology enables automated classification of AI systems by risk level, mapping of regulatory obligations, and integration with forensic analysis tools for compliance assessment.
+
+Key features include:
+- **Risk-based classification** following EU AI Act Articles 5-7 and Annex III
+- **Stakeholder modeling** aligned with AIRO (AI Risk Ontology) for providers, deployers, users, and subjects
+- **Multi-framework mapping** to ISO/IEC 42001 and NIST AI RMF
+- **Purpose-driven criteria** linking system purposes to expected risk levels and compliance requirements
+
+The ontology serves as the semantic foundation for the SERAMIS platform, enabling structured analysis of AI incidents and regulatory compliance verification.</span>
 </div>
 <div id="toc"></div> 
 
 <!--INTRODUCTION SECTION-->
     <div id="introduction"><h2 id="intro" class="list">Introduction <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
 <span class="markdown">
-This is a place holder text for the introduction. The introduction should briefly describe the ontology, its motivation, state of the art and goals.</span>
+## Motivation
+
+The European Union's Artificial Intelligence Act (Regulation 2024/1689) establishes the world's first comprehensive legal framework for AI regulation. The complexity of its risk-based classification system, combined with the need for interoperability across multiple regulatory frameworks, creates a significant challenge for compliance verification and incident analysis.
+
+This ontology addresses these challenges by providing:
+1. **Formal semantics** for EU AI Act concepts, enabling machine-readable compliance rules
+2. **Interoperability** with existing ontologies (AIRO, VAIR) and standards (ISO/IEC 42001, NIST AI RMF)
+3. **Automated reasoning** capabilities for risk classification and requirement mapping
+
+## Scope
+
+The AI Act Ontology covers:
+- **AI System Classification**: Prohibited, high-risk, limited-risk, and minimal-risk categories per Articles 5-7
+- **Stakeholder Roles**: Providers, deployers, users, subjects, and oversight bodies as defined in Article 3
+- **Compliance Requirements**: Technical documentation, conformity assessment, post-market monitoring, and incident reporting
+- **Contextual Criteria**: Purpose-based and deployment-context triggers from Annex III
+- **Cross-framework Mappings**: Alignment with ISO/IEC 42001 clauses and NIST AI RMF functions
+
+## Design Principles
+
+The ontology follows W3C semantic web standards and best practices:
+- **OWL 2 DL** profile for decidable reasoning
+- **SKOS** alignment for hierarchical concept navigation
+- **Dublin Core** metadata standards
+- **Modular design** separating core concepts from domain-specific extensions
+
+## AIRO Integration
+
+This ontology integrates with the **AI Risk Ontology (AIRO)** developed at Universidad Politécnica de Madrid, specifically for stakeholder modeling. AIRO provides standardized classes for AI actors that align with EU AI Act definitions:
+
+| SERAMIS Property | AIRO Class | EU AI Act Reference |
+|------------------|------------|---------------------|
+| `ai:hasProvider` | `airo:AIProvider` | Art. 3.3 |
+| `ai:hasDeployer` | `airo:AIDeployer` | Art. 3.4 |
+| `ai:hasUser` | `airo:AIUser` | Art. 3.4 |
+| `ai:hasSubject` | `airo:AISubject` | Art. 86 |
+| `ai:hasDeveloper` | `airo:AIDeveloper` | - |
+| `ai:hasOversightBody` | `airo:OversightBody` | Art. 70 |
+
+</span>
 </div>
   
 
@@ -510,7 +558,59 @@ This ontology has the following classes and properties.</span>
 <!--DESCRIPTION SECTION-->
     <div id="description"><h2 id="desc" class="list">AI Act Ontology: Description <span class="backlink"> back to <a href="#toc">ToC</a></span></h2>
 
-<span class="markdown">Ai-act module of the AI Act ontology.</span></div>
+<span class="markdown">
+## Core Modules
+
+The AI Act Ontology is organized into the following conceptual modules:
+
+### 1. AI System Classification (`ai:IntelligentSystem`)
+The central class representing any AI system subject to EU AI Act regulation. Systems are classified according to:
+- **Risk Level** (`ai:hasRiskLevel`): Prohibited, High, Limited, or Minimal
+- **Purpose** (`ai:hasPurpose`): The intended use that triggers specific regulatory requirements
+- **Deployment Context** (`ai:hasDeploymentContext`): Environmental factors affecting classification
+
+### 2. Regulatory Criteria (`ai:Criterion`)
+Criteria from the EU AI Act that determine system classification:
+- **Purpose Criteria** (`ai:PurposeCriterion`): Based on Article 6 and Annex III high-risk categories
+- **Contextual Criteria** (`ai:ContextualCriterion`): Environment-based triggers (e.g., public spaces, critical infrastructure)
+
+### 3. Compliance Requirements (`ai:ComplianceRequirement`)
+Mandatory obligations mapped from EU AI Act chapters:
+- Technical documentation (Art. 11)
+- Data governance (Art. 10)
+- Human oversight (Art. 14)
+- Accuracy, robustness, cybersecurity (Art. 15)
+- Conformity assessment (Art. 43)
+- Post-market monitoring (Art. 72)
+- Incident reporting (Art. 73)
+
+### 4. Stakeholder Model (AIRO-aligned)
+Actors in the AI value chain as defined in Article 3:
+- `ai:hasProvider` - Entity placing AI on market (Art. 3.3)
+- `ai:hasDeployer` - Entity using AI under authority (Art. 3.4)
+- `ai:hasUser` - Natural person interacting with AI
+- `ai:hasSubject` - Person affected by AI decisions (Art. 86)
+- `ai:hasOversightBody` - Regulatory authorities (Art. 70)
+
+### 5. Cross-Framework Mappings
+Integration with international standards:
+- **ISO/IEC 42001**: AI Management System clauses
+- **NIST AI RMF**: Govern, Map, Measure, Manage functions
+
+## Namespace
+
+The ontology uses the namespace `http://ai-act.eu/ai#` with prefix `ai:`. All concepts are unified under this namespace for simplified querying and interoperability.
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 0.37.2 | 2025-11-22 | AIRO stakeholder integration, unified namespace |
+| 0.37.1 | 2025-11-20 | Multi-framework mappings (ISO 42001, NIST AI RMF) |
+| 0.37.0 | 2025-11-15 | Purpose-driven classification, criteria refinement |
+| 0.36.0 | 2025-06-22 | Initial Widoco documentation |
+
+</span></div>
    
 
 <!--CROSSREF SECTION-->

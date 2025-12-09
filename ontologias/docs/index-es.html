@@ -17,7 +17,7 @@
 
 
 <!-- SCHEMA.ORG METADATA -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"http://ai-act.eu/ai-act","image":"http://vowl.visualdataweb.org/webvowl/#iri=http://ai-act.eu/ai-act","name":"Ontología del AI Act", "headline":"Document describing the ontology http://ai-act.eu/ai-act", "dateReleased":"2025-06-22", "version":"Versión 0.36.0 publicada el 2025-06-22", "license":"https://creativecommons.org/licenses/by/4.0/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","url":"http://ai-act.eu/ai-act","image":"http://vowl.visualdataweb.org/webvowl/#iri=http://ai-act.eu/ai-act","name":"Ontología del AI Act", "headline":"Document describing the ontology http://ai-act.eu/ai-act", "dateReleased":"2025-11-22", "version":"Versión 0.37.2 publicada el 2025-11-22", "license":"https://creativecommons.org/licenses/by/4.0/", "author":[{"@type":"Person","name":"David Fernández González"},{"@type":"Person","name":"Dr. Mariano Ortega de Mues"}]}</script>
 
 <script src="resources/jquery.js"></script> 
 <script src="resources/marked.min.js"></script> 
@@ -66,17 +66,18 @@ $(function(){
 <div class="head">
 <div style="float:right">language <a href="index-en.html"><b>en</b></a> <a href="index-es.html"><b>es</b></a> </div>
 <h1>Ontología del AI Act</h1>
-<h2>Fecha de creaci&oacute;n: 2025-06-22</h2>
-
+<h2>Fecha de creaci&oacute;n: 2025-11-22</h2>
 
 <dl>
+<dt>Autores:</dt>
+<dd>David Fernández González, Dr. Mariano Ortega de Mues</dd>
 <dt>Versi&oacute;n:</dt>
-<dd><a href="http://ai-act.eu/ai-act/0.36.0">http://ai-act.eu/ai-act/0.36.0</a></dd>
+<dd><a href="http://ai-act.eu/ai-act/0.37.2">http://ai-act.eu/ai-act/0.37.2</a></dd>
 <dt>Revisi&oacute;n n&uacute;mero:</dt>
-<dd>Versión 0.36.0 publicada el 2025-06-22</dd>
+<dd>Versión 0.37.2 publicada el 2025-11-22</dd>
 <dt>Descargar serializaci&oacute;n:</dt><dd><span><a href="ontology.jsonld" target="_blank"><img src="https://img.shields.io/badge/Format-JSON_LD-blue.svg" alt="JSON-LD" /></a> </span><span><a href="ontology.owl" target="_blank"><img src="https://img.shields.io/badge/Format-RDF/XML-blue.svg" alt="RDF/XML" /></a> </span><span><a href="ontology.nt" target="_blank"><img src="https://img.shields.io/badge/Format-N_Triples-blue.svg" alt="N-Triples" /></a> </span><span><a href="ontology.ttl" target="_blank"><img src="https://img.shields.io/badge/Format-TTL-blue.svg" alt="TTL" /></a> </span></dd><dt>Licencia:</dt><dd><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank"><img src="https://img.shields.io/badge/License-https://creativecommons.org/licenses/by/4.0/-blue.svg" alt="https://creativecommons.org/licenses/by/4.0/" /></a>
 </dd><dt>Evaluation:</dt><dd><a href="OOPSevaluation/oopsEval.html#" target="_blank"><img src="https://img.shields.io/badge/Evaluate_with-OOPS! (OntOlogy Pitfall Scanner!)-blue.svg" alt="Evaluate with OOPS!" /></a></dd><dt>Citar como:</dt>
-<dd> Ontología del AI Act. Revision: Versión 0.36.0 publicada el 2025-06-22. Retrieved from: http://ai-act.eu/ai-act/0.36.0</dd>
+<dd>Fernández González, D., & Ortega de Mues, M. (2025). Ontología del AI Act, Versión 0.37.2. Recuperado de: http://ai-act.eu/ai-act/0.37.2</dd>
 </dl>
 
 <a href="provenance/provenance-es.html" target="_blank">Provenance de esta p&aacute;gina</a><hr/>
@@ -86,13 +87,61 @@ $(function(){
 <span>Ontology Specification Draft</span>
 </div>
 </div>     <div id="abstract"><h2>S&iacute;ntesis</h2><span class="markdown">
-Este es el lugar donde escribir un resumen de la ontolog&iacute;a. Un par de frases bastan para resumir su prop&oacute;sito.</span>
+La **Ontología del AI Act** proporciona un modelo semántico formal para representar los conceptos, relaciones y requisitos de cumplimiento definidos en el Reglamento de Inteligencia Artificial de la Unión Europea (Reglamento 2024/1689). Esta ontología permite la clasificación automatizada de sistemas de IA por nivel de riesgo, el mapeo de obligaciones regulatorias y la integración con herramientas de análisis forense para la verificación del cumplimiento.
+
+Características principales:
+- **Clasificación basada en riesgo** siguiendo los Artículos 5-7 y Anexo III del AI Act
+- **Modelado de stakeholders** alineado con AIRO (AI Risk Ontology) para proveedores, implementadores, usuarios y sujetos
+- **Mapeo multi-framework** a ISO/IEC 42001 y NIST AI RMF
+- **Criterios basados en propósito** vinculando propósitos de sistemas a niveles de riesgo esperados y requisitos de cumplimiento
+
+La ontología sirve como fundamento semántico para la plataforma SERAMIS, permitiendo el análisis estructurado de incidentes de IA y la verificación del cumplimiento normativo.</span>
 </div>
 <div id="toc"></div> 
 
 <!--INTRODUCTION SECTION-->
     <div id="introduction"><h2 id="intro" class="list">Introducci&oacute;n <span class="backlink"> volver a <a href="#toc">&iacute;ndice</a></span></h2>
-<span class="markdown">Este p&aacute;rrafo deber&iacute;a hablar sobre la ontolog&iacute;a, motivaci&oacute;n estado del arte y objetivos</span>
+<span class="markdown">
+## Motivación
+
+El Reglamento de Inteligencia Artificial de la Unión Europea (Reglamento 2024/1689) establece el primer marco legal integral del mundo para la regulación de la IA. La complejidad de su sistema de clasificación basado en riesgo, combinada con la necesidad de interoperabilidad entre múltiples marcos regulatorios, crea un desafío significativo para la verificación del cumplimiento y el análisis de incidentes.
+
+Esta ontología aborda estos desafíos proporcionando:
+1. **Semántica formal** para los conceptos del AI Act, permitiendo reglas de cumplimiento legibles por máquinas
+2. **Interoperabilidad** con ontologías existentes (AIRO, VAIR) y estándares (ISO/IEC 42001, NIST AI RMF)
+3. **Capacidades de razonamiento automatizado** para la clasificación de riesgo y el mapeo de requisitos
+
+## Alcance
+
+La Ontología del AI Act cubre:
+- **Clasificación de Sistemas de IA**: Categorías prohibidas, alto riesgo, riesgo limitado y riesgo mínimo según los Artículos 5-7
+- **Roles de Stakeholders**: Proveedores, implementadores, usuarios, sujetos y organismos de supervisión como se definen en el Artículo 3
+- **Requisitos de Cumplimiento**: Documentación técnica, evaluación de conformidad, vigilancia post-comercialización y notificación de incidentes
+- **Criterios Contextuales**: Activadores basados en propósito y contexto de despliegue del Anexo III
+- **Mapeos Multi-Framework**: Alineación con cláusulas ISO/IEC 42001 y funciones NIST AI RMF
+
+## Principios de Diseño
+
+La ontología sigue los estándares web semánticos W3C y mejores prácticas:
+- Perfil **OWL 2 DL** para razonamiento decidible
+- Alineación **SKOS** para navegación jerárquica de conceptos
+- Estándares de metadatos **Dublin Core**
+- **Diseño modular** separando conceptos centrales de extensiones específicas del dominio
+
+## Integración con AIRO
+
+Esta ontología se integra con la **AI Risk Ontology (AIRO)** desarrollada en la Universidad Politécnica de Madrid, específicamente para el modelado de stakeholders. AIRO proporciona clases estandarizadas para actores de IA que se alinean con las definiciones del AI Act:
+
+| Propiedad SERAMIS | Clase AIRO | Referencia AI Act |
+|-------------------|------------|-------------------|
+| `ai:hasProvider` | `airo:AIProvider` | Art. 3.3 |
+| `ai:hasDeployer` | `airo:AIDeployer` | Art. 3.4 |
+| `ai:hasUser` | `airo:AIUser` | Art. 3.4 |
+| `ai:hasSubject` | `airo:AISubject` | Art. 86 |
+| `ai:hasDeveloper` | `airo:AIDeveloper` | - |
+| `ai:hasOversightBody` | `airo:OversightBody` | Art. 70 |
+
+</span>
 </div>
   
 
@@ -508,7 +557,59 @@ Este es el lugar donde escribir un resumen de la ontolog&iacute;a. Un par de fra
 <!--DESCRIPTION SECTION-->
     <div id="description"><h2 id="desc" class="list">Ontología del AI Act: Descripci&oacute;n <span class="backlink"> volver a <a href="#toc">&iacute;ndice</a></span></h2>
 
-<span class="markdown">Ontología del módulo ai-act del AI Act.</span></div>
+<span class="markdown">
+## Módulos Principales
+
+La Ontología del AI Act está organizada en los siguientes módulos conceptuales:
+
+### 1. Clasificación de Sistemas de IA (`ai:IntelligentSystem`)
+La clase central que representa cualquier sistema de IA sujeto a la regulación del AI Act de la UE. Los sistemas se clasifican según:
+- **Nivel de Riesgo** (`ai:hasRiskLevel`): Prohibido, Alto, Limitado o Mínimo
+- **Propósito** (`ai:hasPurpose`): El uso previsto que activa requisitos regulatorios específicos
+- **Contexto de Despliegue** (`ai:hasDeploymentContext`): Factores ambientales que afectan la clasificación
+
+### 2. Criterios Regulatorios (`ai:Criterion`)
+Criterios del AI Act de la UE que determinan la clasificación del sistema:
+- **Criterios de Propósito** (`ai:PurposeCriterion`): Basados en el Artículo 6 y categorías de alto riesgo del Anexo III
+- **Criterios Contextuales** (`ai:ContextualCriterion`): Activadores basados en el entorno (ej. espacios públicos, infraestructura crítica)
+
+### 3. Requisitos de Cumplimiento (`ai:ComplianceRequirement`)
+Obligaciones mandatorias mapeadas de los capítulos del AI Act:
+- Documentación técnica (Art. 11)
+- Gobernanza de datos (Art. 10)
+- Supervisión humana (Art. 14)
+- Precisión, robustez, ciberseguridad (Art. 15)
+- Evaluación de conformidad (Art. 43)
+- Vigilancia post-comercialización (Art. 72)
+- Notificación de incidentes (Art. 73)
+
+### 4. Modelo de Stakeholders (alineado con AIRO)
+Actores en la cadena de valor de la IA según el Artículo 3:
+- `ai:hasProvider` - Entidad que pone la IA en el mercado (Art. 3.3)
+- `ai:hasDeployer` - Entidad que usa la IA bajo su autoridad (Art. 3.4)
+- `ai:hasUser` - Persona física que interactúa con la IA
+- `ai:hasSubject` - Persona afectada por decisiones de IA (Art. 86)
+- `ai:hasOversightBody` - Autoridades regulatorias (Art. 70)
+
+### 5. Mapeos Multi-Framework
+Integración con estándares internacionales:
+- **ISO/IEC 42001**: Cláusulas del Sistema de Gestión de IA
+- **NIST AI RMF**: Funciones Gobernar, Mapear, Medir, Gestionar
+
+## Espacio de Nombres
+
+La ontología usa el espacio de nombres `http://ai-act.eu/ai#` con prefijo `ai:`. Todos los conceptos están unificados bajo este espacio de nombres para simplificar consultas e interoperabilidad.
+
+## Historial de Versiones
+
+| Versión | Fecha | Cambios |
+|---------|-------|---------|
+| 0.37.2 | 2025-11-22 | Integración de stakeholders AIRO, espacio de nombres unificado |
+| 0.37.1 | 2025-11-20 | Mapeos multi-framework (ISO 42001, NIST AI RMF) |
+| 0.37.0 | 2025-11-15 | Clasificación basada en propósito, refinamiento de criterios |
+| 0.36.0 | 2025-06-22 | Documentación inicial Widoco |
+
+</span></div>
    
 
 <!--CROSSREF SECTION-->
