@@ -7,7 +7,7 @@
 <h3 align="center">Semantic Reasoning and AI Management Intelligent System</h3>
 
 <p align="center">
-  <strong>Plataforma de evaluación semántica automatizada para el cumplimiento del Reglamento Europeo de Inteligencia Artificial (EU AI Act)</strong>
+  <strong>Plataforma de evaluación semántica automatizada para el cumplimiento del Reglamento Europeo de Inteligencia Artificial (EU AI Act) </strong>
 </p>
 
 <p align="center">
