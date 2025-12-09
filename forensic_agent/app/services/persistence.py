@@ -99,6 +99,10 @@ class PersistenceService:
             "modelScale": system_info.get("model_scale"),
             "jurisdiction": system_info.get("jurisdiction", "Unknown"),
 
+            # AIRO-aligned stakeholder fields (Art. 3.3-3.4 EU AI Act)
+            "hasDeployer": system_info.get("deployer"),
+            "hasDeveloper": system_info.get("developer"),
+
             # Incident info
             "incident": {
                 "type": incident_info.get("incident_type"),
@@ -231,6 +235,12 @@ class PersistenceService:
         # Jurisdiction
         if system_doc.get("jurisdiction"):
             lines.append(f'    ai:hasJurisdiction "{system_doc["jurisdiction"]}" ;')
+
+        # AIRO-aligned stakeholder properties (Art. 3.3-3.4 EU AI Act)
+        if system_doc.get("hasDeployer"):
+            lines.append(f'    ai:hasDeployer "{self._escape_turtle(system_doc["hasDeployer"])}" ;')
+        if system_doc.get("hasDeveloper"):
+            lines.append(f'    ai:hasDeveloper "{self._escape_turtle(system_doc["hasDeveloper"])}" ;')
 
         # Incident type
         incident = system_doc.get("incident", {})
