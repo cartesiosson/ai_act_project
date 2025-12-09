@@ -45,6 +45,24 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 
 ---
 
+## Índice
+
+- [Descripción](#descripción)
+- [Arquitectura del Sistema](#arquitectura-del-sistema)
+- [Instalación](#instalación)
+- [Agente Forense](#agente-forense)
+- [Ontología](#ontología)
+  - [Integración AIRO](#integración-airo-ai-risk-ontology)
+  - [Mappings Multi-Framework](#mappings-multi-framework)
+- [Mecanismos de Inferencia](#mecanismos-de-inferencia)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [API Reference](#api-reference)
+- [Referencias](#referencias)
+- [Licencia](#licencia)
+
+---
+
 ## Descripción
 
 SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.2) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
