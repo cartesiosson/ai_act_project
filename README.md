@@ -37,7 +37,9 @@ Este proyecto ha sido desarrollado como **Trabajo Fin de Máster** del programa 
 
 ### Agradecimientos
 
-Este software fue parcialmente desarrollado empleando **Claude Sonnet 4.5** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
+Este proyecto utiliza datos del **[AIAAIC Repository](https://www.aiaaic.org/aiaaic-repository)** (AI, Algorithmic, and Automation Incidents and Controversies), una base de datos independiente que documenta incidentes de IA a nivel mundial. Agradecemos a **Charlie Pownall** y al equipo de AIAAIC por este recurso invaluable.
+
+Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
 
 ---
 
@@ -410,14 +412,6 @@ get_ontology_stats()            # Estadísticas de la ontología
 - **Apache Jena Fuseki:** https://jena.apache.org/documentation/fuseki2/
 - **OWL 2 Web Ontology Language:** https://www.w3.org/TR/owl2-overview/
 - **SHACL:** https://www.w3.org/TR/shacl/
-
----
-
-## Agradecimientos
-
-Este proyecto utiliza datos del **AI, Algorithmic, and Automation Incidents and Controversies (AIAAIC) Repository**, una base de datos independiente y de acceso abierto que documenta incidentes relacionados con sistemas de IA a nivel mundial. Agradecemos a **Charlie Pownall** y al equipo de AIAAIC por su trabajo en la recopilación y mantenimiento de este recurso invaluable.
-
-Este proyecto ha sido desarrollado con la asistencia de **Claude Sonnet** (Anthropic), utilizado como herramienta de desarrollo para la generación de código, documentación y diseño de arquitectura.
 
 ---
 
