@@ -332,8 +332,6 @@ class ForensicAnalysisEngine:
 
 **System:** {incident.system.system_name}
 **Organization:** {incident.system.organization}
-**Deployer:** {incident.system.deployer or incident.system.organization or "Unknown"}
-**Developer:** {incident.system.developer or incident.system.organization or "Unknown"}
 **Incident Type:** {incident.incident.incident_type.upper()}
 **Incident Date:** {incident.timeline.discovery_date}
 **Jurisdiction:** {incident.system.jurisdiction}
@@ -362,9 +360,6 @@ class ForensicAnalysisEngine:
 **Basis:**
 - Activated Criteria: {len(eu_requirements["criteria"])}
 - Mandatory Requirements: {eu_requirements["total_requirements"]}
-
-### 2.3 Stakeholder Analysis (AIRO-aligned)
-{self._format_stakeholder_analysis(incident)}
 
 ---
 
@@ -495,47 +490,6 @@ risk classification, compliance requirements, and regulatory obligations.
 """
 
         return report
-
-    def _format_stakeholder_analysis(self, incident: ExtractedIncident) -> str:
-        """Format stakeholder analysis for report (AIRO-aligned)"""
-        lines = []
-
-        deployer = incident.system.deployer
-        developer = incident.system.developer
-        organization = incident.system.organization
-
-        # Deployer analysis (Art. 3.4 EU AI Act)
-        if deployer:
-            lines.append(f"**Deployer (airo:AIDeployer):** {deployer}")
-            lines.append("- *Role:* Entity using the AI system under their authority (Art. 3.4 EU AI Act)")
-            lines.append("- *Obligations:* Responsible for deployment conditions, human oversight, monitoring")
-        else:
-            lines.append(f"**Deployer:** {organization or 'Unknown'} (inferred from organization)")
-
-        lines.append("")
-
-        # Developer analysis
-        if developer:
-            lines.append(f"**Developer (airo:AIDeveloper):** {developer}")
-            lines.append("- *Role:* Entity that developed/created the AI system")
-            lines.append("- *Obligations:* Technical documentation, conformity assessment, CE marking")
-        else:
-            lines.append(f"**Developer:** {organization or 'Unknown'} (inferred from organization)")
-
-        lines.append("")
-
-        # Stakeholder relationship analysis
-        if deployer and developer:
-            if deployer.lower() == developer.lower():
-                lines.append("**Relationship:** Same entity develops and deploys the system")
-                lines.append("- *Implication:* Full liability chain within single organization")
-            else:
-                lines.append("**Relationship:** Different entities for development and deployment")
-                lines.append("- *Implication:* Shared responsibility model - both parties have distinct EU AI Act obligations")
-                lines.append(f"  - {developer} (developer): Design, training, documentation")
-                lines.append(f"  - {deployer} (deployer): Deployment, monitoring, human oversight")
-
-        return "\n".join(lines)
 
     def _format_requirements_list(self, requirements: List[Dict]) -> str:
         """Format requirements list for report"""

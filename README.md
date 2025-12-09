@@ -39,27 +39,7 @@ Este proyecto ha sido desarrollado como **Trabajo Fin de Máster** del programa 
 
 Este proyecto utiliza datos del **[AIAAIC Repository](https://www.aiaaic.org/aiaaic-repository)** (AI, Algorithmic, and Automation Incidents and Controversies), una base de datos independiente que documenta incidentes de IA a nivel mundial. Agradecemos a **Charlie Pownall** y al equipo de AIAAIC por este recurso invaluable.
 
-La ontología SERAMIS incorpora compatibilidad con **[AIRO (AI Risk Ontology)](https://w3id.org/airo)**, desarrollada por **Delaram Golpayegani** et al. en el ADAPT Centre, Dublin City University. Agradecemos al equipo de AIRO por su trabajo en la estandarización de conceptos de stakeholders para sistemas de IA.
-
 Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
-
----
-
-## Índice
-
-- [Descripción](#descripción)
-- [Arquitectura del Sistema](#arquitectura-del-sistema)
-- [Instalación](#instalación)
-- [Agente Forense](#agente-forense)
-- [Ontología](#ontología)
-  - [Integración AIRO](#integración-airo-ai-risk-ontology)
-  - [Mappings Multi-Framework](#mappings-multi-framework)
-- [Mecanismos de Inferencia](#mecanismos-de-inferencia)
-- [Stack Tecnológico](#stack-tecnológico)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [API Reference](#api-reference)
-- [Referencias](#referencias)
-- [Licencia](#licencia)
 
 ---
 
@@ -103,38 +83,22 @@ flowchart TB
         FK[(Fuseki :3030<br/>RDF/SPARQL)]
     end
 
-    subgraph Reasoner["Reasoner Service :8001"]
-        RS[SWRL Inference<br/>OwlReady2]
+    subgraph Services["Services"]
+        RS[Reasoner :8001<br/>SWRL Inference<br/>OwlReady2]
+        MCP[MCP Server :8080<br/>SPARQL via MCP<br/>FastMCP 2.0]
     end
 
-    subgraph MCPServer["MCP Server :8080"]
-        MCP[FastMCP 2.0<br/>SPARQL Tools]
-    end
-
-    subgraph LLM["LLM Runtime :11434"]
-        OL[Ollama<br/>Llama 3.2]
-    end
-
-    SP & GV -->|HTTP/REST| Backend
-    FA -->|HTTP/REST| Forensic
-    Backend -->|MongoDB Protocol| MG
-    Backend -->|HTTP/SPARQL| FK
-    Backend -->|HTTP/REST| RS
-    RS -->|HTTP/SPARQL| FK
-    Forensic -->|HTTP/JSON| OL
-    Forensic -->|SSE/JSON-RPC| MCP
-    MCP -->|HTTP/SPARQL| FK
-    Forensic -->|MongoDB Protocol| MG
-    Forensic -->|HTTP/SPARQL UPDATE| FK
+    SP & GV --> Backend
+    FA --> Forensic
+    Backend --> MG & FK & RS
+    Forensic --> MG & FK & MCP
     AE --> CL2
 
     style Frontend fill:#3b82f6,color:#fff
     style Backend fill:#10b981,color:#fff
     style Forensic fill:#8b5cf6,color:#fff
     style Data fill:#f59e0b,color:#fff
-    style Reasoner fill:#ef4444,color:#fff
-    style MCPServer fill:#ef4444,color:#fff
-    style LLM fill:#ef4444,color:#fff
+    style Services fill:#ef4444,color:#fff
 ```
 
 ---
@@ -235,24 +199,6 @@ curl -X POST http://localhost:8002/forensic/analyze \
 - Framework de gobernanza de datos
 - Shapes SHACL de validación
 - Reglas de inferencia SWRL
-
-### Integración AIRO (AI Risk Ontology)
-
-La ontología SERAMIS v0.37.2 incorpora compatibilidad con **AIRO** para la gestión de stakeholders según el EU AI Act:
-
-| Propiedad SERAMIS | Clase AIRO | Artículo EU AI Act |
-|-------------------|------------|-------------------|
-| `ai:hasProvider` | `airo:AIProvider` | Art. 3.3 |
-| `ai:hasDeployer` | `airo:AIDeployer` | Art. 3.4 |
-| `ai:hasDeveloper` | `airo:AIDeveloper` | - |
-| `ai:hasUser` | `airo:AIUser` | - |
-| `ai:hasSubject` | `airo:AISubject` | Art. 86 |
-| `ai:hasOversightBody` | `airo:Regulator` | - |
-
-Esta integración permite:
-- **Trazabilidad de responsabilidad**: Identificar claramente quién desarrolla, despliega y opera cada sistema
-- **Análisis forense mejorado**: El Agente Forense extrae deployer/developer de incidentes AIAAIC
-- **Interoperabilidad**: Compatible con otras ontologías que usen AIRO
 
 ### Mappings Multi-Framework
 
@@ -461,7 +407,6 @@ get_ontology_stats()            # Estadísticas de la ontología
 
 - **EU AI Act:** https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689
 - **AIAAIC Repository:** https://www.aiaaic.org/aiaaic-repository
-- **AIRO (AI Risk Ontology):** https://w3id.org/airo
 - **ISO/IEC 42001:2023:** https://www.iso.org/standard/81230.html
 - **NIST AI RMF 1.0:** https://www.nist.gov/itl/ai-risk-management-framework
 - **Apache Jena Fuseki:** https://jena.apache.org/documentation/fuseki2/
