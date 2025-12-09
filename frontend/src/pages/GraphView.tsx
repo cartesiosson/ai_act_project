@@ -247,13 +247,15 @@ export default function GraphView() {
     const context = canvas.getContext('2d');
     if (!context) return null;
 
-    canvas.width = 256;
-    canvas.height = 64;
+    // Use larger canvas for better text quality
+    canvas.width = 512;
+    canvas.height = 128;
 
     context.fillStyle = 'transparent';
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    context.font = 'Bold 24px Arial';
+    // Larger font for better readability
+    context.font = 'Bold 36px Arial';
     context.fillStyle = isDark ? '#ffffff' : '#1f2937';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
@@ -269,7 +271,7 @@ export default function GraphView() {
     });
 
     const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(size * 4, size, 1);
+    sprite.scale.set(size * 5, size * 1.25, 1);
 
     return sprite;
   }, [isDark]);
@@ -304,7 +306,7 @@ export default function GraphView() {
   const linkThreeObject = useCallback((link: LinkData) => {
     if (!showLinkLabels) return null;
 
-    const sprite = createTextSprite(link.predicateLabel, linkColor, 3);
+    const sprite = createTextSprite(link.predicateLabel, linkColor, 6);
     return sprite;
   }, [showLinkLabels, createTextSprite, linkColor]);
 
@@ -336,6 +338,22 @@ export default function GraphView() {
         1000
       );
     }
+  }, []);
+
+  // Handle node drag - fix node position when dragged
+  const handleNodeDragEnd = useCallback((node: any) => {
+    // Fix the node position by setting fx, fy, fz
+    node.fx = node.x;
+    node.fy = node.y;
+    node.fz = node.z;
+  }, []);
+
+  // Double click to release a fixed node
+  const handleNodeRightClick = useCallback((node: any) => {
+    // Release the fixed position
+    node.fx = undefined;
+    node.fy = undefined;
+    node.fz = undefined;
   }, []);
 
   // Update dimensions on resize
@@ -594,6 +612,8 @@ export default function GraphView() {
             linkThreeObjectExtend={true}
             onNodeClick={handleNodeClick}
             onNodeHover={(node) => setHoveredNode(node as NodeData | null)}
+            onNodeDragEnd={handleNodeDragEnd}
+            onNodeRightClick={handleNodeRightClick}
             enableNodeDrag={true}
             enableNavigationControls={true}
             showNavInfo={false}
@@ -644,6 +664,8 @@ export default function GraphView() {
           <p>Right-click + drag: Pan</p>
           <p>Scroll: Zoom</p>
           <p>Click node: Focus</p>
+          <p>Drag node: Fix position</p>
+          <p>Right-click node: Release</p>
         </div>
       </div>
     </div>
