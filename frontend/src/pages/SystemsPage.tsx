@@ -34,6 +34,12 @@ export type System = {
   requiresFundamentalRightsAssessment?: boolean;
   hasVersion: string;
   "ai:hasUrn": string;
+  // AIRO stakeholder fields (Art. 3.3-3.4 EU AI Act)
+  hasProvider?: string;
+  hasDeployer?: string;
+  hasDeveloper?: string;
+  hasUser?: string;
+  hasSubject?: string;
 };
 
 export default function SystemsPage() {
@@ -113,6 +119,12 @@ export default function SystemsPage() {
     hasTransparencyLevel: "" as string,
     requiresFundamentalRightsAssessment: false as boolean,
     hasVersion: "",
+    // AIRO stakeholder fields
+    hasProvider: "" as string,
+    hasDeployer: "" as string,
+    hasDeveloper: "" as string,
+    hasUser: "" as string,
+    hasSubject: "" as string,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -168,6 +180,12 @@ export default function SystemsPage() {
         hasAlgorithmType: [],
         hasModelScale: [],
         hasCapability: [],
+        hasActivatedCriterion: [],
+        hasManuallyIdentifiedCriterion: [],
+        hasCapabilityMetric: [],
+        parameterCount: undefined,
+        autonomyLevel: "",
+        isGenerallyApplicable: false,
         hasGPAIClassification: [],
         hasContextualCriteria: [],
         hasISORequirements: [],
@@ -181,6 +199,11 @@ export default function SystemsPage() {
         hasTransparencyLevel: "",
         requiresFundamentalRightsAssessment: false,
         hasVersion: "",
+        hasProvider: "",
+        hasDeployer: "",
+        hasDeveloper: "",
+        hasUser: "",
+        hasSubject: "",
       });
       setLoadedSystem(null);
       setShowValidation(false);
@@ -215,6 +238,12 @@ export default function SystemsPage() {
         hasAlgorithmType: systemToLoad.hasAlgorithmType || [],
         hasModelScale: systemToLoad.hasModelScale || [],
         hasCapability: systemToLoad.hasCapability || [],
+        hasActivatedCriterion: systemToLoad.hasActivatedCriterion || [],
+        hasManuallyIdentifiedCriterion: systemToLoad.hasManuallyIdentifiedCriterion || [],
+        hasCapabilityMetric: systemToLoad.hasCapabilityMetric || [],
+        parameterCount: systemToLoad.parameterCount,
+        autonomyLevel: systemToLoad.autonomyLevel || "",
+        isGenerallyApplicable: systemToLoad.isGenerallyApplicable ?? false,
         hasGPAIClassification: systemToLoad.hasGPAIClassification || [],
         hasContextualCriteria: systemToLoad.hasContextualCriteria || [],
         hasISORequirements: systemToLoad.hasISORequirements || [],
@@ -228,6 +257,11 @@ export default function SystemsPage() {
         hasTransparencyLevel: systemToLoad.hasTransparencyLevel || "",
         requiresFundamentalRightsAssessment: systemToLoad.requiresFundamentalRightsAssessment ?? false,
         hasVersion: systemToLoad.hasVersion,
+        hasProvider: systemToLoad.hasProvider || "",
+        hasDeployer: systemToLoad.hasDeployer || "",
+        hasDeveloper: systemToLoad.hasDeveloper || "",
+        hasUser: systemToLoad.hasUser || "",
+        hasSubject: systemToLoad.hasSubject || "",
       });
       setLoadedSystem(systemToLoad);
     }
@@ -659,6 +693,79 @@ export default function SystemsPage() {
           </div>
         </div>
 
+        {/* SECTION 7: AIRO Stakeholders */}
+        <div className="bg-teal-50 dark:bg-teal-900 rounded-lg border border-teal-200 dark:border-teal-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400 mr-3">👥</span>
+            <h2 className="text-xl font-bold">7. AIRO Stakeholders (EU AI Act Art. 3)</h2>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+            Identify the key stakeholders involved with this AI system according to AIRO (AI Risk Ontology) aligned with EU AI Act definitions.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold">Provider (Art. 3.3)</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Entity that develops or has an AI system developed and places it on the market or puts it into service under its own name or trademark">ℹ️</span>
+              </div>
+              <input
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="e.g., OpenAI, Google DeepMind"
+                value={form.hasProvider}
+                onChange={(e) => setForm({ ...form, hasProvider: e.target.value })}
+              />
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold">Deployer (Art. 3.4)</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Entity that uses an AI system under its authority, except where the AI system is used in the course of a personal non-professional activity">ℹ️</span>
+              </div>
+              <input
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="e.g., Company deploying the system"
+                value={form.hasDeployer}
+                onChange={(e) => setForm({ ...form, hasDeployer: e.target.value })}
+              />
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold">Developer</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Entity that developed the AI system (may differ from provider)">ℹ️</span>
+              </div>
+              <input
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="e.g., Research lab, contractor"
+                value={form.hasDeveloper}
+                onChange={(e) => setForm({ ...form, hasDeveloper: e.target.value })}
+              />
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold">User</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Natural person who interacts with the AI system">ℹ️</span>
+              </div>
+              <input
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="e.g., End users, operators"
+                value={form.hasUser}
+                onChange={(e) => setForm({ ...form, hasUser: e.target.value })}
+              />
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold">Subject (Art. 86)</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Person affected by AI system decisions or outputs">ℹ️</span>
+              </div>
+              <input
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="e.g., Applicants, citizens"
+                value={form.hasSubject}
+                onChange={(e) => setForm({ ...form, hasSubject: e.target.value })}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Derived Classifications - Read-only Info Panel */}
         {(form.hasGPAIClassification.length > 0 || form.hasContextualCriteria.length > 0) && (
           <div className="border-t pt-4 mt-4 mb-4 bg-blue-50 dark:bg-blue-900 rounded p-4">
@@ -743,6 +850,11 @@ export default function SystemsPage() {
                 hasTransparencyLevel: "",
                 requiresFundamentalRightsAssessment: false,
                 hasVersion: "",
+                hasProvider: "",
+                hasDeployer: "",
+                hasDeveloper: "",
+                hasUser: "",
+                hasSubject: "",
               });
               setLoadedSystem(null);
             }}

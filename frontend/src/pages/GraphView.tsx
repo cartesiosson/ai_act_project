@@ -37,6 +37,7 @@ const NODE_CATEGORIES: { [key: string]: { color: string; icon: string; label: st
   technical: { color: "#f97316", icon: "T", label: "Technical" },
   capability: { color: "#10b981", icon: "C", label: "Capability" },
   compliance: { color: "#14b8a6", icon: "R", label: "Compliance" },
+  airo: { color: "#0d9488", icon: "A", label: "AIRO" },
   other: { color: "#6b7280", icon: "O", label: "Other" },
 };
 
@@ -69,6 +70,14 @@ export default function GraphView() {
     const lowerUri = uri.toLowerCase();
     const lowerPredicate = predicateUri?.toLowerCase() || "";
 
+    // AIRO stakeholder properties (Art. 3 EU AI Act)
+    if (lowerPredicate.includes("hasprovider")) return "airo";
+    if (lowerPredicate.includes("hasdeployer")) return "airo";
+    if (lowerPredicate.includes("hasdeveloper")) return "airo";
+    if (lowerPredicate.includes("hasuser")) return "airo";
+    if (lowerPredicate.includes("hassubject")) return "airo";
+    if (lowerPredicate.includes("hasoversightbody")) return "airo";
+
     if (lowerPredicate.includes("purpose")) return "purpose";
     if (lowerPredicate.includes("deployment") || lowerPredicate.includes("deploymentcontext")) return "deployment";
     if (lowerPredicate.includes("trainingdata") || lowerPredicate.includes("dataorigin")) return "technical";
@@ -79,6 +88,14 @@ export default function GraphView() {
     if (lowerPredicate.includes("hasmanuallyidentifiedcriterion")) return "compliance";
     if (lowerPredicate.includes("hascapabilitymetric")) return "technical";
     if (lowerPredicate.includes("systemcapability")) return "capability";
+
+    // AIRO stakeholder URIs
+    if (lowerUri.includes("airo:") || lowerUri.includes("/airo#")) return "airo";
+    if (lowerUri.includes("provider") && !lowerUri.includes("service")) return "airo";
+    if (lowerUri.includes("deployer")) return "airo";
+    if (lowerUri.includes("developer")) return "airo";
+    if (lowerUri.includes("aisubject")) return "airo";
+    if (lowerUri.includes("oversightbody")) return "airo";
 
     if (lowerUri.includes("algorithmtype") || lowerUri.includes("algorithm")) return "technical";
     if (lowerUri.includes("modelscale") || (lowerUri.includes("model") && lowerUri.includes("scale"))) return "technical";
