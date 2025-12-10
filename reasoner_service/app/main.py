@@ -244,6 +244,64 @@ async def reason(
                         inferences_count += 1
                         break  # Solo una vez por sistema
 
+                # =============================================================
+                # REGLA 7: Affected Person + High Risk → Requires Explainability (Art. 86)
+                # Si un sistema tiene affected persons Y es high-risk → requiere explicabilidad
+                # =============================================================
+                has_affected_person = any(combined_graph.objects(system, AI.hasSubject))
+                risk_levels = list(combined_graph.objects(system, AI.hasRiskLevel))
+                is_high_risk = any("HighRisk" in str(r) or "High" in str(r) for r in risk_levels)
+
+                if has_affected_person and is_high_risk:
+                    combined_graph.add((system, AI.requiresExplainability, Literal(True)))
+                    combined_graph.add((system, AI.hasComplianceRequirement, AI.ExplainabilityRequirement))
+                    print(f"DEBUG: ✅ REGLA 7 aplicada: {system} requiresExplainability=true (Art. 86: hasSubject + HighRisk)")
+                    inferences_count += 2
+
+                # =============================================================
+                # REGLA 8: Affected Person Category → Fundamental Rights Assessment (Art. 27)
+                # Si affected persons incluyen grupos vulnerables → FRIA obligatorio
+                # =============================================================
+                vulnerable_categories = ["Minor", "Child", "Elderly", "Disabled", "Migrant", "Asylum"]
+                for subject in combined_graph.objects(system, AI.hasSubject):
+                    subject_str = str(subject).lower()
+                    if any(v.lower() in subject_str for v in vulnerable_categories):
+                        combined_graph.add((system, AI.requiresFundamentalRightsAssessment, Literal(True)))
+                        combined_graph.add((system, AI.hasComplianceRequirement, AI.FundamentalRightsImpactAssessment))
+                        print(f"DEBUG: ✅ REGLA 8 aplicada: {system} requiresFundamentalRightsAssessment=true (Art. 27: vulnerable group detected in {subject})")
+                        inferences_count += 2
+                        break  # Solo una vez por sistema
+
+                # =============================================================
+                # REGLA 9: Employment Context + Affected Persons → Art. 26 Notification
+                # Si deployer usa sistema para decisiones de empleo → notificación a affected persons
+                # =============================================================
+                employment_purposes = ["Employment", "Recruitment", "HiringDecision", "WorkerManagement"]
+                for purpose in combined_graph.objects(system, AI.hasPurpose):
+                    purpose_str = str(purpose)
+                    if any(ep in purpose_str for ep in employment_purposes) and has_affected_person:
+                        combined_graph.add((system, AI.requiresAffectedPersonNotification, Literal(True)))
+                        combined_graph.add((system, AI.hasComplianceRequirement, AI.WorkerNotificationRequirement))
+                        print(f"DEBUG: ✅ REGLA 9 aplicada: {system} requiresAffectedPersonNotification=true (Art. 26: employment purpose + affected persons)")
+                        inferences_count += 2
+                        break
+
+                # =============================================================
+                # REGLA 10: Biometric + Public Space + Affected Persons → Prohibited or Restricted
+                # Si sistema biométrico en espacio público afecta ciudadanos → verificar prohibiciones Art. 5
+                # =============================================================
+                biometric_purposes = ["BiometricIdentification", "FacialRecognition", "RemoteBiometric"]
+                public_contexts = ["PublicSpace", "PubliclyAccessible", "LawEnforcement"]
+
+                has_biometric = any(any(bp in str(p) for bp in biometric_purposes) for p in combined_graph.objects(system, AI.hasPurpose))
+                has_public_context = any(any(pc in str(c) for pc in public_contexts) for c in combined_graph.objects(system, AI.hasDeploymentContext))
+
+                if has_biometric and has_public_context and has_affected_person:
+                    combined_graph.add((system, AI.requiresProhibitionReview, Literal(True)))
+                    combined_graph.add((system, AI.hasComplianceRequirement, AI.Article5ProhibitionReview))
+                    print(f"DEBUG: ✅ REGLA 10 aplicada: {system} requiresProhibitionReview=true (Art. 5: biometric + public space + affected persons)")
+                    inferences_count += 2
+
             print(f"DEBUG: Reglas genéricas SWRL completadas. Total inferencias aplicadas: {inferences_count}")
 
         except Exception as fallback_error:

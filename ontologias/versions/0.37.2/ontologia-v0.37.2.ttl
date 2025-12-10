@@ -1851,17 +1851,95 @@ airo:AIDeployer rdfs:comment "Deployer per Art. 3.4 EU AI Act: natural/legal per
 airo:AISubject rdfs:comment "Subject per Art. 86 EU AI Act: natural person subject to an AI system, who has the right to obtain clear and meaningful explanations of the role of the AI system in the decision-making procedure."@en,
     "Sujeto según Art. 86 EU AI Act: persona física sujeta a un sistema de IA, que tiene derecho a obtener explicaciones claras y significativas del papel del sistema de IA en el procedimiento de toma de decisiones."@es .
 
+# ===== AFFECTED PERSON REASONING PROPERTIES (Art. 86, 27, 26, 5) =====
+
+# Explainability requirement for affected persons (Art. 86)
+ai:requiresExplainability a owl:DatatypeProperty ;
+    rdfs:label "requires explainability"@en, "requiere explicabilidad"@es ;
+    rdfs:comment "Indicates if the system requires explainability for affected persons per Art. 86 EU AI Act. Inferred when system is high-risk AND has affected persons."@en,
+        "Indica si el sistema requiere explicabilidad para personas afectadas según Art. 86 EU AI Act. Inferido cuando el sistema es de alto riesgo Y tiene personas afectadas."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:ExplainabilityRequirement a owl:Class ;
+    rdfs:label "Explainability Requirement"@en, "Requisito de Explicabilidad"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 86 requirement: affected persons have the right to obtain clear and meaningful explanations of AI system's role in decision-making."@en .
+
+# Fundamental Rights Impact Assessment (Art. 27)
+ai:requiresFundamentalRightsAssessment a owl:DatatypeProperty ;
+    rdfs:label "requires fundamental rights assessment"@en, "requiere evaluación de derechos fundamentales"@es ;
+    rdfs:comment "Indicates if FRIA is required per Art. 27 EU AI Act. Inferred when affected persons include vulnerable groups (minors, elderly, disabled, migrants)."@en,
+        "Indica si se requiere FRIA según Art. 27 EU AI Act. Inferido cuando las personas afectadas incluyen grupos vulnerables (menores, ancianos, discapacitados, migrantes)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:FundamentalRightsImpactAssessment a owl:Class ;
+    rdfs:label "Fundamental Rights Impact Assessment"@en, "Evaluación de Impacto en Derechos Fundamentales"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 27 requirement: deployers of high-risk AI systems shall perform FRIA before putting system into use, particularly when vulnerable groups are affected."@en .
+
+# Worker/Affected Person Notification (Art. 26)
+ai:requiresAffectedPersonNotification a owl:DatatypeProperty ;
+    rdfs:label "requires affected person notification"@en, "requiere notificación a personas afectadas"@es ;
+    rdfs:comment "Indicates if affected persons must be notified per Art. 26 EU AI Act. Inferred when system is used for employment decisions."@en,
+        "Indica si las personas afectadas deben ser notificadas según Art. 26 EU AI Act. Inferido cuando el sistema se usa para decisiones de empleo."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:WorkerNotificationRequirement a owl:Class ;
+    rdfs:label "Worker Notification Requirement"@en, "Requisito de Notificación a Trabajadores"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 26(7) requirement: deployers using high-risk AI for employment decisions shall inform affected workers and their representatives."@en .
+
+# Prohibition Review for Biometric Systems (Art. 5)
+ai:requiresProhibitionReview a owl:DatatypeProperty ;
+    rdfs:label "requires prohibition review"@en, "requiere revisión de prohibiciones"@es ;
+    rdfs:comment "Indicates if Art. 5 prohibition review is required. Inferred for biometric identification systems in public spaces affecting persons."@en,
+        "Indica si se requiere revisión de prohibiciones Art. 5. Inferido para sistemas de identificación biométrica en espacios públicos que afectan a personas."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:Article5ProhibitionReview a owl:Class ;
+    rdfs:label "Article 5 Prohibition Review"@en, "Revisión de Prohibiciones Artículo 5"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 5 review requirement: real-time remote biometric identification in public spaces is generally prohibited with narrow exceptions."@en .
+
+# Vulnerable Group Categories for FRIA triggering
+ai:VulnerableGroupCategory a owl:Class ;
+    rdfs:label "Vulnerable Group Category"@en, "Categoría de Grupo Vulnerable"@es ;
+    rdfs:comment "Categories of vulnerable groups that trigger enhanced protection requirements under EU AI Act."@en .
+
+ai:MinorCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Minor"@en, "Menor"@es ;
+    rdfs:comment "Persons under 18 years of age - enhanced protection per Recital 28."@en .
+
+ai:ElderlyCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Elderly"@en, "Persona Mayor"@es ;
+    rdfs:comment "Elderly persons - may be particularly vulnerable to AI system impacts."@en .
+
+ai:DisabledCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Disabled"@en, "Persona con Discapacidad"@es ;
+    rdfs:comment "Persons with disabilities - protected under accessibility requirements."@en .
+
+ai:MigrantCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Migrant"@en, "Migrante"@es ;
+    rdfs:comment "Migrants and asylum seekers - specific protections per Art. 6 Annex III."@en .
+
 # ===== AIRO MAPPING STATISTICS =====
 # Total mapped concepts: 30+
 # Equivalent classes (owl:equivalentClass): 10
 # SubClass relationships (rdfs:subClassOf): 8
 # Related concepts (rdfs:seeAlso): 15+
 # Object properties using AIRO range: 6 (hasProvider, hasDeployer, hasUser, hasSubject, hasDeveloper, hasOversightBody)
-# Coverage: ~67% of main AI Act concepts
+# Affected Person reasoning properties: 4 (requiresExplainability, requiresFundamentalRightsAssessment, requiresAffectedPersonNotification, requiresProhibitionReview)
+# Affected Person compliance requirements: 4 (ExplainabilityRequirement, FundamentalRightsImpactAssessment, WorkerNotificationRequirement, Article5ProhibitionReview)
+# Coverage: ~70% of main AI Act concepts
 # AIRO Stakeholder classes used: airo:AIProvider, airo:AIDeployer, airo:AIUser, airo:AISubject, airo:AIDeveloper, airo:Regulator
-# Enables: Cross-ontology reasoning, semantic interoperability, SPARQL federation
+# Enables: Cross-ontology reasoning, semantic interoperability, SPARQL federation, affected person protection inference
 
 # ===== END OF UNIFIED ONTOLOGY v0.37.2 =====
 # All concepts consolidated under ai: namespace
 # AIRO interoperability mappings fully integrated
+# Affected Person reasoning rules integrated
 # Future modularization can occur in post-v0.37.2 versions

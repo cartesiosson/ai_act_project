@@ -91,7 +91,8 @@ The **AI Act Ontology** provides a formal semantic model for representing concep
 
 Key features include:
 - **Risk-based classification** following EU AI Act Articles 5-7 and Annex III
-- **Stakeholder modeling** aligned with AIRO (AI Risk Ontology) for providers, deployers, users, and subjects
+- **Stakeholder modeling** aligned with AIRO (AI Risk Ontology) for providers, deployers, users, and affected persons
+- **Affected Person reasoning** with automatic inference of Art. 86, 27, 26, and 5 requirements
 - **Multi-framework mapping** to ISO/IEC 42001 and NIST AI RMF
 - **Purpose-driven criteria** linking system purposes to expected risk levels and compliance requirements
 
@@ -597,6 +598,25 @@ Integration with international standards:
 - **ISO/IEC 42001**: AI Management System clauses
 - **NIST AI RMF**: Govern, Map, Measure, Manage functions
 
+### 6. Affected Person Reasoning (Art. 86, 27, 26, 5)
+Automatic inference of compliance requirements based on affected persons:
+- **`ai:requiresExplainability`** - Art. 86: High-risk + affected persons → explainability required
+- **`ai:requiresFundamentalRightsAssessment`** - Art. 27: Vulnerable groups → FRIA required
+- **`ai:requiresAffectedPersonNotification`** - Art. 26: Employment context → worker notification
+- **`ai:requiresProhibitionReview`** - Art. 5: Biometric + public space → prohibition review
+
+**Vulnerable Group Detection:**
+- `ai:MinorCategory` - Persons under 18
+- `ai:ElderlyCategory` - Elderly persons
+- `ai:DisabledCategory` - Persons with disabilities
+- `ai:MigrantCategory` - Migrants and asylum seekers
+
+**Compliance Requirements Inferred:**
+- `ai:ExplainabilityRequirement`
+- `ai:FundamentalRightsImpactAssessment`
+- `ai:WorkerNotificationRequirement`
+- `ai:Article5ProhibitionReview`
+
 ## Namespace
 
 The ontology uses the namespace `http://ai-act.eu/ai#` with prefix `ai:`. All concepts are unified under this namespace for simplified querying and interoperability.
@@ -605,6 +625,7 @@ The ontology uses the namespace `http://ai-act.eu/ai#` with prefix `ai:`. All co
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.37.2 | 2025-12-10 | Affected Person reasoning rules, FRIA inference, Art. 5/26/27/86 |
 | 0.37.2 | 2025-11-22 | AIRO stakeholder integration, unified namespace |
 | 0.37.1 | 2025-11-20 | Multi-framework mappings (ISO 42001, NIST AI RMF) |
 | 0.37.0 | 2025-11-15 | Purpose-driven classification, criteria refinement |

@@ -753,12 +753,12 @@ export default function SystemsPage() {
             </div>
             <div className="bg-white dark:bg-gray-800 rounded p-4">
               <div className="flex items-center justify-between mb-2">
-                <label className="block font-semibold">Subject (Art. 86)</label>
-                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Person affected by AI system decisions or outputs">ℹ️</span>
+                <label className="block font-semibold">Affected Person (Art. 86)</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Natural person subject to a decision taken by the deployer on the basis of the output from a high-risk AI system, or whose fundamental rights are affected by such system">ℹ️</span>
               </div>
               <input
                 className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
-                placeholder="e.g., Applicants, citizens"
+                placeholder="e.g., Job applicants, loan applicants, citizens"
                 value={form.hasSubject}
                 onChange={(e) => setForm({ ...form, hasSubject: e.target.value })}
               />

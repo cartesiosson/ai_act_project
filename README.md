@@ -53,6 +53,7 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 - [Agente Forense](#agente-forense)
 - [Ontología](#ontología)
   - [Integración AIRO](#integración-airo-ai-risk-ontology)
+  - [Razonamiento sobre Affected Persons](#razonamiento-sobre-affected-persons-art-86)
   - [Mappings Multi-Framework](#mappings-multi-framework)
 - [Mecanismos de Inferencia](#mecanismos-de-inferencia)
 - [Stack Tecnológico](#stack-tecnológico)
@@ -246,13 +247,43 @@ La ontología SERAMIS v0.37.2 incorpora compatibilidad con **AIRO** para la gest
 | `ai:hasDeployer` | `airo:AIDeployer` | Art. 3.4 |
 | `ai:hasDeveloper` | `airo:AIDeveloper` | - |
 | `ai:hasUser` | `airo:AIUser` | - |
-| `ai:hasSubject` | `airo:AISubject` | Art. 86 |
-| `ai:hasOversightBody` | `airo:Regulator` | - |
+| `ai:hasSubject` | `airo:AISubject` | Art. 86 (Affected Person) |
+| `ai:hasOversightBody` | `airo:Regulator` | Art. 70 |
 
 Esta integración permite:
 - **Trazabilidad de responsabilidad**: Identificar claramente quién desarrolla, despliega y opera cada sistema
 - **Análisis forense mejorado**: El Agente Forense extrae deployer/developer de incidentes AIAAIC
 - **Interoperabilidad**: Compatible con otras ontologías que usen AIRO
+- **Razonamiento sobre Affected Persons**: Inferencia automática de requisitos basados en personas afectadas
+
+### Razonamiento sobre Affected Persons (Art. 86)
+
+El reasoner implementa **4 reglas de inferencia** basadas en la identificación de "Affected Persons" (personas afectadas por decisiones del sistema de IA):
+
+| Regla | Artículo | Condición | Inferencia |
+|-------|----------|-----------|------------|
+| **7** | Art. 86 | `hasSubject` + `HighRisk` | `requiresExplainability = true` |
+| **8** | Art. 27 | Affected person en grupo vulnerable | `requiresFundamentalRightsAssessment = true` |
+| **9** | Art. 26 | Propósito de empleo + affected persons | `requiresAffectedPersonNotification = true` |
+| **10** | Art. 5 | Biométrico + espacio público + affected persons | `requiresProhibitionReview = true` |
+
+**Grupos vulnerables detectados automáticamente:**
+- Menores (Minor/Child)
+- Personas mayores (Elderly)
+- Personas con discapacidad (Disabled)
+- Migrantes y solicitantes de asilo (Migrant/Asylum)
+
+**Propiedades de inferencia añadidas:**
+- `ai:requiresExplainability` - Requiere explicabilidad Art. 86
+- `ai:requiresFundamentalRightsAssessment` - Requiere FRIA Art. 27
+- `ai:requiresAffectedPersonNotification` - Requiere notificación Art. 26
+- `ai:requiresProhibitionReview` - Requiere revisión prohibiciones Art. 5
+
+**Requisitos de cumplimiento inferidos:**
+- `ai:ExplainabilityRequirement`
+- `ai:FundamentalRightsImpactAssessment`
+- `ai:WorkerNotificationRequirement`
+- `ai:Article5ProhibitionReview`
 
 ### Mappings Multi-Framework
 

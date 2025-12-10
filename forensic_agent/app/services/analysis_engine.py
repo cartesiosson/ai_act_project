@@ -535,7 +535,112 @@ risk classification, compliance requirements, and regulatory obligations.
                 lines.append(f"  - {developer} (developer): Design, training, documentation")
                 lines.append(f"  - {deployer} (deployer): Deployment, monitoring, human oversight")
 
+        lines.append("")
+
+        # Affected Persons Analysis (Art. 86)
+        lines.append("### Affected Persons Analysis (Art. 86)")
+        affected_persons = self._identify_affected_persons(incident)
+        if affected_persons:
+            lines.append(f"**Identified Affected Persons:** {', '.join(affected_persons)}")
+            lines.append("")
+
+            # Check for vulnerable groups
+            vulnerable_groups = self._check_vulnerable_groups(affected_persons)
+            if vulnerable_groups:
+                lines.append("**⚠️ Vulnerable Groups Detected:**")
+                for group in vulnerable_groups:
+                    lines.append(f"- {group}")
+                lines.append("")
+                lines.append("**Inferred Requirements (Reasoner Rules 7-10):**")
+                lines.append("- ✓ Art. 27: Fundamental Rights Impact Assessment (FRIA) **REQUIRED**")
+                lines.append("- ✓ Art. 86: Enhanced explainability obligations")
+
+            # Check employment context for Art. 26
+            employment_purposes = ["employment", "recruitment", "hiring", "worker", "hr"]
+            if any(ep in incident.system.primary_purpose.lower() for ep in employment_purposes):
+                lines.append("")
+                lines.append("**Employment Context Detected (Art. 26):**")
+                lines.append("- ✓ Worker notification requirement **ACTIVE**")
+                lines.append("- Deployer must inform affected workers and representatives")
+
+            # Check biometric + public space for Art. 5
+            biometric_keywords = ["biometric", "facial", "recognition", "identification"]
+            public_keywords = ["public", "street", "law enforcement", "police"]
+            purpose_lower = incident.system.primary_purpose.lower()
+            contexts_lower = " ".join(incident.system.deployment_context).lower()
+
+            has_biometric = any(bk in purpose_lower for bk in biometric_keywords)
+            has_public = any(pk in contexts_lower for pk in public_keywords)
+
+            if has_biometric and has_public:
+                lines.append("")
+                lines.append("**⚠️ Art. 5 Prohibition Review Required:**")
+                lines.append("- Biometric identification in public space detected")
+                lines.append("- Real-time remote biometric ID is generally **PROHIBITED**")
+                lines.append("- Narrow exceptions may apply (Art. 5(1)(h) conditions)")
+        else:
+            lines.append("*No specific affected persons identified in narrative*")
+            lines.append("- Consider adding affected person categories for complete compliance analysis")
+
         return "\n".join(lines)
+
+    def _identify_affected_persons(self, incident: ExtractedIncident) -> List[str]:
+        """Identify affected persons from incident narrative and context"""
+        affected = []
+
+        # Common affected person patterns based on purpose/context
+        purpose = incident.system.primary_purpose.lower()
+        contexts = " ".join(incident.system.deployment_context).lower()
+        narrative = incident.system.system_name.lower() if incident.system.system_name else ""
+
+        # Employment context → job applicants, workers
+        if any(kw in purpose for kw in ["employment", "recruitment", "hiring", "hr"]):
+            affected.extend(["Job applicants", "Workers", "Employees"])
+
+        # Credit/Financial → loan applicants
+        if any(kw in purpose for kw in ["credit", "loan", "financial", "banking"]):
+            affected.extend(["Loan applicants", "Financial service users"])
+
+        # Healthcare → patients
+        if any(kw in purpose for kw in ["health", "medical", "diagnostic", "clinical"]):
+            affected.extend(["Patients", "Healthcare recipients"])
+
+        # Education → students
+        if any(kw in purpose for kw in ["education", "school", "exam", "admission"]):
+            affected.extend(["Students", "Exam takers", "Applicants"])
+
+        # Law enforcement → citizens, suspects
+        if any(kw in contexts for kw in ["law enforcement", "police", "criminal"]):
+            affected.extend(["Citizens", "Suspects", "Defendants"])
+
+        # Public services → citizens
+        if any(kw in contexts for kw in ["government", "public", "social services"]):
+            affected.extend(["Citizens", "Benefit recipients"])
+
+        # Biometric → identified persons
+        if any(kw in purpose for kw in ["biometric", "facial", "recognition"]):
+            affected.extend(["Identified individuals", "Surveillance subjects"])
+
+        return list(set(affected))  # Remove duplicates
+
+    def _check_vulnerable_groups(self, affected_persons: List[str]) -> List[str]:
+        """Check if affected persons include vulnerable groups per EU AI Act"""
+        vulnerable_keywords = {
+            "Minor": ["child", "minor", "student", "youth", "children"],
+            "Elderly": ["elderly", "senior", "aged"],
+            "Disabled": ["disabled", "disability", "impaired"],
+            "Migrant/Asylum": ["migrant", "asylum", "refugee", "immigrant"],
+            "Low income": ["vulnerable", "disadvantaged", "low income", "welfare"]
+        }
+
+        detected = []
+        affected_lower = [p.lower() for p in affected_persons]
+
+        for category, keywords in vulnerable_keywords.items():
+            if any(kw in " ".join(affected_lower) for kw in keywords):
+                detected.append(category)
+
+        return detected
 
     def _format_requirements_list(self, requirements: List[Dict]) -> str:
         """Format requirements list for report"""

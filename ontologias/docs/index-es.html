@@ -596,6 +596,27 @@ Integración con estándares internacionales:
 - **ISO/IEC 42001**: Cláusulas del Sistema de Gestión de IA
 - **NIST AI RMF**: Funciones Gobernar, Mapear, Medir, Gestionar
 
+### 6. Razonamiento sobre Personas Afectadas (Art. 86, 27, 26, 5)
+El servicio de razonamiento incluye reglas de inferencia basadas en la propiedad `ai:hasSubject` (Persona Afectada) para derivar automáticamente requisitos de cumplimiento:
+
+**Reglas de Inferencia:**
+- **Regla 7**: Sistema de Alto Riesgo + Persona Afectada → Requiere Explicabilidad (Art. 86)
+- **Regla 8**: Categoría de Grupo Vulnerable → Requiere Evaluación de Derechos Fundamentales (Art. 27)
+- **Regla 9**: Contexto Laboral + Personas Afectadas → Requiere Notificación a Trabajadores (Art. 26.7)
+- **Regla 10**: Biométrico + Espacio Público + Personas Afectadas → Revisión de Prohibición Art. 5
+
+**Categorías de Grupos Vulnerables:**
+- `ai:MinorCategory` - Menores de edad
+- `ai:ElderlyCategory` - Personas mayores
+- `ai:DisabledCategory` - Personas con discapacidad
+- `ai:MigrantCategory` - Migrantes y solicitantes de asilo
+
+**Propiedades de Inferencia:**
+- `ai:requiresExplainability` - Indica obligación de explicabilidad
+- `ai:requiresFundamentalRightsAssessment` - Activa evaluación FRIA
+- `ai:requiresAffectedPersonNotification` - Notificación obligatoria
+- `ai:requiresProhibitionReview` - Revisión bajo Art. 5
+
 ## Espacio de Nombres
 
 La ontología usa el espacio de nombres `http://ai-act.eu/ai#` con prefijo `ai:`. Todos los conceptos están unificados bajo este espacio de nombres para simplificar consultas e interoperabilidad.
@@ -604,6 +625,7 @@ La ontología usa el espacio de nombres `http://ai-act.eu/ai#` con prefijo `ai:`
 
 | Versión | Fecha | Cambios |
 |---------|-------|---------|
+| 0.37.2 | 2025-12-10 | Razonamiento sobre Personas Afectadas (Reglas 7-10), categorías de grupos vulnerables |
 | 0.37.2 | 2025-11-22 | Integración de stakeholders AIRO, espacio de nombres unificado |
 | 0.37.1 | 2025-11-20 | Mapeos multi-framework (ISO 42001, NIST AI RMF) |
 | 0.37.0 | 2025-11-15 | Clasificación basada en propósito, refinamiento de criterios |
