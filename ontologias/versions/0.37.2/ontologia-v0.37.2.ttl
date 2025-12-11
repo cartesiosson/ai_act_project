@@ -837,6 +837,24 @@ ai:BiasDetectionRequirement a ai:TechnicalRequirement ;
     rdfs:comment "Systematic methods to detect, measure, and mitigate biases in AI system outputs and decision-making."@en,
         "Métodos sistemáticos para detectar, medir y mitigar sesgos en los resultados del sistema de IA."@es .
 
+ai:HumanOversightRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Human Oversight Requirement (Article 14)"@en,
+        "Requisito de Supervisión Humana (Artículo 14)"@es ;
+    rdfs:comment "[Article 14] High-risk AI systems shall be designed and developed to be effectively overseen by natural persons during use. Human oversight shall aim to prevent or minimise risks to health, safety or fundamental rights. Includes ability to understand system capacities and limitations, monitor operation, detect anomalies, and intervene or override when necessary."@en,
+        "[Artículo 14] Los sistemas de IA de alto riesgo deben diseñarse para ser supervisados eficazmente por personas durante su uso. La supervisión humana debe prevenir o minimizar riesgos para la salud, seguridad o derechos fundamentales. Incluye capacidad de comprender capacidades y limitaciones del sistema, monitorear operación, detectar anomalías e intervenir cuando sea necesario."@es .
+
+ai:AccuracyEvaluationRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Accuracy Evaluation Requirement (Article 15)"@en,
+        "Requisito de Evaluación de Precisión (Artículo 15)"@es ;
+    rdfs:comment "[Article 15] High-risk AI systems shall be designed to achieve an appropriate level of accuracy throughout their lifecycle. Accuracy levels and relevant metrics shall be declared in accompanying instructions. Systems must perform consistently and be resilient to errors, faults or inconsistencies in the environment or due to interaction with persons or other systems."@en,
+        "[Artículo 15] Los sistemas de IA de alto riesgo deben diseñarse para lograr un nivel apropiado de precisión durante todo su ciclo de vida. Los niveles de precisión y métricas relevantes deben declararse en las instrucciones. Los sistemas deben funcionar consistentemente y ser resilientes a errores, fallos o inconsistencias."@es .
+
+ai:TraceabilityRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Traceability Requirement (Article 12)"@en,
+        "Requisito de Trazabilidad (Artículo 12)"@es ;
+    rdfs:comment "[Article 12] High-risk AI systems shall technically allow for automatic recording of events (logs) over the lifetime of the system. Logging capabilities shall enable recording of events relevant for identifying risks, facilitating post-market monitoring, and tracking system operation. Logs must be retained appropriately to ensure traceability and accountability."@en,
+        "[Artículo 12] Los sistemas de IA de alto riesgo deben permitir técnicamente el registro automático de eventos (logs) durante toda la vida útil del sistema. Las capacidades de registro deben permitir registrar eventos relevantes para identificar riesgos, facilitar el monitoreo post-comercialización y rastrear la operación del sistema."@es .
+
 # ===== PURPOSE INSTANCES =====
 # These are the specific purposes covered under EU AI Act Annex III
 
