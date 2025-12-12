@@ -5,11 +5,13 @@ from fastapi import FastAPI, Depends, HTTPException, status, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
+from fastapi.responses import Response
 from rdflib import Graph, URIRef, RDF, RDFS, Literal
 from rdflib.namespace import split_uri
 from models.system import IntelligentSystem
 from db import get_database,ensure_indexes
 import os, json
+import httpx
 from routers.systems import router as systems_router
 from routers.systems_fuseki import router as fuseki_router
 from routers.reasoning import router as reasoning_router
@@ -296,6 +298,26 @@ def get_transparency_levels(lang: str = Query("en")):
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok"}
+
+# AIAAIC CSV endpoint - serve local file
+AIAAIC_CSV_PATH = "/data/AIAAIC Repository - Incidents.csv"
+
+@app.get("/aiaaic/incidents")
+async def get_aiaaic_incidents():
+    """Serve AIAAIC CSV data from local file"""
+    from pathlib import Path
+    csv_path = Path(AIAAIC_CSV_PATH)
+    if not csv_path.exists():
+        raise HTTPException(status_code=404, detail=f"AIAAIC CSV not found at {AIAAIC_CSV_PATH}")
+
+    with open(csv_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    return Response(
+        content=content,
+        media_type="text/csv",
+        headers={"Content-Type": "text/csv; charset=utf-8"}
+    )
 
 @app.on_event("startup")
 async def startup_event():

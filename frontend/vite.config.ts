@@ -19,6 +19,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/forensic-api': {
+        target: 'http://forensic_agent:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/forensic-api/, ''),
+      },
     },
   },
 })
