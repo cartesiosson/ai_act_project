@@ -1,0 +1,492 @@
+{
+  "timestamp": "2025-12-12T16:19:01.687620",
+  "total_incidents": 5,
+  "successful": 4,
+  "failed": 1,
+  "average_processing_time": 32.45030608177185,
+  "aggregate_metrics": {
+    "coverage": 0.35294117647058826,
+    "precision": 0.1935483870967742,
+    "recall": 0.35294117647058826,
+    "f1": 0.25,
+    "total_true_positives": 6,
+    "total_additional_detected": 25,
+    "total_missed": 11,
+    "total_expected": 17,
+    "total_detected": 31,
+    "total_false_positives": 25,
+    "total_false_negatives": 11
+  },
+  "issue_metrics": {
+    "Safety": {
+      "tp": 3,
+      "additional": 13,
+      "missed": 3,
+      "expected": 6,
+      "detected": 16,
+      "count": 2,
+      "coverage": 0.5,
+      "precision": 0.1875,
+      "recall": 0.5,
+      "f1": 0.2727272727272727
+    },
+    "Accuracy/reliability": {
+      "tp": 3,
+      "additional": 12,
+      "missed": 8,
+      "expected": 11,
+      "detected": 15,
+      "count": 2,
+      "coverage": 0.2727272727272727,
+      "precision": 0.2,
+      "recall": 0.2727272727272727,
+      "f1": 0.23076923076923075
+    },
+    "Fairness": {
+      "tp": 3,
+      "additional": 5,
+      "missed": 5,
+      "expected": 8,
+      "detected": 8,
+      "count": 1,
+      "coverage": 0.375,
+      "precision": 0.375,
+      "recall": 0.375,
+      "f1": 0.375
+    },
+    "Transparency": {
+      "tp": 3,
+      "additional": 5,
+      "missed": 5,
+      "expected": 8,
+      "detected": 8,
+      "count": 1,
+      "coverage": 0.375,
+      "precision": 0.375,
+      "recall": 0.375,
+      "f1": 0.375
+    }
+  },
+  "requirement_metrics": {
+    "riskmanagementrequirement": {
+      "expected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "robustnessrequirement": {
+      "expected": 4,
+      "detected": 1,
+      "detection_rate": 0.25
+    },
+    "safetyrequirement": {
+      "expected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "accuracyevaluationrequirement": {
+      "expected": 2,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "accuracyrequirement": {
+      "expected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "nondiscriminationrequirement": {
+      "expected": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    "fairnessrequirement": {
+      "expected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "transparencyrequirement": {
+      "expected": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    "gpaitransparencyrequirement": {
+      "expected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    },
+    "biasdetectionrequirement": {
+      "expected": 1,
+      "detected": 0,
+      "detection_rate": 0.0
+    }
+  },
+  "per_incident_results": [
+    {
+      "incident_id": "AIAAIC1886",
+      "headline": "Japanese men charged with creating obscene AI anime character posters",
+      "issues": [
+        "Safety"
+      ],
+      "expected_requirements": [
+        "riskmanagementrequirement",
+        "robustnessrequirement",
+        "safetyrequirement"
+      ],
+      "detected_requirements": [
+        "accuracyrequirement",
+        "nondiscriminationrequirement",
+        "transparencyrequirement",
+        "humanoversightrequirement",
+        "fundamentalrightsassessmentrequirement",
+        "loggingrequirement",
+        "documentationrequirement",
+        "biasdetectionrequirement",
+        "datagovernancerequirement"
+      ],
+      "metrics": {
+        "true_positives": 0,
+        "additional_detected": 9,
+        "missed": 3,
+        "coverage": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "total_expected": 3,
+        "total_detected": 9,
+        "expected": [
+          "riskmanagementrequirement",
+          "robustnessrequirement",
+          "safetyrequirement"
+        ],
+        "detected": [
+          "accuracyrequirement",
+          "nondiscriminationrequirement",
+          "transparencyrequirement",
+          "humanoversightrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "loggingrequirement",
+          "documentationrequirement",
+          "biasdetectionrequirement",
+          "datagovernancerequirement"
+        ],
+        "matched": [],
+        "over_detected": [
+          "accuracyrequirement",
+          "nondiscriminationrequirement",
+          "transparencyrequirement",
+          "humanoversightrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "loggingrequirement",
+          "documentationrequirement",
+          "biasdetectionrequirement",
+          "datagovernancerequirement"
+        ],
+        "missed_list": [
+          "riskmanagementrequirement",
+          "robustnessrequirement",
+          "safetyrequirement"
+        ],
+        "false_positives": 9,
+        "false_negatives": 3
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 31.452924966812134,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.9,
+        "data_types": 0.8,
+        "incident_classification": 0.9,
+        "affected_populations": 0.8,
+        "timeline": 0.9,
+        "overall": 0.8866666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC1049",
+      "headline": "Secret Invasion' AI-generated title sequence prompts controversy",
+      "issues": [
+        "Employment",
+        "Transparency"
+      ],
+      "expected_requirements": [
+        "gpaitransparencyrequirement",
+        "nondiscriminationrequirement",
+        "fundamentalrightsassessmentrequirement",
+        "transparencyrequirement"
+      ],
+      "detected_requirements": [],
+      "metrics": {
+        "true_positives": 0,
+        "additional_detected": 0,
+        "missed": 4,
+        "coverage": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "total_expected": 4,
+        "total_detected": 0,
+        "expected": [
+          "gpaitransparencyrequirement",
+          "nondiscriminationrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "transparencyrequirement"
+        ],
+        "detected": [],
+        "matched": [],
+        "over_detected": [],
+        "missed_list": [
+          "gpaitransparencyrequirement",
+          "nondiscriminationrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "transparencyrequirement"
+        ],
+        "false_positives": 0,
+        "false_negatives": 4
+      },
+      "risk_level": "Unknown",
+      "status": "ERROR",
+      "elapsed_seconds": 29.640676259994507,
+      "confidence": 0
+    },
+    {
+      "incident_id": "AIAAIC0131",
+      "headline": "Google Photos Assistant ski panorama fail",
+      "issues": [
+        "Accuracy/reliability"
+      ],
+      "expected_requirements": [
+        "accuracyevaluationrequirement",
+        "accuracyrequirement",
+        "robustnessrequirement"
+      ],
+      "detected_requirements": [
+        "transparencyrequirement",
+        "humanoversightrequirement",
+        "fundamentalrightsassessmentrequirement",
+        "protectionofminorsrequirement",
+        "loggingrequirement",
+        "documentationrequirement",
+        "datagovernancerequirement"
+      ],
+      "metrics": {
+        "true_positives": 0,
+        "additional_detected": 7,
+        "missed": 3,
+        "coverage": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "total_expected": 3,
+        "total_detected": 7,
+        "expected": [
+          "accuracyevaluationrequirement",
+          "accuracyrequirement",
+          "robustnessrequirement"
+        ],
+        "detected": [
+          "transparencyrequirement",
+          "humanoversightrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "protectionofminorsrequirement",
+          "loggingrequirement",
+          "documentationrequirement",
+          "datagovernancerequirement"
+        ],
+        "matched": [],
+        "over_detected": [
+          "transparencyrequirement",
+          "humanoversightrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "protectionofminorsrequirement",
+          "loggingrequirement",
+          "documentationrequirement",
+          "datagovernancerequirement"
+        ],
+        "missed_list": [
+          "accuracyevaluationrequirement",
+          "accuracyrequirement",
+          "robustnessrequirement"
+        ],
+        "false_positives": 7,
+        "false_negatives": 3
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 32.63124203681946,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.8,
+        "timeline": 0.9,
+        "overall": 0.8366666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC1312",
+      "headline": "Takaful' poverty targeting algorithm unfairly excludes poor Jordanians",
+      "issues": [
+        "Accuracy/reliability",
+        "Fairness",
+        "Transparency"
+      ],
+      "expected_requirements": [
+        "accuracyrequirement",
+        "nondiscriminationrequirement",
+        "fairnessrequirement",
+        "transparencyrequirement",
+        "gpaitransparencyrequirement",
+        "robustnessrequirement",
+        "accuracyevaluationrequirement",
+        "biasdetectionrequirement"
+      ],
+      "detected_requirements": [
+        "accuracyrequirement",
+        "nondiscriminationrequirement",
+        "transparencyrequirement",
+        "humanoversightrequirement",
+        "fundamentalrightsassessmentrequirement",
+        "loggingrequirement",
+        "documentationrequirement",
+        "datagovernancerequirement"
+      ],
+      "metrics": {
+        "true_positives": 3,
+        "additional_detected": 5,
+        "missed": 5,
+        "coverage": 0.375,
+        "precision": 0.375,
+        "recall": 0.375,
+        "f1": 0.375,
+        "total_expected": 8,
+        "total_detected": 8,
+        "expected": [
+          "accuracyrequirement",
+          "nondiscriminationrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "gpaitransparencyrequirement",
+          "robustnessrequirement",
+          "accuracyevaluationrequirement",
+          "biasdetectionrequirement"
+        ],
+        "detected": [
+          "accuracyrequirement",
+          "nondiscriminationrequirement",
+          "transparencyrequirement",
+          "humanoversightrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "loggingrequirement",
+          "documentationrequirement",
+          "datagovernancerequirement"
+        ],
+        "matched": [
+          "accuracyrequirement",
+          "nondiscriminationrequirement",
+          "transparencyrequirement"
+        ],
+        "over_detected": [
+          "humanoversightrequirement",
+          "fundamentalrightsassessmentrequirement",
+          "loggingrequirement",
+          "documentationrequirement",
+          "datagovernancerequirement"
+        ],
+        "missed_list": [
+          "fairnessrequirement",
+          "gpaitransparencyrequirement",
+          "robustnessrequirement",
+          "accuracyevaluationrequirement",
+          "biasdetectionrequirement"
+        ],
+        "false_positives": 5,
+        "false_negatives": 5
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 34.03545904159546,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.8,
+        "timeline": 0.9,
+        "overall": 0.8366666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC1876",
+      "headline": "Engineer creates AI-powered robotic sentry rifle",
+      "issues": [
+        "Safety"
+      ],
+      "expected_requirements": [
+        "riskmanagementrequirement",
+        "robustnessrequirement",
+        "safetyrequirement"
+      ],
+      "detected_requirements": [
+        "riskmanagementrequirement",
+        "transparencyrequirement",
+        "humanoversightrequirement",
+        "robustnessrequirement",
+        "loggingrequirement",
+        "documentationrequirement",
+        "safetyrequirement"
+      ],
+      "metrics": {
+        "true_positives": 3,
+        "additional_detected": 4,
+        "missed": 0,
+        "coverage": 1.0,
+        "precision": 0.42857142857142855,
+        "recall": 1.0,
+        "f1": 0.6,
+        "total_expected": 3,
+        "total_detected": 7,
+        "expected": [
+          "riskmanagementrequirement",
+          "robustnessrequirement",
+          "safetyrequirement"
+        ],
+        "detected": [
+          "riskmanagementrequirement",
+          "transparencyrequirement",
+          "humanoversightrequirement",
+          "robustnessrequirement",
+          "loggingrequirement",
+          "documentationrequirement",
+          "safetyrequirement"
+        ],
+        "matched": [
+          "riskmanagementrequirement",
+          "robustnessrequirement",
+          "safetyrequirement"
+        ],
+        "over_detected": [
+          "documentationrequirement",
+          "loggingrequirement",
+          "humanoversightrequirement",
+          "transparencyrequirement"
+        ],
+        "missed_list": [],
+        "false_positives": 4,
+        "false_negatives": 0
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 34.491228103637695,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.5,
+        "timeline": 0.9,
+        "overall": 0.7966666666666667
+      }
+    }
+  ]
+}

@@ -180,14 +180,27 @@ ai:SystemicRiskAssessmentCriterion a ai:NormativeCriterion ;
         "Evaluación de Riesgo Sistémico para GPAI"@es ;
     rdfs:comment "[GPAI] High-capability GPAI models must undergo systemic risk assessment due to their potential impact on society."@en,
         "[GPAI] Los modelos GPAI de alta capacidad deben someterse a evaluación de riesgo sistémico."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:GPAITransparencyRequirement,
+        ai:GPAIProviderObligationRequirement,
+        ai:RiskManagementRequirement,
+        ai:DocumentationRequirement,
+        ai:TransparencyRequirement,
+        ai:AccuracyRequirement,
+        ai:AccuracyEvaluationRequirement .
 
 ai:DualUseRiskCriterion a ai:NormativeCriterion ;
     rdfs:label "Dual-Use Risk Criterion"@en,
         "Criterio de Riesgo de Uso Dual"@es ;
     rdfs:comment "[GPAI] GPAI models with dual-use potential must be evaluated for both beneficial and harmful applications."@en,
         "[GPAI] Los modelos GPAI con potencial de uso dual deben evaluarse para aplicaciones beneficiosas y dañinas."@es ;
-    ai:assignsRiskLevel ai:HighRisk .
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:SystemSafetyRequirement,
+        ai:RiskManagementRequirement,
+        ai:RobustnessRequirement,
+        ai:HumanOversightRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:FundamentalRightsAssessmentRequirement .
 
 ai:GPAIDataQualityRequirement a ai:DataGovernanceRequirement ;
     rdfs:label "GPAI Training Data Quality"@en,
@@ -344,6 +357,12 @@ ai:ISO42001DataGovernanceRequirement a ai:DataGovernanceRequirement ;
         "Gobernanza de Datos ISO 42001"@es ;
     rdfs:comment "[ISO] Data management and governance aligned with ISO/IEC 42001."@en,
         "[ISO] Gestión y gobernanza de datos alineados con ISO/IEC 42001."@es .
+
+ai:RiskManagementRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Risk Management System Requirement (Article 9)"@en,
+        "Requisito de Sistema de Gestión de Riesgos (Artículo 9)"@es ;
+    rdfs:comment "[Article 9] Providers of high-risk AI systems shall establish, implement, document and maintain a risk management system. The system shall consist of a continuous iterative process throughout the entire lifecycle of a high-risk AI system, requiring regular systematic updating. It shall include identification and analysis of known and reasonably foreseeable risks, estimation and evaluation of risks, evaluation of other possibly arising risks, and adoption of appropriate risk management measures."@en,
+        "[Artículo 9] Los proveedores de sistemas de IA de alto riesgo deben establecer, implementar, documentar y mantener un sistema de gestión de riesgos. El sistema debe consistir en un proceso iterativo continuo durante todo el ciclo de vida del sistema de IA de alto riesgo, requiriendo actualización sistemática regular. Debe incluir identificación y análisis de riesgos conocidos y razonablemente previsibles, estimación y evaluación de riesgos, evaluación de otros riesgos que puedan surgir, y adopción de medidas apropiadas de gestión de riesgos."@es .
 
 ai:ISO42001RiskManagementRequirement a ai:ComplianceRequirement ;
     rdfs:label "ISO 42001 Risk Management"@en,
@@ -686,7 +705,9 @@ ai:CriticalInfrastructureCriterion a ai:NormativeCriterion ;
         ai:RobustnessRequirement,
         ai:HumanOversightRequirement,
         ai:DocumentationRequirement,
-        ai:TransparencyRequirement .
+        ai:TransparencyRequirement,
+        ai:LoggingRequirement,
+        ai:RiskManagementRequirement .
 
 ai:JudicialSupportCriterion a ai:NormativeCriterion ;
     rdfs:label "Judicial Decision Support Criterion"@en,
@@ -699,7 +720,8 @@ ai:JudicialSupportCriterion a ai:NormativeCriterion ;
         ai:HumanOversightRequirement,
         ai:DocumentationRequirement,
         ai:AccuracyEvaluationRequirement,
-        ai:TraceabilityRequirement .
+        ai:TraceabilityRequirement,
+        ai:LoggingRequirement .
 
 # Requirements that should exist for fundamental rights contexts
 # Adding them as they are referenced by criteria but may not be fully defined
@@ -736,12 +758,16 @@ ai:EssentialServicesAccessCriterion a ai:NormativeCriterion ;
     ai:assignsRiskLevel ai:HighRisk ;
     ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
         ai:NonDiscriminationRequirement,
+        ai:FairnessRequirement,
+        ai:BiasDetectionRequirement,
         ai:TransparencyRequirement,
         ai:HumanOversightRequirement,
         ai:DataGovernanceRequirement,
         ai:DocumentationRequirement,
         ai:TraceabilityRequirement,
-        ai:AccuracyEvaluationRequirement .
+        ai:AccuracyEvaluationRequirement,
+        ai:AccuracyRequirement,
+        ai:RobustnessRequirement .
 
 ai:LawEnforcementCriterion a ai:NormativeCriterion ;
     rdfs:label "Law Enforcement Criterion"@en,
@@ -758,7 +784,8 @@ ai:LawEnforcementCriterion a ai:NormativeCriterion ;
         ai:AccuracyEvaluationRequirement,
         ai:DocumentationRequirement,
         ai:TraceabilityRequirement,
-        ai:BiasDetectionRequirement .
+        ai:BiasDetectionRequirement,
+        ai:LoggingRequirement .
 
 ai:MigrationBorderCriterion a ai:NormativeCriterion ;
     rdfs:label "Migration and Border Control Criterion"@en,
@@ -800,13 +827,15 @@ ai:RecruitmentEmploymentCriterion a ai:NormativeCriterion ;
     ai:assignsRiskLevel ai:HighRisk ;
     ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
         ai:NonDiscriminationRequirement,
+        ai:FairnessRequirement,
         ai:TransparencyRequirement,
         ai:HumanOversightRequirement,
         ai:DataGovernanceRequirement,
         ai:DocumentationRequirement,
         ai:AccuracyEvaluationRequirement,
         ai:BiasDetectionRequirement,
-        ai:TraceabilityRequirement .
+        ai:TraceabilityRequirement,
+        ai:LoggingRequirement .
 
 ai:WorkforceEvaluationCriterion a ai:NormativeCriterion ;
     rdfs:label "Workforce Evaluation Criterion"@en,
@@ -816,13 +845,15 @@ ai:WorkforceEvaluationCriterion a ai:NormativeCriterion ;
     ai:assignsRiskLevel ai:HighRisk ;
     ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
         ai:NonDiscriminationRequirement,
+        ai:FairnessRequirement,
         ai:TransparencyRequirement,
         ai:HumanOversightRequirement,
         ai:DataGovernanceRequirement,
         ai:DocumentationRequirement,
         ai:AccuracyEvaluationRequirement,
         ai:BiasDetectionRequirement,
-        ai:TraceabilityRequirement .
+        ai:TraceabilityRequirement,
+        ai:LoggingRequirement .
 
 # Additional requirements referenced but possibly not defined
 ai:NonDiscriminationRequirement a ai:ComplianceRequirement ;
@@ -836,6 +867,12 @@ ai:BiasDetectionRequirement a ai:TechnicalRequirement ;
         "Requisito de Detección de Sesgos"@es ;
     rdfs:comment "Systematic methods to detect, measure, and mitigate biases in AI system outputs and decision-making."@en,
         "Métodos sistemáticos para detectar, medir y mitigar sesgos en los resultados del sistema de IA."@es .
+
+ai:FairnessRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Fairness Requirement"@en,
+        "Requisito de Equidad"@es ;
+    rdfs:comment "Ensures AI systems treat all individuals and groups fairly without unjustified discrimination. Encompasses procedural fairness, outcome fairness, and equal treatment across protected characteristics."@en,
+        "Garantiza que los sistemas de IA traten a todos los individuos y grupos de manera justa sin discriminación injustificada."@es .
 
 ai:HumanOversightRequirement a ai:ComplianceRequirement ;
     rdfs:label "Human Oversight Requirement (Article 14)"@en,
@@ -857,6 +894,28 @@ ai:TraceabilityRequirement a ai:TechnicalRequirement ;
 
 # ===== PURPOSE INSTANCES =====
 # These are the specific purposes covered under EU AI Act Annex III
+
+ai:GenerativeAIContentCreation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Generative AI Content Creation"@en,
+        "Creación de Contenido con IA Generativa"@es ;
+    rdfs:comment "[GPAI - Articles 50-52] Purpose for general-purpose AI models used to generate text, images, audio, video or other content. Subject to transparency and safety obligations under Chapter V. Includes deepfakes, synthetic media, and AI-generated creative content."@en,
+        "[GPAI - Artículos 50-52] Propósito para modelos de IA de propósito general usados para generar texto, imágenes, audio, video u otro contenido. Sujeto a obligaciones de transparencia y seguridad bajo el Capítulo V. Incluye deepfakes, medios sintéticos y contenido creativo generado por IA."@es ;
+    ai:activatesCriterion ai:SystemicRiskAssessmentCriterion,
+        ai:DualUseRiskCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:SystemicRiskAssessmentCriterion .
+
+ai:SurveillanceMonitoring a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Surveillance and Monitoring"@en,
+        "Vigilancia y Monitoreo"@es ;
+    rdfs:comment "[ANNEX III - Points 1, 7] Purpose for AI systems used for surveillance, monitoring, or tracking of individuals. Includes video surveillance, behavioral monitoring, location tracking, and mass observation systems. High-risk due to impact on privacy, freedom, and fundamental rights."@en,
+        "[ANEXO III - Puntos 1, 7] Propósito para sistemas de IA utilizados para vigilancia, monitoreo o seguimiento de individuos. Incluye videovigilancia, monitoreo de comportamiento, rastreo de ubicación y sistemas de observación masiva. Alto riesgo por impacto en privacidad, libertad y derechos fundamentales."@es ;
+    ai:activatesCriterion ai:SurveillanceRiskCriterion,
+        ai:BiometricIdentificationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:SurveillanceRiskCriterion .
 
 ai:BiometricIdentification a ai:Purpose,
     owl:NamedIndividual ;
@@ -1368,7 +1427,9 @@ ai:SurveillanceRiskCriterion a ai:ContextualCriterion,
         ai:PrivacyProtectionRequirement,
         ai:TransparencyRequirement,
         ai:HumanOversightRequirement,
-        ai:DataGovernanceRequirement .
+        ai:DataGovernanceRequirement,
+        ai:LoggingRequirement,
+        ai:DocumentationRequirement .
 
 ai:ManipulationRiskCriterion a ai:ContextualCriterion,
     owl:NamedIndividual ;

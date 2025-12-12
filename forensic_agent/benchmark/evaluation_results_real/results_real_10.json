@@ -1,0 +1,946 @@
+{
+  "timestamp": "2025-12-12T18:54:09.541088",
+  "total_incidents": 10,
+  "successful": 7,
+  "failed": 3,
+  "average_processing_time": 59.60800716876984,
+  "aggregate_metrics": {
+    "coverage": 0.8823529411764706,
+    "precision": 0.43478260869565216,
+    "recall": 0.8823529411764706,
+    "f1": 0.5825242718446603,
+    "total_true_positives": 30,
+    "total_additional_detected": 39,
+    "total_missed": 4,
+    "total_expected": 34,
+    "total_detected": 69,
+    "total_false_positives": 39,
+    "total_false_negatives": 4
+  },
+  "issue_metrics": {
+    "Employment": {
+      "tp": 3,
+      "additional": 8,
+      "missed": 0,
+      "expected": 3,
+      "detected": 11,
+      "count": 1,
+      "coverage": 1.0,
+      "precision": 0.2727272727272727,
+      "recall": 1.0,
+      "f1": 0.42857142857142855
+    },
+    "Transparency": {
+      "tp": 17,
+      "additional": 16,
+      "missed": 1,
+      "expected": 18,
+      "detected": 33,
+      "count": 3,
+      "coverage": 0.9444444444444444,
+      "precision": 0.5151515151515151,
+      "recall": 0.9444444444444444,
+      "f1": 0.6666666666666666
+    },
+    "Accuracy/reliability": {
+      "tp": 8,
+      "additional": 14,
+      "missed": 0,
+      "expected": 8,
+      "detected": 22,
+      "count": 2,
+      "coverage": 1.0,
+      "precision": 0.36363636363636365,
+      "recall": 1.0,
+      "f1": 0.5333333333333333
+    },
+    "Fairness": {
+      "tp": 14,
+      "additional": 8,
+      "missed": 1,
+      "expected": 15,
+      "detected": 22,
+      "count": 2,
+      "coverage": 0.9333333333333333,
+      "precision": 0.6363636363636364,
+      "recall": 0.9333333333333333,
+      "f1": 0.7567567567567568
+    },
+    "Safety": {
+      "tp": 6,
+      "additional": 11,
+      "missed": 3,
+      "expected": 9,
+      "detected": 17,
+      "count": 2,
+      "coverage": 0.6666666666666666,
+      "precision": 0.35294117647058826,
+      "recall": 0.6666666666666666,
+      "f1": 0.46153846153846156
+    },
+    "Accountability": {
+      "tp": 16,
+      "additional": 13,
+      "missed": 4,
+      "expected": 20,
+      "detected": 29,
+      "count": 3,
+      "coverage": 0.8,
+      "precision": 0.5517241379310345,
+      "recall": 0.8,
+      "f1": 0.6530612244897959
+    },
+    "Privacy/surveillance": {
+      "tp": 13,
+      "additional": 6,
+      "missed": 1,
+      "expected": 14,
+      "detected": 19,
+      "count": 2,
+      "coverage": 0.9285714285714286,
+      "precision": 0.6842105263157895,
+      "recall": 0.9285714285714286,
+      "f1": 0.7878787878787878
+    }
+  },
+  "requirement_metrics": {
+    "fundamentalrightsassessmentrequirement": {
+      "expected": 1,
+      "detected": 1,
+      "detection_rate": 1.0
+    },
+    "transparencyrequirement": {
+      "expected": 3,
+      "detected": 3,
+      "detection_rate": 1.0
+    },
+    "nondiscriminationrequirement": {
+      "expected": 3,
+      "detected": 3,
+      "detection_rate": 1.0
+    },
+    "robustnessrequirement": {
+      "expected": 4,
+      "detected": 3,
+      "detection_rate": 0.75
+    },
+    "accuracyrequirement": {
+      "expected": 2,
+      "detected": 2,
+      "detection_rate": 1.0
+    },
+    "fairnessrequirement": {
+      "expected": 2,
+      "detected": 2,
+      "detection_rate": 1.0
+    },
+    "biasdetectionrequirement": {
+      "expected": 2,
+      "detected": 2,
+      "detection_rate": 1.0
+    },
+    "safetyrequirement": {
+      "expected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "riskmanagementrequirement": {
+      "expected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    },
+    "datagovernancerequirement": {
+      "expected": 2,
+      "detected": 2,
+      "detection_rate": 1.0
+    },
+    "humanoversightrequirement": {
+      "expected": 3,
+      "detected": 3,
+      "detection_rate": 1.0
+    },
+    "documentationrequirement": {
+      "expected": 3,
+      "detected": 3,
+      "detection_rate": 1.0
+    },
+    "loggingrequirement": {
+      "expected": 3,
+      "detected": 3,
+      "detection_rate": 1.0
+    },
+    "privacyprotectionrequirement": {
+      "expected": 2,
+      "detected": 1,
+      "detection_rate": 0.5
+    }
+  },
+  "per_incident_results": [
+    {
+      "incident_id": "AIAAIC1886",
+      "headline": "Japanese men charged with creating obscene AI anime character posters",
+      "issues": [
+        "Safety"
+      ],
+      "expected_requirements": [
+        "robustnessrequirement",
+        "safetyrequirement",
+        "riskmanagementrequirement"
+      ],
+      "detected_requirements": [],
+      "metrics": {
+        "true_positives": 0,
+        "additional_detected": 0,
+        "missed": 3,
+        "coverage": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "total_expected": 3,
+        "total_detected": 0,
+        "expected": [
+          "robustnessrequirement",
+          "safetyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "detected": [],
+        "matched": [],
+        "over_detected": [],
+        "missed_list": [
+          "robustnessrequirement",
+          "safetyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "false_positives": 0,
+        "false_negatives": 3
+      },
+      "risk_level": "Unknown",
+      "status": "ERROR",
+      "elapsed_seconds": 35.297170877456665,
+      "confidence": 0
+    },
+    {
+      "incident_id": "AIAAIC1049",
+      "headline": "Secret Invasion' AI-generated title sequence prompts controversy",
+      "issues": [
+        "Employment",
+        "Transparency"
+      ],
+      "expected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "transparencyrequirement",
+        "nondiscriminationrequirement"
+      ],
+      "detected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "gpaitransparencyrequirement",
+        "humanoversightrequirement",
+        "safetyrequirement",
+        "documentationrequirement",
+        "nondiscriminationrequirement",
+        "gpaiproviderobligationrequirement",
+        "transparencyrequirement",
+        "robustnessrequirement",
+        "accuracyrequirement",
+        "riskmanagementrequirement"
+      ],
+      "metrics": {
+        "true_positives": 3,
+        "additional_detected": 8,
+        "missed": 0,
+        "coverage": 1.0,
+        "precision": 0.2727272727272727,
+        "recall": 1.0,
+        "f1": 0.42857142857142855,
+        "total_expected": 3,
+        "total_detected": 11,
+        "expected": [
+          "fundamentalrightsassessmentrequirement",
+          "transparencyrequirement",
+          "nondiscriminationrequirement"
+        ],
+        "detected": [
+          "fundamentalrightsassessmentrequirement",
+          "gpaitransparencyrequirement",
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "gpaiproviderobligationrequirement",
+          "transparencyrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "matched": [
+          "fundamentalrightsassessmentrequirement",
+          "transparencyrequirement",
+          "nondiscriminationrequirement"
+        ],
+        "over_detected": [
+          "gpaitransparencyrequirement",
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "gpaiproviderobligationrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "missed_list": [],
+        "false_positives": 8,
+        "false_negatives": 0
+      },
+      "risk_level": "MinimalRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 39.20770978927612,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.4,
+        "incident_classification": 0.9,
+        "affected_populations": 0.5,
+        "timeline": 0.3,
+        "overall": 0.6466666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC0131",
+      "headline": "Google Photos Assistant ski panorama fail",
+      "issues": [
+        "Accuracy/reliability"
+      ],
+      "expected_requirements": [
+        "robustnessrequirement",
+        "accuracyrequirement"
+      ],
+      "detected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "gpaitransparencyrequirement",
+        "humanoversightrequirement",
+        "safetyrequirement",
+        "documentationrequirement",
+        "nondiscriminationrequirement",
+        "gpaiproviderobligationrequirement",
+        "transparencyrequirement",
+        "robustnessrequirement",
+        "accuracyrequirement",
+        "riskmanagementrequirement"
+      ],
+      "metrics": {
+        "true_positives": 2,
+        "additional_detected": 9,
+        "missed": 0,
+        "coverage": 1.0,
+        "precision": 0.18181818181818182,
+        "recall": 1.0,
+        "f1": 0.3076923076923077,
+        "total_expected": 2,
+        "total_detected": 11,
+        "expected": [
+          "robustnessrequirement",
+          "accuracyrequirement"
+        ],
+        "detected": [
+          "fundamentalrightsassessmentrequirement",
+          "gpaitransparencyrequirement",
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "gpaiproviderobligationrequirement",
+          "transparencyrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "matched": [
+          "robustnessrequirement",
+          "accuracyrequirement"
+        ],
+        "over_detected": [
+          "fundamentalrightsassessmentrequirement",
+          "gpaitransparencyrequirement",
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "gpaiproviderobligationrequirement",
+          "transparencyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "missed_list": [],
+        "false_positives": 9,
+        "false_negatives": 0
+      },
+      "risk_level": "MinimalRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 39.88407611846924,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.5,
+        "timeline": 0.9,
+        "overall": 0.7966666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC1312",
+      "headline": "Takaful' poverty targeting algorithm unfairly excludes poor Jordanians",
+      "issues": [
+        "Accuracy/reliability",
+        "Fairness",
+        "Transparency"
+      ],
+      "expected_requirements": [
+        "nondiscriminationrequirement",
+        "transparencyrequirement",
+        "fairnessrequirement",
+        "robustnessrequirement",
+        "biasdetectionrequirement",
+        "accuracyrequirement"
+      ],
+      "detected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "datagovernancerequirement",
+        "humanoversightrequirement",
+        "documentationrequirement",
+        "nondiscriminationrequirement",
+        "loggingrequirement",
+        "fairnessrequirement",
+        "transparencyrequirement",
+        "biasdetectionrequirement",
+        "robustnessrequirement",
+        "accuracyrequirement"
+      ],
+      "metrics": {
+        "true_positives": 6,
+        "additional_detected": 5,
+        "missed": 0,
+        "coverage": 1.0,
+        "precision": 0.5454545454545454,
+        "recall": 1.0,
+        "f1": 0.7058823529411764,
+        "total_expected": 6,
+        "total_detected": 11,
+        "expected": [
+          "nondiscriminationrequirement",
+          "transparencyrequirement",
+          "fairnessrequirement",
+          "robustnessrequirement",
+          "biasdetectionrequirement",
+          "accuracyrequirement"
+        ],
+        "detected": [
+          "fundamentalrightsassessmentrequirement",
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "loggingrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement"
+        ],
+        "matched": [
+          "nondiscriminationrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement"
+        ],
+        "over_detected": [
+          "fundamentalrightsassessmentrequirement",
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "loggingrequirement"
+        ],
+        "missed_list": [],
+        "false_positives": 5,
+        "false_negatives": 0
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 39.460474729537964,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.8,
+        "timeline": 0.9,
+        "overall": 0.8366666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC1876",
+      "headline": "Engineer creates AI-powered robotic sentry rifle",
+      "issues": [
+        "Safety"
+      ],
+      "expected_requirements": [
+        "robustnessrequirement",
+        "safetyrequirement",
+        "riskmanagementrequirement"
+      ],
+      "detected_requirements": [
+        "humanoversightrequirement",
+        "safetyrequirement",
+        "documentationrequirement",
+        "transparencyrequirement",
+        "loggingrequirement",
+        "robustnessrequirement",
+        "riskmanagementrequirement"
+      ],
+      "metrics": {
+        "true_positives": 3,
+        "additional_detected": 4,
+        "missed": 0,
+        "coverage": 1.0,
+        "precision": 0.42857142857142855,
+        "recall": 1.0,
+        "f1": 0.6,
+        "total_expected": 3,
+        "total_detected": 7,
+        "expected": [
+          "robustnessrequirement",
+          "safetyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "detected": [
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "transparencyrequirement",
+          "loggingrequirement",
+          "robustnessrequirement",
+          "riskmanagementrequirement"
+        ],
+        "matched": [
+          "robustnessrequirement",
+          "safetyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "over_detected": [
+          "loggingrequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "transparencyrequirement"
+        ],
+        "missed_list": [],
+        "false_positives": 4,
+        "false_negatives": 0
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 45.439129114151,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.6,
+        "affected_populations": 0.5,
+        "timeline": 0.9,
+        "overall": 0.7566666666666666
+      }
+    },
+    {
+      "incident_id": "AIAAIC0768",
+      "headline": "Amazon Ring video doorbell ruled to invade neighbour privacy",
+      "issues": [
+        "Accountability",
+        "Privacy/surveillance"
+      ],
+      "expected_requirements": [
+        "datagovernancerequirement",
+        "humanoversightrequirement",
+        "documentationrequirement",
+        "loggingrequirement",
+        "privacyprotectionrequirement"
+      ],
+      "detected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "datagovernancerequirement",
+        "accuracyrequirement",
+        "humanoversightrequirement",
+        "documentationrequirement",
+        "loggingrequirement",
+        "transparencyrequirement",
+        "privacyprotectionrequirement"
+      ],
+      "metrics": {
+        "true_positives": 5,
+        "additional_detected": 3,
+        "missed": 0,
+        "coverage": 1.0,
+        "precision": 0.625,
+        "recall": 1.0,
+        "f1": 0.7692307692307693,
+        "total_expected": 5,
+        "total_detected": 8,
+        "expected": [
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "loggingrequirement",
+          "privacyprotectionrequirement"
+        ],
+        "detected": [
+          "fundamentalrightsassessmentrequirement",
+          "datagovernancerequirement",
+          "accuracyrequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "loggingrequirement",
+          "transparencyrequirement",
+          "privacyprotectionrequirement"
+        ],
+        "matched": [
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "loggingrequirement",
+          "privacyprotectionrequirement"
+        ],
+        "over_detected": [
+          "fundamentalrightsassessmentrequirement",
+          "transparencyrequirement",
+          "accuracyrequirement"
+        ],
+        "missed_list": [],
+        "false_positives": 3,
+        "false_negatives": 0
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 47.10535001754761,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.8,
+        "timeline": 0.9,
+        "overall": 0.8366666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC069",
+      "headline": "Tesla Model S collides with tractor-trailor, kills driver",
+      "issues": [
+        "Accountability",
+        "Accuracy/reliability",
+        "Safety"
+      ],
+      "expected_requirements": [
+        "humanoversightrequirement",
+        "safetyrequirement",
+        "documentationrequirement",
+        "loggingrequirement",
+        "robustnessrequirement",
+        "accuracyrequirement",
+        "riskmanagementrequirement"
+      ],
+      "detected_requirements": [],
+      "metrics": {
+        "true_positives": 0,
+        "additional_detected": 0,
+        "missed": 7,
+        "coverage": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "total_expected": 7,
+        "total_detected": 0,
+        "expected": [
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "loggingrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "detected": [],
+        "matched": [],
+        "over_detected": [],
+        "missed_list": [
+          "robustnessrequirement",
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "accuracyrequirement",
+          "riskmanagementrequirement",
+          "loggingrequirement"
+        ],
+        "false_positives": 0,
+        "false_negatives": 7
+      },
+      "risk_level": "Unknown",
+      "status": "ERROR",
+      "elapsed_seconds": 120.01461791992188,
+      "confidence": 0
+    },
+    {
+      "incident_id": "AIAAIC0504",
+      "headline": "Deliveroo Italy algorithm ruled to discriminate against \"reliable\" riders",
+      "issues": [
+        "Accountability",
+        "Fairness",
+        "Fairness",
+        "Employment",
+        "Transparency"
+      ],
+      "expected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "humanoversightrequirement",
+        "documentationrequirement",
+        "nondiscriminationrequirement",
+        "loggingrequirement",
+        "fairnessrequirement",
+        "transparencyrequirement",
+        "biasdetectionrequirement"
+      ],
+      "detected_requirements": [],
+      "metrics": {
+        "true_positives": 0,
+        "additional_detected": 0,
+        "missed": 8,
+        "coverage": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "total_expected": 8,
+        "total_detected": 0,
+        "expected": [
+          "fundamentalrightsassessmentrequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "loggingrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement"
+        ],
+        "detected": [],
+        "matched": [],
+        "over_detected": [],
+        "missed_list": [
+          "fundamentalrightsassessmentrequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "loggingrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement"
+        ],
+        "false_positives": 0,
+        "false_negatives": 8
+      },
+      "risk_level": "Unknown",
+      "status": "ERROR",
+      "elapsed_seconds": 120.04121804237366,
+      "confidence": 0
+    },
+    {
+      "incident_id": "AIAAIC1970",
+      "headline": "Sweden fraud prediction algorithm found to discriminate against women, migrants",
+      "issues": [
+        "Accountability",
+        "Fairness",
+        "Privacy/surveillance",
+        "Transparency"
+      ],
+      "expected_requirements": [
+        "datagovernancerequirement",
+        "humanoversightrequirement",
+        "documentationrequirement",
+        "nondiscriminationrequirement",
+        "loggingrequirement",
+        "fairnessrequirement",
+        "transparencyrequirement",
+        "biasdetectionrequirement",
+        "privacyprotectionrequirement"
+      ],
+      "detected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "datagovernancerequirement",
+        "humanoversightrequirement",
+        "documentationrequirement",
+        "nondiscriminationrequirement",
+        "loggingrequirement",
+        "fairnessrequirement",
+        "transparencyrequirement",
+        "biasdetectionrequirement",
+        "robustnessrequirement",
+        "accuracyrequirement"
+      ],
+      "metrics": {
+        "true_positives": 8,
+        "additional_detected": 3,
+        "missed": 1,
+        "coverage": 0.8888888888888888,
+        "precision": 0.7272727272727273,
+        "recall": 0.8888888888888888,
+        "f1": 0.7999999999999999,
+        "total_expected": 9,
+        "total_detected": 11,
+        "expected": [
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "loggingrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement",
+          "privacyprotectionrequirement"
+        ],
+        "detected": [
+          "fundamentalrightsassessmentrequirement",
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "loggingrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement"
+        ],
+        "matched": [
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "loggingrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement"
+        ],
+        "over_detected": [
+          "fundamentalrightsassessmentrequirement",
+          "robustnessrequirement",
+          "accuracyrequirement"
+        ],
+        "missed_list": [
+          "privacyprotectionrequirement"
+        ],
+        "false_positives": 3,
+        "false_negatives": 1
+      },
+      "risk_level": "HighRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 72.15684413909912,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.8,
+        "timeline": 0.9,
+        "overall": 0.8366666666666667
+      }
+    },
+    {
+      "incident_id": "AIAAIC1745",
+      "headline": "Starship robot knocks over Arizona State University employee",
+      "issues": [
+        "Accountability",
+        "Safety"
+      ],
+      "expected_requirements": [
+        "humanoversightrequirement",
+        "safetyrequirement",
+        "documentationrequirement",
+        "loggingrequirement",
+        "robustnessrequirement",
+        "riskmanagementrequirement"
+      ],
+      "detected_requirements": [
+        "fundamentalrightsassessmentrequirement",
+        "datagovernancerequirement",
+        "humanoversightrequirement",
+        "documentationrequirement",
+        "nondiscriminationrequirement",
+        "loggingrequirement",
+        "fairnessrequirement",
+        "transparencyrequirement",
+        "biasdetectionrequirement",
+        "accuracyrequirement"
+      ],
+      "metrics": {
+        "true_positives": 3,
+        "additional_detected": 7,
+        "missed": 3,
+        "coverage": 0.5,
+        "precision": 0.3,
+        "recall": 0.5,
+        "f1": 0.37499999999999994,
+        "total_expected": 6,
+        "total_detected": 10,
+        "expected": [
+          "humanoversightrequirement",
+          "safetyrequirement",
+          "documentationrequirement",
+          "loggingrequirement",
+          "robustnessrequirement",
+          "riskmanagementrequirement"
+        ],
+        "detected": [
+          "fundamentalrightsassessmentrequirement",
+          "datagovernancerequirement",
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "nondiscriminationrequirement",
+          "loggingrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement",
+          "accuracyrequirement"
+        ],
+        "matched": [
+          "humanoversightrequirement",
+          "documentationrequirement",
+          "loggingrequirement"
+        ],
+        "over_detected": [
+          "fundamentalrightsassessmentrequirement",
+          "datagovernancerequirement",
+          "nondiscriminationrequirement",
+          "fairnessrequirement",
+          "transparencyrequirement",
+          "biasdetectionrequirement",
+          "accuracyrequirement"
+        ],
+        "missed_list": [
+          "robustnessrequirement",
+          "safetyrequirement",
+          "riskmanagementrequirement"
+        ],
+        "false_positives": 7,
+        "false_negatives": 3
+      },
+      "risk_level": "MinimalRisk",
+      "status": "COMPLETED",
+      "elapsed_seconds": 37.47348093986511,
+      "confidence": {
+        "system_type": 1.0,
+        "purpose": 0.6,
+        "data_types": 0.95,
+        "incident_classification": 0.9,
+        "affected_populations": 0.8,
+        "timeline": 0.9,
+        "overall": 0.8366666666666667
+      }
+    }
+  ]
+}

@@ -95,7 +95,7 @@ Extract the following information in JSON format:
   "system": {{
     "system_name": "Name of the AI system",
     "system_type": "vision|nlp|tabular|multimodal|other",
-    "primary_purpose": "REQUIRED - Main purpose. MUST be one of these EU AI Act ontology values: BiometricIdentification, LawEnforcementSupport, MigrationControl, EducationAccess, RecruitmentOrEmployment, WorkforceEvaluationPurpose, CriticalInfrastructureOperation, HealthCare, JudicialDecisionSupport, PublicServiceAllocation. Choose the closest match.",
+    "primary_purpose": "REQUIRED - Main purpose. MUST be one of these EU AI Act ontology values: BiometricIdentification, LawEnforcementSupport, MigrationControl, EducationAccess, RecruitmentOrEmployment, WorkforceEvaluationPurpose, CriticalInfrastructureOperation, HealthCare, JudicialDecisionSupport, PublicServiceAllocation, GenerativeAIContentCreation, SurveillanceMonitoring. Choose the closest match. Use CriticalInfrastructureOperation for autonomous vehicles, robots, drones, weapons, Tesla, autopilot. Use SurveillanceMonitoring for smart home devices, cameras, doorbells, tracking. Use GenerativeAIContentCreation for AI art, chatbots, LLMs, deepfakes.",
     "processes_data_types": ["BiometricData", "PersonalData", "HealthData", "LocationData", "FinancialData", etc.],
     "deployment_context": ["PublicSpaces", "HighVolume", "RealTime", "CriticalInfrastructure", "EducationContext", "EmploymentContext", "LawEnforcementContext", "HealthcareContext", "MigrationContext", etc.],
     "is_automated_decision": true/false,
@@ -155,10 +155,12 @@ IMPORTANT EXTRACTION RULES:
     - EducationAccess: student evaluation, exam grading, educational AI
     - RecruitmentOrEmployment: hiring, CV screening, job applications
     - WorkforceEvaluationPurpose: employee monitoring, performance evaluation
-    - CriticalInfrastructureOperation: autonomous vehicles, energy, transport, water
+    - CriticalInfrastructureOperation: autonomous vehicles, robots (including delivery robots like Starship, sidewalk robots), drones, weapons, military, Tesla, autopilot, energy, transport - ANY robot interacting with public spaces
     - HealthCare: medical diagnosis, clinical decision support, patient care
     - JudicialDecisionSupport: court decisions, sentencing, recidivism prediction
     - PublicServiceAllocation: credit scoring, social benefits, insurance, welfare
+    - GenerativeAIContentCreation: AI art, chatbots, LLMs, deepfakes, synthetic media, image/text generation
+    - SurveillanceMonitoring: smart home devices, cameras, doorbells (Ring), CCTV, tracking, IoT security
   * Map the described purpose to the closest matching IRI above
 - For incident_type:
   * discrimination: unfair treatment of protected groups

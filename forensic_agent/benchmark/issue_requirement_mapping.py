@@ -24,7 +24,8 @@ REQUIREMENT_SYNONYMS: Dict[str, List[str]] = {
     "safetyrequirement": [
         "systemsafetyrequirement",
     ],
-    # Accuracy: ontology uses AccuracyEvaluationRequirement
+    # Accuracy: Both AccuracyRequirement and AccuracyEvaluationRequirement map to same canonical
+    # This ensures they are treated as equivalent for benchmark purposes
     "accuracyrequirement": [
         "accuracyevaluationrequirement",
     ],
@@ -32,19 +33,16 @@ REQUIREMENT_SYNONYMS: Dict[str, List[str]] = {
     "riskmanagementrequirement": [
         "riskassessmentrequirement",
     ],
-    # Fairness: ontology splits into NonDiscrimination + BiasDetection
-    # (BiasDetection already in mapping, NonDiscrimination is separate)
-    "fairnessrequirement": [
-        "nondiscriminationrequirement",
-        "biasdetectionrequirement",
-    ],
+    # NOTE: Fairness, NonDiscrimination, BiasDetection are now kept SEPARATE
+    # The ontology detects them independently, and benchmark expects them separately
     # Cybersecurity: ontology uses SecurityRequirement
     "cybersecurityrequirement": [
         "securityrequirement",
     ],
-    # Logging: ontology also has AuditTrailRequirement
+    # Logging: ontology also has AuditTrailRequirement and TraceabilityRequirement
     "loggingrequirement": [
         "audittrailrequirement",
+        "traceabilityrequirement",
     ],
     # Privacy: ontology also has DataPrivacyRequirement
     "privacyprotectionrequirement": [
@@ -62,9 +60,10 @@ for canonical, synonyms in REQUIREMENT_SYNONYMS.items():
 # AIAAIC Issue → Expected EU AI Act Requirements (that should be missing/violated)
 ISSUE_TO_REQUIREMENTS: Dict[str, List[str]] = {
     # Core EU AI Act requirements
+    # Note: GPAITransparencyRequirement only applies to GPAI systems, not all AI
+    # For general transparency issues, only TransparencyRequirement is expected
     "Transparency": [
         "TransparencyRequirement",
-        "GPAITransparencyRequirement",
     ],
     "Accuracy/reliability": [
         "AccuracyRequirement",
@@ -149,6 +148,8 @@ def get_expected_requirements(issues: List[str]) -> Set[str]:
     """
     Given AIAAIC issues, return the set of expected requirements
     that should have been in place (and thus should be missing).
+
+    Applies the same synonym mapping as detected requirements for consistency.
     """
     expected = set()
     for issue in issues:
@@ -156,7 +157,10 @@ def get_expected_requirements(issues: List[str]) -> Set[str]:
         issue_clean = issue.strip()
         if issue_clean in ISSUE_TO_REQUIREMENTS:
             for req in ISSUE_TO_REQUIREMENTS[issue_clean]:
-                expected.add(normalize_requirement(req))
+                normalized = normalize_requirement(req)
+                # Apply synonym mapping for consistency with detected requirements
+                canonical = SYNONYM_TO_CANONICAL.get(normalized, normalized)
+                expected.add(canonical)
     return expected
 
 

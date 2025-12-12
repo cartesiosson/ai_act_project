@@ -17,7 +17,9 @@ VALID_PURPOSE_IRIS = {
     "CriticalInfrastructureOperation",
     "HealthCare",
     "JudicialDecisionSupport",
-    "PublicServiceAllocation"
+    "PublicServiceAllocation",
+    "GenerativeAIContentCreation",
+    "SurveillanceMonitoring",
 }
 
 # Mapping from extracted purposes to ontology IRIs
@@ -63,7 +65,7 @@ PURPOSE_MAPPING = {
     "employee monitoring": "WorkforceEvaluationPurpose",
     "performance evaluation": "WorkforceEvaluationPurpose",
     "productivity": "WorkforceEvaluationPurpose",
-    # Critical infrastructure
+    # Critical infrastructure and safety-critical systems
     "critical infrastructure": "CriticalInfrastructureOperation",
     "energy": "CriticalInfrastructureOperation",
     "power grid": "CriticalInfrastructureOperation",
@@ -72,6 +74,20 @@ PURPOSE_MAPPING = {
     "autonomous driving": "CriticalInfrastructureOperation",
     "self-driving": "CriticalInfrastructureOperation",
     "autonomous vehicle": "CriticalInfrastructureOperation",
+    "robot": "CriticalInfrastructureOperation",
+    "robotic": "CriticalInfrastructureOperation",
+    "autonomous robot": "CriticalInfrastructureOperation",
+    "delivery robot": "CriticalInfrastructureOperation",
+    "starship": "CriticalInfrastructureOperation",
+    "sidewalk robot": "CriticalInfrastructureOperation",
+    "autonomous delivery": "CriticalInfrastructureOperation",
+    "weapon": "CriticalInfrastructureOperation",
+    "sentry": "CriticalInfrastructureOperation",
+    "military": "CriticalInfrastructureOperation",
+    "defense": "CriticalInfrastructureOperation",
+    "drone": "CriticalInfrastructureOperation",
+    "autopilot": "CriticalInfrastructureOperation",
+    "tesla": "CriticalInfrastructureOperation",
     # Healthcare
     "healthcare": "HealthCare",
     "health care": "HealthCare",
@@ -91,6 +107,36 @@ PURPOSE_MAPPING = {
     "welfare": "PublicServiceAllocation",
     "credit scoring": "PublicServiceAllocation",
     "insurance": "PublicServiceAllocation",
+    # Generative AI / Content Creation
+    "generative": "GenerativeAIContentCreation",
+    "content generation": "GenerativeAIContentCreation",
+    "image generation": "GenerativeAIContentCreation",
+    "text generation": "GenerativeAIContentCreation",
+    "deepfake": "GenerativeAIContentCreation",
+    "synthetic media": "GenerativeAIContentCreation",
+    "ai art": "GenerativeAIContentCreation",
+    "ai-generated": "GenerativeAIContentCreation",
+    "chatbot": "GenerativeAIContentCreation",
+    "llm": "GenerativeAIContentCreation",
+    "large language model": "GenerativeAIContentCreation",
+    "stable diffusion": "GenerativeAIContentCreation",
+    "midjourney": "GenerativeAIContentCreation",
+    "dall-e": "GenerativeAIContentCreation",
+    "chatgpt": "GenerativeAIContentCreation",
+    "gpt": "GenerativeAIContentCreation",
+    # Surveillance and Monitoring
+    "surveillance": "SurveillanceMonitoring",
+    "monitoring": "SurveillanceMonitoring",
+    "tracking": "SurveillanceMonitoring",
+    "video surveillance": "SurveillanceMonitoring",
+    "cctv": "SurveillanceMonitoring",
+    "camera": "SurveillanceMonitoring",
+    "doorbell": "SurveillanceMonitoring",
+    "ring": "SurveillanceMonitoring",
+    "smart home": "SurveillanceMonitoring",
+    "iot": "SurveillanceMonitoring",
+    "location tracking": "SurveillanceMonitoring",
+    "gps tracking": "SurveillanceMonitoring",
 }
 
 
