@@ -17,7 +17,7 @@ class SystemProperties(BaseModel):
     model_scale: str = Field(..., description="FoundationModel|Large|Medium|Small")
     parameter_count: Optional[str] = Field(None, description="Model parameter count if known")
     training_data_description: Optional[str] = Field(None, description="Training data description if available")
-    organization: str = Field(..., description="Company/Organization name (legacy - use deployer/developer)")
+    organization: Optional[str] = Field(None, description="Company/Organization name (legacy - use deployer/developer)")
     jurisdiction: str = Field(..., description="EU|US|Global|Other")
     # AIRO-aligned stakeholder fields (Art. 3.3-3.4 EU AI Act)
     deployer: Optional[str] = Field(None, description="Entity deploying the AI system (Art. 3.4 EU AI Act)")
