@@ -22,6 +22,10 @@ interface SystemCardProps {
   fundamentalRightsAssessment?: boolean;
   version: string;
   urn: string;
+  // ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
+  prohibitedPractices?: string[];
+  legalExceptions?: string[];
+  hasJudicialAuthorization?: boolean;
 }
 
 export default function SystemCard({
@@ -48,6 +52,9 @@ export default function SystemCard({
   fundamentalRightsAssessment,
   version,
   urn,
+  prohibitedPractices,
+  legalExceptions,
+  hasJudicialAuthorization,
 }: SystemCardProps) {
   const renderSection = (title: string, icon: string, color: string, fields: { label: string; values?: string[] }[]) => {
     const hasContent = fields.some(f => f.values && f.values.length > 0);
@@ -113,6 +120,9 @@ export default function SystemCard({
       humanOversightRequired,
       transparencyLevel,
       fundamentalRightsAssessment,
+      prohibitedPractices,
+      legalExceptions,
+      hasJudicialAuthorization,
     };
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
@@ -176,6 +186,54 @@ export default function SystemCard({
           )}
         </div>
       </div>
+
+      {/* ARTICLE 5: PROHIBITED PRACTICES WARNING (v0.37.4) */}
+      {prohibitedPractices && prohibitedPractices.length > 0 && (
+        <div className="bg-red-100 dark:bg-red-900 border-t-4 border-red-500 dark:border-red-700 px-6 py-4">
+          <div className="flex items-start gap-3">
+            <span className="text-3xl">🚫</span>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-red-900 dark:text-red-100 mb-2">
+                ⚠️ ARTICLE 5: PROHIBITED PRACTICE DETECTED
+              </h3>
+              <p className="text-sm text-red-800 dark:text-red-200 mb-3 font-semibold">
+                This system CANNOT be deployed in the EU. Maximum penalties: €35M or 7% of global annual turnover.
+              </p>
+              <div className="bg-red-200 dark:bg-red-800 rounded p-3 mb-3">
+                <p className="text-xs font-semibold text-red-900 dark:text-red-100 uppercase mb-2">Prohibited Practices:</p>
+                <ul className="list-disc list-inside text-sm text-red-900 dark:text-red-100">
+                  {prohibitedPractices.map((practice, i) => (
+                    <li key={i}>{practice.replace(/^ai:/, '').replace(/Criterion$/, '')}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Legal Exceptions (only for real-time biometric) */}
+              {legalExceptions && legalExceptions.length > 0 && (
+                <div className="bg-yellow-100 dark:bg-yellow-900 rounded p-3 mb-2 border border-yellow-400 dark:border-yellow-600">
+                  <p className="text-xs font-semibold text-yellow-900 dark:text-yellow-100 uppercase mb-2">
+                    ⚖️ Legal Exceptions Claimed (Article 5.2):
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-yellow-900 dark:text-yellow-100 mb-2">
+                    {legalExceptions.map((exception, i) => (
+                      <li key={i}>{exception.replace(/^ai:/, '').replace(/Exception$/, '')}</li>
+                    ))}
+                  </ul>
+                  {hasJudicialAuthorization !== undefined && (
+                    <div className={`mt-2 p-2 rounded ${hasJudicialAuthorization ? 'bg-blue-200 dark:bg-blue-800' : 'bg-red-300 dark:bg-red-700'}`}>
+                      <p className={`text-xs font-bold ${hasJudicialAuthorization ? 'text-blue-900 dark:text-blue-100' : 'text-red-900 dark:text-red-100'}`}>
+                        {hasJudicialAuthorization
+                          ? '✓ Has Prior Judicial Authorization'
+                          : '⚠️ NO Judicial Authorization - System remains PROHIBITED'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content Sections */}
       <div className="px-6 py-6">

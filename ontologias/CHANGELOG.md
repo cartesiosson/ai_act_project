@@ -7,6 +7,129 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.37.4] - 2025-12-14
+
+### 🚫 ARTICLE 5: PROHIBITED PRACTICES (UNACCEPTABLE RISK)
+
+Complete implementation of EU AI Act Article 5 covering prohibited AI practices with unacceptable risk. Systems with these practices **CANNOT be deployed in the EU** (maximum penalties: €35M or 7% global annual turnover).
+
+#### ✅ Added
+
+- **ProhibitedPracticeCriterion** class (Article 5 - Unacceptable Risk)
+  - New base class for AI practices that are absolutely prohibited
+  - 5 prohibited practices as individuals with full bilingual support (ES/EN):
+    1. **SubliminalManipulationCriterion** (Article 5.1.a) - Subliminal manipulation beyond conscious awareness
+    2. **VulnerabilityExploitationCriterion** (Article 5.1.b) - Exploiting vulnerabilities (age, disability, economic situation)
+    3. **SocialScoringCriterion** (Article 5.1.c) - Social scoring by public authorities
+    4. **PredictivePolicingProfilingCriterion** (Article 5.1.d) - Crime prediction based solely on profiling
+    5. **RealTimeBiometricIdentificationCriterion** (Article 5.1.h) - Real-time biometric ID in public spaces
+
+- **Legal Exceptions** (Article 5.2) - Limited exceptions for real-time biometric identification only:
+  - VictimSearchException (Article 5.2.a) - Search for kidnapping/trafficking victims
+  - TerroristThreatException (Article 5.2.b) - Prevention of terrorist threats
+  - SeriousCrimeException (Article 5.2.c) - Prosecution of serious crimes (3+ years imprisonment)
+  - All exceptions require prior judicial authorization
+
+- **New Ontology Properties**:
+  - `ai:hasProhibitedPractice` - Links systems to prohibited practices
+  - `ai:articleReference` - References specific article numbers
+  - `ai:prohibitionScope` - Describes prohibition scope (absolute vs. with exceptions)
+  - `ai:hasException` - Links to legal exceptions (only for real-time biometric)
+
+- **New Requirements** (7 enforcement-related):
+  - JudicialAuthorizationRequirement
+  - ProportionalityAssessmentRequirement
+  - TemporalSpatialLimitationRequirement
+  - PublicRegistryNotificationRequirement
+  - ProhibitionEnforcementRequirement
+  - MarketWithdrawalRequirement
+  - VulnerablePopulationProtectionRequirement
+
+- **New Purposes** for prohibited practices:
+  - SubliminalManipulation
+  - BehaviorManipulation
+  - SocialScoring
+  - CrimeRiskPrediction
+
+- **New Deployment Contexts**:
+  - PublicSpaces (for biometric identification)
+  - VulnerablePopulationContext (for exploitation detection)
+
+- **New Algorithm Type**:
+  - ProfilingAlgorithm (for predictive policing detection)
+
+#### 🔧 Technical Implementation
+
+- **Backend API** (`backend/main.py`):
+  - New endpoint: `GET /vocab/prohibited_practices` - Returns all 5 prohibited practices with metadata
+  - New endpoint: `GET /vocab/legal_exceptions` - Returns Article 5.2 exceptions
+
+- **Backend Model** (`backend/models/system.py`):
+  - Added `hasProhibitedPractice: List[str]` field
+  - Added `hasLegalException: List[str]` field
+  - Added `hasJudicialAuthorization: bool` field
+
+- **Python Rules** (`ontologias/rules/base_rules.py`):
+  - RULE_ART5_1A: Detects subliminal manipulation
+  - RULE_ART5_1B: Detects vulnerability exploitation
+  - RULE_ART5_1C: Detects social scoring
+  - RULE_ART5_1D: Detects predictive policing by profiling
+  - RULE_ART5_1H: Detects real-time biometric identification in public spaces
+  - Total rules: 12 → 17 base rules
+
+- **SWRL Rules** (`ontologias/rules/swrl-base-rules.ttl`):
+  - Added 5 Article 5 detection rules (for documentation)
+  - Total rules: 25 → 30
+  - Updated to version 1.1.0-article5
+
+- **Frontend** (`frontend/src/pages/SystemsPage.tsx`):
+  - New Section 8: "Article 5: Prohibited Practices" with prominent red warning design
+  - Multi-select for prohibited practices with real-time warnings
+  - Conditional display of legal exceptions (only for real-time biometric ID)
+  - Judicial authorization checkbox with validation
+  - Warning badges showing deployment prohibition status
+
+- **System Card** (`frontend/src/pages/SystemCard.tsx`):
+  - Prominent red warning banner for prohibited practices
+  - Display of legal exceptions and judicial authorization status
+  - Clear indication of EU deployment prohibition
+
+- **Forensic Agent** (`forensic_agent/app/models/incident.py`, `forensic_agent/app/services/incident_extractor.py`):
+  - Added Article 5 fields to incident extraction model
+  - Enhanced LLM extraction prompt with detailed Article 5 detection rules
+  - Automatic detection of prohibited practices from incident narratives
+  - Extraction of legal exceptions and judicial authorization status
+
+#### 📊 Ontology Statistics
+
+- **Triples**: 1,685 → 1,806 (+121 triples)
+- **Classes**: ProhibitedPracticeCriterion (1 new base + 5 individuals)
+- **Properties**: 4 new (hasProhibitedPractice, articleReference, prohibitionScope, hasException)
+- **Requirements**: 7 new enforcement-related requirements
+- **Purposes**: 4 new prohibited purposes
+- **SWRL Rules**: 25 → 30 rules
+- **Python Rules**: 12 → 17 base rules
+- **API Endpoints**: 2 new vocabulary endpoints
+
+#### 🌍 Compliance & Standards
+
+- ✅ **Bilingual**: All labels and comments in Spanish and English
+- ✅ **EU AI Act Article 5**: Full implementation with legal exceptions
+- ✅ **AIRO Compatible**: Follows AI Risk Ontology patterns
+- ⚠️ **ISO/NIST Mappings**: Article 5 is EU-specific regulation, not mapped to ISO 42001 or NIST AI RMF
+- ✅ **Validated**: Ontology successfully parsed with rdflib (1,806 triples)
+
+#### 🔍 Detection Logic
+
+Systems are flagged with prohibited practices when:
+1. **Subliminal Manipulation**: Purpose = `SubliminalManipulation`
+2. **Vulnerability Exploitation**: Purpose = `BehaviorManipulation` + Context = `VulnerablePopulationContext`
+3. **Social Scoring**: Purpose = `SocialScoring` (only applies to public authorities)
+4. **Predictive Policing**: Purpose = `CrimeRiskPrediction` + Algorithm = `ProfilingAlgorithm`
+5. **Real-time Biometric**: Purpose = `BiometricIdentification` + Context = `RealTimeProcessing` + Context = `PublicSpaces`
+
+---
+
 ## [0.37.3] - 2025-12-12
 
 ### 🎯 FORENSIC BENCHMARK OPTIMIZATION

@@ -183,9 +183,85 @@ RULE_12 = {
     ]
 }
 
+# =============================================================
+# ARTICLE 5: PROHIBITED PRACTICES (UNACCEPTABLE RISK) - v0.37.4
+# =============================================================
+# Systems triggering these rules CANNOT be deployed in the EU
+# Maximum penalties: €35M or 7% global annual turnover
+
+# REGLA ART5-1: Subliminal Manipulation Detection (Article 5.1.a)
+RULE_ART5_1A = {
+    "id": "rule_art5_1a_subliminal",
+    "name": "Detect subliminal manipulation practices",
+    "description": "Systems with subliminal manipulation purpose trigger Article 5.1.a prohibition. ABSOLUTELY PROHIBITED - NO EXCEPTIONS.",
+    "conditions": [
+        {"property": "ai:hasPurpose", "operator": "==", "value": "ai:SubliminalManipulation", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasProhibitedPractice", "value": "ai:SubliminalManipulationCriterion"}
+    ]
+}
+
+# REGLA ART5-2: Vulnerability Exploitation Detection (Article 5.1.b)
+RULE_ART5_1B = {
+    "id": "rule_art5_1b_vulnerability",
+    "name": "Detect vulnerability exploitation practices",
+    "description": "Systems with behavior manipulation purpose targeting vulnerable populations trigger Article 5.1.b prohibition. Protected groups: minors, persons with disabilities, economically disadvantaged. ABSOLUTELY PROHIBITED - NO EXCEPTIONS.",
+    "conditions": [
+        {"property": "ai:hasPurpose", "operator": "==", "value": "ai:BehaviorManipulation", "type": "uri"},
+        {"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:VulnerablePopulationContext", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasProhibitedPractice", "value": "ai:VulnerabilityExploitationCriterion"}
+    ]
+}
+
+# REGLA ART5-3: Social Scoring Detection (Article 5.1.c)
+RULE_ART5_1C = {
+    "id": "rule_art5_1c_social_scoring",
+    "name": "Detect social scoring practices",
+    "description": "Systems with social scoring purpose trigger Article 5.1.c prohibition. ONLY APPLIES TO PUBLIC AUTHORITIES. Examples: China-style 'social credit' systems. ABSOLUTELY PROHIBITED - NO EXCEPTIONS.",
+    "conditions": [
+        {"property": "ai:hasPurpose", "operator": "==", "value": "ai:SocialScoring", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasProhibitedPractice", "value": "ai:SocialScoringCriterion"}
+    ]
+}
+
+# REGLA ART5-4: Predictive Policing by Profiling Detection (Article 5.1.d)
+RULE_ART5_1D = {
+    "id": "rule_art5_1d_predictive_policing",
+    "name": "Detect predictive policing based solely on profiling",
+    "description": "Systems with crime prediction purpose using SOLELY profiling algorithms (without objective prior criminal behavior evidence) trigger Article 5.1.d prohibition. Risk assessment based on documented prior criminal behavior IS ALLOWED.",
+    "conditions": [
+        {"property": "ai:hasPurpose", "operator": "==", "value": "ai:CrimeRiskPrediction", "type": "uri"},
+        {"property": "ai:hasAlgorithmType", "operator": "==", "value": "ai:ProfilingAlgorithm", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasProhibitedPractice", "value": "ai:PredictivePolicingProfilingCriterion"}
+    ]
+}
+
+# REGLA ART5-5: Real-Time Biometric Identification Detection (Article 5.1.h)
+RULE_ART5_1H = {
+    "id": "rule_art5_1h_realtime_biometric",
+    "name": "Detect real-time remote biometric identification in public spaces",
+    "description": "Systems with biometric identification purpose in real-time processing context in public spaces trigger Article 5.1.h prohibition. GENERALLY PROHIBITED with LIMITED EXCEPTIONS (Article 5.2): victim search, terrorist threat, serious crimes. Requires prior judicial authorization.",
+    "conditions": [
+        {"property": "ai:hasPurpose", "operator": "==", "value": "ai:BiometricIdentification", "type": "uri"},
+        {"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:RealTimeProcessing", "type": "uri"},
+        {"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:PublicSpaces", "type": "uri"}
+    ],
+    "consequences": [
+        {"property": "ai:hasProhibitedPractice", "value": "ai:RealTimeBiometricIdentificationCriterion"}
+    ]
+}
+
 # Lista de todas las reglas básicas
 BASE_RULES = [
     RULE_01A, RULE_01B, RULE_02, RULE_03, RULE_04, RULE_05,
     RULE_06, RULE_07, RULE_08A, RULE_08B, RULE_09, RULE_10,
-    RULE_11A, RULE_12
+    RULE_11A, RULE_12,
+    RULE_ART5_1A, RULE_ART5_1B, RULE_ART5_1C, RULE_ART5_1D, RULE_ART5_1H
 ]

@@ -106,7 +106,10 @@ Extract the following information in JSON format:
     "organization": "Company/Organization name (legacy field - also fill deployer/developer if known)",
     "jurisdiction": "EU|US|Global|Other",
     "deployer": "Entity that deploys/operates the AI system (Art. 3.4 EU AI Act) - may differ from developer",
-    "developer": "Entity that developed/created the AI system - may differ from deployer"
+    "developer": "Entity that developed/created the AI system - may differ from deployer",
+    "prohibited_practices": ["List of Article 5 prohibited practices if detected: SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification. Leave empty if none detected."],
+    "legal_exceptions": ["If RealTimeBiometricIdentification is detected, check for legal exceptions: VictimSearchException, TerroristThreatException, SeriousCrimeException. Otherwise empty."],
+    "has_judicial_authorization": true/false/null "Only relevant if real-time biometric ID with exceptions. Does the narrative mention judicial/court authorization?"
   }},
   "incident": {{
     "incident_type": "discrimination|bias|safety_failure|privacy_violation|transparency_failure|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|other",
@@ -184,6 +187,23 @@ IMPORTANT EXTRACTION RULES:
   * If the same entity both developed and deploys the system, set both to the same value
   * These map to AIRO ontology: airo:AIDeployer and airo:AIDeveloper
   * Use null only if truly unknown from the narrative
+- For prohibited_practices (Article 5 - Unacceptable Risk):
+  * SubliminalManipulation: AI uses subliminal techniques beyond conscious awareness to manipulate behavior
+  * VulnerabilityExploitation: AI exploits vulnerabilities of age (minors), disability, or economic disadvantage to manipulate behavior
+  * SocialScoring: AI performs social scoring by public authorities leading to detrimental treatment (China-style social credit systems)
+  * PredictivePolicing: AI predicts crime risk based SOLELY on profiling without objective criminal behavior evidence
+  * RealTimeBiometricIdentification: Real-time remote biometric identification (e.g., facial recognition) in publicly accessible spaces
+  * Systems with these practices CANNOT be deployed in the EU (maximum penalties: €35M or 7% global revenue)
+  * ONLY RealTimeBiometricIdentification has limited exceptions under Article 5.2
+- For legal_exceptions (ONLY if RealTimeBiometricIdentification detected):
+  * VictimSearchException: Searching for victims (kidnapping, missing children, human trafficking)
+  * TerroristThreatException: Prevention of specific, substantial terrorist threat
+  * SeriousCrimeException: Detection/prosecution of serious crimes (3+ years imprisonment)
+  * ALL exceptions require prior judicial authorization
+- For has_judicial_authorization:
+  * true: Narrative explicitly mentions court/judicial/magistrate authorization
+  * false: Narrative explicitly states NO authorization
+  * null: Authorization status unknown from narrative
 
 Respond with ONLY valid JSON, no additional text or markdown formatting.
 """

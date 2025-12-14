@@ -40,6 +40,10 @@ export type System = {
   hasDeveloper?: string;
   hasUser?: string;
   hasSubject?: string;
+  // ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
+  hasProhibitedPractice?: string[];
+  hasLegalException?: string[];
+  hasJudicialAuthorization?: boolean;
 };
 
 export default function SystemsPage() {
@@ -91,6 +95,9 @@ export default function SystemsPage() {
   const [documentationRequirements, setDocumentationRequirements] = useState<{ id: string; label: string }[]>([]);
   const [dataGovernanceRequirements, setDataGovernanceRequirements] = useState<{ id: string; label: string }[]>([]);
   const [transparencyLevels, setTransparencyLevels] = useState<{ id: string; label: string }[]>([]);
+  // ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
+  const [prohibitedPractices, setProhibitedPractices] = useState<{ id: string; label: string; articleReference: string; prohibitionScope: string }[]>([]);
+  const [legalExceptions, setLegalExceptions] = useState<{ id: string; label: string; articleReference: string }[]>([]);
 
   const [form, setForm] = useState({
     hasName: "",
@@ -125,6 +132,10 @@ export default function SystemsPage() {
     hasDeveloper: "" as string,
     hasUser: "" as string,
     hasSubject: "" as string,
+    // ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
+    hasProhibitedPractice: [] as string[],
+    hasLegalException: [] as string[],
+    hasJudicialAuthorization: false as boolean,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -204,6 +215,9 @@ export default function SystemsPage() {
         hasDeveloper: "",
         hasUser: "",
         hasSubject: "",
+        hasProhibitedPractice: [],
+        hasLegalException: [],
+        hasJudicialAuthorization: false,
       });
       setLoadedSystem(null);
       setShowValidation(false);
@@ -262,6 +276,9 @@ export default function SystemsPage() {
         hasDeveloper: systemToLoad.hasDeveloper || "",
         hasUser: systemToLoad.hasUser || "",
         hasSubject: systemToLoad.hasSubject || "",
+        hasProhibitedPractice: systemToLoad.hasProhibitedPractice || [],
+        hasLegalException: systemToLoad.hasLegalException || [],
+        hasJudicialAuthorization: systemToLoad.hasJudicialAuthorization ?? false,
       });
       setLoadedSystem(systemToLoad);
     }
@@ -332,7 +349,9 @@ export default function SystemsPage() {
         robustnessRequirementsData,
         documentationRequirementsData,
         dataGovernanceRequirementsData,
-        transparencyLevelsData
+        transparencyLevelsData,
+        prohibitedPracticesData,
+        legalExceptionsData
       ] = await Promise.all([
         fetchVocabulary("purposes"),
         fetchVocabulary("risks"),
@@ -368,6 +387,9 @@ export default function SystemsPage() {
           {"id": "ai:Medium", "label": "Medium"},
           {"id": "ai:Low", "label": "Low"}
         ]),
+        // ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
+        fetch(`${apiBase}/vocab/prohibited_practices?lang=en`).then(r => r.json()).catch(() => []),
+        fetch(`${apiBase}/vocab/legal_exceptions?lang=en`).then(r => r.json()).catch(() => []),
       ]);
       setPurposes(purposesData);
       setRisks(risksData);
@@ -387,6 +409,8 @@ export default function SystemsPage() {
       setDocumentationRequirements(documentationRequirementsData);
       setDataGovernanceRequirements(dataGovernanceRequirementsData);
       setTransparencyLevels(transparencyLevelsData);
+      setProhibitedPractices(prohibitedPracticesData);
+      setLegalExceptions(legalExceptionsData);
     };
     load();
   }, []); // Only on mount, not on offset/filters
@@ -766,6 +790,113 @@ export default function SystemsPage() {
           </div>
         </div>
 
+        {/* SECTION 8: Article 5 - Prohibited Practices (Unacceptable Risk) */}
+        <div className="bg-red-50 dark:bg-red-900 rounded-lg border-2 border-red-500 dark:border-red-700 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-red-600 dark:text-red-400 mr-3">🚫</span>
+            <h2 className="text-xl font-bold text-red-900 dark:text-red-100">8. Article 5: Prohibited Practices (Unacceptable Risk)</h2>
+          </div>
+          <div className="bg-red-100 dark:bg-red-800 border border-red-300 dark:border-red-600 rounded p-4 mb-4">
+            <p className="text-sm font-semibold text-red-900 dark:text-red-100 mb-2">⚠️ CRITICAL WARNING</p>
+            <p className="text-xs text-red-800 dark:text-red-200">
+              Systems with prohibited practices under Article 5 CANNOT be deployed in the EU. Maximum penalties: €35M or 7% of global annual turnover.
+              Only real-time biometric identification has LIMITED exceptions under Article 5.2 (victim search, terrorist threat prevention, serious crime prosecution).
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded p-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block font-semibold text-red-900 dark:text-red-100">Prohibited Practices (Article 5.1)</label>
+                <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="AI practices that pose unacceptable risk and are prohibited under EU AI Act Article 5">ℹ️</span>
+              </div>
+              <select
+                multiple
+                size={5}
+                className="w-full border-2 border-red-300 dark:border-red-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                value={form.hasProhibitedPractice}
+                onChange={e =>
+                  setForm({ ...form, hasProhibitedPractice: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                }
+              >
+                {prohibitedPractices.map((p) => (
+                  <option key={p.id} value={p.id} title={`${p.articleReference}: ${p.prohibitionScope}`}>
+                    🚫 {p.label} ({p.articleReference})
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-red-700 dark:text-red-300 mt-2 font-semibold">
+                ⚠️ Selecting any prohibited practice means this system CANNOT be legally deployed in the EU
+              </p>
+              {form.hasProhibitedPractice.length > 0 && (
+                <div className="mt-3 p-3 bg-red-200 dark:bg-red-700 rounded border border-red-400 dark:border-red-500">
+                  <p className="text-sm font-bold text-red-900 dark:text-red-100 mb-2">⛔ DEPLOYMENT PROHIBITED</p>
+                  <ul className="text-xs text-red-800 dark:text-red-200 list-disc list-inside">
+                    {form.hasProhibitedPractice.map(practice => {
+                      const p = prohibitedPractices.find(pp => pp.id === practice);
+                      return <li key={practice}>{p?.label} - {p?.prohibitionScope}</li>;
+                    })}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Legal Exceptions - Only show if real-time biometric identification is selected */}
+            {form.hasProhibitedPractice.includes("ai:RealTimeBiometricIdentificationCriterion") && (
+              <>
+                <div className="bg-yellow-50 dark:bg-yellow-900 rounded p-4 border border-yellow-300 dark:border-yellow-600">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block font-semibold text-yellow-900 dark:text-yellow-100">Legal Exceptions (Article 5.2)</label>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 cursor-help" title="Limited exceptions only for real-time biometric identification. Requires prior judicial authorization.">ℹ️</span>
+                  </div>
+                  <p className="text-xs text-yellow-800 dark:text-yellow-200 mb-3">
+                    ⚖️ Real-time biometric identification has LIMITED exceptions. All other prohibitions are ABSOLUTE with NO exceptions.
+                  </p>
+                  <select
+                    multiple
+                    size={3}
+                    className="w-full border border-yellow-400 dark:border-yellow-600 rounded-lg p-3 bg-white text-black dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    value={form.hasLegalException}
+                    onChange={e =>
+                      setForm({ ...form, hasLegalException: Array.from(e.target.selectedOptions, (opt) => opt.value) })
+                    }
+                  >
+                    {legalExceptions.map((e) => (
+                      <option key={e.id} value={e.id} title={e.articleReference}>
+                        {e.label} ({e.articleReference})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Judicial Authorization - Only show if exceptions are selected */}
+                {form.hasLegalException.length > 0 && (
+                  <div className="bg-blue-50 dark:bg-blue-900 rounded p-4 border border-blue-300 dark:border-blue-600">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={form.hasJudicialAuthorization}
+                        onChange={e => setForm({ ...form, hasJudicialAuthorization: e.target.checked })}
+                        className="mr-3 w-5 h-5 border border-gray-300 dark:border-gray-600 rounded bg-white text-blue-600 focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="font-semibold text-blue-900 dark:text-blue-100">Has Prior Judicial Authorization</span>
+                    </label>
+                    <p className="text-xs text-blue-800 dark:text-blue-200 mt-2 ml-8">
+                      ⚖️ MANDATORY: Article 5.2 exceptions require prior authorization by a judicial authority or independent administrative body
+                    </p>
+                    {!form.hasJudicialAuthorization && (
+                      <div className="mt-2 ml-8 p-2 bg-red-100 dark:bg-red-800 rounded border border-red-300">
+                        <p className="text-xs font-bold text-red-900 dark:text-red-100">
+                          ⚠️ WITHOUT judicial authorization, this system remains PROHIBITED
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
         {/* Derived Classifications - Read-only Info Panel */}
         {(form.hasGPAIClassification.length > 0 || form.hasContextualCriteria.length > 0) && (
           <div className="border-t pt-4 mt-4 mb-4 bg-blue-50 dark:bg-blue-900 rounded p-4">
@@ -855,6 +986,9 @@ export default function SystemsPage() {
                 hasDeveloper: "",
                 hasUser: "",
                 hasSubject: "",
+                hasProhibitedPractice: [],
+                hasLegalException: [],
+                hasJudicialAuthorization: false,
               });
               setLoadedSystem(null);
             }}
@@ -892,6 +1026,9 @@ export default function SystemsPage() {
             fundamentalRightsAssessment={form.requiresFundamentalRightsAssessment}
             version={form.hasVersion || "0.0.0"}
             urn={loadedSystem?.["ai:hasUrn"] || "urn:uuid:new-system"}
+            prohibitedPractices={form.hasProhibitedPractice.map(p => prohibitedPractices.find(pp => pp.id === p)?.label || p)}
+            legalExceptions={form.hasLegalException.map(e => legalExceptions.find(le => le.id === e)?.label || e)}
+            hasJudicialAuthorization={form.hasJudicialAuthorization}
           />
         </div>
       )}

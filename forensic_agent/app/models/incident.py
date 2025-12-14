@@ -22,6 +22,10 @@ class SystemProperties(BaseModel):
     # AIRO-aligned stakeholder fields (Art. 3.3-3.4 EU AI Act)
     deployer: Optional[str] = Field(None, description="Entity deploying the AI system (Art. 3.4 EU AI Act)")
     developer: Optional[str] = Field(None, description="Entity that developed the AI system")
+    # ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
+    prohibited_practices: List[str] = Field(default_factory=list, description="Prohibited practices under Article 5 (SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification)")
+    legal_exceptions: List[str] = Field(default_factory=list, description="Legal exceptions claimed under Article 5.2 (only applicable to real-time biometric identification)")
+    has_judicial_authorization: Optional[bool] = Field(None, description="Whether the system has prior judicial authorization (required for Article 5.2 exceptions)")
 
 
 class IncidentClassification(BaseModel):
@@ -88,7 +92,10 @@ class ExtractedIncident(BaseModel):
                     "organization": "Facebook (Meta)",
                     "jurisdiction": "Global",
                     "deployer": "Facebook (Meta)",
-                    "developer": "Facebook AI Research"
+                    "developer": "Facebook AI Research",
+                    "prohibited_practices": [],
+                    "legal_exceptions": [],
+                    "has_judicial_authorization": None
                 },
                 "incident": {
                     "incident_type": "discrimination",

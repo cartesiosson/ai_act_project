@@ -22,6 +22,29 @@ This directory contains formal RDF/OWL mappings between:
 
 ---
 
+## EU-Specific Requirements (Not Mapped)
+
+The following EU AI Act requirements are **intentionally not mapped** to ISO 42001 or NIST AI RMF as they are EU-specific regulatory prohibitions without direct equivalents in international standards:
+
+### Article 5: Prohibited Practices (Unacceptable Risk)
+
+**Status:** ⚠️ Not mapped to ISO/NIST (EU-specific absolute prohibitions)
+
+**Reason:** Article 5 prohibitions are **absolute legal bans** specific to EU law with no equivalent in ISO 42001 (management system standard) or NIST AI RMF (voluntary risk framework). These are regulatory red lines, not manageable risks.
+
+**Prohibited Practices (v0.37.4):**
+1. **SubliminalManipulationCriterion** (Art. 5.1.a) - Subliminal manipulation
+2. **VulnerabilityExploitationCriterion** (Art. 5.1.b) - Exploitation of vulnerabilities
+3. **SocialScoringCriterion** (Art. 5.1.c) - Social scoring by public authorities
+4. **PredictivePolicingProfilingCriterion** (Art. 5.1.d) - Predictive policing by profiling
+5. **RealTimeBiometricIdentificationCriterion** (Art. 5.1.h) - Real-time biometric ID in public spaces
+
+**Penalty:** Systems with these practices CANNOT be deployed in the EU. Maximum fines: €35M or 7% global annual turnover.
+
+**Exception:** Only real-time biometric identification has limited exceptions under Article 5.2 (victim search, terrorist threat, serious crimes) requiring prior judicial authorization.
+
+---
+
 ## ISO 42001 Mappings (v1.0.0)
 
 ### Coverage

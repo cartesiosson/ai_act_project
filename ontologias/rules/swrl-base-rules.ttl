@@ -425,12 +425,88 @@ ai:GenerativeModelComplexityRule a swrl:Imp ;
     ) .
 
 # =============================================================
+# SECCIÓN 5: ARTICLE 5 - PROHIBITED PRACTICES (UNACCEPTABLE RISK)
+# =============================================================
+# These rules detect AI practices that are prohibited under Article 5
+# Systems triggering these rules CANNOT be deployed in the EU (with very limited exceptions)
+# Maximum penalties: €35M or 7% global annual turnover
+
+# REGLA ART5-1: Subliminal Manipulation Detection (Article 5.1.a)
+ai:SubliminalManipulationDetectionRule a swrl:Imp ;
+    rdfs:label "Detect subliminal manipulation practices" ;
+    rdfs:comment "Systems with subliminal manipulation purpose trigger Article 5.1.a prohibition. ABSOLUTELY PROHIBITED - NO EXCEPTIONS." ;
+    ai:ruleId "rule_art5_1a_subliminal" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:SubliminalManipulation ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasProhibitedPractice ; swrl:argument1 ?system ; swrl:argument2 ai:SubliminalManipulationCriterion ]
+    ) .
+
+# REGLA ART5-2: Vulnerability Exploitation Detection (Article 5.1.b)
+ai:VulnerabilityExploitationDetectionRule a swrl:Imp ;
+    rdfs:label "Detect vulnerability exploitation practices" ;
+    rdfs:comment "Systems with behavior manipulation purpose targeting vulnerable populations trigger Article 5.1.b prohibition. Protected groups: minors, persons with disabilities, economically disadvantaged. ABSOLUTELY PROHIBITED - NO EXCEPTIONS." ;
+    ai:ruleId "rule_art5_1b_vulnerability" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:BehaviorManipulation ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:VulnerablePopulationContext ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasProhibitedPractice ; swrl:argument1 ?system ; swrl:argument2 ai:VulnerabilityExploitationCriterion ]
+    ) .
+
+# REGLA ART5-3: Social Scoring Detection (Article 5.1.c)
+ai:SocialScoringDetectionRule a swrl:Imp ;
+    rdfs:label "Detect social scoring practices" ;
+    rdfs:comment "Systems with social scoring purpose trigger Article 5.1.c prohibition. ONLY APPLIES TO PUBLIC AUTHORITIES. Examples: China-style 'social credit' systems. ABSOLUTELY PROHIBITED - NO EXCEPTIONS." ;
+    ai:ruleId "rule_art5_1c_social_scoring" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:SocialScoring ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasProhibitedPractice ; swrl:argument1 ?system ; swrl:argument2 ai:SocialScoringCriterion ]
+    ) .
+
+# REGLA ART5-4: Predictive Policing by Profiling Detection (Article 5.1.d)
+ai:PredictivePolicingProfilingDetectionRule a swrl:Imp ;
+    rdfs:label "Detect predictive policing based solely on profiling" ;
+    rdfs:comment "Systems with crime prediction purpose using SOLELY profiling algorithms (without objective prior criminal behavior evidence) trigger Article 5.1.d prohibition. Risk assessment based on documented prior criminal behavior IS ALLOWED." ;
+    ai:ruleId "rule_art5_1d_predictive_policing" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:CrimeRiskPrediction ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasAlgorithmType ; swrl:argument1 ?system ; swrl:argument2 ai:ProfilingAlgorithm ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasProhibitedPractice ; swrl:argument1 ?system ; swrl:argument2 ai:PredictivePolicingProfilingCriterion ]
+    ) .
+
+# REGLA ART5-5: Real-Time Biometric Identification Detection (Article 5.1.h)
+ai:RealTimeBiometricDetectionRule a swrl:Imp ;
+    rdfs:label "Detect real-time remote biometric identification in public spaces" ;
+    rdfs:comment "Systems with biometric identification purpose in real-time processing context in public spaces trigger Article 5.1.h prohibition. GENERALLY PROHIBITED with LIMITED EXCEPTIONS (Article 5.2): victim search, terrorist threat, serious crimes. Requires prior judicial authorization." ;
+    ai:ruleId "rule_art5_1h_realtime_biometric" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ai:BiometricIdentification ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:RealTimeProcessing ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:PublicSpaces ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasProhibitedPractice ; swrl:argument1 ?system ; swrl:argument2 ai:RealTimeBiometricIdentificationCriterion ]
+    ) .
+
+# =============================================================
 # METADATA
 # =============================================================
 
 ai:SwrlRulesMetadata a owl:NamedIndividual ;
     rdfs:label "SWRL Rules Metadata" ;
-    ai:version "1.0.0-unified" ;
-    ai:totalRules "25"^^xsd:integer ;
-    ai:categories "model_scale, navigation, base_contextual, technical_gpai" ;
+    ai:version "1.1.0-article5" ;
+    ai:totalRules "30"^^xsd:integer ;
+    ai:categories "model_scale, navigation, base_contextual, technical_gpai, prohibited_practices" ;
     rdfs:comment "Unified SWRL rules synchronized with ontologias/rules/*.py" .

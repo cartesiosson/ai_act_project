@@ -284,6 +284,69 @@ def get_iso_requirements(lang: str = Query("en")):
         for uri in sorted(instances, key=lambda x: get_label(ont, x, lang))
     ]
 
+# ===== ARTICLE 5: PROHIBITED PRACTICES (v0.37.4) =====
+
+@app.get("/vocab/prohibited_practices")
+def get_prohibited_practices(lang: str = Query("en")):
+    """Article 5 prohibited practices (Unacceptable Risk)"""
+    # Define the 5 prohibited practices explicitly
+    prohibited_practices = [
+        URIRef("http://ai-act.eu/ai#SubliminalManipulationCriterion"),
+        URIRef("http://ai-act.eu/ai#VulnerabilityExploitationCriterion"),
+        URIRef("http://ai-act.eu/ai#SocialScoringCriterion"),
+        URIRef("http://ai-act.eu/ai#PredictivePolicingProfilingCriterion"),
+        URIRef("http://ai-act.eu/ai#RealTimeBiometricIdentificationCriterion"),
+    ]
+
+    article_ref_predicate = URIRef("http://ai-act.eu/ai#articleReference")
+    prohibition_scope_predicate = URIRef("http://ai-act.eu/ai#prohibitionScope")
+
+    result = []
+    for uri in prohibited_practices:
+        label = get_label(ont, uri, lang)
+        article_ref = str(ont.value(uri, article_ref_predicate, default=""))
+
+        # Get prohibition scope with language tag if available
+        prohibition_scope = ""
+        for scope in ont.objects(uri, prohibition_scope_predicate):
+            if isinstance(scope, Literal):
+                if scope.language == lang or scope.language is None:
+                    prohibition_scope = str(scope)
+                    break
+            else:
+                prohibition_scope = str(scope)
+
+        result.append({
+            "id": compact_uri(str(uri)),
+            "label": label,
+            "articleReference": article_ref,
+            "prohibitionScope": prohibition_scope,
+            "riskLevel": "UnacceptableRisk"
+        })
+
+    return result
+
+@app.get("/vocab/legal_exceptions")
+def get_legal_exceptions(lang: str = Query("en")):
+    """Article 5.2 legal exceptions (only for real-time biometric identification)"""
+    base = URIRef("http://ai-act.eu/ai#LegalException")
+    instances = list(ont.subjects(RDF.type, base))
+
+    article_ref_predicate = URIRef("http://ai-act.eu/ai#articleReference")
+
+    result = []
+    for uri in sorted(instances, key=lambda x: get_label(ont, x, lang)):
+        label = get_label(ont, uri, lang)
+        article_ref = str(ont.value(uri, article_ref_predicate, default=""))
+
+        result.append({
+            "id": compact_uri(str(uri)),
+            "label": label,
+            "articleReference": article_ref
+        })
+
+    return result
+
 
 @app.get("/vocab/transparency")
 def get_transparency_levels(lang: str = Query("en")):

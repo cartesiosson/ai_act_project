@@ -19,7 +19,22 @@ class IntelligentSystem(BaseModel):
     hasVersion: str = Field(..., example="1.0.0")
     hasUrn: Optional[str] = Field(default=None, example="urn:uuid:...")
     hasFLOPS: Optional[float] = Field(default=None, example=1e13, description="FLOPS del sistema (opcional)")
-    # Puedes agregar más campos según los módulos, por ejemplo, requisitos, actores, etc.
+
+    # ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
+    hasProhibitedPractice: Optional[List[str]] = Field(
+        default_factory=list,
+        example=["ai:SubliminalManipulationCriterion"],
+        description="Prohibited practices under Article 5 (Unacceptable Risk). Systems with these practices CANNOT be deployed in the EU."
+    )
+    hasLegalException: Optional[List[str]] = Field(
+        default_factory=list,
+        example=["ai:VictimSearchException"],
+        description="Legal exceptions under Article 5.2 (only applicable to real-time biometric identification)"
+    )
+    hasJudicialAuthorization: Optional[bool] = Field(
+        default=None,
+        description="Whether the system has prior judicial authorization (required for Article 5.2 exceptions)"
+    )
 
     class Config:
         allow_population_by_field_name = True
