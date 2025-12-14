@@ -29,6 +29,7 @@ export function Navbar() {
         <Link to="/ontology" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Ontology Docs</Link>
         <Link to="/reasoning" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">AI Symbolic Reasoning</Link>
         <Link to="/forensic" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">Forensic AI Agent</Link>
+        <Link to="/dpv" className="font-semibold text-purple-600 dark:text-purple-400 hover:underline">DPV</Link>
       </div>
     </nav>
   );

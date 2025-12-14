@@ -1,0 +1,469 @@
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix dpv-ai: <https://w3id.org/dpv/ai#> .
+@prefix dpv-risk: <https://w3id.org/dpv/risk#> .
+@prefix dpv-tech: <https://w3id.org/dpv/tech#> .
+@prefix dpv-legal-eu-aiact: <https://w3id.org/dpv/legal/eu/aiact#> .
+@prefix dpv-legal-eu-gdpr: <https://w3id.org/dpv/legal/eu/gdpr#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# ===== DPV INTEGRATION MODULE =====
+# Version: 0.1.0
+# Date: 2025-12-14
+# Purpose: Integrate W3C Data Privacy Vocabulary (DPV) 2.2 with SERAMIS AI Act Ontology
+#
+# This module provides:
+# 1. Namespace declarations for DPV extensions
+# 2. Mappings between AI Act requirements and DPV Technical/Organizational Measures
+# 3. Evidence types for compliance documentation
+# 4. Risk-to-measure mappings for Evidence Planner Agent
+# =====
+
+<http://ai-act.eu/ai-act/dpv-integration> a owl:Ontology ;
+    owl:imports <http://ai-act.eu/ai-act> ;
+    dct:created "2025-12-14"^^xsd:date ;
+    dct:title "DPV Integration Module for SERAMIS"@en,
+        "Modulo de Integracion DPV para SERAMIS"@es ;
+    dct:description "Maps EU AI Act requirements to W3C Data Privacy Vocabulary (DPV) 2.2 concepts for evidence planning and compliance documentation."@en,
+        "Mapea requisitos del EU AI Act a conceptos del W3C Data Privacy Vocabulary (DPV) 2.2 para planificacion de evidencias y documentacion de cumplimiento."@es ;
+    owl:versionInfo "0.1.0" ;
+    rdfs:seeAlso <https://w3c.github.io/dpv/> .
+
+
+# ===== EVIDENCE TYPES =====
+# Types of evidence that can be generated/collected for compliance
+
+ai:Evidence a owl:Class ;
+    rdfs:label "Evidence"@en, "Evidencia"@es ;
+    rdfs:comment "Documentary or technical evidence demonstrating compliance with a requirement"@en,
+        "Evidencia documental o tecnica que demuestra cumplimiento con un requisito"@es .
+
+ai:PolicyEvidence a owl:Class ;
+    rdfs:subClassOf ai:Evidence ;
+    rdfs:label "Policy Evidence"@en, "Evidencia de Politica"@es ;
+    rdfs:comment "Organizational policies, procedures, and guidelines"@en ;
+    skos:example "Human oversight policy", "Data governance policy", "AI ethics policy" .
+
+ai:TechnicalEvidence a owl:Class ;
+    rdfs:subClassOf ai:Evidence ;
+    rdfs:label "Technical Evidence"@en, "Evidencia Tecnica"@es ;
+    rdfs:comment "Technical documentation, configurations, and system outputs"@en ;
+    skos:example "System architecture diagrams", "API documentation", "Model cards" .
+
+ai:AuditEvidence a owl:Class ;
+    rdfs:subClassOf ai:Evidence ;
+    rdfs:label "Audit Evidence"@en, "Evidencia de Auditoria"@es ;
+    rdfs:comment "Audit logs, test results, and verification records"@en ;
+    skos:example "Bias audit reports", "Penetration test results", "Accuracy metrics" .
+
+ai:TrainingEvidence a owl:Class ;
+    rdfs:subClassOf ai:Evidence ;
+    rdfs:label "Training Evidence"@en, "Evidencia de Formacion"@es ;
+    rdfs:comment "Training records, certifications, and competency assessments"@en ;
+    skos:example "Operator training certificates", "Awareness training records" .
+
+ai:AssessmentEvidence a owl:Class ;
+    rdfs:subClassOf ai:Evidence ;
+    rdfs:label "Assessment Evidence"@en, "Evidencia de Evaluacion"@es ;
+    rdfs:comment "Impact assessments, risk assessments, and conformity assessments"@en ;
+    skos:example "FRIA report", "DPIA report", "Conformity assessment certificate" .
+
+ai:ContractualEvidence a owl:Class ;
+    rdfs:subClassOf ai:Evidence ;
+    rdfs:label "Contractual Evidence"@en, "Evidencia Contractual"@es ;
+    rdfs:comment "Contracts, agreements, and legal documents"@en ;
+    skos:example "Data processing agreements", "Provider contracts", "SLAs" .
+
+
+# ===== EVIDENCE PROPERTIES =====
+
+ai:requiresEvidence a owl:ObjectProperty ;
+    rdfs:label "requires evidence"@en, "requiere evidencia"@es ;
+    rdfs:domain ai:ComplianceRequirement ;
+    rdfs:range ai:Evidence ;
+    rdfs:comment "Links a requirement to the type of evidence needed to demonstrate compliance"@en .
+
+ai:evidenceDescription a owl:DatatypeProperty ;
+    rdfs:label "evidence description"@en, "descripcion de evidencia"@es ;
+    rdfs:domain ai:Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Detailed description of what the evidence should contain"@en .
+
+ai:evidencePriority a owl:DatatypeProperty ;
+    rdfs:label "evidence priority"@en, "prioridad de evidencia"@es ;
+    rdfs:domain ai:Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Priority level: CRITICAL, HIGH, MEDIUM, LOW"@en .
+
+ai:evidenceFrequency a owl:DatatypeProperty ;
+    rdfs:label "evidence frequency"@en, "frecuencia de evidencia"@es ;
+    rdfs:domain ai:Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:comment "How often evidence should be updated: ONCE, ANNUALLY, QUARTERLY, CONTINUOUS"@en .
+
+
+# ===== DPV MEASURE MAPPINGS =====
+# Maps AI Act requirements to DPV Technical/Organizational Measures
+
+ai:mapsToDPVMeasure a owl:ObjectProperty ;
+    rdfs:label "maps to DPV measure"@en, "mapea a medida DPV"@es ;
+    rdfs:domain ai:ComplianceRequirement ;
+    rdfs:comment "Links an AI Act requirement to corresponding DPV technical/organizational measures"@en .
+
+
+# ===== REQUIREMENT TO MEASURE MAPPINGS =====
+
+# --- Human Oversight Requirement (Art. 14) ---
+ai:HumanOversightRequirement
+    ai:mapsToDPVMeasure dpv:HumanInvolvement ;
+    ai:requiresEvidence ai:HumanOversightPolicyEvidence,
+        ai:OverrideDecisionLogEvidence,
+        ai:OperatorTrainingEvidence .
+
+ai:HumanOversightPolicyEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Documented policy defining human oversight mechanisms, escalation procedures, and operator responsibilities"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:OverrideDecisionLogEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Logs of human override decisions, including timestamps, operator ID, and justification"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "CONTINUOUS" .
+
+ai:OperatorTrainingEvidence a ai:TrainingEvidence ;
+    ai:evidenceDescription "Training records for AI system operators including competency assessments"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+
+# --- Transparency Requirement (Art. 13) ---
+ai:TransparencyRequirement
+    ai:mapsToDPVMeasure dpv:Transparency ;
+    ai:requiresEvidence ai:UserNotificationEvidence,
+        ai:SystemDescriptionEvidence,
+        ai:AIDisclosureEvidence .
+
+ai:UserNotificationEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Evidence that users are informed they are interacting with an AI system"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ONCE" .
+
+ai:SystemDescriptionEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Plain-language description of system capabilities, limitations, and intended use"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:AIDisclosureEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Policy and implementation of AI system disclosure to affected persons"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ONCE" .
+
+
+# --- Fundamental Rights Assessment (Art. 27) ---
+ai:FundamentalRightsAssessmentRequirement
+    ai:mapsToDPVMeasure dpv:ImpactAssessment ;
+    ai:requiresEvidence ai:FRIAReportEvidence,
+        ai:AffectedPersonsAnalysisEvidence,
+        ai:MitigationPlanEvidence .
+
+ai:FRIAReportEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Fundamental Rights Impact Assessment (FRIA) report per Art. 27, documenting risks to fundamental rights"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:AffectedPersonsAnalysisEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Analysis of categories of persons affected by the AI system and specific risks to each"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:MitigationPlanEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Documented mitigation measures for identified fundamental rights risks"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+
+# --- Data Governance Requirement (Art. 10) ---
+ai:DataGovernanceRequirement
+    ai:mapsToDPVMeasure dpv:DataGovernancePolicies ;
+    ai:requiresEvidence ai:DataQualityPolicyEvidence,
+        ai:TrainingDataDocumentationEvidence,
+        ai:DataProvenanceEvidence .
+
+ai:DataQualityPolicyEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Policy defining data quality standards, validation procedures, and bias monitoring"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:TrainingDataDocumentationEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Documentation of training data sources, characteristics, and preprocessing steps"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ONCE" .
+
+ai:DataProvenanceEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Records of data origin, transformations, and chain of custody"@en ;
+    ai:evidencePriority "MEDIUM" ;
+    ai:evidenceFrequency "CONTINUOUS" .
+
+
+# --- Documentation Requirement (Art. 11) ---
+ai:DocumentationRequirement
+    ai:mapsToDPVMeasure dpv:RecordsOfActivities ;
+    ai:requiresEvidence ai:TechnicalDocumentationEvidence,
+        ai:ModelCardEvidence,
+        ai:VersionControlEvidence .
+
+ai:TechnicalDocumentationEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Complete technical documentation per Annex IV including system design, algorithms, and validation"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:ModelCardEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Model card documenting model capabilities, limitations, intended use, and performance metrics"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:VersionControlEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Version control records showing changes to AI system over time"@en ;
+    ai:evidencePriority "MEDIUM" ;
+    ai:evidenceFrequency "CONTINUOUS" .
+
+
+# --- Risk Management Requirement (Art. 9) ---
+ai:RiskManagementRequirement
+    ai:mapsToDPVMeasure dpv:RiskManagementPlan ;
+    ai:requiresEvidence ai:RiskManagementSystemEvidence,
+        ai:RiskRegisterEvidence,
+        ai:RiskMonitoringEvidence .
+
+ai:RiskManagementSystemEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Documented risk management system established per Art. 9, including methodology and governance"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:RiskRegisterEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Register of identified risks, their assessment, and treatment decisions"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "QUARTERLY" .
+
+ai:RiskMonitoringEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Records of ongoing risk monitoring and periodic risk reassessments"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "CONTINUOUS" .
+
+
+# --- Non-Discrimination Requirement ---
+ai:NonDiscriminationRequirement
+    ai:mapsToDPVMeasure dpv:BiasAssessment ;
+    ai:requiresEvidence ai:BiasAuditReportEvidence,
+        ai:FairnessMetricsEvidence,
+        ai:ProtectedGroupAnalysisEvidence .
+
+ai:BiasAuditReportEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Independent bias audit report analyzing system outputs across protected characteristics"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:FairnessMetricsEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Quantitative fairness metrics (demographic parity, equalized odds, etc.) with thresholds"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "QUARTERLY" .
+
+ai:ProtectedGroupAnalysisEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Analysis of system performance across protected groups (gender, ethnicity, age, disability)"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+
+# --- Accuracy Requirement (Art. 15) ---
+ai:AccuracyEvaluationRequirement
+    ai:mapsToDPVMeasure dpv:ReviewProcedure ;
+    ai:requiresEvidence ai:AccuracyTestReportEvidence,
+        ai:ValidationDatasetEvidence,
+        ai:PerformanceBaselineEvidence .
+
+ai:AccuracyTestReportEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Test reports showing accuracy metrics on representative datasets"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "QUARTERLY" .
+
+ai:ValidationDatasetEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Documentation of validation datasets used for accuracy testing"@en ;
+    ai:evidencePriority "MEDIUM" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:PerformanceBaselineEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Established performance baseline and acceptable deviation thresholds"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+
+# --- Robustness Requirement (Art. 15) ---
+ai:RobustnessRequirement
+    ai:mapsToDPVMeasure dpv:SecurityAssessment ;
+    ai:requiresEvidence ai:RobustnessTestReportEvidence,
+        ai:AdversarialTestingEvidence,
+        ai:FailsafeMechanismEvidence .
+
+ai:RobustnessTestReportEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Test reports demonstrating system robustness under various conditions"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:AdversarialTestingEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Results of adversarial testing and red-team exercises"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:FailsafeMechanismEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Documentation of failsafe mechanisms and graceful degradation capabilities"@en ;
+    ai:evidencePriority "MEDIUM" ;
+    ai:evidenceFrequency "ONCE" .
+
+
+# --- Traceability Requirement (Art. 12) ---
+ai:TraceabilityRequirement
+    ai:mapsToDPVMeasure dpv:RecordsOfActivities ;
+    ai:requiresEvidence ai:AuditLogEvidence,
+        ai:DecisionTraceEvidence,
+        ai:LogRetentionPolicyEvidence .
+
+ai:AuditLogEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Automatic logging of system events, inputs, outputs, and decisions"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "CONTINUOUS" .
+
+ai:DecisionTraceEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Capability to trace individual decisions back to inputs and model state"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "CONTINUOUS" .
+
+ai:LogRetentionPolicyEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Policy defining log retention periods and secure storage requirements"@en ;
+    ai:evidencePriority "MEDIUM" ;
+    ai:evidenceFrequency "ONCE" .
+
+
+# --- Security Requirement (Art. 15) ---
+ai:SecurityRequirement
+    ai:mapsToDPVMeasure dpv:TechnicalSecurityMeasure ;
+    ai:requiresEvidence ai:SecurityAuditReportEvidence,
+        ai:PenetrationTestEvidence,
+        ai:SecurityPolicyEvidence .
+
+ai:SecurityAuditReportEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Security audit report covering system infrastructure, APIs, and data protection"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:PenetrationTestEvidence a ai:AuditEvidence ;
+    ai:evidenceDescription "Penetration testing results for AI system and supporting infrastructure"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:SecurityPolicyEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Security policy covering access control, encryption, and incident response"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+
+# --- GPAI Transparency (Art. 52) ---
+ai:GPAITransparencyRequirement
+    ai:mapsToDPVMeasure dpv:Transparency ;
+    ai:requiresEvidence ai:GPAIModelCardEvidence,
+        ai:TrainingDataSummaryEvidence,
+        ai:CopyrightComplianceEvidence .
+
+ai:GPAIModelCardEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Model card for GPAI system per Art. 52, including capabilities and limitations"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:TrainingDataSummaryEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Summary of training data sources and content types used"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ONCE" .
+
+ai:CopyrightComplianceEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Documentation of copyright compliance policy for training data"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+
+# --- Protection of Minors ---
+ai:ProtectionOfMinorsRequirement
+    ai:mapsToDPVMeasure dpv:ChildrenDataProtection ;
+    ai:requiresEvidence ai:AgeVerificationEvidence,
+        ai:MinorsImpactAssessmentEvidence,
+        ai:ParentalConsentEvidence .
+
+ai:AgeVerificationEvidence a ai:TechnicalEvidence ;
+    ai:evidenceDescription "Implementation of age verification mechanisms where applicable"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ONCE" .
+
+ai:MinorsImpactAssessmentEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Specific assessment of impacts on children and minors"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:ParentalConsentEvidence a ai:ContractualEvidence ;
+    ai:evidenceDescription "Parental consent mechanisms and records where applicable"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "CONTINUOUS" .
+
+
+# ===== DPV-LEGAL EU AI ACT ALIGNMENTS =====
+# Align our concepts with dpv-legal-eu-aiact where applicable
+
+ai:ComplianceRequirement owl:equivalentClass dpv-legal-eu-aiact:AIActRequirement .
+ai:HighRisk owl:equivalentClass dpv-legal-eu-aiact:RiskLevelHigh .
+ai:MinimalRisk owl:equivalentClass dpv-legal-eu-aiact:RiskLevelMinimal .
+ai:Unacceptable owl:equivalentClass dpv-legal-eu-aiact:RiskLevelProhibited .
+
+ai:AIDeployer owl:equivalentClass dpv-legal-eu-aiact:AIDeployer .
+ai:AIDeveloper owl:equivalentClass dpv-legal-eu-aiact:AIProvider .
+
+ai:FundamentalRightsAssessmentRequirement rdfs:seeAlso dpv-legal-eu-aiact:FRIA .
+ai:ConformityAssessment rdfs:seeAlso dpv-legal-eu-aiact:ConformityAssessment .
+
+
+# ===== EVIDENCE PLAN CLASS =====
+# For the Evidence Planner Agent
+
+ai:EvidencePlan a owl:Class ;
+    rdfs:label "Evidence Plan"@en, "Plan de Evidencias"@es ;
+    rdfs:comment "A structured plan for generating compliance evidence based on identified gaps"@en .
+
+ai:hasGap a owl:ObjectProperty ;
+    rdfs:label "has gap"@en ;
+    rdfs:domain ai:EvidencePlan ;
+    rdfs:range ai:ComplianceRequirement ;
+    rdfs:comment "Links an evidence plan to the compliance gap it addresses"@en .
+
+ai:hasEvidenceItem a owl:ObjectProperty ;
+    rdfs:label "has evidence item"@en ;
+    rdfs:domain ai:EvidencePlan ;
+    rdfs:range ai:Evidence ;
+    rdfs:comment "Links an evidence plan to required evidence items"@en .
+
+ai:planPriority a owl:DatatypeProperty ;
+    rdfs:label "plan priority"@en ;
+    rdfs:domain ai:EvidencePlan ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Overall priority of the evidence plan: CRITICAL, HIGH, MEDIUM, LOW"@en .
+
+ai:planDeadline a owl:DatatypeProperty ;
+    rdfs:label "plan deadline"@en ;
+    rdfs:domain ai:EvidencePlan ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Recommended deadline for evidence generation"@en .
+
+ai:responsibleRole a owl:DatatypeProperty ;
+    rdfs:label "responsible role"@en ;
+    rdfs:domain ai:EvidencePlan ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Role responsible for generating this evidence: DEPLOYER, PROVIDER, DPO, LEGAL, TECHNICAL"@en .

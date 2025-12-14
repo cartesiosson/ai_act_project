@@ -257,11 +257,20 @@ export async function analyzeIncident(request: {
   narrative: string;
   source?: string;
   metadata?: Record<string, unknown>;
+  withEvidencePlan?: boolean;
 }): Promise<ForensicAnalysisResult> {
-  const response = await fetch(`${FORENSIC_API_BASE}/forensic/analyze`, {
+  const endpoint = request.withEvidencePlan
+    ? `${FORENSIC_API_BASE}/forensic/analyze-with-evidence-plan`
+    : `${FORENSIC_API_BASE}/forensic/analyze`;
+
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: JSON.stringify({
+      narrative: request.narrative,
+      source: request.source,
+      metadata: request.metadata,
+    }),
   });
 
   if (!response.ok) {

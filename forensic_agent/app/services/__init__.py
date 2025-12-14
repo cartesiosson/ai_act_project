@@ -4,10 +4,12 @@ from .incident_extractor import IncidentExtractorService
 from .sparql_queries import ForensicSPARQLService
 from .analysis_engine import ForensicAnalysisEngine
 from .persistence import PersistenceService
+from .evidence_planner import EvidencePlannerService
 
 __all__ = [
     "IncidentExtractorService",
     "ForensicSPARQLService",
     "ForensicAnalysisEngine",
-    "PersistenceService"
+    "PersistenceService",
+    "EvidencePlannerService"
 ]

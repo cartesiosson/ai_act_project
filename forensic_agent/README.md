@@ -2,10 +2,17 @@
 
 > **Sistema de análisis forense post-incidente de sistemas de IA con múltiples frameworks regulatorios**
 
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
+  <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
+</p>
+
 ## Tabla de Contenidos
 
 - [Overview](#overview)
 - [Arquitectura](#arquitectura)
+- [Evidence Planner (Nuevo v1.1)](#evidence-planner-nuevo-v11)
 - [Flujo de Inferencia](#flujo-de-inferencia)
 - [Quick Start](#quick-start)
 - [Instalación](#instalación)
@@ -24,9 +31,10 @@
 El **Forensic Compliance Agent** realiza análisis automatizado post-incidente de sistemas de IA utilizando:
 
 - **Extracción estructurada con LLM** (Ollama + Llama 3.2)
-- **Razonamiento semántico** (SPARQL) sobre la ontología del EU AI Act v0.37.2
-- **Análisis multi-framework** (EU AI Act + ISO 42001 + NIST AI RMF)
+- **Razonamiento semántico** (SPARQL) sobre la ontología del EU AI Act v0.37.4
+- **Análisis multi-framework** (EU AI Act + ISO 42001 + NIST AI RMF + DPV 2.2)
 - **Detección automática de gaps** de cumplimiento
+- **Evidence Planner** con integración W3C DPV para generación de planes de evidencia
 - **Persistencia dual** (MongoDB + Apache Jena Fuseki)
 
 ### Capacidades Principales
@@ -38,6 +46,8 @@ El **Forensic Compliance Agent** realiza análisis automatizado post-incidente d
 | **Requisitos Obligatorios** | Identifica requisitos basados en propósito, contexto y datos procesados |
 | **ISO 42001** | Mapea a 15 controles de certificación |
 | **NIST AI RMF** | Mapea a 18 funciones del framework |
+| **DPV 2.2** | Integración con W3C Data Privacy Vocabulary para medidas de compliance |
+| **Evidence Planner** | Genera planes de evidencia con 14 requisitos y ~40 items de evidencia |
 | **Gap Detection** | Detecta gaps críticos de compliance |
 | **Reportes Forenses** | Genera reportes completos en markdown |
 | **Persistencia** | Guarda análisis en MongoDB y RDF en Fuseki |
@@ -55,6 +65,7 @@ flowchart TB
     subgraph Agent["Forensic Agent :8002"]
         IE[Incident Extractor<br/>LLM + Ollama]
         AE[Analysis Engine<br/>Multi-Framework]
+        EP[Evidence Planner<br/>DPV Integration]
         MC[MCP Client<br/>SPARQL Tools]
         PS[Persistence Service<br/>MongoDB + Fuseki]
     end
@@ -72,6 +83,7 @@ flowchart TB
     FA -->|POST /forensic/analyze| IE
     IE -->|Extract| OL
     IE --> AE
+    AE --> EP
     AE --> MC
     MC -->|MCP Protocol| MCP
     MCP -->|SPARQL| FK
@@ -94,6 +106,115 @@ flowchart TB
 | **Ollama** | 11434 | Runtime LLM local |
 | **MongoDB** | 27017 | Persistencia de documentos |
 | **Fuseki** | 3030 | Almacenamiento RDF/SPARQL |
+
+---
+
+## Evidence Planner (Nuevo v1.1)
+
+El **Evidence Planner** es un nuevo servicio que genera planes de evidencia para remediar gaps de compliance identificados durante el análisis forense. Utiliza mappings basados en el **W3C Data Privacy Vocabulary (DPV) 2.2**.
+
+### ¿Qué es DPV?
+
+El [Data Privacy Vocabulary (DPV)](https://w3c.github.io/dpv/) es una especificación W3C que proporciona términos para describir:
+- Actividades de procesamiento de datos personales
+- Medidas técnicas y organizativas
+- Bases legales y propósitos
+- Riesgos y evaluaciones de impacto
+
+### Extensiones DPV Utilizadas
+
+| Extensión | Propósito | Uso en SERAMIS |
+|-----------|-----------|----------------|
+| **dpv:core** | Medidas técnicas y organizativas | Mapeo de requisitos a medidas |
+| **dpv:ai** | Sistemas de IA, capacidades, riesgos | Clasificación de sistemas |
+| **dpv:risk** | Gestión de riesgos | Evaluación de gaps |
+| **dpv:legal/eu/aiact** | Conceptos específicos AI Act | Equivalencias semánticas |
+
+### Tipos de Evidencia
+
+El Evidence Planner define 6 tipos de evidencia:
+
+| Tipo | Descripción | Ejemplo |
+|------|-------------|---------|
+| `PolicyEvidence` | Políticas y procedimientos | Human Oversight Policy |
+| `TechnicalEvidence` | Documentación técnica | Model Card, System Architecture |
+| `AuditEvidence` | Logs, tests, auditorías | Bias Audit Report |
+| `TrainingEvidence` | Registros de formación | Operator Training Records |
+| `AssessmentEvidence` | Evaluaciones de impacto | FRIA Report, DPIA |
+| `ContractualEvidence` | Contratos y acuerdos | Data Processing Agreement |
+
+### Catálogo de Requisitos
+
+El servicio mapea **14 requisitos del EU AI Act** a **~40 items de evidencia**:
+
+| Requisito | Artículo | Items de Evidencia |
+|-----------|----------|-------------------|
+| HumanOversightRequirement | Art. 14 | 4 items |
+| TransparencyRequirement | Art. 13 | 3 items |
+| DataGovernanceRequirement | Art. 10 | 3 items |
+| TechnicalDocumentationRequirement | Art. 11 | 4 items |
+| BiasAssessmentRequirement | Art. 10 | 3 items |
+| FundamentalRightsAssessmentRequirement | Art. 27 | 3 items |
+| RiskManagementRequirement | Art. 9 | 4 items |
+| ... | ... | ... |
+
+### Ejemplo de Uso
+
+```bash
+# Generar plan de evidencia desde gaps
+curl -X POST http://localhost:8002/forensic/evidence-plan \
+  -H "Content-Type: application/json" \
+  -d '{
+    "system_name": "Facial Recognition System",
+    "risk_level": "HighRisk",
+    "missing_requirements": [
+      "http://ai-act.eu/ai#HumanOversightRequirement",
+      "http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement"
+    ],
+    "critical_gaps": []
+  }'
+```
+
+**Response:**
+```json
+{
+  "plan_id": "EP-20251214-abc123",
+  "system_name": "Facial Recognition System",
+  "summary": {
+    "total_requirements": 2,
+    "total_evidence_items": 7,
+    "by_priority": {"critical": 3, "high": 2, "medium": 2},
+    "by_evidence_type": {"PolicyEvidence": 2, "TechnicalEvidence": 3, "AuditEvidence": 2}
+  },
+  "requirement_plans": [
+    {
+      "requirement_uri": "http://ai-act.eu/ai#HumanOversightRequirement",
+      "requirement_label": "Human Oversight Requirement",
+      "article_reference": "Article 14",
+      "priority": "critical",
+      "dpv_measures": ["dpv:HumanInvolvement", "dpv:Review"],
+      "evidence_items": [...]
+    }
+  ],
+  "recommendations": [
+    "Prioritize critical evidence items for high-risk system",
+    "Establish document control procedures"
+  ]
+}
+```
+
+### Análisis Combinado
+
+Para obtener análisis forense + plan de evidencia en una sola llamada:
+
+```bash
+curl -X POST http://localhost:8002/forensic/analyze-with-evidence-plan \
+  -H "Content-Type: application/json" \
+  -d '{
+    "narrative": "Sistema de reconocimiento facial utilizado por la policía...",
+    "source": "AIAAIC"
+  }'
+```
 
 ---
 
@@ -349,9 +470,12 @@ uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 |--------|----------|-------------|
 | GET | `/health` | Estado del servicio |
 | POST | `/forensic/analyze` | Analizar incidente |
+| POST | `/forensic/analyze-with-evidence-plan` | Analizar + generar plan de evidencias |
+| POST | `/forensic/evidence-plan` | Generar plan de evidencias desde gaps |
 | GET | `/forensic/systems` | Listar sistemas analizados |
 | GET | `/forensic/systems/{urn}` | Obtener análisis específico |
 | DELETE | `/forensic/systems/{urn}` | Eliminar análisis |
+| GET | `/forensic/stats` | Estadísticas del servicio |
 
 ### POST /forensic/analyze
 
@@ -466,7 +590,20 @@ MAPPINGS_PATH=/ontologias/mappings
 - Funciones: GOVERN, MAP, MEASURE, MANAGE
 - Jurisdiction-aware (US/Global/EU)
 
-### 4. Persistencia Dual
+**DPV 2.2 (14 mappings):**
+- Medidas técnicas y organizativas
+- 6 tipos de evidencia estandarizados
+- Integración con dpv:ai y dpv:legal/eu/aiact
+
+### 4. Evidence Planner
+
+- Genera planes de evidencia basados en gaps de compliance
+- 14 requisitos mapeados a ~40 items de evidencia
+- Priorización automática (critical/high/medium/low)
+- Recomendaciones contextuales por nivel de riesgo
+- Output en JSON o Markdown
+
+### 5. Persistencia Dual
 
 - **MongoDB:** Documentos JSON completos
 - **Fuseki:** Triples RDF para consultas SPARQL
@@ -531,16 +668,19 @@ docker-compose logs fuseki
 ```
 forensic_agent/
 ├── app/
-│   ├── main.py                 # FastAPI application
+│   ├── main.py                    # FastAPI application
 │   ├── models/
-│   │   ├── incident.py         # Modelos de extracción
-│   │   └── forensic_report.py  # Modelos de análisis
+│   │   ├── incident.py            # Modelos de extracción
+│   │   └── forensic_report.py     # Modelos de análisis
 │   └── services/
+│       ├── __init__.py            # Exports de servicios
 │       ├── incident_extractor.py  # Extracción LLM
 │       ├── analysis_engine.py     # Análisis multi-framework
+│       ├── evidence_planner.py    # Evidence Planner (DPV) ← NUEVO
+│       ├── sparql_queries.py      # Consultas SPARQL via MCP
 │       └── persistence.py         # MongoDB + Fuseki
 ├── tests/
-├── init_ollama.sh              # Script inicialización
+├── init_ollama.sh                 # Script inicialización
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
@@ -560,9 +700,11 @@ pytest tests/ -v --cov=app --cov-report=html
 
 ## Recursos
 
-- **Ontología EU AI Act:** `/ontologias/versions/0.37.2/`
+- **Ontología EU AI Act:** `/ontologias/versions/0.37.4/`
 - **ISO 42001 Mappings:** `/ontologias/mappings/iso-42001-mappings.ttl`
 - **NIST AI RMF Mappings:** `/ontologias/mappings/nist-ai-rmf-mappings.ttl`
+- **DPV Integration:** `/ontologias/mappings/dpv-integration.ttl`
+- **W3C DPV 2.2:** https://w3c.github.io/dpv/
 - **Ollama Documentation:** https://ollama.ai/
 
 ---
@@ -587,6 +729,14 @@ Licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
 
 ---
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Status:** Operacional
 **Last Updated:** Diciembre 2025
+
+### Changelog v1.1.0
+
+- Integración W3C Data Privacy Vocabulary (DPV) 2.2
+- Nuevo servicio Evidence Planner con 14 requisitos y ~40 items de evidencia
+- Nuevos endpoints: `/forensic/evidence-plan`, `/forensic/analyze-with-evidence-plan`
+- Fix clasificación GPAI (GenerativeAI → HighRisk)
+- Actualizada ontología a v0.37.4

@@ -11,9 +11,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
-  <img src="https://img.shields.io/badge/ontology-v0.37.2-purple.svg" alt="Ontology"/>
+  <img src="https://img.shields.io/badge/ontology-v0.37.4-purple.svg" alt="Ontology"/>
+  <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
   <img src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg" alt="License"/>
 </p>
 
@@ -41,6 +42,8 @@ Este proyecto utiliza datos del **[AIAAIC Repository](https://www.aiaaic.org/aia
 
 La ontología SERAMIS incorpora compatibilidad con **[AIRO (AI Risk Ontology)](https://w3id.org/airo)**, desarrollada por **Delaram Golpayegani** et al. en el ADAPT Centre, Dublin City University. Agradecemos al equipo de AIRO por su trabajo en la estandarización de conceptos de stakeholders para sistemas de IA.
 
+La integración con **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** permite mapear requisitos del EU AI Act a medidas técnicas y organizativas estándar, facilitando la generación de planes de evidencia para cumplimiento normativo.
+
 Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
 
 ---
@@ -50,9 +53,11 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 - [Descripción](#descripción)
 - [Arquitectura del Sistema](#arquitectura-del-sistema)
 - [Instalación](#instalación)
+- [Módulos del Frontend](#módulos-del-frontend)
 - [Agente Forense](#agente-forense)
 - [Ontología](#ontología)
   - [Integración AIRO](#integración-airo-ai-risk-ontology)
+  - [Integración DPV](#integración-dpv-data-privacy-vocabulary)
   - [Razonamiento sobre Affected Persons](#razonamiento-sobre-affected-persons-art-86)
   - [Mappings Multi-Framework](#mappings-multi-framework)
 - [Mecanismos de Inferencia](#mecanismos-de-inferencia)
@@ -66,13 +71,15 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 
 ## Descripción
 
-SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.2) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
+SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.4) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
 
 ### Características Principales
 
 - **Razonamiento Semántico Híbrido** (SWRL + SHACL) para clasificación automática de riesgo
 - **Análisis Forense Post-Incidente** con extracción LLM de narrativas de incidentes
-- **Cumplimiento Multi-Framework**: EU AI Act + ISO 42001 + NIST AI RMF
+- **Cumplimiento Multi-Framework**: EU AI Act + ISO 42001 + NIST AI RMF + DPV
+- **Evidence Planner**: Generación automática de planes de evidencia basados en gaps de cumplimiento
+- **DPV Browser**: Explorador interactivo del W3C Data Privacy Vocabulary con taxonomías de riesgos, medidas y conceptos del AI Act
 - **Visualización 3D** interactiva del grafo de conocimiento
 - **Persistencia Dual**: MongoDB para documentos + Apache Jena Fuseki para RDF/SPARQL
 - **Servidor MCP** (Model Context Protocol) para integración con agentes de IA
@@ -84,9 +91,11 @@ SERAMIS implementa un **sistema de evaluación semántica automatizada** para si
 ```mermaid
 flowchart TB
     subgraph Frontend["React Frontend :5173"]
-        SP[Systems Page<br/>Registration]
-        GV[3D Graph View<br/>Force Graph]
-        FA[Forensic Agent Page<br/>AIAAIC Analysis]
+        SP[AI Systems DB<br/>Registration & Classification]
+        GV[AI Knowledge Graph<br/>3D Force Graph]
+        RP[AI Symbolic Reasoning<br/>SWRL Inference]
+        FA[Forensic AI Agent<br/>AIAAIC Analysis]
+        DP[DPV Browser<br/>W3C DPV Explorer]
     end
 
     subgraph Backend["FastAPI Backend :8000"]
@@ -97,6 +106,7 @@ flowchart TB
     subgraph Forensic["Forensic Agent :8002"]
         AE[Analysis Engine<br/>LLM Extraction]
         CL2[EU AI Act Classification<br/>ISO 42001 / NIST Mappings]
+        EP[Evidence Planner<br/>DPV Integration]
     end
 
     subgraph Data["Data Layer"]
@@ -116,7 +126,8 @@ flowchart TB
         OL[Ollama<br/>Llama 3.2]
     end
 
-    SP & GV -->|HTTP/REST| Backend
+    SP & GV & RP -->|HTTP/REST| Backend
+    DP -->|HTTP/REST| Backend
     FA -->|HTTP/REST| Forensic
     Backend -->|MongoDB Protocol| MG
     Backend -->|HTTP/SPARQL| FK
@@ -167,12 +178,42 @@ docker-compose ps
 | Servicio | URL | Descripción |
 |----------|-----|-------------|
 | **Frontend** | http://localhost:5173 | Interfaz web principal |
-| **Visor 3D de Grafo** | http://localhost:5173/graph | Visualización 3D de la ontología |
-| **Agente Forense UI** | http://localhost:5173/forensic | Análisis de incidentes AIAAIC |
+| **AI Systems DB** | http://localhost:5173/systems | Base de datos de sistemas de IA |
+| **AI Knowledge Graph** | http://localhost:5173/graph | Visualización 3D de la ontología |
+| **AI Symbolic Reasoning** | http://localhost:5173/reasoning | Razonamiento SWRL |
+| **Forensic AI Agent** | http://localhost:5173/forensic | Análisis de incidentes AIAAIC |
+| **DPV Browser** | http://localhost:5173/dpv | Explorador Data Privacy Vocabulary |
 | **API Docs** | http://localhost:8000/docs | Documentación API (Swagger) |
 | **API Forense** | http://localhost:8002/docs | Documentación API forense |
 | **SPARQL Endpoint** | http://localhost:3030 | Consultas RDF/SPARQL |
 | **MCP Server** | http://localhost:8080/mcp | Model Context Protocol |
+
+---
+
+## Módulos del Frontend
+
+El frontend de SERAMIS proporciona una interfaz web completa para la gestión y análisis de sistemas de IA:
+
+| Módulo | Ruta | Descripción |
+|--------|------|-------------|
+| **Dashboard** | `/` | Panel principal con métricas y resumen del sistema |
+| **AI Systems DB** | `/systems` | Base de datos de sistemas de IA con formulario de registro, clasificación de riesgo EU AI Act y gestión de requisitos |
+| **AI Knowledge Graph** | `/graph` | Visualización 3D interactiva del grafo de conocimiento usando Force Graph y Three.js |
+| **AI Symbolic Reasoning** | `/reasoning` | Interfaz para ejecutar razonamiento SWRL sobre sistemas registrados |
+| **Forensic AI Agent** | `/forensic` | Análisis forense post-incidente de sistemas de IA usando datos AIAAIC |
+| **DPV Browser** | `/dpv` | Explorador interactivo del W3C Data Privacy Vocabulary 2.2 |
+| **Ontology Docs** | `/ontology` | Documentación de la ontología SERAMIS |
+
+### DPV Browser
+
+El **DPV Browser** (`/dpv`) es un explorador interactivo del [W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/) que permite navegar las taxonomías de:
+
+- **Riesgos de IA** (`dpv-ai:Risk`): Taxonomía de riesgos asociados a sistemas de IA
+- **Medidas Técnicas y Organizativas** (`dpv:TechnicalMeasure`, `dpv:OrganisationalMeasure`): Catálogo de medidas de cumplimiento
+- **Conceptos AI Act** (`dpv-legal-eu-aiact:`): Términos específicos del EU AI Act
+- **Propósitos y Bases Legales**: Taxonomías de procesamiento de datos
+
+Esta herramienta facilita la consulta y comprensión del vocabulario DPV para la generación de planes de evidencia y la evaluación de cumplimiento.
 
 ---
 
@@ -192,10 +233,11 @@ El agente utiliza datos del **AI, Algorithmic, and Automation Incidents and Cont
 
 | Característica | Descripción |
 |----------------|-------------|
-| **Extracción LLM** | Usa Ollama (llama3.2:3b) para extraer datos estructurados |
-| **Análisis Multi-Framework** | EU AI Act + ISO 42001 (15 mappings) + NIST AI RMF (18 mappings) |
-| **Clasificación de Riesgo** | Categorización automática según 6 categorías del Anexo III |
+| **Extracción LLM** | Usa Ollama (llama3.2:3b) o Anthropic para extraer datos estructurados |
+| **Análisis Multi-Framework** | EU AI Act + ISO 42001 (15 mappings) + NIST AI RMF (18 mappings) + DPV 2.2 |
+| **Clasificación de Riesgo** | Categorización automática según 8 categorías del Anexo III + GPAI |
 | **Detección de Brechas** | Identifica requisitos faltantes y calcula ratio de cumplimiento |
+| **Evidence Planner** | Genera planes de evidencia con 14 requisitos y ~40 items de evidencia |
 | **Persistencia Dual** | Guarda en MongoDB + Fuseki RDF para consultas semánticas |
 
 ### Ejemplo de Análisis
@@ -217,20 +259,21 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ## Ontología
 
-### Versión: 0.37.2
+### Versión: 0.37.4
 
 | Propiedad | Valor |
 |-----------|-------|
 | **Namespace** | `http://ai-act.eu/ai#` |
 | **Formato** | Turtle (.ttl) |
-| **Clases** | 50+ |
-| **Propiedades** | 45+ |
-| **Individuos** | 100+ |
-| **Tripletas** | ~1,800 |
+| **Clases** | 60+ |
+| **Propiedades** | 50+ |
+| **Individuos** | 120+ |
+| **Tripletas** | ~2,000 |
 
 ### Cobertura Regulatoria
 
 - EU AI Act Anexo III (8/8 categorías de alto riesgo)
+- **Artículo 5** (Prácticas Prohibidas - Riesgo Inaceptable)
 - Artículos 51-55 (requisitos GPAI)
 - Taxonomía de algoritmos (Anexo I)
 - Framework de gobernanza de datos
@@ -255,6 +298,43 @@ Esta integración permite:
 - **Análisis forense mejorado**: El Agente Forense extrae deployer/developer de incidentes AIAAIC
 - **Interoperabilidad**: Compatible con otras ontologías que usen AIRO
 - **Razonamiento sobre Affected Persons**: Inferencia automática de requisitos basados en personas afectadas
+
+### Integración DPV (Data Privacy Vocabulary)
+
+SERAMIS v1.1.0 integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** para la generación de planes de evidencia de cumplimiento.
+
+| Extensión DPV | Propósito | Uso en SERAMIS |
+|---------------|-----------|----------------|
+| **dpv:core** | Medidas técnicas y organizativas | Mapeo de requisitos a medidas |
+| **dpv:ai** | Sistemas de IA, capacidades, riesgos | Clasificación de sistemas |
+| **dpv:risk** | Gestión de riesgos | Evaluación de gaps |
+| **dpv:legal/eu/aiact** | Conceptos específicos AI Act | Equivalencias semánticas |
+
+#### Tipos de Evidencia Definidos
+
+El módulo `dpv-integration.ttl` define 6 tipos de evidencia:
+
+| Tipo | Descripción | Ejemplo |
+|------|-------------|---------|
+| `PolicyEvidence` | Políticas y procedimientos | Human Oversight Policy |
+| `TechnicalEvidence` | Documentación técnica | Model Card, System Architecture |
+| `AuditEvidence` | Logs, tests, auditorías | Bias Audit Report |
+| `TrainingEvidence` | Registros de formación | Operator Training Records |
+| `AssessmentEvidence` | Evaluaciones de impacto | FRIA Report, DPIA |
+| `ContractualEvidence` | Contratos y acuerdos | Data Processing Agreement |
+
+#### Mappings Requisito → Medida DPV
+
+```turtle
+ai:HumanOversightRequirement
+    ai:mapsToDPVMeasure dpv:HumanInvolvement ;
+    ai:requiresEvidence ai:HumanOversightPolicyEvidence,
+                        ai:OverrideDecisionLogEvidence .
+
+ai:FundamentalRightsAssessmentRequirement
+    ai:mapsToDPVMeasure dpv:ImpactAssessment ;
+    ai:requiresEvidence ai:FRIAReportEvidence .
+```
 
 ### Razonamiento sobre Affected Persons (Art. 86)
 
@@ -292,7 +372,8 @@ El reasoner implementa **4 reglas de inferencia** basadas en la identificación 
 | **EU AI Act** | Regulación obligatoria | Base | - |
 | **ISO 42001** | Estándar de certificación | 15 | 87% HIGH |
 | **NIST AI RMF** | Guía voluntaria | 18 | 100% HIGH |
-| **Total** | Multi-framework | **33** | **94% HIGH** |
+| **DPV 2.2** | Vocabulario W3C | 14 | - |
+| **Total** | Multi-framework | **47+** | **94% HIGH** |
 
 ---
 
@@ -418,9 +499,15 @@ seramis/
 ├── frontend/                   # React + TypeScript UI (5173)
 │   ├── src/
 │   │   ├── pages/
-│   │   │   ├── SystemsPage.tsx
-│   │   │   ├── GraphView.tsx
-│   │   │   └── ForensicAgentPage.tsx
+│   │   │   ├── DashboardPage.tsx        # Panel principal
+│   │   │   ├── SystemsPage.tsx          # AI Systems DB
+│   │   │   ├── GraphView.tsx            # AI Knowledge Graph 3D
+│   │   │   ├── ReasoningPage.tsx        # AI Symbolic Reasoning
+│   │   │   ├── ForensicAgentPage.tsx    # Forensic AI Agent
+│   │   │   ├── DPVPage.tsx              # DPV Browser
+│   │   │   └── OntologyDocs.tsx         # Documentación ontología
+│   │   ├── components/
+│   │   │   └── Navbar.tsx
 │   │   └── lib/
 ├── forensic_agent/            # Agente de Análisis Forense (8002)
 │   ├── app/
@@ -428,6 +515,7 @@ seramis/
 │   │   └── services/
 │   │       ├── incident_extractor.py
 │   │       ├── analysis_engine.py
+│   │       ├── evidence_planner.py   # Evidence Planner (DPV)
 │   │       ├── persistence.py
 │   │       └── mcp_client.py
 ├── mcp-servers/               # Servidores MCP
@@ -435,10 +523,13 @@ seramis/
 │       └── server.py
 ├── reasoner_service/          # Microservicio de razonamiento SWRL (8001)
 ├── ontologias/                # Archivos de ontología
-│   ├── versions/0.37.2/
+│   ├── versions/0.37.4/
 │   ├── rules/
 │   ├── shacl/
 │   └── mappings/
+│       ├── iso-42001-mappings.ttl
+│       ├── nist-ai-rmf-mappings.ttl
+│       └── dpv-integration.ttl      # DPV 2.2 integration
 ├── docker-compose.yml
 └── README.md
 ```
@@ -468,10 +559,12 @@ GET    /reasoning/status       # Estado del servicio
 ### Análisis Forense
 
 ```http
-POST   /forensic/analyze       # Analizar narrativa de incidente
-GET    /forensic/systems       # Listar sistemas analizados
-GET    /forensic/systems/{urn} # Obtener análisis específico
-DELETE /forensic/systems/{urn} # Eliminar análisis
+POST   /forensic/analyze                    # Analizar narrativa de incidente
+POST   /forensic/analyze-with-evidence-plan # Analizar + generar plan de evidencias
+POST   /forensic/evidence-plan              # Generar plan de evidencias desde gaps
+GET    /forensic/systems                    # Listar sistemas analizados
+GET    /forensic/systems/{urn}              # Obtener análisis específico
+DELETE /forensic/systems/{urn}              # Eliminar análisis
 ```
 
 ### MCP Tools
@@ -491,6 +584,7 @@ get_ontology_stats()            # Estadísticas de la ontología
 ## Referencias
 
 - **EU AI Act:** https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689
+- **W3C Data Privacy Vocabulary (DPV) 2.2:** https://w3c.github.io/dpv/
 - **AIAAIC Repository:** https://www.aiaaic.org/aiaaic-repository
 - **AIRO (AI Risk Ontology):** https://w3id.org/airo
 - **ISO/IEC 42001:2023:** https://www.iso.org/standard/81230.html
@@ -520,5 +614,5 @@ El código fuente está disponible bajo los términos definidos por UNIR para Tr
 </p>
 
 <p align="center">
-  <sub>Versión 1.0.0 | Diciembre 2025</sub>
+  <sub>Versión 1.1.0 | Diciembre 2025</sub>
 </p>
