@@ -42,6 +42,7 @@ export default function ForensicAgentPage() {
   const [progress, setProgress] = useState({ current: 0, total: 0, currentId: "" });
   const [results, setResults] = useState<Map<string, ForensicAnalysisResult>>(new Map());
   const [expandedResult, setExpandedResult] = useState<string | null>(null);
+  const [withEvidencePlan, setWithEvidencePlan] = useState(true); // Include DPV Evidence Plan
 
   // Service health
   const [serviceHealthy, setServiceHealthy] = useState<boolean | null>(null);
@@ -274,6 +275,7 @@ export default function ForensicAgentPage() {
             sector: incident.sector,
             country: incident.country,
           },
+          withEvidencePlan,
         });
 
         setResults((prev) => new Map(prev).set(incident.id, result));
@@ -544,13 +546,30 @@ export default function ForensicAgentPage() {
               Clear Selection
             </button>
           </div>
-          <button
-            onClick={handleAnalyze}
-            disabled={analyzing || !serviceHealthy}
-            className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {analyzing ? "Analyzing..." : "Run Forensic Analysis"}
-          </button>
+          <div className="flex items-center gap-4">
+            {/* Evidence Plan Toggle */}
+            <label className="flex items-center gap-2 cursor-pointer bg-blue-700 px-3 py-2 rounded-lg">
+              <input
+                type="checkbox"
+                checked={withEvidencePlan}
+                onChange={(e) => setWithEvidencePlan(e.target.checked)}
+                className="w-4 h-4 rounded border-white/50 text-purple-500 focus:ring-purple-400 focus:ring-offset-0"
+              />
+              <span className="text-sm font-medium">
+                Include DPV Evidence Plan
+              </span>
+              <span className="text-xs text-blue-200" title="Generate W3C DPV-based evidence requirements for compliance gaps">
+                (?)
+              </span>
+            </label>
+            <button
+              onClick={handleAnalyze}
+              disabled={analyzing || !serviceHealthy}
+              className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {analyzing ? "Analyzing..." : "Run Forensic Analysis"}
+            </button>
+          </div>
         </div>
       )}
 

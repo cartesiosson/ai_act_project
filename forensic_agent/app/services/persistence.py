@@ -64,6 +64,7 @@ class PersistenceService:
         compliance_gaps = analysis_result.get("compliance_gaps", {})
         iso_42001 = analysis_result.get("iso_42001", {})
         nist_ai_rmf = analysis_result.get("nist_ai_rmf", {})
+        evidence_plan = analysis_result.get("evidence_plan", {})
         report = analysis_result.get("report", "")
 
         # Generate URN for the system
@@ -135,7 +136,10 @@ class PersistenceService:
             },
 
             # Full markdown report
-            "report": report
+            "report": report,
+
+            # Evidence Plan (if generated)
+            "evidence_plan": evidence_plan if evidence_plan else None
         }
 
         # Add external IDs if provided
@@ -160,6 +164,14 @@ class PersistenceService:
             ttl_data = self._build_turtle(system_doc, urn)
             await self._save_to_fuseki(ttl_data)
             print(f"   ✓ Saved to Fuseki: {urn}")
+
+            # Step 2b: Save Evidence Plan to Fuseki if present
+            if evidence_plan:
+                ev_ttl_data = self._build_evidence_plan_turtle(evidence_plan, urn)
+                if ev_ttl_data:
+                    await self._save_to_fuseki(ev_ttl_data)
+                    print(f"   ✓ Evidence Plan saved to Fuseki: {evidence_plan.get('plan_id', 'unknown')}")
+
         except Exception as e:
             print(f"   ✗ Fuseki save failed: {e}")
             # Rollback MongoDB insert
@@ -178,6 +190,8 @@ class PersistenceService:
         lines = [
             "@prefix ai: <http://ai-act.eu/ai#> .",
             "@prefix forensic: <http://ai-act.eu/forensic#> .",
+            "@prefix dpv: <https://w3id.org/dpv#> .",
+            "@prefix dpv-ai: <https://w3id.org/dpv/ai#> .",
             "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
             "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .",
             ""
@@ -263,6 +277,119 @@ class PersistenceService:
 
         return "\n".join(lines)
 
+    def _build_evidence_plan_turtle(self, evidence_plan: Dict, system_urn: str) -> str:
+        """Build Turtle RDF representation of the Evidence Plan with DPV mappings."""
+        if not evidence_plan:
+            return ""
+
+        plan_id = evidence_plan.get("plan_id", "")
+        plan_urn = f"urn:evidence-plan:{plan_id}"
+
+        lines = [
+            "@prefix ai: <http://ai-act.eu/ai#> .",
+            "@prefix forensic: <http://ai-act.eu/forensic#> .",
+            "@prefix dpv: <https://w3id.org/dpv#> .",
+            "@prefix dpv-ai: <https://w3id.org/dpv/ai#> .",
+            "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
+            "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .",
+            ""
+        ]
+
+        # Evidence Plan declaration
+        lines.append(f"<{plan_urn}> a forensic:EvidencePlan ;")
+        lines.append(f'    rdfs:label "Evidence Plan for {self._escape_turtle(evidence_plan.get("system_name", "Unknown"))}" ;')
+        lines.append(f'    forensic:planId "{plan_id}" ;')
+        lines.append(f'    forensic:forSystem <{system_urn}> ;')
+        lines.append(f'    forensic:riskLevel "{evidence_plan.get("risk_level", "Unknown")}" ;')
+        lines.append(f'    forensic:generatedAt "{evidence_plan.get("generated_at", "")}"^^xsd:dateTime ;')
+
+        # Summary metrics
+        summary = evidence_plan.get("summary", {})
+        lines.append(f'    forensic:totalRequirements "{summary.get("total_requirements", 0)}"^^xsd:integer ;')
+        lines.append(f'    forensic:totalEvidenceItems "{summary.get("total_evidence_items", 0)}"^^xsd:integer ;')
+
+        # Link to requirement plans
+        for req_plan in evidence_plan.get("requirement_plans", []):
+            req_uri = req_plan.get("requirement_uri", "")
+            if req_uri:
+                # Create a unique URI for each requirement plan
+                req_plan_urn = f"{plan_urn}:req:{req_uri.split('#')[-1]}"
+                lines.append(f'    forensic:hasRequirementPlan <{req_plan_urn}> ;')
+
+        lines[-1] = lines[-1].rstrip(" ;") + " ."
+        lines.append("")
+
+        # Link system to evidence plan
+        lines.append(f"<{system_urn}> forensic:hasEvidencePlan <{plan_urn}> .")
+        lines.append("")
+
+        # Generate RequirementPlan instances
+        for req_plan in evidence_plan.get("requirement_plans", []):
+            req_uri = req_plan.get("requirement_uri", "")
+            if not req_uri:
+                continue
+
+            req_label = req_uri.split("#")[-1]
+            req_plan_urn = f"{plan_urn}:req:{req_label}"
+
+            lines.append(f"<{req_plan_urn}> a forensic:RequirementEvidencePlan ;")
+            lines.append(f'    rdfs:label "{self._escape_turtle(req_plan.get("requirement_label", req_label))}" ;')
+            lines.append(f'    forensic:forRequirement <{req_uri}> ;')
+            lines.append(f'    forensic:articleReference "{req_plan.get("article_reference", "")}" ;')
+            lines.append(f'    forensic:priority "{req_plan.get("priority", "medium")}" ;')
+            lines.append(f'    forensic:deadline "{req_plan.get("deadline_recommendation", "")}" ;')
+
+            # DPV measures mapping
+            for measure in req_plan.get("dpv_measures", []):
+                if measure.startswith("dpv:"):
+                    lines.append(f'    ai:mapsToDPVMeasure {measure} ;')
+                else:
+                    lines.append(f'    ai:mapsToDPVMeasure dpv:{measure} ;')
+
+            # Link to evidence items
+            for ev_item in req_plan.get("evidence_items", []):
+                ev_id = ev_item.get("id", "")
+                if ev_id:
+                    ev_urn = f"{req_plan_urn}:ev:{ev_id}"
+                    lines.append(f'    forensic:requiresEvidence <{ev_urn}> ;')
+
+            lines[-1] = lines[-1].rstrip(" ;") + " ."
+            lines.append("")
+
+            # Generate EvidenceItem instances
+            for ev_item in req_plan.get("evidence_items", []):
+                ev_id = ev_item.get("id", "")
+                if not ev_id:
+                    continue
+
+                ev_urn = f"{req_plan_urn}:ev:{ev_id}"
+                ev_type = ev_item.get("type", "Evidence")
+
+                lines.append(f"<{ev_urn}> a forensic:EvidenceItem, forensic:{ev_type} ;")
+                lines.append(f'    rdfs:label "{self._escape_turtle(ev_item.get("name", ev_id))}" ;')
+                lines.append(f'    forensic:evidenceId "{ev_id}" ;')
+
+                if ev_item.get("description"):
+                    lines.append(f'    forensic:description "{self._escape_turtle(ev_item["description"])}" ;')
+
+                lines.append(f'    forensic:priority "{ev_item.get("priority", "medium")}" ;')
+
+                if ev_item.get("frequency"):
+                    lines.append(f'    forensic:frequency "{ev_item["frequency"]}" ;')
+
+                # DPV measure mapping for evidence item
+                if ev_item.get("dpv_measure"):
+                    measure = ev_item["dpv_measure"]
+                    if measure.startswith("dpv:"):
+                        lines.append(f'    dpv:hasOrganisationalMeasure {measure} ;')
+                    else:
+                        lines.append(f'    dpv:hasOrganisationalMeasure dpv:{measure} ;')
+
+                lines[-1] = lines[-1].rstrip(" ;") + " ."
+                lines.append("")
+
+        return "\n".join(lines)
+
     def _escape_turtle(self, value: str) -> str:
         """Escape special characters for Turtle format."""
         if not value:
@@ -328,12 +455,18 @@ class PersistenceService:
         """Delete an analyzed system from both MongoDB and Fuseki."""
         await self.ensure_connected()
 
+        # Get evidence plan ID before deleting from MongoDB
+        doc = await self._db.forensic_systems.find_one({"urn": urn})
+        evidence_plan_id = None
+        if doc and doc.get("evidence_plan"):
+            evidence_plan_id = doc["evidence_plan"].get("plan_id")
+
         # Delete from MongoDB
         result = await self._db.forensic_systems.delete_one({"urn": urn})
         if result.deleted_count == 0:
             return False
 
-        # Delete from Fuseki
+        # Delete system from Fuseki
         sparql = f"""
         DELETE WHERE {{
             GRAPH <{FUSEKI_GRAPH}> {{
@@ -353,5 +486,41 @@ class PersistenceService:
 
             if response.status_code not in (200, 204):
                 print(f"Warning: Fuseki delete failed: {response.text}")
+
+            # Delete evidence plan and related items from Fuseki
+            if evidence_plan_id:
+                plan_urn = f"urn:evidence-plan:{evidence_plan_id}"
+                sparql_plan = f"""
+                DELETE WHERE {{
+                    GRAPH <{FUSEKI_GRAPH}> {{
+                        <{plan_urn}> ?p ?o .
+                    }}
+                }}
+                """
+                await client.post(
+                    f"{FUSEKI_ENDPOINT}/{FUSEKI_DATASET}/update",
+                    content=sparql_plan,
+                    headers={"Content-Type": "application/sparql-update"},
+                    auth=(FUSEKI_USER, FUSEKI_PASSWORD),
+                    timeout=30.0
+                )
+
+                # Delete requirement plans and evidence items (pattern match)
+                sparql_items = f"""
+                DELETE WHERE {{
+                    GRAPH <{FUSEKI_GRAPH}> {{
+                        ?s ?p ?o .
+                        FILTER(STRSTARTS(STR(?s), "{plan_urn}:"))
+                    }}
+                }}
+                """
+                await client.post(
+                    f"{FUSEKI_ENDPOINT}/{FUSEKI_DATASET}/update",
+                    content=sparql_items,
+                    headers={"Content-Type": "application/sparql-update"},
+                    auth=(FUSEKI_USER, FUSEKI_PASSWORD),
+                    timeout=30.0
+                )
+                print(f"   ✓ Evidence Plan deleted from Fuseki: {plan_urn}")
 
         return True
