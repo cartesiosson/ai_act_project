@@ -387,7 +387,9 @@ class ForensicSPARQLService:
             "biometric", "lawenforcement", "migration", "employment",
             "education", "criticalinfrastructure", "emotionrecognition",
             "socialscoring", "predictivepolicing", "healthcare", "health",
-            "recruitment", "judicial", "essential"
+            "recruitment", "judicial", "essential",
+            # GPAI / Generative AI - Articles 50-52 (systemic risk models)
+            "systemicrisk", "dualuse", "gpai", "generativeai"
         ]
 
         for keyword in high_risk_keywords:

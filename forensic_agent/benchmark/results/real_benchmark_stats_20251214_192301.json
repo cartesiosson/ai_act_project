@@ -1,0 +1,45 @@
+{
+  "benchmark_type": "REAL",
+  "data_source": {
+    "source": "AIAAIC Repository",
+    "url": "https://www.aiaaic.org/aiaaic-repository",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "version": "December 2025",
+    "terms": "https://www.aiaaic.org/terms",
+    "citation": "Data provided by AIAAIC (https://www.aiaaic.org/aiaaic-repository) under CC BY-SA 4.0 license."
+  },
+  "timestamp": "2025-12-14T19:23:01.236393",
+  "summary": {
+    "total_incidents": 5,
+    "successful": 5,
+    "low_confidence": 0,
+    "failed": 0,
+    "success_rate": 100.0
+  },
+  "performance": {
+    "mean_time": 52.5222927570343,
+    "median_time": 52.00692677497864,
+    "min_time": 46.76085305213928,
+    "max_time": 61.271586656570435,
+    "stdev_time": 5.524903534099649
+  },
+  "quality": {
+    "mean_confidence": 0.8206666666666667,
+    "median_confidence": 0.8366666666666667,
+    "min_confidence": 0.7966666666666666,
+    "max_confidence": 0.8366666666666667,
+    "stdev_confidence": 0.021908902300206635
+  },
+  "risk_distribution": {
+    "HighRisk": 2,
+    "MinimalRisk": 3
+  },
+  "incident_distribution": {
+    "bias": 1,
+    "data_leakage": 1,
+    "transparency_failure": 2,
+    "mistaken stock trades": 1
+  },
+  "errors": []
+}
