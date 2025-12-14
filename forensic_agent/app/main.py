@@ -10,7 +10,8 @@ from .services import (
     IncidentExtractorService,
     ForensicSPARQLService,
     ForensicAnalysisEngine,
-    PersistenceService
+    PersistenceService,
+    EvidencePlannerService
 )
 
 # Initialize FastAPI app
@@ -34,12 +35,13 @@ extractor_service: Optional[IncidentExtractorService] = None
 sparql_service: Optional[ForensicSPARQLService] = None
 analysis_engine: Optional[ForensicAnalysisEngine] = None
 persistence_service: Optional[PersistenceService] = None
+evidence_planner: Optional[EvidencePlannerService] = None
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup"""
-    global extractor_service, sparql_service, analysis_engine, persistence_service
+    global extractor_service, sparql_service, analysis_engine, persistence_service, evidence_planner
 
     print("=" * 80)
     print("FORENSIC COMPLIANCE AGENT - STARTING UP")
@@ -89,6 +91,10 @@ async def startup_event():
         await persistence_service.ensure_connected()
         print("✓ Persistence Service initialized (MongoDB + Fuseki)")
 
+        print("\nInitializing Evidence Planner Service...")
+        evidence_planner = EvidencePlannerService()
+        print("✓ Evidence Planner Service initialized (DPV mappings)")
+
         print("\n" + "=" * 80)
         print("FORENSIC COMPLIANCE AGENT - READY")
         print("=" * 80)
@@ -123,11 +129,12 @@ async def root():
     """Root endpoint"""
     return {
         "service": "Forensic Compliance Agent",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "status": "operational",
         "endpoints": {
             "health": "/health",
             "analyze": "POST /forensic/analyze",
+            "evidence_plan": "POST /forensic/evidence-plan",
             "stats": "/forensic/stats"
         }
     }
@@ -236,9 +243,154 @@ async def get_stats():
         "services": {
             "extractor_ready": extractor_service is not None,
             "sparql_ready": sparql_service is not None,
-            "analysis_engine_ready": analysis_engine is not None
+            "analysis_engine_ready": analysis_engine is not None,
+            "evidence_planner_ready": evidence_planner is not None
         }
     }
+
+
+# Evidence Plan Request Model
+class EvidencePlanRequest(BaseModel):
+    """Request model for evidence plan generation"""
+    system_name: str
+    risk_level: str
+    missing_requirements: list
+    critical_gaps: list = []
+    jurisdiction: str = "EU"
+    format: str = "json"  # "json" or "markdown"
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "system_name": "Facial Recognition System",
+                "risk_level": "HighRisk",
+                "missing_requirements": [
+                    "http://ai-act.eu/ai#HumanOversightRequirement",
+                    "http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement"
+                ],
+                "critical_gaps": [
+                    {"requirement": "http://ai-act.eu/ai#HumanOversightRequirement", "reason": "Critical: Human oversight requirement"}
+                ],
+                "format": "json"
+            }
+        }
+
+
+@app.post("/forensic/evidence-plan")
+async def generate_evidence_plan(request: EvidencePlanRequest):
+    """
+    Generate an evidence plan based on compliance gaps.
+
+    Takes the compliance gaps from a forensic analysis and generates
+    a structured plan for evidence generation using DPV (Data Privacy Vocabulary)
+    mappings.
+
+    Returns:
+        Evidence plan with required documentation, assessments, and policies
+    """
+    if not evidence_planner:
+        raise HTTPException(status_code=503, detail="Evidence planner not initialized")
+
+    if not request.missing_requirements:
+        raise HTTPException(
+            status_code=400,
+            detail="No missing requirements provided. Run forensic analysis first."
+        )
+
+    try:
+        # Generate evidence plan
+        plan = evidence_planner.generate_plan(
+            system_name=request.system_name,
+            risk_level=request.risk_level,
+            missing_requirements=request.missing_requirements,
+            critical_gaps=request.critical_gaps,
+            jurisdiction=request.jurisdiction
+        )
+
+        if request.format == "markdown":
+            return {
+                "plan_id": plan.plan_id,
+                "format": "markdown",
+                "content": evidence_planner.generate_markdown_report(plan)
+            }
+        else:
+            return evidence_planner.to_dict(plan)
+
+    except Exception as e:
+        print(f"Evidence plan generation error: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Evidence plan generation failed: {str(e)}"
+        )
+
+
+@app.post("/forensic/analyze-with-evidence-plan")
+async def analyze_with_evidence_plan(request: IncidentAnalysisRequest):
+    """
+    Analyze an incident AND generate an evidence plan in one call.
+
+    Combines forensic analysis with evidence planning to provide
+    a complete compliance remediation package.
+    """
+    if not analysis_engine or not evidence_planner:
+        raise HTTPException(status_code=503, detail="Services not initialized")
+
+    if not request.narrative or len(request.narrative.strip()) < 50:
+        raise HTTPException(
+            status_code=400,
+            detail="Narrative too short. Provide at least 50 characters."
+        )
+
+    try:
+        # Run forensic analysis
+        result = await analysis_engine.analyze_incident(request.narrative)
+
+        # Add metadata
+        if request.metadata:
+            result["metadata"] = request.metadata
+        result["source"] = request.source
+
+        # If analysis completed, generate evidence plan
+        if result.get("status") == "COMPLETED":
+            compliance_gaps = result.get("compliance_gaps", {})
+            missing_reqs = compliance_gaps.get("missing_requirements", [])
+            critical_gaps = compliance_gaps.get("critical_gaps", [])
+
+            if missing_reqs:
+                system_name = result.get("extraction", {}).get("system", {}).get("system_name", "Unknown System")
+                risk_level = result.get("eu_ai_act", {}).get("risk_level", "Unknown")
+
+                plan = evidence_planner.generate_plan(
+                    system_name=system_name,
+                    risk_level=risk_level,
+                    missing_requirements=missing_reqs,
+                    critical_gaps=critical_gaps
+                )
+
+                result["evidence_plan"] = evidence_planner.to_dict(plan)
+
+        # Persist if successful
+        if result.get("status") == "COMPLETED" and persistence_service:
+            persist_result = await persistence_service.persist_analyzed_system(
+                analysis_result=result,
+                source=request.source,
+                metadata=request.metadata
+            )
+            if persist_result.get("success"):
+                result["persisted"] = {
+                    "success": True,
+                    "urn": persist_result.get("urn"),
+                    "message": "System saved to MongoDB and Fuseki"
+                }
+
+        return result
+
+    except Exception as e:
+        print(f"Analysis with evidence plan error: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Analysis failed: {str(e)}"
+        )
 
 
 @app.get("/forensic/systems")
