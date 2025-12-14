@@ -53,6 +53,7 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 - [Descripción](#descripción)
 - [Arquitectura del Sistema](#arquitectura-del-sistema)
 - [Instalación](#instalación)
+- [Módulos del Frontend](#módulos-del-frontend)
 - [Agente Forense](#agente-forense)
 - [Ontología](#ontología)
   - [Integración AIRO](#integración-airo-ai-risk-ontology)
@@ -78,6 +79,7 @@ SERAMIS implementa un **sistema de evaluación semántica automatizada** para si
 - **Análisis Forense Post-Incidente** con extracción LLM de narrativas de incidentes
 - **Cumplimiento Multi-Framework**: EU AI Act + ISO 42001 + NIST AI RMF + DPV
 - **Evidence Planner**: Generación automática de planes de evidencia basados en gaps de cumplimiento
+- **DPV Browser**: Explorador interactivo del W3C Data Privacy Vocabulary con taxonomías de riesgos, medidas y conceptos del AI Act
 - **Visualización 3D** interactiva del grafo de conocimiento
 - **Persistencia Dual**: MongoDB para documentos + Apache Jena Fuseki para RDF/SPARQL
 - **Servidor MCP** (Model Context Protocol) para integración con agentes de IA
@@ -89,9 +91,11 @@ SERAMIS implementa un **sistema de evaluación semántica automatizada** para si
 ```mermaid
 flowchart TB
     subgraph Frontend["React Frontend :5173"]
-        SP[Systems Page<br/>Registration]
-        GV[3D Graph View<br/>Force Graph]
-        FA[Forensic Agent Page<br/>AIAAIC Analysis]
+        SP[AI Systems DB<br/>Registration & Classification]
+        GV[AI Knowledge Graph<br/>3D Force Graph]
+        RP[AI Symbolic Reasoning<br/>SWRL Inference]
+        FA[Forensic AI Agent<br/>AIAAIC Analysis]
+        DP[DPV Browser<br/>W3C DPV Explorer]
     end
 
     subgraph Backend["FastAPI Backend :8000"]
@@ -122,7 +126,8 @@ flowchart TB
         OL[Ollama<br/>Llama 3.2]
     end
 
-    SP & GV -->|HTTP/REST| Backend
+    SP & GV & RP -->|HTTP/REST| Backend
+    DP -->|HTTP/REST| Backend
     FA -->|HTTP/REST| Forensic
     Backend -->|MongoDB Protocol| MG
     Backend -->|HTTP/SPARQL| FK
@@ -173,12 +178,42 @@ docker-compose ps
 | Servicio | URL | Descripción |
 |----------|-----|-------------|
 | **Frontend** | http://localhost:5173 | Interfaz web principal |
-| **Visor 3D de Grafo** | http://localhost:5173/graph | Visualización 3D de la ontología |
-| **Agente Forense UI** | http://localhost:5173/forensic | Análisis de incidentes AIAAIC |
+| **AI Systems DB** | http://localhost:5173/systems | Base de datos de sistemas de IA |
+| **AI Knowledge Graph** | http://localhost:5173/graph | Visualización 3D de la ontología |
+| **AI Symbolic Reasoning** | http://localhost:5173/reasoning | Razonamiento SWRL |
+| **Forensic AI Agent** | http://localhost:5173/forensic | Análisis de incidentes AIAAIC |
+| **DPV Browser** | http://localhost:5173/dpv | Explorador Data Privacy Vocabulary |
 | **API Docs** | http://localhost:8000/docs | Documentación API (Swagger) |
 | **API Forense** | http://localhost:8002/docs | Documentación API forense |
 | **SPARQL Endpoint** | http://localhost:3030 | Consultas RDF/SPARQL |
 | **MCP Server** | http://localhost:8080/mcp | Model Context Protocol |
+
+---
+
+## Módulos del Frontend
+
+El frontend de SERAMIS proporciona una interfaz web completa para la gestión y análisis de sistemas de IA:
+
+| Módulo | Ruta | Descripción |
+|--------|------|-------------|
+| **Dashboard** | `/` | Panel principal con métricas y resumen del sistema |
+| **AI Systems DB** | `/systems` | Base de datos de sistemas de IA con formulario de registro, clasificación de riesgo EU AI Act y gestión de requisitos |
+| **AI Knowledge Graph** | `/graph` | Visualización 3D interactiva del grafo de conocimiento usando Force Graph y Three.js |
+| **AI Symbolic Reasoning** | `/reasoning` | Interfaz para ejecutar razonamiento SWRL sobre sistemas registrados |
+| **Forensic AI Agent** | `/forensic` | Análisis forense post-incidente de sistemas de IA usando datos AIAAIC |
+| **DPV Browser** | `/dpv` | Explorador interactivo del W3C Data Privacy Vocabulary 2.2 |
+| **Ontology Docs** | `/ontology` | Documentación de la ontología SERAMIS |
+
+### DPV Browser
+
+El **DPV Browser** (`/dpv`) es un explorador interactivo del [W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/) que permite navegar las taxonomías de:
+
+- **Riesgos de IA** (`dpv-ai:Risk`): Taxonomía de riesgos asociados a sistemas de IA
+- **Medidas Técnicas y Organizativas** (`dpv:TechnicalMeasure`, `dpv:OrganisationalMeasure`): Catálogo de medidas de cumplimiento
+- **Conceptos AI Act** (`dpv-legal-eu-aiact:`): Términos específicos del EU AI Act
+- **Propósitos y Bases Legales**: Taxonomías de procesamiento de datos
+
+Esta herramienta facilita la consulta y comprensión del vocabulario DPV para la generación de planes de evidencia y la evaluación de cumplimiento.
 
 ---
 
@@ -464,9 +499,15 @@ seramis/
 ├── frontend/                   # React + TypeScript UI (5173)
 │   ├── src/
 │   │   ├── pages/
-│   │   │   ├── SystemsPage.tsx
-│   │   │   ├── GraphView.tsx
-│   │   │   └── ForensicAgentPage.tsx
+│   │   │   ├── DashboardPage.tsx        # Panel principal
+│   │   │   ├── SystemsPage.tsx          # AI Systems DB
+│   │   │   ├── GraphView.tsx            # AI Knowledge Graph 3D
+│   │   │   ├── ReasoningPage.tsx        # AI Symbolic Reasoning
+│   │   │   ├── ForensicAgentPage.tsx    # Forensic AI Agent
+│   │   │   ├── DPVPage.tsx              # DPV Browser
+│   │   │   └── OntologyDocs.tsx         # Documentación ontología
+│   │   ├── components/
+│   │   │   └── Navbar.tsx
 │   │   └── lib/
 ├── forensic_agent/            # Agente de Análisis Forense (8002)
 │   ├── app/
@@ -543,6 +584,7 @@ get_ontology_stats()            # Estadísticas de la ontología
 ## Referencias
 
 - **EU AI Act:** https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689
+- **W3C Data Privacy Vocabulary (DPV) 2.2:** https://w3c.github.io/dpv/
 - **AIAAIC Repository:** https://www.aiaaic.org/aiaaic-repository
 - **AIRO (AI Risk Ontology):** https://w3id.org/airo
 - **ISO/IEC 42001:2023:** https://www.iso.org/standard/81230.html
