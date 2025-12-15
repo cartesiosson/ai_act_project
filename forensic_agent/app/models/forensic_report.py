@@ -1,7 +1,40 @@
 """Forensic analysis report data models"""
 
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Literal
 from pydantic import BaseModel, Field
+from datetime import datetime
+from enum import Enum
+
+
+class StreamEventType(str, Enum):
+    """Types of streaming events during analysis"""
+    STEP_START = "step_start"
+    STEP_PROGRESS = "step_progress"
+    STEP_COMPLETE = "step_complete"
+    LLM_PROMPT = "llm_prompt"
+    LLM_RESPONSE = "llm_response"
+    SPARQL_QUERY = "sparql_query"
+    SPARQL_RESULT = "sparql_result"
+    ANALYSIS_COMPLETE = "analysis_complete"
+    ERROR = "error"
+
+
+class ConversationMessage(BaseModel):
+    """A single message in the conversation flow"""
+    role: Literal["system", "user", "assistant", "tool"]
+    content: str
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
+
+class StreamEvent(BaseModel):
+    """Event emitted during streaming analysis"""
+    event_type: StreamEventType
+    step_number: Optional[int] = None
+    step_name: Optional[str] = None
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    data: Optional[Dict] = None
+    message: Optional[ConversationMessage] = None
+    progress_percent: Optional[float] = None
 
 
 class EUAIActRequirement(BaseModel):

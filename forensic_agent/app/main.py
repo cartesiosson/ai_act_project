@@ -1,10 +1,13 @@
 """Forensic Compliance Agent - FastAPI Application"""
 
 import os
+import json
+import asyncio
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional, Dict
+from typing import Optional, Dict, AsyncGenerator
 
 from .services import (
     IncidentExtractorService,
@@ -13,6 +16,7 @@ from .services import (
     PersistenceService,
     EvidencePlannerService
 )
+from .models.forensic_report import StreamEvent, StreamEventType
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -148,6 +152,12 @@ async def health_check():
 
     stats = await sparql_service.get_stats()
 
+    # Get LLM info
+    llm_info = {
+        "provider": extractor_service.llm_provider if extractor_service else "unknown",
+        "model": extractor_service.model if extractor_service else "unknown"
+    }
+
     return {
         "status": "healthy",
         "services": {
@@ -155,6 +165,7 @@ async def health_check():
             "sparql": "operational",
             "analysis_engine": "operational"
         },
+        "llm": llm_info,
         "mcp": {
             "connected": sparql_service._connected,
             "stats": stats
@@ -247,6 +258,176 @@ async def get_stats():
             "evidence_planner_ready": evidence_planner is not None
         }
     }
+
+
+@app.post("/forensic/analyze-stream")
+async def analyze_incident_stream(request: IncidentAnalysisRequest):
+    """
+    Analyze an AI incident narrative with Server-Sent Events streaming.
+
+    Returns real-time updates of the analysis process including:
+    - LLM prompts and responses
+    - SPARQL queries and results
+    - Step-by-step progress
+    - Final analysis result
+    """
+    if not analysis_engine:
+        raise HTTPException(status_code=503, detail="Analysis engine not initialized")
+
+    if not request.narrative or len(request.narrative.strip()) < 50:
+        raise HTTPException(
+            status_code=400,
+            detail="Narrative too short. Provide at least 50 characters of incident description."
+        )
+
+    async def event_generator() -> AsyncGenerator[str, None]:
+        """Generate SSE events during analysis"""
+        try:
+            # Run analysis with streaming
+            async for event in analysis_engine.analyze_incident_streaming(request.narrative):
+                # Format as SSE
+                event_data = event.model_dump() if hasattr(event, 'model_dump') else event.dict()
+                yield f"data: {json.dumps(event_data)}\n\n"
+
+            # After analysis, handle persistence
+            result = analysis_engine.last_result
+            if result and result.get("status") == "COMPLETED":
+                # Add metadata
+                if request.metadata:
+                    result["metadata"] = request.metadata
+                result["source"] = request.source
+
+                # Persist
+                if persistence_service:
+                    persist_result = await persistence_service.persist_analyzed_system(
+                        analysis_result=result,
+                        source=request.source,
+                        metadata=request.metadata
+                    )
+                    if persist_result.get("success"):
+                        result["persisted"] = {
+                            "success": True,
+                            "urn": persist_result.get("urn"),
+                            "message": "System saved to MongoDB and Fuseki"
+                        }
+
+                # Send final result
+                final_event = StreamEvent(
+                    event_type=StreamEventType.ANALYSIS_COMPLETE,
+                    step_name="Complete",
+                    data=result,
+                    progress_percent=100.0
+                )
+                yield f"data: {json.dumps(final_event.model_dump())}\n\n"
+
+        except Exception as e:
+            error_event = StreamEvent(
+                event_type=StreamEventType.ERROR,
+                step_name="Error",
+                data={"error": str(e)}
+            )
+            yield f"data: {json.dumps(error_event.model_dump())}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+
+@app.post("/forensic/analyze-stream-with-evidence-plan")
+async def analyze_stream_with_evidence_plan(request: IncidentAnalysisRequest):
+    """
+    Analyze an incident with streaming AND generate an evidence plan.
+
+    Combines forensic analysis streaming with evidence planning.
+    """
+    if not analysis_engine or not evidence_planner:
+        raise HTTPException(status_code=503, detail="Services not initialized")
+
+    if not request.narrative or len(request.narrative.strip()) < 50:
+        raise HTTPException(
+            status_code=400,
+            detail="Narrative too short. Provide at least 50 characters."
+        )
+
+    async def event_generator() -> AsyncGenerator[str, None]:
+        """Generate SSE events during analysis with evidence plan"""
+        try:
+            # Run analysis with streaming
+            async for event in analysis_engine.analyze_incident_streaming(request.narrative):
+                event_data = event.model_dump() if hasattr(event, 'model_dump') else event.dict()
+                yield f"data: {json.dumps(event_data)}\n\n"
+
+            # Get final result
+            result = analysis_engine.last_result
+            if result and result.get("status") == "COMPLETED":
+                # Add metadata
+                if request.metadata:
+                    result["metadata"] = request.metadata
+                result["source"] = request.source
+
+                # Generate evidence plan
+                compliance_gaps = result.get("compliance_gaps", {})
+                missing_reqs = compliance_gaps.get("missing_requirements", [])
+                critical_gaps = compliance_gaps.get("critical_gaps", [])
+
+                if missing_reqs:
+                    system_name = result.get("extraction", {}).get("system", {}).get("system_name", "Unknown System")
+                    risk_level = result.get("eu_ai_act", {}).get("risk_level", "Unknown")
+
+                    plan = evidence_planner.generate_plan(
+                        system_name=system_name,
+                        risk_level=risk_level,
+                        missing_requirements=missing_reqs,
+                        critical_gaps=critical_gaps
+                    )
+                    result["evidence_plan"] = evidence_planner.to_dict(plan)
+
+                # Persist
+                if persistence_service:
+                    persist_result = await persistence_service.persist_analyzed_system(
+                        analysis_result=result,
+                        source=request.source,
+                        metadata=request.metadata
+                    )
+                    if persist_result.get("success"):
+                        result["persisted"] = {
+                            "success": True,
+                            "urn": persist_result.get("urn"),
+                            "message": "System saved to MongoDB and Fuseki"
+                        }
+
+                # Send final result
+                final_event = StreamEvent(
+                    event_type=StreamEventType.ANALYSIS_COMPLETE,
+                    step_name="Complete",
+                    data=result,
+                    progress_percent=100.0
+                )
+                yield f"data: {json.dumps(final_event.model_dump())}\n\n"
+
+        except Exception as e:
+            error_event = StreamEvent(
+                event_type=StreamEventType.ERROR,
+                step_name="Error",
+                data={"error": str(e)}
+            )
+            yield f"data: {json.dumps(error_event.model_dump())}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 
 # Evidence Plan Request Model

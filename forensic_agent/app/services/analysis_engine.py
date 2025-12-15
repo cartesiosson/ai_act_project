@@ -1,6 +1,6 @@
 """Multi-framework forensic analysis engine"""
 
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, AsyncGenerator
 from datetime import datetime
 
 from ..models.incident import ExtractedIncident
@@ -13,7 +13,10 @@ from ..models.forensic_report import (
     NISTMapping,
     ComplianceGaps,
     CriticalGap,
-    ForensicAnalysisResult
+    ForensicAnalysisResult,
+    StreamEvent,
+    StreamEventType,
+    ConversationMessage
 )
 from .incident_extractor import IncidentExtractorService
 from .sparql_queries import ForensicSPARQLService
@@ -36,6 +39,7 @@ class ForensicAnalysisEngine:
         """
         self.extractor = extractor
         self.sparql = sparql
+        self.last_result: Optional[Dict] = None  # Store last result for streaming endpoint
 
     async def analyze_incident(self, narrative: str) -> Dict:
         """
@@ -217,6 +221,390 @@ class ForensicAnalysisEngine:
         )
 
         return result
+
+    async def analyze_incident_streaming(self, narrative: str) -> AsyncGenerator[StreamEvent, None]:
+        """
+        Complete multi-framework forensic analysis with streaming events.
+
+        Yields StreamEvent objects during each step of the analysis process,
+        allowing real-time visibility into the LLM conversation and SPARQL queries.
+
+        Args:
+            narrative: Raw incident narrative text
+
+        Yields:
+            StreamEvent objects for each step of the analysis
+        """
+        total_steps = 7
+        self.last_result = None
+
+        # Step 1: Extract incident properties
+        yield StreamEvent(
+            event_type=StreamEventType.STEP_START,
+            step_number=1,
+            step_name="Extracting incident properties",
+            progress_percent=(0 / total_steps) * 100
+        )
+
+        # Emit the LLM prompt
+        extraction_prompt = self.extractor._build_extraction_prompt(narrative)
+        yield StreamEvent(
+            event_type=StreamEventType.LLM_PROMPT,
+            step_number=1,
+            step_name="LLM Extraction",
+            message=ConversationMessage(
+                role="user",
+                content=f"**Extraction Prompt:**\n\n{extraction_prompt[:2000]}..." if len(extraction_prompt) > 2000 else f"**Extraction Prompt:**\n\n{extraction_prompt}"
+            )
+        )
+
+        try:
+            incident = await self.extractor.extract_incident(narrative)
+
+            # Emit the LLM response summary
+            yield StreamEvent(
+                event_type=StreamEventType.LLM_RESPONSE,
+                step_number=1,
+                step_name="LLM Extraction",
+                message=ConversationMessage(
+                    role="assistant",
+                    content=f"**Extracted Data:**\n- System: {incident.system.system_name}\n- Organization: {incident.system.organization}\n- Type: {incident.system.system_type}\n- Purpose: {incident.system.primary_purpose}\n- Incident: {incident.incident.incident_type}\n- Severity: {incident.incident.severity}\n- Confidence: {incident.confidence.overall:.1%}"
+                ),
+                data={
+                    "system_name": incident.system.system_name,
+                    "organization": incident.system.organization,
+                    "confidence": incident.confidence.overall
+                }
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=1,
+                step_name="Extraction complete",
+                progress_percent=(1 / total_steps) * 100,
+                data={"confidence": incident.confidence.overall}
+            )
+
+        except Exception as e:
+            yield StreamEvent(
+                event_type=StreamEventType.ERROR,
+                step_number=1,
+                step_name="Extraction failed",
+                data={"error": str(e)}
+            )
+            self.last_result = {
+                "status": "ERROR",
+                "message": f"Extraction failed: {str(e)}",
+                "analysis_timestamp": datetime.utcnow().isoformat()
+            }
+            return
+
+        # Check confidence threshold
+        if incident.confidence.overall < 0.6:
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=1,
+                step_name="Low confidence warning",
+                data={"confidence": incident.confidence.overall, "warning": "Low confidence extraction"}
+            )
+            self.last_result = {
+                "status": "LOW_CONFIDENCE",
+                "message": "Insufficient detail in narrative for reliable analysis",
+                "confidence": incident.confidence.overall,
+                "extraction": incident.dict(),
+                "requires_human_review": True,
+                "analysis_timestamp": datetime.utcnow().isoformat()
+            }
+            return
+
+        # Step 2: Query EU AI Act mandatory requirements
+        yield StreamEvent(
+            event_type=StreamEventType.STEP_START,
+            step_number=2,
+            step_name="Querying EU AI Act requirements",
+            progress_percent=(1 / total_steps) * 100
+        )
+
+        yield StreamEvent(
+            event_type=StreamEventType.SPARQL_QUERY,
+            step_number=2,
+            step_name="SPARQL Query",
+            message=ConversationMessage(
+                role="tool",
+                content=f"**SPARQL Query Parameters:**\n- Purpose: `{incident.system.primary_purpose}`\n- Contexts: `{incident.system.deployment_context}`\n- Data Types: `{incident.system.processes_data_types}`"
+            )
+        )
+
+        try:
+            eu_requirements = await self.sparql.query_mandatory_requirements(
+                purpose=incident.system.primary_purpose,
+                contexts=incident.system.deployment_context,
+                data_types=incident.system.processes_data_types
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.SPARQL_RESULT,
+                step_number=2,
+                step_name="EU AI Act Results",
+                message=ConversationMessage(
+                    role="tool",
+                    content=f"**EU AI Act Analysis:**\n- Risk Level: **{eu_requirements['risk_level']}**\n- Criteria Activated: {len(eu_requirements['criteria'])}\n- Mandatory Requirements: {eu_requirements['total_requirements']}"
+                ),
+                data=eu_requirements
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=2,
+                step_name="EU AI Act query complete",
+                progress_percent=(2 / total_steps) * 100
+            )
+
+        except Exception as e:
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_PROGRESS,
+                step_number=2,
+                step_name="EU AI Act query failed",
+                data={"error": str(e)}
+            )
+            eu_requirements = {
+                "criteria": [],
+                "requirements": [],
+                "risk_level": "Unknown",
+                "total_requirements": 0
+            }
+
+        # Step 3: Query ISO 42001 mappings
+        yield StreamEvent(
+            event_type=StreamEventType.STEP_START,
+            step_number=3,
+            step_name="Querying ISO 42001 mappings",
+            progress_percent=(2 / total_steps) * 100
+        )
+
+        try:
+            eu_req_uris = [req["uri"] for req in eu_requirements["requirements"]]
+
+            yield StreamEvent(
+                event_type=StreamEventType.SPARQL_QUERY,
+                step_number=3,
+                step_name="ISO 42001 Query",
+                message=ConversationMessage(
+                    role="tool",
+                    content=f"**Querying ISO 42001 mappings for {len(eu_req_uris)} EU requirements...**"
+                )
+            )
+
+            iso_mappings = await self.sparql.query_iso_42001_mappings(eu_req_uris)
+
+            yield StreamEvent(
+                event_type=StreamEventType.SPARQL_RESULT,
+                step_number=3,
+                step_name="ISO 42001 Results",
+                message=ConversationMessage(
+                    role="tool",
+                    content=f"**ISO 42001 Mappings:** {len(iso_mappings)} controls mapped"
+                ),
+                data={"total_mapped": len(iso_mappings)}
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=3,
+                step_name="ISO 42001 query complete",
+                progress_percent=(3 / total_steps) * 100
+            )
+
+        except Exception as e:
+            iso_mappings = {}
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_PROGRESS,
+                step_number=3,
+                step_name="ISO mapping query failed",
+                data={"error": str(e)}
+            )
+
+        # Step 4: Query NIST AI RMF mappings
+        yield StreamEvent(
+            event_type=StreamEventType.STEP_START,
+            step_number=4,
+            step_name="Querying NIST AI RMF mappings",
+            progress_percent=(3 / total_steps) * 100
+        )
+
+        try:
+            jurisdiction = incident.system.jurisdiction.upper()
+            if jurisdiction == "US":
+                nist_jurisdiction = "US"
+            elif jurisdiction in ["GLOBAL", "EU"]:
+                nist_jurisdiction = "GLOBAL"
+            else:
+                nist_jurisdiction = "GLOBAL"
+
+            yield StreamEvent(
+                event_type=StreamEventType.SPARQL_QUERY,
+                step_number=4,
+                step_name="NIST AI RMF Query",
+                message=ConversationMessage(
+                    role="tool",
+                    content=f"**Querying NIST AI RMF for jurisdiction: {nist_jurisdiction}**"
+                )
+            )
+
+            nist_mappings = await self.sparql.query_nist_ai_rmf_mappings(
+                eu_req_uris,
+                jurisdiction=nist_jurisdiction
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.SPARQL_RESULT,
+                step_number=4,
+                step_name="NIST AI RMF Results",
+                message=ConversationMessage(
+                    role="tool",
+                    content=f"**NIST AI RMF Mappings:** {len(nist_mappings)} functions mapped\n- Jurisdiction: {nist_jurisdiction}"
+                ),
+                data={"total_mapped": len(nist_mappings), "jurisdiction": nist_jurisdiction}
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=4,
+                step_name="NIST AI RMF query complete",
+                progress_percent=(4 / total_steps) * 100
+            )
+
+        except Exception as e:
+            nist_mappings = {}
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_PROGRESS,
+                step_number=4,
+                step_name="NIST mapping query failed",
+                data={"error": str(e)}
+            )
+
+        # Step 5: Analyze compliance gaps
+        yield StreamEvent(
+            event_type=StreamEventType.STEP_START,
+            step_number=5,
+            step_name="Analyzing compliance gaps",
+            progress_percent=(4 / total_steps) * 100
+        )
+
+        try:
+            gaps = await self.sparql.analyze_compliance_gaps(
+                mandatory_requirements=eu_req_uris,
+                incident_properties=incident.dict()
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.SPARQL_RESULT,
+                step_number=5,
+                step_name="Compliance Gap Analysis",
+                message=ConversationMessage(
+                    role="tool",
+                    content=f"**Compliance Analysis:**\n- Compliance Ratio: **{gaps['compliance_ratio']:.1%}**\n- Missing Requirements: {gaps['missing']}/{gaps['total_required']}\n- Severity: **{gaps['severity']}**\n- Critical Gaps: {len(gaps['critical_gaps'])}"
+                ),
+                data=gaps
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=5,
+                step_name="Gap analysis complete",
+                progress_percent=(5 / total_steps) * 100
+            )
+
+        except Exception as e:
+            gaps = {
+                "total_required": len(eu_req_uris),
+                "implemented": 0,
+                "missing": len(eu_req_uris),
+                "compliance_ratio": 0.0,
+                "missing_requirements": eu_req_uris,
+                "critical_gaps": [],
+                "severity": "UNKNOWN"
+            }
+
+        # Step 6: Query applicable inference rules
+        yield StreamEvent(
+            event_type=StreamEventType.STEP_START,
+            step_number=6,
+            step_name="Querying inference rules",
+            progress_percent=(5 / total_steps) * 100
+        )
+
+        try:
+            inference_rules = await self.sparql.get_applicable_rules(incident.dict())
+
+            yield StreamEvent(
+                event_type=StreamEventType.SPARQL_RESULT,
+                step_number=6,
+                step_name="Inference Rules",
+                message=ConversationMessage(
+                    role="tool",
+                    content=f"**Inference Rules Applied:**\n- Applicable Rules: {inference_rules.get('total_applicable', 0)}\n- Navigation Rules: {inference_rules.get('total_navigation', 0)}"
+                ),
+                data=inference_rules
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=6,
+                step_name="Inference rules complete",
+                progress_percent=(6 / total_steps) * 100
+            )
+
+        except Exception as e:
+            inference_rules = {
+                "applicable_rules": [],
+                "navigation_rules": [],
+                "total_applicable": 0,
+                "total_navigation": 0,
+                "explanation": f"Rules not available: {e}"
+            }
+
+        # Step 7: Generate report
+        yield StreamEvent(
+            event_type=StreamEventType.STEP_START,
+            step_number=7,
+            step_name="Generating forensic report",
+            progress_percent=(6 / total_steps) * 100
+        )
+
+        try:
+            report = self._generate_report(
+                incident=incident,
+                eu_requirements=eu_requirements,
+                iso_mappings=iso_mappings,
+                nist_mappings=nist_mappings,
+                gaps=gaps,
+                inference_rules=inference_rules
+            )
+
+            yield StreamEvent(
+                event_type=StreamEventType.STEP_COMPLETE,
+                step_number=7,
+                step_name="Report generated",
+                progress_percent=100.0,
+                message=ConversationMessage(
+                    role="assistant",
+                    content=f"**Report Generated:** {len(report)} characters\n\nForensic compliance audit report ready for review."
+                )
+            )
+
+        except Exception as e:
+            report = f"ERROR: Report generation failed - {str(e)}"
+
+        # Build and store final result
+        self.last_result = self._build_structured_result(
+            incident=incident,
+            eu_requirements=eu_requirements,
+            iso_mappings=iso_mappings,
+            nist_mappings=nist_mappings,
+            gaps=gaps,
+            report=report
+        )
 
     def _build_structured_result(self,
                                  incident: ExtractedIncident,
