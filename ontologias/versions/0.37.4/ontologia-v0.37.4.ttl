@@ -5,12 +5,20 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix iso: <http://iso.org/42001#> .
 @prefix nist: <http://nist.gov/ai-rmf#> .
 
 
 # ===== VERSION HISTORY =====
-# v0.37.4 (2025-12-14) - ARTICLE 5: PROHIBITED PRACTICES (UNACCEPTABLE RISK):
+# v0.37.4 (2025-12-15) - ARTICLE 5: PROHIBITED PRACTICES + OOPS! FIXES:
+#   - OOPS! P10 FIX: Added disjointness declarations:
+#     * RiskLevel instances (AllDifferent): UnacceptableRisk, HighRisk, LimitedRisk, MinimalRisk, MediumRisk
+#     * Purpose owl:disjointWith DeploymentContext
+#   - OOPS! P31 FIX: Changed 3 incorrect owl:equivalentClass to skos:closeMatch:
+#     * ai:IntelligentSystem ↔ airo:AISystem (not equivalent: AI Act Annex I restrictions)
+#     * ai:TrainingDataOrigin ↔ airo:DataSource (not equivalent: specific vs general)
+#     * ai:AlgorithmType ↔ airo:AlgorithmCategory (not equivalent: different taxonomies)
 #   - MAJOR ADDITION: Complete Article 5 implementation (prohibited AI practices)
 #   - ADDED: ProhibitedPracticeCriterion base class + 5 prohibited practices
 #   - ADDED: SubliminalManipulationCriterion (Art. 5.1.a)
@@ -689,6 +697,17 @@ ai:MediumRisk a ai:RiskLevel ;
     rdfs:comment "Systems with medium risk require balanced governance and oversight."@en ;
     rdfs:comment "Los sistemas con riesgo medio requieren gobernanza equilibrada."@es .
 
+# P10 FIX: Declare RiskLevel instances as mutually distinct (disjoint individuals)
+# An AI system cannot have multiple risk levels simultaneously per EU AI Act
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        ai:UnacceptableRisk
+        ai:HighRisk
+        ai:LimitedRisk
+        ai:MinimalRisk
+        ai:MediumRisk
+    ) .
+
 # ===== CORE CRITERION TYPES - UNCHANGED FROM v0.37.1 =====
 
 ai:NormativeCriterion a owl:Class ;
@@ -784,7 +803,8 @@ ai:DeploymentContext a owl:Class ;
         "Contexto de Despliegue"@es ;
     rdfs:comment "Context in which an AI system is deployed or operated."@en ;
     rdfs:comment "Contexto en el cual se despliega u opera un sistema de IA."@es ;
-    rdfs:subClassOf ai:ContextOrPurpose .
+    rdfs:subClassOf ai:ContextOrPurpose ;
+    owl:disjointWith ai:Purpose .  # P10 FIX: Purpose and DeploymentContext are disjoint
 
 ai:ContextOrPurpose a owl:Class ;
     rdfs:label "Context Or Purpose"@en,
@@ -2022,9 +2042,10 @@ ai:LowTransparencyLevel a ai:TransparencyLevel,
 # Last updated: 2025-11-22 with full equivalentClass and rdfs:seeAlso relationships
 
 # ===== Core System Mappings =====
-ai:IntelligentSystem owl:equivalentClass airo:AISystem ;
-    rdfs:comment "Direct mapping between AI Act IntelligentSystem and AIRO AISystem."@en,
-        "Mapeo directo entre IntelligentSystem del AI Act y AISystem de AIRO."@es ;
+# P31 FIX: Changed owl:equivalentClass to skos:closeMatch (concepts are related but not identical)
+ai:IntelligentSystem skos:closeMatch airo:AISystem ;
+    rdfs:comment "Close match between AI Act IntelligentSystem and AIRO AISystem. Not equivalent: IntelligentSystem has specific AI Act Annex I restrictions."@en,
+        "Correspondencia cercana entre IntelligentSystem del AI Act y AISystem de AIRO. No equivalentes: IntelligentSystem tiene restricciones específicas del Anexo I."@es ;
     rdfs:seeAlso airo:AISystem .
 
 # ===== Purpose/Function Mappings =====
@@ -2112,12 +2133,15 @@ ai:FundamentalRightsAssessmentRequirement rdfs:seeAlso airo:FundamentalRights ;
     rdfs:comment "Fundamental rights assessment is covered in AIRO."@en .
 
 # ===== Data and Algorithm Mappings =====
-ai:TrainingDataOrigin owl:equivalentClass airo:DataSource ;
+# P31 FIX: Changed owl:equivalentClass to skos:closeMatch (TrainingDataOrigin is specifically about training data origin, not any data source)
+ai:TrainingDataOrigin skos:closeMatch airo:DataSource ;
+    rdfs:comment "Close match: TrainingDataOrigin specifically refers to origin of training data, while DataSource is more general."@en ;
     rdfs:seeAlso airo:DataSource .
 
-ai:AlgorithmType owl:equivalentClass airo:AlgorithmCategory ;
+# P31 FIX: Changed owl:equivalentClass to skos:closeMatch (related taxonomies but not identical classification)
+ai:AlgorithmType skos:closeMatch airo:AlgorithmCategory ;
     rdfs:seeAlso airo:AlgorithmCategory ;
-    rdfs:comment "Algorithm classification aligned between frameworks."@en .
+    rdfs:comment "Close match: Algorithm classification aligned between frameworks but with different taxonomies."@en .
 
 ai:MachineLearningAlgorithm rdfs:seeAlso airo:MachineLearning ;
     rdfs:comment "ML algorithms covered in both frameworks."@en .
