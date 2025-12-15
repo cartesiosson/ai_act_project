@@ -2,7 +2,7 @@
  * Forensic Agent API Client
  */
 
-const FORENSIC_API_BASE = import.meta.env.VITE_FORENSIC_API_URL || "/forensic-api";
+const FORENSIC_API_BASE = import.meta.env.VITE_FORENSIC_API_URL || "http://localhost:8002";
 
 // Types
 export interface Incident {
@@ -101,8 +101,9 @@ export interface ForensicSystemsResponse {
   total: number;
 }
 
-// AIAAIC CSV URL - fetch via backend proxy
-const AIAAIC_CSV_URL = "/api/aiaaic/incidents";
+// AIAAIC CSV URL - fetch via backend
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const AIAAIC_CSV_URL = `${API_BASE}/aiaaic/incidents`;
 
 /**
  * Load incidents from AIAAIC CSV

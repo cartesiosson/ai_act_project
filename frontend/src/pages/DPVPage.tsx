@@ -48,7 +48,7 @@ interface ForensicSystemWithEvidence extends ForensicSystem {
   evidence_plan?: EvidencePlan;
 }
 
-const FORENSIC_API_BASE = import.meta.env.VITE_FORENSIC_API_URL || "/forensic-api";
+const FORENSIC_API_BASE = import.meta.env.VITE_FORENSIC_API_URL || "http://localhost:8002";
 
 // Priority badge colors
 const priorityColors: Record<string, string> = {
