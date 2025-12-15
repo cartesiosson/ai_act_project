@@ -53,6 +53,7 @@ services:
       - ./backend:/app
       - ./ontologias/versions/${CURRENT_RELEASE}/ontologia-v${CURRENT_RELEASE}.ttl:/ontologias/ontologia-v${CURRENT_RELEASE}.ttl:ro
       - ./ontologias/mappings:/ontologias/mappings:ro
+      - ./ontologias/json-ld-context.json:/ontologias/json-ld-context.json:ro
       - "./forensic_agent/benchmark/data/AIAAIC Repository - Incidents.csv:/data/AIAAIC Repository - Incidents.csv:ro"
 
   reasoner:
