@@ -2,8 +2,8 @@
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix : <> .
-<http://ai-act.eu/ai-act/0.36.0> a prov:Entity;
-	 dc:title "Ontología del AI Act";
+<http://ai-act.eu/ai-act/0.37.4> a prov:Entity;
+	 dc:title "Ontología Unificada del AI Act (v0.37.4)";
 	 prov:wasAttributedTo <https://github.com/dgarijo/Widoco/>,<http://www.essepuntato.it/lode/>;
-	 prov:wasGeneratedAt "2025-06-22";
+	 prov:wasGeneratedAt "2025-11-22";
 .

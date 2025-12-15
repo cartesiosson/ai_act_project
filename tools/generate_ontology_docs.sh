@@ -9,7 +9,8 @@ set -euo pipefail
 WIDOCO_JAR="widoco/Widoco-1.4.25-jar-with-dependencies_JDK-17.jar"
 
 # Cargar versión actual desde entorno
-source "../tools/ontologias.env"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/ontologias.env"
 VERSION="$CURRENT_RELEASE"
 ONTOLOGY_DIR="../ontologias/versions/${VERSION}"
 TTL_FILE="ontologia-v${VERSION}.ttl"
@@ -47,7 +48,9 @@ kill "$SERVER_PID"
 
 
 echo "✅ ¡Documentación generada en ${OUT_FOLDER}/index.html!"
-source ./venv/bin/activate
-echo "Generando context.jsonld para JSON-LD..."
-python3 generate_context.py
-deactivate
+
+# Generar context.jsonld
+echo "📄 Generando context.jsonld..."
+"${SCRIPT_DIR}/generate_context.sh"
+
+echo "🎉 ¡Proceso completo!"

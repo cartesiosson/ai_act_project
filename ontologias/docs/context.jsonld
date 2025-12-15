@@ -11,8 +11,8 @@
     "dpv-tech": "https://w3id.org/dpv/tech#",
     "dpv-legal-eu-aiact": "https://w3id.org/dpv/legal/eu/aiact#",
     "dpv-legal-eu-gdpr": "https://w3id.org/dpv/legal/eu/gdpr#",
-    "airo": "https://w3id.org/airo#",
-
+    "airo": "https://w3id.org/airo#"
+,
     "ai:activatesCriterion": {
       "@type": "@id"
     },
@@ -22,22 +22,7 @@
     "ai:articleReference": {
       "@type": "xsd:string"
     },
-    "ai:assessedSystem": {
-      "@type": "@id"
-    },
-    "ai:assignedRiskLevel": {
-      "@type": "@id"
-    },
     "ai:assignsRiskLevel": {
-      "@type": "@id"
-    },
-    "ai:considersCriterion": {
-      "@type": "@id"
-    },
-    "ai:deploysSystem": {
-      "@type": "@id"
-    },
-    "ai:distributesSystem": {
       "@type": "@id"
     },
     "ai:evidenceDescription": {
@@ -50,9 +35,6 @@
       "@type": "xsd:string"
     },
     "ai:expectedRiskLevel": {
-      "@type": "@id"
-    },
-    "ai:generatesEvidence": {
       "@type": "@id"
     },
     "ai:hasActivatedCriterion": {
@@ -97,9 +79,6 @@
     "ai:hasName": {
       "@type": "xsd:string"
     },
-    "ai:hasNormativeCriterion": {
-      "@type": "@id"
-    },
     "ai:hasOversightBody": {
       "@type": "@id"
     },
@@ -112,22 +91,10 @@
     "ai:hasPurpose": {
       "@type": "@id"
     },
-    "ai:hasRequirement": {
-      "@type": "@id"
-    },
-    "ai:hasRiskLevel": {
-      "@type": "@id"
-    },
-    "ai:hasSubRequirement": {
-      "@type": "@id"
-    },
     "ai:hasSubject": {
       "@type": "@id"
     },
-    "ai:hasTechnicalCriterion": {
-      "@type": "@id"
-    },
-    "ai:hasTechnicalRequirement": {
+    "ai:hasSubRequirement": {
       "@type": "@id"
     },
     "ai:hasTrainingDataOrigin": {
@@ -142,94 +109,10 @@
     "ai:hasVersion": {
       "@type": "xsd:string"
     },
-    "ai:importsSystem": {
-      "@type": "@id"
-    },
-    "ai:isAssessmentOfSystem": {
-      "@type": "@id"
-    },
-    "ai:isAssignedRiskLevelOf": {
-      "@type": "@id"
-    },
-    "ai:isComplianceRequiredBy": {
-      "@type": "@id"
-    },
-    "ai:isCriterionConsideredBy": {
-      "@type": "@id"
-    },
-    "ai:isDeploymentContextOf": {
-      "@type": "@id"
-    },
-    "ai:isEvidenceForRequirement": {
-      "@type": "@id"
-    },
-    "ai:isEvidenceGeneratedBy": {
-      "@type": "@id"
-    },
-    "ai:isExpectedRiskLevelFor": {
-      "@type": "@id"
-    },
-    "ai:isMonitoredBy": {
-      "@type": "@id"
-    },
-    "ai:isNormativeCriterionOf": {
-      "@type": "@id"
-    },
-    "ai:isPurposeOfSystem": {
-      "@type": "@id"
-    },
-    "ai:isRequirementActivatedBy": {
-      "@type": "@id"
-    },
-    "ai:isRequirementOfSystem": {
-      "@type": "@id"
-    },
-    "ai:isRiskLevelAssignedBy": {
-      "@type": "@id"
-    },
-    "ai:isRiskLevelOfSystem": {
-      "@type": "@id"
-    },
-    "ai:isSystemDeployedBy": {
-      "@type": "@id"
-    },
-    "ai:isSystemDistributedBy": {
-      "@type": "@id"
-    },
-    "ai:isSystemImportedBy": {
-      "@type": "@id"
-    },
-    "ai:isSystemProvidedBy": {
-      "@type": "@id"
-    },
-    "ai:isSystemUsedBy": {
-      "@type": "@id"
-    },
-    "ai:isTechnicalCriterionOfSystem": {
-      "@type": "@id"
-    },
-    "ai:isTechnicalRequirementOf": {
-      "@type": "@id"
-    },
-    "ai:isTrainingDataOriginOf": {
-      "@type": "@id"
-    },
-    "ai:isTriggeredBy": {
-      "@type": "@id"
-    },
-    "ai:justificationNote": {
-      "@type": "xsd:string"
-    },
-    "ai:justifiedByCriterion": {
-      "@type": "@id"
-    },
     "ai:mandatoryCompliance": {
       "@type": "xsd:boolean"
     },
     "ai:mapsToDPVMeasure": {
-      "@type": "@id"
-    },
-    "ai:monitorsSystem": {
       "@type": "@id"
     },
     "ai:planDeadline": {
@@ -241,17 +124,8 @@
     "ai:prohibitionScope": {
       "@type": "xsd:string"
     },
-    "ai:providesEvidenceFor": {
-      "@type": "@id"
-    },
-    "ai:providesSystem": {
-      "@type": "@id"
-    },
     "ai:requiresAffectedPersonNotification": {
       "@type": "xsd:boolean"
-    },
-    "ai:requiresCompliance": {
-      "@type": "@id"
     },
     "ai:requiresDataGovernance": {
       "@type": "xsd:boolean"
@@ -271,13 +145,7 @@
     "ai:responsibleRole": {
       "@type": "xsd:string"
     },
-    "ai:triggersComplianceRequirement": {
-      "@type": "@id"
-    },
     "ai:triggersCriterion": {
-      "@type": "@id"
-    },
-    "ai:usesSystem": {
       "@type": "@id"
     }
   }
