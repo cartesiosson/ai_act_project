@@ -54,3 +54,95 @@ export async function fetchAlgorithmSubtypes(algotypeId: string): Promise<{ id: 
   return response.json();
 }
 
+// Evidence Plan Types
+export interface EvidenceItem {
+  id: string;
+  name: string;
+  description: string;
+  evidence_type: string;
+  priority: string;
+  frequency: string;
+  responsible_role: string;
+  dpv_measure?: string;
+  templates?: string[];
+  guidance?: string;
+}
+
+export interface RequirementEvidencePlan {
+  requirement_uri: string;
+  requirement_label: string;
+  priority: string;
+  dpv_measures: string[];
+  evidence_items: EvidenceItem[];
+  deadline_recommendation: string;
+  responsible_roles: string[];
+  article_reference?: string;
+  estimated_effort?: string;
+}
+
+export interface EvidencePlan {
+  plan_id: string;
+  generated_at: string;
+  system_name: string;
+  risk_level: string;
+  total_gaps: number;
+  requirement_plans: RequirementEvidencePlan[];
+  summary: {
+    total_evidence_items?: number;
+    by_priority?: Record<string, number>;
+    by_type?: Record<string, number>;
+    by_role?: Record<string, number>;
+  };
+  recommendations: string[];
+}
+
+export interface EvidencePlanResponse {
+  status: string;
+  urn: string;
+  evidence_plan: EvidencePlan;
+  message: string;
+}
+
+/**
+ * Generate DPV-based evidence plan for a manual system
+ */
+export async function generateEvidencePlan(urn: string): Promise<EvidencePlanResponse> {
+  const response = await fetch(`${API_BASE}/systems/${encodeURIComponent(urn)}/generate-evidence-plan`, {
+    method: "POST",
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: "Failed to generate evidence plan" }));
+    throw new Error(error.detail || "Failed to generate evidence plan");
+  }
+  return response.json();
+}
+
+/**
+ * Get stored evidence plan for a manual system
+ */
+export async function getEvidencePlan(urn: string): Promise<{ urn: string; evidence_plan: EvidencePlan; generated_at: string } | null> {
+  const response = await fetch(`${API_BASE}/systems/${encodeURIComponent(urn)}/evidence-plan`);
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: "Failed to get evidence plan" }));
+    throw new Error(error.detail || "Failed to get evidence plan");
+  }
+  return response.json();
+}
+
+/**
+ * Fetch a system by URN with full details
+ */
+export async function fetchSystemByUrn(urn: string): Promise<Record<string, unknown> | null> {
+  const response = await fetch(`${API_BASE}/systems/${encodeURIComponent(urn)}`);
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error("Failed to fetch system");
+  }
+  return response.json();
+}
+

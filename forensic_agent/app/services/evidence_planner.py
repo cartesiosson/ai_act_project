@@ -447,6 +447,124 @@ EVIDENCE_CATALOG = {
         ]
     },
 
+    "AccuracyRequirement": {
+        "article": "Article 15",
+        "dpv_measures": ["dpv:AccuracyAssessment", "dpv:QualityAssurance"],
+        "deadline": "Before deployment + ongoing",
+        "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.TECHNICAL],
+        "evidence": [
+            EvidenceItem(
+                id="ACR-TEC-001",
+                name="Accuracy Specification Document",
+                description="Document specifying accuracy requirements, metrics, and acceptable thresholds for the AI system",
+                evidence_type=EvidenceType.TECHNICAL,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.PROVIDER,
+                guidance="Must define precision, recall, F1, or domain-specific accuracy metrics"
+            ),
+            EvidenceItem(
+                id="ACR-AUD-001",
+                name="Accuracy Monitoring Reports",
+                description="Periodic reports demonstrating ongoing accuracy performance in production",
+                evidence_type=EvidenceType.AUDIT,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.QUARTERLY,
+                responsible_role=ResponsibleRole.TECHNICAL,
+                templates=["accuracy_monitoring_report.docx"]
+            ),
+            EvidenceItem(
+                id="ACR-POL-001",
+                name="Accuracy Degradation Response Plan",
+                description="Procedures for detecting and responding to accuracy degradation over time",
+                evidence_type=EvidenceType.POLICY,
+                priority=EvidencePriority.MEDIUM,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.COMPLIANCE
+            ),
+        ]
+    },
+
+    "BiasDetectionRequirement": {
+        "article": "Article 10(2)(f)",
+        "dpv_measures": ["dpv:BiasAssessment", "dpv:BiasMonitoring"],
+        "deadline": "Before deployment + ongoing",
+        "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.DPO],
+        "evidence": [
+            EvidenceItem(
+                id="BD-TEC-001",
+                name="Bias Detection Methodology",
+                description="Documented methodology for detecting bias in training data and model outputs",
+                evidence_type=EvidenceType.TECHNICAL,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.PROVIDER,
+                dpv_measure="dpv:BiasAssessment",
+                guidance="Must cover statistical methods, protected attributes, and detection thresholds"
+            ),
+            EvidenceItem(
+                id="BD-AUD-001",
+                name="Bias Detection Reports",
+                description="Regular reports from bias detection systems showing analysis results",
+                evidence_type=EvidenceType.AUDIT,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.QUARTERLY,
+                responsible_role=ResponsibleRole.DPO,
+                templates=["bias_detection_report.docx"]
+            ),
+            EvidenceItem(
+                id="BD-TEC-002",
+                name="Bias Monitoring Dashboard",
+                description="Evidence of continuous bias monitoring implementation with alerting",
+                evidence_type=EvidenceType.TECHNICAL,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.CONTINUOUS,
+                responsible_role=ResponsibleRole.TECHNICAL,
+                dpv_measure="dpv:BiasMonitoring"
+            ),
+        ]
+    },
+
+    "FairnessRequirement": {
+        "article": "Article 10(2)(f) + Recital 47",
+        "dpv_measures": ["dpv:FairnessAssessment", "dpv:EqualTreatment"],
+        "deadline": "Before deployment + ongoing",
+        "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.DPO, ResponsibleRole.LEGAL],
+        "evidence": [
+            EvidenceItem(
+                id="FR-ASS-001",
+                name="Fairness Assessment Report",
+                description="Comprehensive assessment of fairness across different demographic groups and use cases",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.DPO,
+                dpv_measure="dpv:FairnessAssessment",
+                guidance="Must include group fairness metrics: demographic parity, equalized odds, predictive parity"
+            ),
+            EvidenceItem(
+                id="FR-POL-001",
+                name="Fairness Policy",
+                description="Policy defining fairness principles, criteria, and remediation procedures",
+                evidence_type=EvidenceType.POLICY,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.COMPLIANCE,
+                templates=["fairness_policy.docx"]
+            ),
+            EvidenceItem(
+                id="FR-TEC-001",
+                name="Fairness Metrics Implementation",
+                description="Technical documentation of fairness metrics implemented in the system",
+                evidence_type=EvidenceType.TECHNICAL,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.TECHNICAL,
+                guidance="Include: chosen metrics, thresholds, trade-off decisions between different fairness criteria"
+            ),
+        ]
+    },
+
     "RobustnessRequirement": {
         "article": "Article 15",
         "dpv_measures": ["dpv:SecurityAssessment", "dpv:RobustnessTesting"],
@@ -674,7 +792,16 @@ class EvidencePlannerService:
         }
 
         for req_uri in missing_requirements:
-            req_name = req_uri.split("#")[-1] if "#" in req_uri else req_uri
+            # Handle multiple formats:
+            # - Full URI: http://ai-act.eu/ai#DataGovernanceRequirement
+            # - Prefixed: ai:DataGovernanceRequirement
+            # - Plain name: DataGovernanceRequirement
+            if "#" in req_uri:
+                req_name = req_uri.split("#")[-1]
+            elif ":" in req_uri:
+                req_name = req_uri.split(":")[-1]
+            else:
+                req_name = req_uri
 
             # Check if we have evidence mapping for this requirement
             if req_name in self.evidence_catalog:
@@ -870,7 +997,7 @@ class EvidencePlannerService:
                             "id": ei.id,
                             "name": ei.name,
                             "description": ei.description,
-                            "type": ei.evidence_type.value,
+                            "evidence_type": ei.evidence_type.value,
                             "priority": ei.priority.value,
                             "frequency": ei.frequency.value,
                             "responsible_role": ei.responsible_role.value,

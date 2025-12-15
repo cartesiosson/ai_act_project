@@ -12,11 +12,13 @@ from fastapi.responses import JSONResponse
 from typing import Dict, Any, Optional, List, Tuple
 import httpx
 import asyncio
+import requests
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from db import get_database
 from swrl_rules import get_swrl_rules, get_basic_prefixes, get_ai_act_concepts
 from urllib.parse import unquote
 from pathlib import Path
+from datetime import datetime
 
 # SHACL Validation
 try:
@@ -39,6 +41,152 @@ ENABLE_SHACL_VALIDATION = os.environ.get("ENABLE_SHACL_VALIDATION", "true").lowe
 
 # Namespaces
 AI = Namespace("http://ai-act.eu/ai#")
+
+# Fuseki configuration
+FUSEKI_ENDPOINT = os.environ.get("FUSEKI_ENDPOINT", "http://fuseki:3030")
+FUSEKI_DATASET = os.environ.get("FUSEKI_DATASET", "ds")
+FUSEKI_USER = os.environ.get("FUSEKI_USER", "admin")
+FUSEKI_PASSWORD = os.environ.get("FUSEKI_PASSWORD", "admin")
+FUSEKI_GRAPH_DATA = os.environ.get("FUSEKI_GRAPH_DATA", "http://ai-act.eu/ontology/data")
+
+# Evidence Plan Service URL (forensic_agent)
+FORENSIC_AGENT_URL = os.environ.get("FORENSIC_AGENT_URL", "http://forensic_agent:8000")
+
+
+# ===== FUSEKI PERSISTENCE FUNCTIONS =====
+
+async def persist_inferences_to_fuseki(system_urn: str, relationships: Dict[str, List[str]]) -> bool:
+    """
+    Persiste las inferencias del razonamiento simbólico en Fuseki.
+    Usa las propiedades estándar de la ontología (no propiedades inventadas).
+
+    Args:
+        system_urn: URN del sistema (ej: urn:uuid:...)
+        relationships: Dict con las relaciones inferidas
+
+    Returns:
+        True si se persistió correctamente, False en caso contrario
+    """
+    import requests
+
+    if not relationships:
+        logger.info("No hay inferencias para persistir en Fuseki")
+        return True
+
+    try:
+        # Mapeo de nombres de relación a propiedades RDF estándar de la ontología
+        # Estas propiedades YA EXISTEN en la ontología ai-act
+        property_map = {
+            "hasNormativeCriterion": "ai:hasNormativeCriterion",
+            "hasTechnicalCriterion": "ai:hasTechnicalCriterion",
+            "hasContextualCriterion": "ai:hasContextualCriterion",
+            "hasRequirement": "ai:hasRequirement",
+            "hasTechnicalRequirement": "ai:hasTechnicalRequirement",
+            "hasCriteria": "ai:hasActivatedCriterion",  # Mapea a hasActivatedCriterion
+            "hasComplianceRequirement": "ai:hasComplianceRequirement",
+            "hasRiskLevel": "ai:hasRiskLevel",
+            "hasGPAIClassification": "ai:hasGPAIClassification"
+        }
+
+        # Primero eliminamos las propiedades existentes que vamos a actualizar
+        # para evitar duplicados
+        delete_patterns = []
+        for rel_type in relationships.keys():
+            if relationships[rel_type]:  # Solo si hay valores
+                prop = property_map.get(rel_type)
+                if prop:
+                    delete_patterns.append(f"OPTIONAL {{ <{system_urn}> {prop} ?{rel_type} . }}")
+
+        if not delete_patterns:
+            logger.info("No hay propiedades para actualizar")
+            return True
+
+        # Construir DELETE WHERE
+        delete_sparql = f"""
+        PREFIX ai: <http://ai-act.eu/ai#>
+
+        DELETE {{
+            GRAPH <{FUSEKI_GRAPH_DATA}> {{
+                {chr(10).join([f"<{system_urn}> {property_map[rt]} ?{rt} ." for rt in relationships.keys() if relationships[rt] and property_map.get(rt)])}
+            }}
+        }} WHERE {{
+            GRAPH <{FUSEKI_GRAPH_DATA}> {{
+                {chr(10).join(delete_patterns)}
+            }}
+        }}
+        """
+
+        # Ejecutar DELETE
+        headers = {"Content-Type": "application/sparql-update"}
+        res = requests.post(
+            f"{FUSEKI_ENDPOINT}/{FUSEKI_DATASET}/update",
+            data=delete_sparql,
+            headers=headers,
+            auth=(FUSEKI_USER, FUSEKI_PASSWORD)
+        )
+
+        if not res.ok:
+            logger.warning(f"Error eliminando propiedades anteriores de Fuseki: {res.status_code} - {res.text}")
+
+        # Construir INSERT para las nuevas inferencias
+        insert_triples = []
+
+        for rel_type, values in relationships.items():
+            if not values:
+                continue
+
+            prop = property_map.get(rel_type)
+            if not prop:
+                logger.warning(f"Propiedad no mapeada: {rel_type}")
+                continue
+
+            for value in values:
+                # Normalizar el valor a URI completa
+                if value.startswith("http://") or value.startswith("https://"):
+                    value_uri = f"<{value}>"
+                elif value.startswith("ai:"):
+                    value_uri = f"<http://ai-act.eu/ai#{value[3:]}>"
+                else:
+                    value_uri = f"<http://ai-act.eu/ai#{value}>"
+
+                insert_triples.append(f"<{system_urn}> {prop} {value_uri} .")
+
+        if not insert_triples:
+            logger.info("No hay triples de inferencia para insertar")
+            return True
+
+        # Construir INSERT DATA
+        insert_sparql = f"""
+        PREFIX ai: <http://ai-act.eu/ai#>
+
+        INSERT DATA {{
+            GRAPH <{FUSEKI_GRAPH_DATA}> {{
+                {chr(10).join(insert_triples)}
+            }}
+        }}
+        """
+
+        logger.debug(f"SPARQL INSERT: {insert_sparql}")
+
+        # Ejecutar INSERT
+        res = requests.post(
+            f"{FUSEKI_ENDPOINT}/{FUSEKI_DATASET}/update",
+            data=insert_sparql,
+            headers=headers,
+            auth=(FUSEKI_USER, FUSEKI_PASSWORD)
+        )
+
+        if not res.ok:
+            logger.error(f"Error insertando inferencias en Fuseki: {res.status_code} - {res.text}")
+            return False
+
+        logger.info(f"Persistidas {len(insert_triples)} inferencias en Fuseki para {system_urn}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Error persistiendo inferencias en Fuseki: {str(e)}")
+        return False
+
 
 # ===== SHACL VALIDATION FUNCTIONS =====
 
@@ -434,18 +582,44 @@ async def reason_system(
         })
         logger.info(f"Relaciones inferidas: {relationships}")
 
-        # 6. Actualizar sistema con inferencias (opcional)
+        # 6. Actualizar sistema con inferencias en MongoDB y Fuseki
+        # Usar nombres de propiedades estándar (sin prefijo "inferred_")
         update_data = {}
+
+        # Mapeo a nombres de campos en MongoDB (consistente con la ontología)
+        mongo_field_map = {
+            "hasNormativeCriterion": "hasNormativeCriterion",
+            "hasTechnicalCriterion": "hasTechnicalCriterion",
+            "hasContextualCriterion": "hasContextualCriterion",
+            "hasRequirement": "hasRequirement",
+            "hasTechnicalRequirement": "hasTechnicalRequirement",
+            "hasCriteria": "hasActivatedCriterion",  # Mapea a hasActivatedCriterion
+            "hasComplianceRequirement": "hasComplianceRequirement",
+            "hasRiskLevel": "hasRiskLevel",
+            "hasGPAIClassification": "hasGPAIClassification"
+        }
+
         for rel_type, values in relationships.items():
             if values:  # Solo actualizar si hay valores inferidos
-                update_data[f"inferred_{rel_type}"] = values
+                field_name = mongo_field_map.get(rel_type, rel_type)
+                update_data[field_name] = values
 
         if update_data:
+            # FIX: Use correct query - system_id can be URN or ObjectId
+            if system_id.startswith("urn:uuid:"):
+                query = {"ai:hasUrn": system_id}
+            else:
+                query = {"_id": system_id}
+
             await db.systems.update_one(
-                {"_id": system_id},
+                query,
                 {"$set": update_data}
             )
-            logger.info(f"Sistema actualizado con inferencias: {update_data.keys()}")
+            logger.info(f"Sistema actualizado en MongoDB con inferencias: {update_data.keys()}")
+
+            # También persistir en Fuseki
+            await persist_inferences_to_fuseki(system_id, relationships)
+            logger.info(f"Inferencias persistidas en Fuseki para sistema: {system_id}")
 
         # 7. Obtener número de reglas aplicadas del reasoner service
         # El reasoner devuelve este campo con el conteo exacto de inferencias
@@ -453,7 +627,66 @@ async def reason_system(
         logger.info(f"DEBUG rules_applied from reasoner: {rules_applied}")
         logger.info(f"DEBUG relationships: {relationships}")
 
-        # 8. Retornar resultado completo CON validación SHACL
+        # 8. GENERAR PLAN DE EVIDENCIAS DPV automáticamente si hay compliance requirements
+        evidence_plan_result = None
+        compliance_requirements = relationships.get("hasComplianceRequirement", [])
+
+        if compliance_requirements:
+            logger.info(f"Generando plan de evidencias DPV para {len(compliance_requirements)} compliance requirements...")
+            try:
+                # Obtener risk level del sistema
+                risk_level = "HighRisk"  # Default
+                risk_levels = relationships.get("hasRiskLevel", [])
+                if risk_levels:
+                    risk_level = risk_levels[0].replace("ai:", "").replace("http://ai-act.eu/ai#", "")
+
+                # Preparar request para el evidence planner
+                evidence_request = {
+                    "missing_requirements": compliance_requirements,
+                    "risk_level": risk_level,
+                    "system_name": system.get("hasName", "Unknown System"),
+                    "critical_gaps": [],
+                    "jurisdiction": "EU"
+                }
+
+                # Llamar al forensic agent para generar el plan
+                response = requests.post(
+                    f"{FORENSIC_AGENT_URL}/forensic/evidence-plan",
+                    json=evidence_request,
+                    timeout=30
+                )
+                response.raise_for_status()
+                evidence_plan = response.json()
+
+                # Guardar el plan en MongoDB
+                urn = system.get("ai:hasUrn", system_id)
+                await db.systems.update_one(
+                    {"ai:hasUrn": urn} if urn.startswith("urn:") else {"_id": system_id},
+                    {
+                        "$set": {
+                            "evidencePlan": evidence_plan,
+                            "evidencePlanGeneratedAt": datetime.utcnow().isoformat()
+                        }
+                    }
+                )
+
+                evidence_plan_result = {
+                    "status": "generated",
+                    "total_requirements": len(evidence_plan.get("requirement_plans", [])),
+                    "total_evidence_items": evidence_plan.get("summary", {}).get("total_evidence_items", 0)
+                }
+                logger.info(f"Plan de evidencias generado: {evidence_plan_result['total_requirements']} requirements, {evidence_plan_result['total_evidence_items']} items")
+
+            except requests.exceptions.RequestException as e:
+                logger.warning(f"No se pudo generar el plan de evidencias: {str(e)}")
+                evidence_plan_result = {"status": "error", "message": str(e)}
+            except Exception as e:
+                logger.warning(f"Error generando plan de evidencias: {str(e)}")
+                evidence_plan_result = {"status": "error", "message": str(e)}
+        else:
+            logger.info("No hay compliance requirements, omitiendo generación de plan de evidencias")
+
+        # 9. Retornar resultado completo CON validación SHACL
         return {
             "system_id": system_id,
             "system_name": system.get("hasName", "Unnamed"),
@@ -461,7 +694,7 @@ async def reason_system(
             "inferred_relationships": relationships,
             "raw_ttl": raw_ttl,
             "rules_applied": rules_applied,
-            # NUEVO: Información de validación SHACL
+            # Información de validación SHACL
             "shacl_validation": {
                 "pre_validation": {
                     "status": "passed",
@@ -473,7 +706,9 @@ async def reason_system(
                     "message": shacl_post_validation["message"],
                     "enabled": ENABLE_SHACL_VALIDATION and SHACL_AVAILABLE
                 }
-            }
+            },
+            # Plan de evidencias DPV
+            "evidence_plan": evidence_plan_result
         }
 
     except HTTPException:
@@ -622,6 +857,40 @@ async def reason_forensic_system(
         })
 
         rules_applied = reasoner_response.get("rules_applied", sum(len(values) for values in relationships.values()))
+
+        # 5.5. Persistir inferencias en MongoDB y Fuseki
+        # Usar nombres de propiedades estándar (sin prefijo "inferred_")
+        if relationships:
+            # Mapeo a nombres de campos en MongoDB (consistente con la ontología)
+            mongo_field_map = {
+                "hasNormativeCriterion": "hasNormativeCriterion",
+                "hasTechnicalCriterion": "hasTechnicalCriterion",
+                "hasContextualCriterion": "hasContextualCriterion",
+                "hasRequirement": "hasRequirement",
+                "hasTechnicalRequirement": "hasTechnicalRequirement",
+                "hasCriteria": "hasActivatedCriterion",
+                "hasComplianceRequirement": "hasComplianceRequirement",
+                "hasRiskLevel": "hasRiskLevel",
+                "hasGPAIClassification": "hasGPAIClassification"
+            }
+
+            # Actualizar en MongoDB
+            update_data = {}
+            for rel_type, values in relationships.items():
+                if values:
+                    field_name = mongo_field_map.get(rel_type, rel_type)
+                    update_data[field_name] = values
+
+            if update_data:
+                await db.forensic_systems.update_one(
+                    {"urn": urn},
+                    {"$set": update_data}
+                )
+                logger.info(f"Sistema forense actualizado en MongoDB con inferencias: {update_data.keys()}")
+
+                # Persistir en Fuseki
+                await persist_inferences_to_fuseki(urn, relationships)
+                logger.info(f"Inferencias forenses persistidas en Fuseki para: {urn}")
 
         # 6. Retornar resultado
         return {

@@ -387,6 +387,140 @@ async def delete_system(urn: str, db=Depends(get_database)):
     return {"status": "deleted", "urn": urn}
 
 
+# Evidence Plan Service URL (forensic_agent)
+FORENSIC_AGENT_URL = os.getenv("FORENSIC_AGENT_URL", "http://forensic_agent:8000")
+
+
+@router.post("/{urn}/generate-evidence-plan", status_code=200)
+async def generate_evidence_plan(
+    urn: str,
+    db=Depends(get_database)
+):
+    """
+    Generate a DPV-based evidence plan for a manually registered system.
+
+    This endpoint takes the system's compliance requirements and generates
+    an evidence collection plan using Data Privacy Vocabulary (DPV) measures.
+
+    The evidence plan maps each compliance requirement to:
+    - Evidence items that should be collected
+    - DPV organizational and technical measures
+    - Priority levels based on risk
+
+    Returns:
+        Evidence plan with DPV measure mappings
+    """
+    try:
+        # Find existing system
+        existing = await db.systems.find_one({"ai:hasUrn": urn})
+        if not existing:
+            raise HTTPException(status_code=404, detail="System not found")
+
+        # Extract compliance requirements
+        requirements = existing.get("hasComplianceRequirement", [])
+        if not requirements:
+            raise HTTPException(
+                status_code=400,
+                detail="System has no compliance requirements. Run symbolic reasoning first."
+            )
+
+        # Prepare request for forensic agent's evidence plan endpoint
+        risk_level = existing.get("hasRiskLevel", "ai:HighRisk")
+        # Normalize risk level for the evidence planner
+        if risk_level.startswith("ai:"):
+            risk_level = risk_level.replace("ai:", "")
+
+        # EvidencePlanRequest expects: system_name, risk_level, missing_requirements, critical_gaps, jurisdiction
+        evidence_request = {
+            "missing_requirements": requirements,  # compliance requirements to address
+            "risk_level": risk_level,
+            "system_name": existing.get("hasName", "Unknown System"),
+            "critical_gaps": [],  # Could be populated from gaps analysis
+            "jurisdiction": "EU"
+        }
+
+        # Call forensic agent's evidence plan endpoint
+        try:
+            response = requests.post(
+                f"{FORENSIC_AGENT_URL}/forensic/evidence-plan",
+                json=evidence_request,
+                timeout=30
+            )
+            response.raise_for_status()
+            evidence_plan = response.json()
+        except requests.exceptions.RequestException as e:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Error calling evidence planner service: {str(e)}"
+            )
+
+        # Store evidence plan in MongoDB
+        await db.systems.update_one(
+            {"ai:hasUrn": urn},
+            {
+                "$set": {
+                    "evidencePlan": evidence_plan,
+                    "evidencePlanGeneratedAt": json.dumps({"$date": "now"})
+                }
+            }
+        )
+
+        return {
+            "status": "generated",
+            "urn": urn,
+            "evidence_plan": evidence_plan,
+            "message": f"Generated evidence plan with {len(evidence_plan.get('requirement_plans', []))} requirement mappings"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error generating evidence plan: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error generating evidence plan: {str(e)}"
+        )
+
+
+@router.get("/{urn}/evidence-plan", status_code=200)
+async def get_evidence_plan(
+    urn: str,
+    db=Depends(get_database)
+):
+    """
+    Get the stored evidence plan for a system.
+
+    Returns:
+        The stored evidence plan or 404 if not generated yet
+    """
+    try:
+        existing = await db.systems.find_one({"ai:hasUrn": urn})
+        if not existing:
+            raise HTTPException(status_code=404, detail="System not found")
+
+        evidence_plan = existing.get("evidencePlan")
+        if not evidence_plan:
+            raise HTTPException(
+                status_code=404,
+                detail="Evidence plan not yet generated. Use POST /{urn}/generate-evidence-plan first."
+            )
+
+        return {
+            "urn": urn,
+            "evidence_plan": evidence_plan,
+            "generated_at": existing.get("evidencePlanGeneratedAt")
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error getting evidence plan: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error getting evidence plan: {str(e)}"
+        )
+
+
 @router.put("/{urn}/manually-identified-criteria", status_code=200)
 async def set_manually_identified_criteria(
     urn: str,

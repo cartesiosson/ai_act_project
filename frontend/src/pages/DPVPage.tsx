@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { getForensicSystems, type ForensicSystem } from "../lib/forensicApi";
+import { fetchSystems } from "../lib/api";
 
 // Types for Evidence Plan structure
 interface EvidenceItem {
@@ -92,32 +93,59 @@ export default function DPVPage() {
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [searchFilter, setSearchFilter] = useState<string>("");
 
-  // Load systems with evidence plans
+  // Load systems with evidence plans (both forensic and manual)
   useEffect(() => {
-    async function loadSystems() {
+    async function loadAllSystems() {
       setLoading(true);
       setError(null);
       try {
-        // Load all forensic systems
-        const response = await getForensicSystems(100, 0);
-
-        // Fetch full details for each system to get evidence_plan
         const systemsWithPlans: ForensicSystemWithEvidence[] = [];
 
-        for (const sys of response.items) {
-          try {
-            const fullSystem = await fetch(
-              `${FORENSIC_API_BASE}/forensic/systems/${encodeURIComponent(sys.urn)}`
-            );
-            if (fullSystem.ok) {
-              const data = await fullSystem.json();
-              if (data.evidence_plan) {
-                systemsWithPlans.push(data);
+        // 1. Load forensic systems (from AIAAIC analysis)
+        try {
+          const forensicResponse = await getForensicSystems(100, 0);
+          for (const sys of forensicResponse.items) {
+            try {
+              const fullSystem = await fetch(
+                `${FORENSIC_API_BASE}/forensic/systems/${encodeURIComponent(sys.urn)}`
+              );
+              if (fullSystem.ok) {
+                const data = await fullSystem.json();
+                if (data.evidence_plan) {
+                  systemsWithPlans.push({
+                    ...data,
+                    source: "forensic"
+                  });
+                }
               }
+            } catch (err) {
+              console.warn(`Failed to fetch forensic details for ${sys.urn}:`, err);
             }
-          } catch (err) {
-            console.warn(`Failed to fetch details for ${sys.urn}:`, err);
           }
+        } catch (err) {
+          console.warn("Failed to load forensic systems:", err);
+        }
+
+        // 2. Load manual systems (from backend /api/systems)
+        try {
+          const manualSystems = await fetchSystems();
+          for (const sys of manualSystems) {
+            // Check if system has an evidence plan
+            if (sys.evidencePlan) {
+              systemsWithPlans.push({
+                urn: sys["ai:hasUrn"] || sys["@id"],
+                hasName: sys.hasName,
+                hasOrganization: sys.hasOrganization || "Manual Entry",
+                hasRiskLevel: sys.hasRiskLevel || "Unknown",
+                complianceRatio: 0,
+                jurisdiction: "EU",
+                source: "manual",
+                evidence_plan: sys.evidencePlan
+              });
+            }
+          }
+        } catch (err) {
+          console.warn("Failed to load manual systems:", err);
         }
 
         setSystems(systemsWithPlans);
@@ -128,7 +156,7 @@ export default function DPVPage() {
         setLoading(false);
       }
     }
-    loadSystems();
+    loadAllSystems();
   }, []);
 
   // Update selected system when selection changes
@@ -288,7 +316,7 @@ export default function DPVPage() {
           <div className="text-center py-4 text-gray-500 dark:text-gray-400">
             <p className="mb-2">No systems with evidence plans found.</p>
             <p className="text-sm">
-              Run forensic analysis with "Include DPV Evidence Plan" enabled to generate evidence plans.
+              Generate evidence plans from the Systems page (DPV Plan button) or run forensic analysis with evidence plan enabled.
             </p>
           </div>
         ) : (
@@ -298,23 +326,42 @@ export default function DPVPage() {
             className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             <option value="">-- Select a system --</option>
-            <optgroup label="Systems with Evidence Plans">
-              {systems.map((sys) => (
-                <option key={sys.urn} value={sys.urn}>
-                  {sys.hasName} ({(sys.hasRiskLevel || "Unknown").replace("ai:", "")} - {sys.evidence_plan?.total_gaps || 0} gaps)
-                </option>
-              ))}
-            </optgroup>
+            {systems.filter(s => s.source === "manual").length > 0 && (
+              <optgroup label="Manual Systems">
+                {systems.filter(s => s.source === "manual").map((sys) => (
+                  <option key={sys.urn} value={sys.urn}>
+                    {sys.hasName} ({(sys.hasRiskLevel || "Unknown").replace("ai:", "")} - {sys.evidence_plan?.total_gaps || 0} requirements)
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            {systems.filter(s => s.source === "forensic").length > 0 && (
+              <optgroup label="Forensic Analyzed Systems">
+                {systems.filter(s => s.source === "forensic").map((sys) => (
+                  <option key={sys.urn} value={sys.urn}>
+                    {sys.hasName} ({(sys.hasRiskLevel || "Unknown").replace("ai:", "")} - {sys.evidence_plan?.total_gaps || 0} gaps)
+                  </option>
+                ))}
+              </optgroup>
+            )}
           </select>
         )}
 
         {/* Selected system preview */}
         {selectedSystem && (
-          <div className="mt-4 p-4 rounded-lg border bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700">
+          <div className={`mt-4 p-4 rounded-lg border ${
+            selectedSystem.source === "manual"
+              ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700"
+              : "bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700"
+          }`}>
             <div className="flex items-center mb-2">
-              <span className="mr-2">🔬</span>
-              <h4 className="font-medium text-purple-700 dark:text-purple-300">
-                Forensic Analyzed System
+              <span className="mr-2">{selectedSystem.source === "manual" ? "📝" : "🔬"}</span>
+              <h4 className={`font-medium ${
+                selectedSystem.source === "manual"
+                  ? "text-green-700 dark:text-green-300"
+                  : "text-purple-700 dark:text-purple-300"
+              }`}>
+                {selectedSystem.source === "manual" ? "Manual System" : "Forensic Analyzed System"}
               </h4>
             </div>
             <p className="text-gray-700 dark:text-gray-300">
