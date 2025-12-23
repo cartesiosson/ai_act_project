@@ -265,6 +265,11 @@ export interface HealthResponse {
     provider: string;
     model: string;
   };
+  react_agent?: {
+    enabled: boolean;
+    model: string;
+    ollama_url: string;
+  } | null;
   mcp?: {
     connected: boolean;
     stats?: Record<string, unknown>;
@@ -356,19 +361,31 @@ export async function deleteForensicSystem(urn: string): Promise<void> {
   if (!response.ok) throw new Error("Failed to delete forensic system");
 }
 
+export type AgentMode = "pipeline" | "react";
+
 /**
  * Analyze incident with streaming events (SSE)
  * Returns an async generator that yields StreamEvent objects in real-time
+ *
+ * @param agentMode - "pipeline" for deterministic 7-step analysis, "react" for LangGraph ReAct agent
  */
 export async function* analyzeIncidentStream(request: {
   narrative: string;
   source?: string;
   metadata?: Record<string, unknown>;
   withEvidencePlan?: boolean;
+  agentMode?: AgentMode;
 }): AsyncGenerator<StreamEvent, void, unknown> {
-  const endpoint = request.withEvidencePlan
-    ? `${FORENSIC_API_BASE}/forensic/analyze-stream-with-evidence-plan`
-    : `${FORENSIC_API_BASE}/forensic/analyze-stream`;
+  const agentMode = request.agentMode || "pipeline";
+
+  let endpoint: string;
+  if (agentMode === "react") {
+    endpoint = `${FORENSIC_API_BASE}/forensic/analyze-react`;
+  } else if (request.withEvidencePlan) {
+    endpoint = `${FORENSIC_API_BASE}/forensic/analyze-stream-with-evidence-plan`;
+  } else {
+    endpoint = `${FORENSIC_API_BASE}/forensic/analyze-stream`;
+  }
 
   const response = await fetch(endpoint, {
     method: "POST",

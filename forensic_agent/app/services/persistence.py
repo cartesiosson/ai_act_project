@@ -192,6 +192,7 @@ class PersistenceService:
             "@prefix forensic: <http://ai-act.eu/forensic#> .",
             "@prefix dpv: <https://w3id.org/dpv#> .",
             "@prefix dpv-ai: <https://w3id.org/dpv/ai#> .",
+            "@prefix eli: <http://data.europa.eu/eli/ontology#> .",
             "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
             "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .",
             ""
@@ -290,6 +291,7 @@ class PersistenceService:
             "@prefix forensic: <http://ai-act.eu/forensic#> .",
             "@prefix dpv: <https://w3id.org/dpv#> .",
             "@prefix dpv-ai: <https://w3id.org/dpv/ai#> .",
+            "@prefix eli: <http://data.europa.eu/eli/ontology#> .",
             "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
             "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .",
             ""
@@ -336,6 +338,9 @@ class PersistenceService:
             lines.append(f'    rdfs:label "{self._escape_turtle(req_plan.get("requirement_label", req_label))}" ;')
             lines.append(f'    forensic:forRequirement <{req_uri}> ;')
             lines.append(f'    forensic:articleReference "{req_plan.get("article_reference", "")}" ;')
+            # Add ELI URI for EUR-Lex interoperability
+            if req_plan.get("eli_uri"):
+                lines.append(f'    eli:cites <{req_plan.get("eli_uri")}> ;')
             lines.append(f'    forensic:priority "{req_plan.get("priority", "medium")}" ;')
             lines.append(f'    forensic:deadline "{req_plan.get("deadline_recommendation", "")}" ;')
 

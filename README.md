@@ -13,8 +13,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
-  <img src="https://img.shields.io/badge/ontology-v0.37.4-purple.svg" alt="Ontology"/>
+  <img src="https://img.shields.io/badge/ontology-v0.37.5-purple.svg" alt="Ontology"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
+  <img src="https://img.shields.io/badge/ELI-EUR--Lex-blue.svg" alt="ELI"/>
   <img src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg" alt="License"/>
 </p>
 
@@ -44,6 +45,8 @@ La ontología SERAMIS incorpora compatibilidad con **[AIRO (AI Risk Ontology)](h
 
 La integración con **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** permite mapear requisitos del EU AI Act a medidas técnicas y organizativas estándar, facilitando la generación de planes de evidencia para cumplimiento normativo.
 
+La integración con **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** proporciona URIs persistentes y desreferenciables para referenciar artículos específicos del AI Act en EUR-Lex, garantizando la interoperabilidad con el ecosistema legislativo europeo.
+
 Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
 
 ---
@@ -71,7 +74,7 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 
 ## Descripción
 
-SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.4) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
+SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.5) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
 
 ### Características Principales
 

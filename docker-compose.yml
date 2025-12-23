@@ -103,6 +103,7 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OLLAMA_ENDPOINT=${OLLAMA_ENDPOINT:-http://ollama:11434}
       - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
+      - REACT_AGENT_ENABLED=${REACT_AGENT_ENABLED:-true}
       - MCP_SERVER_URL=http://mcp_sparql:8080
       - FORENSIC_PORT=${FORENSIC_PORT:-8001}
     volumes:

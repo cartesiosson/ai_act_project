@@ -7,6 +7,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.37.5] - 2025-12-23
+
+### 🔗 EUROPEAN LEGISLATION IDENTIFIER (ELI) INTEGRATION
+
+Complete integration with [European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html) for EUR-Lex interoperability and persistent legislation references.
+
+#### ✅ ELI Integration
+
+- **New Prefix**: `eli: <http://data.europa.eu/eli/ontology#>`
+- **Property**: `eli:cites` linking ontology concepts to EUR-Lex URIs
+- **Reference Standards**: Council Conclusions 2012/C 325/02, Decision (EU) 2017/1191
+
+#### 🔗 ELI URIs Added
+
+**Article 5 - Prohibited Practices**:
+| Criterion/Requirement | ELI URI |
+|----------------------|---------|
+| SubliminalManipulationCriterion | `art_5/par_1/pnt_a/oj` |
+| VulnerabilityExploitationCriterion | `art_5/par_1/pnt_b/oj` |
+| SocialScoringCriterion | `art_5/par_1/pnt_c/oj` |
+| PredictivePolicingProfilingCriterion | `art_5/par_1/pnt_d/oj` |
+| RealTimeBiometricIdentificationCriterion | `art_5/par_1/pnt_h/oj` |
+| VictimSearchException | `art_5/par_2/pnt_a/oj` |
+| TerroristThreatException | `art_5/par_2/pnt_b/oj` |
+| SeriousCrimeException | `art_5/par_2/pnt_c/oj` |
+| All Art. 5.2 Requirements | `art_5/par_2/oj` |
+
+**High-Risk Requirements**:
+| Requirement | Article | ELI URI |
+|-------------|---------|---------|
+| RiskManagementRequirement | Art. 9 | `art_9/oj` |
+| DataGovernanceRequirement | Art. 10 | `art_10/oj` |
+| NonDiscriminationRequirement | Art. 10(2)(f) | `art_10/par_2/pnt_f/oj` |
+| DocumentationRequirement | Art. 11 | `art_11/oj` |
+| TraceabilityRequirement | Art. 12 | `art_12/oj` |
+| TransparencyRequirement | Art. 13 | `art_13/oj` |
+| HumanOversightRequirement | Art. 14 | `art_14/oj` |
+| AccuracyEvaluationRequirement | Art. 15 | `art_15/oj` |
+| RobustnessRequirement | Art. 15 | `art_15/oj` |
+| SecurityRequirement | Art. 15 | `art_15/oj` |
+| FundamentalRightsAssessmentRequirement | Art. 27 | `art_27/oj` |
+| GPAITransparencyRequirement | Art. 53 | `art_53/oj` |
+
+**ELI Base URI**: `http://data.europa.eu/eli/reg/2024/1689`
+
+#### 📁 Files Modified
+
+- `versions/0.37.4/ontologia-v0.37.4.ttl` → v0.37.5
+- `mappings/dpv-integration.ttl` → v0.2.0
+- `json-ld-context.json` - Added `eli:` prefix and `eli:cites` property
+- `forensic_agent/app/services/evidence_planner.py` - Added `eli_uri` field
+- `forensic_agent/app/services/persistence.py` - ELI serialization in Turtle
+
+#### 🎯 Benefits
+
+1. **EUR-Lex Interoperability**: Direct dereferenceable links to official legislation
+2. **Persistent Identifiers**: URIs survive legislative consolidations
+3. **Semantic Web Compliance**: Standard EU vocabulary for legislation references
+4. **Audit Trail**: Machine-readable links for compliance verification
+
+---
+
 ## [0.37.4] - 2025-12-14
 
 ### 🔗 W3C DPV 2.2 INTEGRATION

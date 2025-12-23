@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import Markdown from "react-markdown";
-import type { Incident, ForensicAnalysisResult, ForensicSystem, StreamEvent } from "../lib/forensicApi";
+import type { Incident, ForensicAnalysisResult, ForensicSystem, StreamEvent, AgentMode } from "../lib/forensicApi";
 import {
   loadIncidents,
   analyzeIncident,
@@ -56,6 +56,10 @@ export default function ForensicAgentPage() {
   // Service health
   const [serviceHealthy, setServiceHealthy] = useState<boolean | null>(null);
   const [llmInfo, setLlmInfo] = useState<{ provider: string; model: string } | null>(null);
+  const [reactAgentInfo, setReactAgentInfo] = useState<{ enabled: boolean; model: string } | null>(null);
+
+  // Agent mode selection
+  const [agentMode, setAgentMode] = useState<AgentMode>("pipeline");
 
   // Forensic analyzed systems state
   const [forensicSystems, setForensicSystems] = useState<ForensicSystem[]>([]);
@@ -135,6 +139,9 @@ export default function ForensicAgentPage() {
         setServiceHealthy(healthResponse !== null);
         if (healthResponse?.llm) {
           setLlmInfo(healthResponse.llm);
+        }
+        if (healthResponse?.react_agent) {
+          setReactAgentInfo(healthResponse.react_agent);
         }
       } catch (err: unknown) {
         const errorMessage = err instanceof Error ? err.message : "Failed to load incidents";
@@ -306,6 +313,7 @@ export default function ForensicAgentPage() {
             country: incident.country,
           },
           withEvidencePlan,
+          agentMode,
         });
 
         let finalResult: ForensicAnalysisResult | null = null;
@@ -618,12 +626,33 @@ export default function ForensicAgentPage() {
             </button>
           </div>
           <div className="flex items-center gap-4">
+            {/* Agent Mode Selector */}
+            <div className="flex items-center gap-2 bg-blue-700 px-3 py-2 rounded-lg">
+              <span className="text-sm font-medium">Agent:</span>
+              <select
+                value={agentMode}
+                onChange={(e) => setAgentMode(e.target.value as AgentMode)}
+                disabled={agentMode === "react" && !reactAgentInfo?.enabled}
+                className="bg-blue-800 text-white text-sm rounded px-2 py-1 border border-blue-500 focus:ring-purple-400"
+              >
+                <option value="pipeline">Pipeline (7-step)</option>
+                <option value="react" disabled={!reactAgentInfo?.enabled}>
+                  ReAct (LangGraph) {!reactAgentInfo?.enabled && "(disabled)"}
+                </option>
+              </select>
+              {agentMode === "react" && reactAgentInfo && (
+                <span className="text-xs text-blue-200" title={`Using ${reactAgentInfo.model}`}>
+                  {reactAgentInfo.model}
+                </span>
+              )}
+            </div>
             {/* Evidence Plan Toggle */}
-            <label className="flex items-center gap-2 cursor-pointer bg-blue-700 px-3 py-2 rounded-lg">
+            <label className={`flex items-center gap-2 cursor-pointer bg-blue-700 px-3 py-2 rounded-lg ${agentMode === "react" ? "opacity-50" : ""}`}>
               <input
                 type="checkbox"
-                checked={withEvidencePlan}
+                checked={withEvidencePlan && agentMode !== "react"}
                 onChange={(e) => setWithEvidencePlan(e.target.checked)}
+                disabled={agentMode === "react"}
                 className="w-4 h-4 rounded border-white/50 text-purple-500 focus:ring-purple-400 focus:ring-offset-0"
               />
               <span className="text-sm font-medium">
