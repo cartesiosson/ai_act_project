@@ -18,11 +18,13 @@
 
 ### Ontology Interoperability
 
-SERAMIS ontology integrates with established **W3C** and research ontologies:
+SERAMIS ontology integrates with established **W3C**, **EU**, and research ontologies:
 
 - **[AIRO (AI Risk Ontology)](https://w3id.org/airo)**: 30+ concept mappings including **risk levels** (`ai:HighRisk ↔ airo:HighRiskLevel`), **purposes** (`ai:Purpose ≡ airo:Purpose`), **evaluation criteria** (`ai:Criterion ≡ airo:EvaluationCriterion`), and **compliance requirements** (`ai:ComplianceRequirement ≡ airo:ComplianceRequirement`).
 
 - **[DPV (Data Privacy Vocabulary)](https://w3id.org/dpv)**: Integration for **evidence plans**, **organizational roles**, and **data processing** concepts aligned with GDPR and AI Act requirements.
+
+- **[ELI (European Legislation Identifier)](https://eur-lex.europa.eu/eli-register/about.html)**: Direct links to **EUR-Lex** official legislation using the EU standard for legislation identifiers. Each requirement and criterion references its **source article** via `eli:cites` (e.g., `art_14/oj` for Human Oversight). This enables **semantic traceability** to the official legal text and ensures **persistent, dereferenceable URIs** following Council Conclusions 2012/C 325/02.
 
 ### Architecture
 
