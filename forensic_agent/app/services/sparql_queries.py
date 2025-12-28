@@ -721,6 +721,40 @@ class ForensicSPARQLService:
             if "emotion" in rule_name.lower():
                 return True, "Emotion recognition purpose triggers specific rules"
 
+        # GPAI / Generative AI rules (EU AI Act Art. 50-52)
+        generative_keywords = ["generative", "chatbot", "llm", "gpt", "content creation", "text generation"]
+        if any(kw in purpose for kw in generative_keywords):
+            # Match GPAI-related rules by name or category
+            if any(term in rule_name.lower() for term in ["gpai", "generative", "transparency", "content", "systemic", "complexity", "foundation"]):
+                return True, f"Generative AI purpose '{purpose}' triggers GPAI/transparency rules (Art. 50-52)"
+            if category in ["base_contextual", "cascade", "gpai", "technical"]:
+                return True, f"Generative AI system triggers {category} rules"
+
+        # Large model scale triggers GPAI rules
+        # Note: model_scale is lowercase from .lower() - "foundationmodel", "large", etc.
+        if model_scale and any(scale in model_scale for scale in ["foundation", "large"]):
+            if any(term in rule_name.lower() for term in ["gpai", "scale", "systemic", "flops", "foundation", "complexity"]):
+                return True, f"Model scale '{model_scale}' triggers GPAI systemic risk rules"
+
+        # Systemic risk criteria (from EU AI Act requirements query)
+        systemic_keywords = ["systemicrisk", "dualuse", "highrisk"]
+        contexts_str = " ".join(contexts)
+        if any(kw in contexts_str or kw in purpose for kw in systemic_keywords):
+            if any(term in rule_name.lower() for term in ["systemic", "dual", "risk"]):
+                return True, "Systemic risk criteria triggers high-risk assessment rules"
+
+        # High volume / public deployment
+        if "highvolume" in contexts_str or "publicspaces" in contexts_str:
+            if category in ["base_contextual", "cascade"] or "transparency" in rule_name.lower():
+                return True, "High-volume public deployment triggers transparency rules"
+
+        # Personal/sensitive data processing
+        sensitive_data = ["personaldata", "healthdata", "biometricdata", "financialdata"]
+        data_str = " ".join(data_types)
+        if any(d in data_str for d in sensitive_data):
+            if any(term in rule_name.lower() for term in ["data", "privacy", "governance", "protection"]):
+                return True, f"Sensitive data processing triggers data governance rules"
+
         return False, ""
 
     def _generate_rules_explanation(self, applicable: List[Dict], nav_rules: List[Dict]) -> str:

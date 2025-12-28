@@ -8,6 +8,8 @@ This directory contains formal RDF/OWL mappings between:
 - **EU AI Act** compliance requirements (Articles 9-15, 27, 43, 72-73, Annex III)
 - **ISO/IEC 42001:2023** AI Management System controls (Sections 5-10)
 - **NIST AI RMF 1.0** Risk Management Framework functions and categories
+- **W3C DPV 2.2** Data Privacy Vocabulary measures
+- **ELI** European Legislation Identifier for EUR-Lex links
 
 **Purpose:** Enable multi-framework compliance analysis, forensic incident investigation, corporate audit integration, and cross-jurisdictional incident analysis.
 
@@ -19,6 +21,30 @@ This directory contains formal RDF/OWL mappings between:
 |------|-------------|--------|
 | `iso-42001-mappings.ttl` | Core 15 ISO mappings (Phase 2) | ✅ Active |
 | `nist-ai-rmf-mappings.ttl` | 16 NIST AI RMF mappings (Phase 3) | ✅ Active |
+| `dpv-integration.ttl` | W3C DPV 2.2 integration + ELI URIs (v0.2.0) | ✅ Active |
+
+---
+
+## ELI Integration (v0.37.5)
+
+All requirements in this ontology now include **European Legislation Identifier (ELI)** URIs for direct links to EUR-Lex. This enables:
+
+- **Dereferenceable URIs**: Direct access to official legislation text
+- **Persistent Identifiers**: Stable references across legislative consolidations
+- **Machine-Readable References**: Semantic Web compliance
+
+**ELI Base URI**: `http://data.europa.eu/eli/reg/2024/1689`
+
+**Example**:
+```turtle
+ai:HumanOversightRequirement
+    ai:articleReference "Article 14" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_14/oj> .
+```
+
+**Reference Standards**:
+- Council Conclusions 2012/C 325/02
+- Decision (EU) 2017/1191
 
 ---
 

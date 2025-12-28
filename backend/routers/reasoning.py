@@ -618,8 +618,14 @@ async def reason_system(
             logger.info(f"Sistema actualizado en MongoDB con inferencias: {update_data.keys()}")
 
             # También persistir en Fuseki
-            await persist_inferences_to_fuseki(system_id, relationships)
-            logger.info(f"Inferencias persistidas en Fuseki para sistema: {system_id}")
+            # FIX: Always use the URN from the system document, not the system_id parameter
+            # which could be an ObjectId instead of a URN
+            system_urn = system.get("ai:hasUrn") or system.get("@id") or system_id
+            if not system_urn.startswith("urn:"):
+                logger.warning(f"System URN not found, using system_id: {system_id}")
+                system_urn = f"urn:uuid:{system_id}"  # Fallback to create valid URN
+            await persist_inferences_to_fuseki(system_urn, relationships)
+            logger.info(f"Inferencias persistidas en Fuseki para sistema: {system_urn}")
 
         # 7. Obtener número de reglas aplicadas del reasoner service
         # El reasoner devuelve este campo con el conteo exacto de inferencias

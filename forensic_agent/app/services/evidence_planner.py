@@ -7,7 +7,8 @@ organizational measures for each requirement.
 
 Based on:
 - W3C Data Privacy Vocabulary (DPV) 2.2
-- EU AI Act requirements
+- EU AI Act requirements (Regulation 2024/1689)
+- European Legislation Identifier (ELI) for EUR-Lex interoperability
 - SERAMIS ontology mappings
 """
 
@@ -75,6 +76,7 @@ class RequirementEvidencePlan:
     deadline_recommendation: str
     responsible_roles: List[ResponsibleRole]
     article_reference: Optional[str] = None
+    eli_uri: Optional[str] = None  # European Legislation Identifier URI for EUR-Lex
     estimated_effort: Optional[str] = None
 
 
@@ -91,10 +93,14 @@ class EvidencePlan:
     recommendations: List[str]
 
 
+# ELI Base URI for EU AI Act (Regulation 2024/1689)
+ELI_BASE = "http://data.europa.eu/eli/reg/2024/1689"
+
 # Evidence catalog mapping requirements to evidence items
 EVIDENCE_CATALOG = {
     "HumanOversightRequirement": {
         "article": "Article 14",
+        "eli_uri": f"{ELI_BASE}/art_14/oj",
         "dpv_measures": ["dpv:HumanInvolvement", "dpv:HumanInvolvementForOversight"],
         "deadline": "Before deployment",
         "responsible": [ResponsibleRole.DEPLOYER, ResponsibleRole.COMPLIANCE],
@@ -138,6 +144,7 @@ EVIDENCE_CATALOG = {
 
     "FundamentalRightsAssessmentRequirement": {
         "article": "Article 27",
+        "eli_uri": f"{ELI_BASE}/art_27/oj",
         "dpv_measures": ["dpv:ImpactAssessment", "dpv:FRIA"],
         "deadline": "Before deployment",
         "responsible": [ResponsibleRole.DEPLOYER, ResponsibleRole.DPO, ResponsibleRole.LEGAL],
@@ -179,6 +186,7 @@ EVIDENCE_CATALOG = {
 
     "TransparencyRequirement": {
         "article": "Article 13",
+        "eli_uri": f"{ELI_BASE}/art_13/oj",
         "dpv_measures": ["dpv:Transparency", "dpv:PrivacyNotice"],
         "deadline": "Before deployment",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.DEPLOYER],
@@ -218,6 +226,7 @@ EVIDENCE_CATALOG = {
 
     "DocumentationRequirement": {
         "article": "Article 11 + Annex IV",
+        "eli_uri": f"{ELI_BASE}/art_11/oj",
         "dpv_measures": ["dpv:RecordsOfActivities", "dpv:Documentation"],
         "deadline": "Before CE marking",
         "responsible": [ResponsibleRole.PROVIDER],
@@ -257,6 +266,7 @@ EVIDENCE_CATALOG = {
 
     "DataGovernanceRequirement": {
         "article": "Article 10",
+        "eli_uri": f"{ELI_BASE}/art_10/oj",
         "dpv_measures": ["dpv:DataGovernancePolicies", "dpv:DataQualityAssessment"],
         "deadline": "Before training/deployment",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.DPO],
@@ -295,6 +305,7 @@ EVIDENCE_CATALOG = {
 
     "RiskManagementRequirement": {
         "article": "Article 9",
+        "eli_uri": f"{ELI_BASE}/art_9/oj",
         "dpv_measures": ["dpv:RiskManagementPlan", "dpv:RiskAssessment"],
         "deadline": "Before deployment",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.COMPLIANCE],
@@ -334,6 +345,7 @@ EVIDENCE_CATALOG = {
 
     "NonDiscriminationRequirement": {
         "article": "Article 10(2)(f)",
+        "eli_uri": f"{ELI_BASE}/art_10/par_2/pnt_f/oj",
         "dpv_measures": ["dpv:BiasAssessment", "dpv:FairnessAssessment"],
         "deadline": "Before deployment + ongoing",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.DPO],
@@ -374,6 +386,7 @@ EVIDENCE_CATALOG = {
 
     "TraceabilityRequirement": {
         "article": "Article 12",
+        "eli_uri": f"{ELI_BASE}/art_12/oj",
         "dpv_measures": ["dpv:RecordsOfActivities", "dpv:AuditLogging"],
         "deadline": "Before deployment",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.TECHNICAL],
@@ -412,6 +425,7 @@ EVIDENCE_CATALOG = {
 
     "AccuracyEvaluationRequirement": {
         "article": "Article 15",
+        "eli_uri": f"{ELI_BASE}/art_15/oj",
         "dpv_measures": ["dpv:ReviewProcedure", "dpv:PerformanceAssessment"],
         "deadline": "Before deployment + ongoing",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.TECHNICAL],
@@ -449,6 +463,7 @@ EVIDENCE_CATALOG = {
 
     "AccuracyRequirement": {
         "article": "Article 15",
+        "eli_uri": f"{ELI_BASE}/art_15/oj",
         "dpv_measures": ["dpv:AccuracyAssessment", "dpv:QualityAssurance"],
         "deadline": "Before deployment + ongoing",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.TECHNICAL],
@@ -487,6 +502,7 @@ EVIDENCE_CATALOG = {
 
     "BiasDetectionRequirement": {
         "article": "Article 10(2)(f)",
+        "eli_uri": f"{ELI_BASE}/art_10/par_2/pnt_f/oj",
         "dpv_measures": ["dpv:BiasAssessment", "dpv:BiasMonitoring"],
         "deadline": "Before deployment + ongoing",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.DPO],
@@ -527,6 +543,7 @@ EVIDENCE_CATALOG = {
 
     "FairnessRequirement": {
         "article": "Article 10(2)(f) + Recital 47",
+        "eli_uri": f"{ELI_BASE}/art_10/par_2/pnt_f/oj",
         "dpv_measures": ["dpv:FairnessAssessment", "dpv:EqualTreatment"],
         "deadline": "Before deployment + ongoing",
         "responsible": [ResponsibleRole.PROVIDER, ResponsibleRole.DPO, ResponsibleRole.LEGAL],
@@ -823,6 +840,7 @@ class EvidencePlannerService:
                     deadline_recommendation=catalog_entry["deadline"],
                     responsible_roles=catalog_entry["responsible"],
                     article_reference=catalog_entry.get("article"),
+                    eli_uri=catalog_entry.get("eli_uri"),
                     estimated_effort=self._estimate_effort(catalog_entry["evidence"])
                 )
                 requirement_plans.append(req_plan)
@@ -988,6 +1006,7 @@ class EvidencePlannerService:
                     "requirement_label": rp.requirement_label,
                     "priority": rp.priority.value,
                     "article_reference": rp.article_reference,
+                    "eli_uri": rp.eli_uri,
                     "dpv_measures": rp.dpv_measures,
                     "deadline_recommendation": rp.deadline_recommendation,
                     "responsible_roles": [r.value for r in rp.responsible_roles],
@@ -1068,7 +1087,7 @@ class EvidencePlannerService:
                 f"### {rp.requirement_label}",
                 "",
                 f"**Priority:** {rp.priority.value}",
-                f"**Article:** {rp.article_reference or 'N/A'}",
+                f"**Article:** {rp.article_reference or 'N/A'}" + (f" ([EUR-Lex]({rp.eli_uri}))" if rp.eli_uri else ""),
                 f"**Deadline:** {rp.deadline_recommendation}",
                 f"**Responsible:** {', '.join(r.value for r in rp.responsible_roles)}",
                 f"**Estimated Effort:** {rp.estimated_effort}",

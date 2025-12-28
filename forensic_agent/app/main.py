@@ -1,18 +1,23 @@
 """Forensic Compliance Agent - FastAPI Application"""
 
 import os
+import json
+import asyncio
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional, Dict
+from typing import Optional, Dict, AsyncGenerator
 
 from .services import (
     IncidentExtractorService,
     ForensicSPARQLService,
     ForensicAnalysisEngine,
     PersistenceService,
-    EvidencePlannerService
+    EvidencePlannerService,
+    ForensicReActAgent
 )
+from .models.forensic_report import StreamEvent, StreamEventType
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -36,12 +41,13 @@ sparql_service: Optional[ForensicSPARQLService] = None
 analysis_engine: Optional[ForensicAnalysisEngine] = None
 persistence_service: Optional[PersistenceService] = None
 evidence_planner: Optional[EvidencePlannerService] = None
+react_agent: Optional[ForensicReActAgent] = None
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup"""
-    global extractor_service, sparql_service, analysis_engine, persistence_service, evidence_planner
+    global extractor_service, sparql_service, analysis_engine, persistence_service, evidence_planner, react_agent
 
     print("=" * 80)
     print("FORENSIC COMPLIANCE AGENT - STARTING UP")
@@ -94,6 +100,29 @@ async def startup_event():
         print("\nInitializing Evidence Planner Service...")
         evidence_planner = EvidencePlannerService()
         print("✓ Evidence Planner Service initialized (DPV mappings)")
+
+        # Initialize ReAct Agent (optional - only if Ollama is available)
+        ollama_endpoint = os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434")
+        ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2")
+        react_enabled = os.getenv("REACT_AGENT_ENABLED", "false").lower() == "true"
+
+        if react_enabled:
+            print(f"\nInitializing ReAct Agent (LangGraph + Ollama)...")
+            print(f"  Ollama Endpoint: {ollama_endpoint}")
+            print(f"  Model: {ollama_model}")
+            try:
+                react_agent = ForensicReActAgent(
+                    sparql_service=sparql_service,
+                    extractor_service=extractor_service,
+                    ollama_base_url=ollama_endpoint,
+                    model_name=ollama_model
+                )
+                print("✓ ReAct Agent initialized")
+            except Exception as e:
+                print(f"⚠ ReAct Agent initialization failed (optional): {e}")
+                react_agent = None
+        else:
+            print("\nReAct Agent: Disabled (set REACT_AGENT_ENABLED=true to enable)")
 
         print("\n" + "=" * 80)
         print("FORENSIC COMPLIANCE AGENT - READY")
@@ -148,13 +177,31 @@ async def health_check():
 
     stats = await sparql_service.get_stats()
 
+    # Get LLM info
+    llm_info = {
+        "provider": extractor_service.llm_provider if extractor_service else "unknown",
+        "model": extractor_service.model if extractor_service else "unknown"
+    }
+
+    # ReAct agent info
+    react_info = None
+    if react_agent:
+        react_info = {
+            "enabled": True,
+            "model": react_agent.model_name,
+            "ollama_url": react_agent.ollama_base_url
+        }
+
     return {
         "status": "healthy",
         "services": {
             "extractor": "operational",
             "sparql": "operational",
-            "analysis_engine": "operational"
+            "analysis_engine": "operational",
+            "react_agent": "operational" if react_agent else "disabled"
         },
+        "llm": llm_info,
+        "react_agent": react_info,
         "mcp": {
             "connected": sparql_service._connected,
             "stats": stats
@@ -247,6 +294,243 @@ async def get_stats():
             "evidence_planner_ready": evidence_planner is not None
         }
     }
+
+
+@app.post("/forensic/analyze-stream")
+async def analyze_incident_stream(request: IncidentAnalysisRequest):
+    """
+    Analyze an AI incident narrative with Server-Sent Events streaming.
+
+    Returns real-time updates of the analysis process including:
+    - LLM prompts and responses
+    - SPARQL queries and results
+    - Step-by-step progress
+    - Final analysis result
+    """
+    if not analysis_engine:
+        raise HTTPException(status_code=503, detail="Analysis engine not initialized")
+
+    if not request.narrative or len(request.narrative.strip()) < 50:
+        raise HTTPException(
+            status_code=400,
+            detail="Narrative too short. Provide at least 50 characters of incident description."
+        )
+
+    async def event_generator() -> AsyncGenerator[str, None]:
+        """Generate SSE events during analysis"""
+        try:
+            # Run analysis with streaming
+            async for event in analysis_engine.analyze_incident_streaming(request.narrative):
+                # Format as SSE
+                event_data = event.model_dump() if hasattr(event, 'model_dump') else event.dict()
+                yield f"data: {json.dumps(event_data)}\n\n"
+
+            # After analysis, handle persistence
+            result = analysis_engine.last_result
+            if result and result.get("status") == "COMPLETED":
+                # Add metadata
+                if request.metadata:
+                    result["metadata"] = request.metadata
+                result["source"] = request.source
+
+                # Persist
+                if persistence_service:
+                    persist_result = await persistence_service.persist_analyzed_system(
+                        analysis_result=result,
+                        source=request.source,
+                        metadata=request.metadata
+                    )
+                    if persist_result.get("success"):
+                        result["persisted"] = {
+                            "success": True,
+                            "urn": persist_result.get("urn"),
+                            "message": "System saved to MongoDB and Fuseki"
+                        }
+
+                # Send final result
+                final_event = StreamEvent(
+                    event_type=StreamEventType.ANALYSIS_COMPLETE,
+                    step_name="Complete",
+                    data=result,
+                    progress_percent=100.0
+                )
+                yield f"data: {json.dumps(final_event.model_dump())}\n\n"
+
+        except Exception as e:
+            error_event = StreamEvent(
+                event_type=StreamEventType.ERROR,
+                step_name="Error",
+                data={"error": str(e)}
+            )
+            yield f"data: {json.dumps(error_event.model_dump())}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+
+@app.post("/forensic/analyze-stream-with-evidence-plan")
+async def analyze_stream_with_evidence_plan(request: IncidentAnalysisRequest):
+    """
+    Analyze an incident with streaming AND generate an evidence plan.
+
+    Combines forensic analysis streaming with evidence planning.
+    """
+    if not analysis_engine or not evidence_planner:
+        raise HTTPException(status_code=503, detail="Services not initialized")
+
+    if not request.narrative or len(request.narrative.strip()) < 50:
+        raise HTTPException(
+            status_code=400,
+            detail="Narrative too short. Provide at least 50 characters."
+        )
+
+    async def event_generator() -> AsyncGenerator[str, None]:
+        """Generate SSE events during analysis with evidence plan"""
+        try:
+            # Run analysis with streaming
+            async for event in analysis_engine.analyze_incident_streaming(request.narrative):
+                event_data = event.model_dump() if hasattr(event, 'model_dump') else event.dict()
+                yield f"data: {json.dumps(event_data)}\n\n"
+
+            # Get final result
+            result = analysis_engine.last_result
+            if result and result.get("status") == "COMPLETED":
+                # Add metadata
+                if request.metadata:
+                    result["metadata"] = request.metadata
+                result["source"] = request.source
+
+                # Generate evidence plan
+                compliance_gaps = result.get("compliance_gaps", {})
+                missing_reqs = compliance_gaps.get("missing_requirements", [])
+                critical_gaps = compliance_gaps.get("critical_gaps", [])
+
+                if missing_reqs:
+                    system_name = result.get("extraction", {}).get("system", {}).get("system_name", "Unknown System")
+                    risk_level = result.get("eu_ai_act", {}).get("risk_level", "Unknown")
+
+                    plan = evidence_planner.generate_plan(
+                        system_name=system_name,
+                        risk_level=risk_level,
+                        missing_requirements=missing_reqs,
+                        critical_gaps=critical_gaps
+                    )
+                    result["evidence_plan"] = evidence_planner.to_dict(plan)
+
+                # Persist
+                if persistence_service:
+                    persist_result = await persistence_service.persist_analyzed_system(
+                        analysis_result=result,
+                        source=request.source,
+                        metadata=request.metadata
+                    )
+                    if persist_result.get("success"):
+                        result["persisted"] = {
+                            "success": True,
+                            "urn": persist_result.get("urn"),
+                            "message": "System saved to MongoDB and Fuseki"
+                        }
+
+                # Send final result
+                final_event = StreamEvent(
+                    event_type=StreamEventType.ANALYSIS_COMPLETE,
+                    step_name="Complete",
+                    data=result,
+                    progress_percent=100.0
+                )
+                yield f"data: {json.dumps(final_event.model_dump())}\n\n"
+
+        except Exception as e:
+            error_event = StreamEvent(
+                event_type=StreamEventType.ERROR,
+                step_name="Error",
+                data={"error": str(e)}
+            )
+            yield f"data: {json.dumps(error_event.model_dump())}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+
+@app.post("/forensic/analyze-react")
+async def analyze_incident_react(request: IncidentAnalysisRequest):
+    """
+    Analyze an AI incident using the ReAct (Reasoning + Acting) agent.
+
+    This endpoint uses LangGraph with Ollama (Llama 3.2) to dynamically
+    decide which regulatory frameworks to query based on the incident.
+
+    The agent uses a Thought -> Action -> Observation loop to:
+    - Extract incident properties
+    - Decide which frameworks apply (EU AI Act, NIST, ISO)
+    - Query only relevant regulations
+    - Generate a forensic report
+
+    Requires: REACT_AGENT_ENABLED=true and Ollama running with llama3.2
+    """
+    if not react_agent:
+        raise HTTPException(
+            status_code=503,
+            detail="ReAct agent not initialized. Set REACT_AGENT_ENABLED=true and ensure Ollama is running."
+        )
+
+    if not request.narrative or len(request.narrative.strip()) < 50:
+        raise HTTPException(
+            status_code=400,
+            detail="Narrative too short. Provide at least 50 characters."
+        )
+
+    async def event_generator() -> AsyncGenerator[str, None]:
+        """Generate SSE events during ReAct agent analysis"""
+        try:
+            async for event in react_agent.analyze_incident_streaming(request.narrative):
+                event_data = event.model_dump() if hasattr(event, 'model_dump') else event.dict()
+                yield f"data: {json.dumps(event_data)}\n\n"
+
+            # Send final completion event
+            final_event = StreamEvent(
+                event_type=StreamEventType.ANALYSIS_COMPLETE,
+                step_name="ReAct Analysis Complete",
+                data={
+                    "status": "COMPLETED",
+                    "agent_type": "react",
+                    "model": react_agent.model_name
+                },
+                progress_percent=100.0
+            )
+            yield f"data: {json.dumps(final_event.model_dump())}\n\n"
+
+        except Exception as e:
+            error_event = StreamEvent(
+                event_type=StreamEventType.ERROR,
+                step_name="ReAct Agent Error",
+                data={"error": str(e)}
+            )
+            yield f"data: {json.dumps(error_event.model_dump())}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 
 # Evidence Plan Request Model

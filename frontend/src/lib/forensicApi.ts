@@ -4,6 +4,34 @@
 
 const FORENSIC_API_BASE = import.meta.env.VITE_FORENSIC_API_URL || "http://localhost:8002";
 
+// Stream Event Types
+export type StreamEventType =
+  | "step_start"
+  | "step_progress"
+  | "step_complete"
+  | "llm_prompt"
+  | "llm_response"
+  | "sparql_query"
+  | "sparql_result"
+  | "analysis_complete"
+  | "error";
+
+export interface ConversationMessage {
+  role: "system" | "user" | "assistant" | "tool";
+  content: string;
+  timestamp: string;
+}
+
+export interface StreamEvent {
+  event_type: StreamEventType;
+  step_number?: number;
+  step_name?: string;
+  timestamp: string;
+  data?: Record<string, unknown>;
+  message?: ConversationMessage;
+  progress_percent?: number;
+}
+
 // Types
 export interface Incident {
   id: string;
@@ -230,12 +258,33 @@ export function getUniqueValues(incidents: Incident[], field: keyof Incident): s
   return Array.from(values).sort();
 }
 
-export async function checkHealth(): Promise<boolean> {
+export interface HealthResponse {
+  status: string;
+  services: Record<string, string>;
+  llm?: {
+    provider: string;
+    model: string;
+  };
+  react_agent?: {
+    enabled: boolean;
+    model: string;
+    ollama_url: string;
+  } | null;
+  mcp?: {
+    connected: boolean;
+    stats?: Record<string, unknown>;
+  };
+}
+
+export async function checkHealth(): Promise<HealthResponse | null> {
   try {
     const response = await fetch(`${FORENSIC_API_BASE}/health`);
-    return response.ok;
+    if (response.ok) {
+      return response.json();
+    }
+    return null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -310,4 +359,96 @@ export async function deleteForensicSystem(urn: string): Promise<void> {
     method: "DELETE",
   });
   if (!response.ok) throw new Error("Failed to delete forensic system");
+}
+
+export type AgentMode = "pipeline" | "react";
+
+/**
+ * Analyze incident with streaming events (SSE)
+ * Returns an async generator that yields StreamEvent objects in real-time
+ *
+ * @param agentMode - "pipeline" for deterministic 7-step analysis, "react" for LangGraph ReAct agent
+ */
+export async function* analyzeIncidentStream(request: {
+  narrative: string;
+  source?: string;
+  metadata?: Record<string, unknown>;
+  withEvidencePlan?: boolean;
+  agentMode?: AgentMode;
+}): AsyncGenerator<StreamEvent, void, unknown> {
+  const agentMode = request.agentMode || "pipeline";
+
+  let endpoint: string;
+  if (agentMode === "react") {
+    endpoint = `${FORENSIC_API_BASE}/forensic/analyze-react`;
+  } else if (request.withEvidencePlan) {
+    endpoint = `${FORENSIC_API_BASE}/forensic/analyze-stream-with-evidence-plan`;
+  } else {
+    endpoint = `${FORENSIC_API_BASE}/forensic/analyze-stream`;
+  }
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      narrative: request.narrative,
+      source: request.source,
+      metadata: request.metadata,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: "Analysis failed" }));
+    throw new Error(error.detail || "Analysis failed");
+  }
+
+  if (!response.body) {
+    throw new Error("No response body");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+
+      // Keep the last incomplete line in the buffer
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr) {
+            try {
+              const event: StreamEvent = JSON.parse(jsonStr);
+              yield event;
+            } catch (e) {
+              console.error("Failed to parse SSE event:", e, jsonStr);
+            }
+          }
+        }
+      }
+    }
+
+    // Process any remaining data in buffer
+    if (buffer.startsWith("data: ")) {
+      const jsonStr = buffer.slice(6).trim();
+      if (jsonStr) {
+        try {
+          const event: StreamEvent = JSON.parse(jsonStr);
+          yield event;
+        } catch (e) {
+          console.error("Failed to parse final SSE event:", e);
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
 }

@@ -275,5 +275,150 @@ async def query_nist_mappings(requirement: str) -> str:
     return await _execute_sparql(query)
 
 
+@mcp.tool()
+async def get_inference_rules() -> str:
+    """
+    Get all inference rules for EU AI Act compliance analysis.
+    Returns condition-based rules (base, technical, cascade) and navigation rules.
+    """
+    # Base contextual rules (Rules 1-12)
+    base_rules = [
+        {"id": "rule01a_education_context_minors", "name": "Education context triggers protection of minors", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:Education"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:ProtectionOfMinors"}]},
+        {"id": "rule01b_education_purpose_minors", "name": "Education purpose triggers protection of minors", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:EducationAccess"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:ProtectionOfMinors"}]},
+        {"id": "rule02_recruitment_nondiscrimination", "name": "Recruitment systems require non-discrimination", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:RecruitmentOrEmployment"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:NonDiscrimination"}]},
+        {"id": "rule03_judicial_support", "name": "Judicial support systems trigger specialized criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:JudicialDecisionSupport"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:JudicialSupportCriterion"}]},
+        {"id": "rule04_law_enforcement", "name": "Law enforcement systems trigger specialized criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:LawEnforcementSupport"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:LawEnforcementCriterion"}]},
+        {"id": "rule05_migration_control", "name": "Migration systems trigger border control criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:MigrationControl"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:MigrationBorderCriterion"}]},
+        {"id": "rule06_critical_infrastructure", "name": "Critical infrastructure systems trigger specialized criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:CriticalInfrastructureOperation"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:CriticalInfrastructureCriterion"}]},
+        {"id": "rule07_healthcare_privacy", "name": "Healthcare systems require privacy protection", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:HealthCare"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:PrivacyProtection"}]},
+        {"id": "rule08a_biometric_data_security", "name": "Biometric data processing triggers security criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:processesDataType", "operator": "==", "value": "ai:BiometricData"}],
+         "consequences": [{"property": "ai:hasContextualCriterion", "value": "ai:BiometricSecurity"}]},
+        {"id": "rule08b_biometric_purpose_security", "name": "Biometric identification triggers security criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:BiometricIdentification"}],
+         "consequences": [{"property": "ai:hasContextualCriterion", "value": "ai:BiometricSecurity"}]},
+        {"id": "rule09_realtime_performance", "name": "Real-time systems require performance criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:RealTimeProcessing"}],
+         "consequences": [{"property": "ai:hasTechnicalCriterion", "value": "ai:PerformanceRequirements"}]},
+        {"id": "rule10_highvolume_scalability", "name": "High-volume systems require scalability", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:HighVolumeProcessing"}],
+         "consequences": [{"property": "ai:hasTechnicalCriterion", "value": "ai:ScalabilityRequirements"}]},
+        {"id": "rule11a_healthcare_essential", "name": "Healthcare context triggers essential services criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:Healthcare"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:EssentialServicesAccessCriterion"}]},
+        {"id": "rule12_public_services", "name": "Public services trigger essential services criteria", "category": "base_contextual",
+         "conditions": [{"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:PublicServices"}],
+         "consequences": [{"property": "ai:hasNormativeCriterion", "value": "ai:EssentialServicesAccessCriterion"}]},
+    ]
+
+    # GPAI / Generative AI rules
+    gpai_rules = [
+        {"id": "rule_gpai_generative_transparency", "name": "GPAI systems require transparency (Art. 50-52)", "category": "gpai",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:GenerativeAIContentCreation"}],
+         "consequences": [{"property": "ai:hasTechnicalCriterion", "value": "ai:GPAITransparency"},
+                         {"property": "ai:hasNormativeCriterion", "value": "ai:ContentLabelingRequirement"}]},
+        {"id": "rule_gpai_foundation_scale", "name": "Foundation models are classified as GPAI", "category": "gpai",
+         "conditions": [{"property": "ai:hasModelScale", "operator": "==", "value": "ai:FoundationModelScale"}],
+         "consequences": [{"property": "ai:hasGPAIClassification", "value": "ai:GeneralPurposeAI"}]},
+        {"id": "rule_gpai_systemic_risk", "name": "High-capacity GPAI triggers systemic risk", "category": "gpai",
+         "conditions": [{"property": "ai:hasGPAIClassification", "operator": "==", "value": "ai:GeneralPurposeAI"}],
+         "consequences": [{"property": "ai:hasTechnicalCriterion", "value": "ai:SystemicRiskPotential"}]},
+        {"id": "rule19c_generative_complexity", "name": "Generative models trigger complexity criteria", "category": "technical",
+         "conditions": [{"property": "ai:hasAlgorithmType", "operator": "==", "value": "ai:GenerativeModel"}],
+         "consequences": [{"property": "ai:hasTechnicalCriterion", "value": "ai:ModelComplexity"}]},
+    ]
+
+    # Technical rules
+    technical_rules = [
+        {"id": "rule_model_scale_foundation", "name": "Foundation model scale based on FLOPs", "category": "technical",
+         "conditions": [{"property": "ai:hasFLOPS", "operator": ">=", "value": 1e16}],
+         "consequences": [{"property": "ai:hasModelScale", "value": "ai:FoundationModelScale"}]},
+        {"id": "rule13_flops_systemic_risk", "name": "High computational FLOPs trigger systemic risk", "category": "technical",
+         "conditions": [{"property": "ai:hasComputationFLOPs", "operator": ">", "value": 1e25}],
+         "consequences": [{"property": "ai:hasTechnicalCriterion", "value": "ai:SystemicRisk"}]},
+        {"id": "rule15_autonomy_oversight", "name": "High autonomy indicates lack of human oversight", "category": "technical",
+         "conditions": [{"property": "ai:hasAutonomyLevel", "operator": ">", "value": 0.8}],
+         "consequences": [{"property": "ai:hasTechnicalCriterion", "value": "ai:LacksHumanOversight"}]},
+    ]
+
+    # Cascade rules (criteria -> requirements)
+    cascade_rules = [
+        {"id": "rule20a_systemic_risk_management", "name": "Systemic risk triggers risk management", "category": "cascade",
+         "conditions": [{"property": "ai:hasTechnicalCriterion", "operator": "==", "value": "ai:SystemicRisk"}],
+         "consequences": [{"property": "ai:hasRequirement", "value": "ai:RiskManagementRequirement"}]},
+        {"id": "rule22a_adaptive_oversight", "name": "Adaptive capability triggers oversight requirement", "category": "cascade",
+         "conditions": [{"property": "ai:hasTechnicalCriterion", "operator": "==", "value": "ai:AdaptiveCapability"}],
+         "consequences": [{"property": "ai:hasRequirement", "value": "ai:HumanOversightRequirement"}]},
+        {"id": "rule23a_complexity_transparency", "name": "Model complexity triggers transparency", "category": "cascade",
+         "conditions": [{"property": "ai:hasTechnicalCriterion", "operator": "==", "value": "ai:ModelComplexity"}],
+         "consequences": [{"property": "ai:hasTechnicalRequirement", "value": "ai:TransparencyRequirement"}]},
+        {"id": "rule_gpai_transparency_cascade", "name": "GPAI transparency triggers documentation", "category": "cascade",
+         "conditions": [{"property": "ai:hasTechnicalCriterion", "operator": "==", "value": "ai:GPAITransparency"}],
+         "consequences": [{"property": "ai:hasRequirement", "value": "ai:DocumentationRequirement"},
+                         {"property": "ai:hasRequirement", "value": "ai:TransparencyRequirement"}]},
+    ]
+
+    # Prohibited practices (Article 5)
+    prohibited_rules = [
+        {"id": "rule_art5_1a_subliminal", "name": "Article 5.1(a): Subliminal manipulation prohibited", "category": "prohibited_practices",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:SubliminalManipulation"}],
+         "consequences": [{"property": "ai:hasProhibitedPractice", "value": "ai:SubliminalManipulationCriterion"}]},
+        {"id": "rule_art5_1c_social_scoring", "name": "Article 5.1(c): Social scoring prohibited", "category": "prohibited_practices",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:SocialScoring"}],
+         "consequences": [{"property": "ai:hasProhibitedPractice", "value": "ai:SocialScoringCriterion"}]},
+        {"id": "rule_art5_1h_realtime_biometric", "name": "Article 5.1(h): Real-time biometric in public spaces prohibited", "category": "prohibited_practices",
+         "conditions": [{"property": "ai:hasPurpose", "operator": "==", "value": "ai:BiometricIdentification"},
+                       {"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:RealTimeProcessing"},
+                       {"property": "ai:hasDeploymentContext", "operator": "==", "value": "ai:PublicSpaces"}],
+         "consequences": [{"property": "ai:hasProhibitedPractice", "value": "ai:RealTimeBiometricIdentificationCriterion"}]},
+    ]
+
+    # Navigation rules (transitive inference)
+    navigation_rules = [
+        {"id": "rule_nav_purpose_criterion", "name": "Purpose activates criterion derivation", "navigation_type": "transitive",
+         "source_property": "ai:hasPurpose", "link_property": "ai:activatesCriterion", "target_property": "ai:hasCriteria"},
+        {"id": "rule_nav_context_criterion", "name": "Context triggers criterion derivation", "navigation_type": "transitive",
+         "source_property": "ai:hasDeploymentContext", "link_property": "ai:triggersCriterion", "target_property": "ai:hasCriteria"},
+        {"id": "rule_nav_criterion_requirement", "name": "Criterion activates requirement derivation", "navigation_type": "transitive",
+         "source_property": "ai:hasCriteria", "link_property": "ai:activatesRequirement", "target_property": "ai:hasComplianceRequirement"},
+        {"id": "rule_nav_criterion_risk", "name": "Criterion assigns risk level", "navigation_type": "transitive",
+         "source_property": "ai:hasCriteria", "link_property": "ai:assignsRiskLevel", "target_property": "ai:hasRiskLevel"},
+        {"id": "rule_nav_data_requirement", "name": "Data type triggers data requirement", "navigation_type": "transitive",
+         "source_property": "ai:processesDataType", "link_property": "ai:triggersDataRequirement", "target_property": "ai:hasDataRequirement"},
+    ]
+
+    # Combine all condition-based rules
+    all_condition_rules = base_rules + gpai_rules + technical_rules + cascade_rules + prohibited_rules
+
+    result = {
+        "condition_consequence_rules": all_condition_rules,
+        "navigation_rules": navigation_rules,
+        "metadata": {
+            "total_condition_rules": len(all_condition_rules),
+            "total_navigation_rules": len(navigation_rules),
+            "categories": ["base_contextual", "gpai", "technical", "cascade", "prohibited_practices"],
+            "version": "1.0.0"
+        }
+    }
+
+    return json.dumps(result, indent=2)
+
+
 if __name__ == "__main__":
     mcp.run()

@@ -8,7 +8,11 @@ pydantic-settings==2.6.1
 
 # LLM Integration
 anthropic==0.40.0  # Claude API
-# ollama==0.4.5  # Optional: For Llama 3.2 local
+
+# LangChain/LangGraph for ReAct Agent
+langchain>=0.3.0
+langchain-ollama>=0.2.0
+langgraph>=0.2.0
 
 # MCP Client
 fastmcp>=2.3.0

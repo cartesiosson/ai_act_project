@@ -5,6 +5,7 @@
 @prefix dpv-tech: <https://w3id.org/dpv/tech#> .
 @prefix dpv-legal-eu-aiact: <https://w3id.org/dpv/legal/eu/aiact#> .
 @prefix dpv-legal-eu-gdpr: <https://w3id.org/dpv/legal/eu/gdpr#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -12,8 +13,8 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 # ===== DPV INTEGRATION MODULE =====
-# Version: 0.1.0
-# Date: 2025-12-14
+# Version: 0.2.0
+# Date: 2025-12-23
 # Purpose: Integrate W3C Data Privacy Vocabulary (DPV) 2.2 with SERAMIS AI Act Ontology
 #
 # This module provides:
@@ -21,17 +22,20 @@
 # 2. Mappings between AI Act requirements and DPV Technical/Organizational Measures
 # 3. Evidence types for compliance documentation
 # 4. Risk-to-measure mappings for Evidence Planner Agent
+# 5. ELI (European Legislation Identifier) URIs for EUR-Lex interoperability
 # =====
 
 <http://ai-act.eu/ai-act/dpv-integration> a owl:Ontology ;
     owl:imports <http://ai-act.eu/ai-act> ;
     dct:created "2025-12-14"^^xsd:date ;
+    dct:modified "2025-12-23"^^xsd:date ;
     dct:title "DPV Integration Module for SERAMIS"@en,
         "Modulo de Integracion DPV para SERAMIS"@es ;
-    dct:description "Maps EU AI Act requirements to W3C Data Privacy Vocabulary (DPV) 2.2 concepts for evidence planning and compliance documentation."@en,
-        "Mapea requisitos del EU AI Act a conceptos del W3C Data Privacy Vocabulary (DPV) 2.2 para planificacion de evidencias y documentacion de cumplimiento."@es ;
-    owl:versionInfo "0.1.0" ;
-    rdfs:seeAlso <https://w3c.github.io/dpv/> .
+    dct:description "Maps EU AI Act requirements to W3C Data Privacy Vocabulary (DPV) 2.2 concepts for evidence planning and compliance documentation. Includes ELI URIs for EUR-Lex interoperability."@en,
+        "Mapea requisitos del EU AI Act a conceptos del W3C Data Privacy Vocabulary (DPV) 2.2 para planificacion de evidencias y documentacion de cumplimiento. Incluye URIs ELI para interoperabilidad con EUR-Lex."@es ;
+    owl:versionInfo "0.2.0" ;
+    rdfs:seeAlso <https://w3c.github.io/dpv/>,
+        <http://data.europa.eu/eli/reg/2024/1689/oj> .
 
 
 # ===== EVIDENCE TYPES =====
@@ -120,6 +124,7 @@ ai:mapsToDPVMeasure a owl:ObjectProperty ;
 # --- Human Oversight Requirement (Art. 14) ---
 ai:HumanOversightRequirement
     ai:mapsToDPVMeasure dpv:HumanInvolvement ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_14/oj> ;
     ai:requiresEvidence ai:HumanOversightPolicyEvidence,
         ai:OverrideDecisionLogEvidence,
         ai:OperatorTrainingEvidence .
@@ -143,6 +148,7 @@ ai:OperatorTrainingEvidence a ai:TrainingEvidence ;
 # --- Transparency Requirement (Art. 13) ---
 ai:TransparencyRequirement
     ai:mapsToDPVMeasure dpv:Transparency ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_13/oj> ;
     ai:requiresEvidence ai:UserNotificationEvidence,
         ai:SystemDescriptionEvidence,
         ai:AIDisclosureEvidence .
@@ -166,6 +172,7 @@ ai:AIDisclosureEvidence a ai:PolicyEvidence ;
 # --- Fundamental Rights Assessment (Art. 27) ---
 ai:FundamentalRightsAssessmentRequirement
     ai:mapsToDPVMeasure dpv:ImpactAssessment ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> ;
     ai:requiresEvidence ai:FRIAReportEvidence,
         ai:AffectedPersonsAnalysisEvidence,
         ai:MitigationPlanEvidence .
@@ -189,6 +196,7 @@ ai:MitigationPlanEvidence a ai:PolicyEvidence ;
 # --- Data Governance Requirement (Art. 10) ---
 ai:DataGovernanceRequirement
     ai:mapsToDPVMeasure dpv:DataGovernancePolicies ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_10/oj> ;
     ai:requiresEvidence ai:DataQualityPolicyEvidence,
         ai:TrainingDataDocumentationEvidence,
         ai:DataProvenanceEvidence .
@@ -212,6 +220,7 @@ ai:DataProvenanceEvidence a ai:TechnicalEvidence ;
 # --- Documentation Requirement (Art. 11) ---
 ai:DocumentationRequirement
     ai:mapsToDPVMeasure dpv:RecordsOfActivities ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_11/oj> ;
     ai:requiresEvidence ai:TechnicalDocumentationEvidence,
         ai:ModelCardEvidence,
         ai:VersionControlEvidence .
@@ -235,6 +244,7 @@ ai:VersionControlEvidence a ai:TechnicalEvidence ;
 # --- Risk Management Requirement (Art. 9) ---
 ai:RiskManagementRequirement
     ai:mapsToDPVMeasure dpv:RiskManagementPlan ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_9/oj> ;
     ai:requiresEvidence ai:RiskManagementSystemEvidence,
         ai:RiskRegisterEvidence,
         ai:RiskMonitoringEvidence .
@@ -255,9 +265,10 @@ ai:RiskMonitoringEvidence a ai:AuditEvidence ;
     ai:evidenceFrequency "CONTINUOUS" .
 
 
-# --- Non-Discrimination Requirement ---
+# --- Non-Discrimination Requirement (Art. 10) ---
 ai:NonDiscriminationRequirement
     ai:mapsToDPVMeasure dpv:BiasAssessment ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_10/oj> ;
     ai:requiresEvidence ai:BiasAuditReportEvidence,
         ai:FairnessMetricsEvidence,
         ai:ProtectedGroupAnalysisEvidence .
@@ -281,6 +292,7 @@ ai:ProtectedGroupAnalysisEvidence a ai:AssessmentEvidence ;
 # --- Accuracy Requirement (Art. 15) ---
 ai:AccuracyEvaluationRequirement
     ai:mapsToDPVMeasure dpv:ReviewProcedure ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_15/oj> ;
     ai:requiresEvidence ai:AccuracyTestReportEvidence,
         ai:ValidationDatasetEvidence,
         ai:PerformanceBaselineEvidence .
@@ -304,6 +316,7 @@ ai:PerformanceBaselineEvidence a ai:TechnicalEvidence ;
 # --- Robustness Requirement (Art. 15) ---
 ai:RobustnessRequirement
     ai:mapsToDPVMeasure dpv:SecurityAssessment ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_15/oj> ;
     ai:requiresEvidence ai:RobustnessTestReportEvidence,
         ai:AdversarialTestingEvidence,
         ai:FailsafeMechanismEvidence .
@@ -327,6 +340,7 @@ ai:FailsafeMechanismEvidence a ai:TechnicalEvidence ;
 # --- Traceability Requirement (Art. 12) ---
 ai:TraceabilityRequirement
     ai:mapsToDPVMeasure dpv:RecordsOfActivities ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_12/oj> ;
     ai:requiresEvidence ai:AuditLogEvidence,
         ai:DecisionTraceEvidence,
         ai:LogRetentionPolicyEvidence .
@@ -350,6 +364,7 @@ ai:LogRetentionPolicyEvidence a ai:PolicyEvidence ;
 # --- Security Requirement (Art. 15) ---
 ai:SecurityRequirement
     ai:mapsToDPVMeasure dpv:TechnicalSecurityMeasure ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_15/oj> ;
     ai:requiresEvidence ai:SecurityAuditReportEvidence,
         ai:PenetrationTestEvidence,
         ai:SecurityPolicyEvidence .
@@ -370,9 +385,10 @@ ai:SecurityPolicyEvidence a ai:PolicyEvidence ;
     ai:evidenceFrequency "ANNUALLY" .
 
 
-# --- GPAI Transparency (Art. 52) ---
+# --- GPAI Transparency (Art. 53) ---
 ai:GPAITransparencyRequirement
     ai:mapsToDPVMeasure dpv:Transparency ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_53/oj> ;
     ai:requiresEvidence ai:GPAIModelCardEvidence,
         ai:TrainingDataSummaryEvidence,
         ai:CopyrightComplianceEvidence .
@@ -393,9 +409,11 @@ ai:CopyrightComplianceEvidence a ai:PolicyEvidence ;
     ai:evidenceFrequency "ANNUALLY" .
 
 
-# --- Protection of Minors ---
+# --- Protection of Minors (linked to Art. 5.1.b and Annex III) ---
 ai:ProtectionOfMinorsRequirement
     ai:mapsToDPVMeasure dpv:ChildrenDataProtection ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_b/oj>,
+        <http://data.europa.eu/eli/reg/2024/1689/anx_III/oj> ;
     ai:requiresEvidence ai:AgeVerificationEvidence,
         ai:MinorsImpactAssessmentEvidence,
         ai:ParentalConsentEvidence .

@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import Markdown from "react-markdown";
-import type { Incident, ForensicAnalysisResult, ForensicSystem } from "../lib/forensicApi";
+import type { Incident, ForensicAnalysisResult, ForensicSystem, StreamEvent, AgentMode } from "../lib/forensicApi";
 import {
   loadIncidents,
   analyzeIncident,
+  analyzeIncidentStream,
   buildNarrative,
   getUniqueValues,
   checkHealth,
@@ -44,8 +45,21 @@ export default function ForensicAgentPage() {
   const [expandedResult, setExpandedResult] = useState<string | null>(null);
   const [withEvidencePlan, setWithEvidencePlan] = useState(true); // Include DPV Evidence Plan
 
+  // Streaming state
+  const [streamEvents, setStreamEvents] = useState<StreamEvent[]>([]);
+  const [currentStep, setCurrentStep] = useState<string>("");
+  const [streamProgress, setStreamProgress] = useState(0);
+  const [showStreamModal, setShowStreamModal] = useState(false);
+  const [analysisComplete, setAnalysisComplete] = useState(false);
+  const streamContainerRef = useRef<HTMLDivElement>(null);
+
   // Service health
   const [serviceHealthy, setServiceHealthy] = useState<boolean | null>(null);
+  const [llmInfo, setLlmInfo] = useState<{ provider: string; model: string } | null>(null);
+  const [reactAgentInfo, setReactAgentInfo] = useState<{ enabled: boolean; model: string } | null>(null);
+
+  // Agent mode selection
+  const [agentMode, setAgentMode] = useState<AgentMode>("pipeline");
 
   // Forensic analyzed systems state
   const [forensicSystems, setForensicSystems] = useState<ForensicSystem[]>([]);
@@ -120,11 +134,18 @@ export default function ForensicAgentPage() {
     async function load() {
       try {
         setLoading(true);
-        const [data, healthy] = await Promise.all([loadIncidents(), checkHealth()]);
+        const [data, healthResponse] = await Promise.all([loadIncidents(), checkHealth()]);
         setIncidents(data);
-        setServiceHealthy(healthy);
-      } catch (err: any) {
-        setError(err.message || "Failed to load incidents");
+        setServiceHealthy(healthResponse !== null);
+        if (healthResponse?.llm) {
+          setLlmInfo(healthResponse.llm);
+        }
+        if (healthResponse?.react_agent) {
+          setReactAgentInfo(healthResponse.react_agent);
+        }
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to load incidents";
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -249,22 +270,38 @@ export default function ForensicAgentPage() {
     setSelectedIds(new Set());
   };
 
-  // Analysis handler
+  // Auto-scroll stream container
+  useEffect(() => {
+    if (streamContainerRef.current) {
+      streamContainerRef.current.scrollTop = streamContainerRef.current.scrollHeight;
+    }
+  }, [streamEvents]);
+
+  // Analysis handler with streaming
   const handleAnalyze = async () => {
     if (selectedIds.size === 0) return;
 
     setAnalyzing(true);
+    setShowStreamModal(true);
+    setAnalysisComplete(false);
     setProgress({ current: 0, total: selectedIds.size, currentId: "" });
     setResults(new Map());
+    setStreamEvents([]);
+    setCurrentStep("");
+    setStreamProgress(0);
 
     const selectedIncidents = incidents.filter((i) => selectedIds.has(i.id));
 
     for (const incident of selectedIncidents) {
       setProgress((prev) => ({ ...prev, currentId: incident.id }));
+      setStreamEvents([]); // Reset stream for each incident
+      setStreamProgress(0);
 
       try {
         const narrative = buildNarrative(incident);
-        const result = await analyzeIncident({
+
+        // Use streaming API
+        const stream = analyzeIncidentStream({
           narrative,
           source: "AIAAIC Repository",
           metadata: {
@@ -276,14 +313,48 @@ export default function ForensicAgentPage() {
             country: incident.country,
           },
           withEvidencePlan,
+          agentMode,
         });
 
-        setResults((prev) => new Map(prev).set(incident.id, result));
-      } catch (err: any) {
+        let finalResult: ForensicAnalysisResult | null = null;
+
+        for await (const event of stream) {
+          // Add event to stream
+          setStreamEvents((prev) => [...prev, event]);
+
+          // Update current step
+          if (event.step_name) {
+            setCurrentStep(event.step_name);
+          }
+
+          // Update progress
+          if (event.progress_percent !== undefined) {
+            setStreamProgress(event.progress_percent);
+          }
+
+          // Capture final result
+          if (event.event_type === "analysis_complete" && event.data) {
+            finalResult = event.data as unknown as ForensicAnalysisResult;
+          }
+
+          // Handle errors
+          if (event.event_type === "error") {
+            finalResult = {
+              status: "ERROR",
+              error: event.data?.error as string || "Unknown error",
+            } as ForensicAnalysisResult;
+          }
+        }
+
+        if (finalResult) {
+          setResults((prev) => new Map(prev).set(incident.id, finalResult!));
+        }
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
         setResults((prev) =>
           new Map(prev).set(incident.id, {
             status: "ERROR",
-            error: err.message,
+            error: errorMessage,
           } as ForensicAnalysisResult)
         );
       }
@@ -292,6 +363,14 @@ export default function ForensicAgentPage() {
     }
 
     setAnalyzing(false);
+    setAnalysisComplete(true);
+  };
+
+  // Close stream modal handler
+  const handleCloseStreamModal = () => {
+    setShowStreamModal(false);
+    setStreamEvents([]);
+    setAnalysisComplete(false);
   };
 
   // Render loading state
@@ -547,12 +626,33 @@ export default function ForensicAgentPage() {
             </button>
           </div>
           <div className="flex items-center gap-4">
+            {/* Agent Mode Selector */}
+            <div className="flex items-center gap-2 bg-blue-700 px-3 py-2 rounded-lg">
+              <span className="text-sm font-medium">Agent:</span>
+              <select
+                value={agentMode}
+                onChange={(e) => setAgentMode(e.target.value as AgentMode)}
+                disabled={agentMode === "react" && !reactAgentInfo?.enabled}
+                className="bg-blue-800 text-white text-sm rounded px-2 py-1 border border-blue-500 focus:ring-purple-400"
+              >
+                <option value="pipeline">Pipeline (7-step)</option>
+                <option value="react" disabled={!reactAgentInfo?.enabled}>
+                  ReAct (LangGraph) {!reactAgentInfo?.enabled && "(disabled)"}
+                </option>
+              </select>
+              {agentMode === "react" && reactAgentInfo && (
+                <span className="text-xs text-blue-200" title={`Using ${reactAgentInfo.model}`}>
+                  {reactAgentInfo.model}
+                </span>
+              )}
+            </div>
             {/* Evidence Plan Toggle */}
-            <label className="flex items-center gap-2 cursor-pointer bg-blue-700 px-3 py-2 rounded-lg">
+            <label className={`flex items-center gap-2 cursor-pointer bg-blue-700 px-3 py-2 rounded-lg ${agentMode === "react" ? "opacity-50" : ""}`}>
               <input
                 type="checkbox"
-                checked={withEvidencePlan}
+                checked={withEvidencePlan && agentMode !== "react"}
                 onChange={(e) => setWithEvidencePlan(e.target.checked)}
+                disabled={agentMode === "react"}
                 className="w-4 h-4 rounded border-white/50 text-purple-500 focus:ring-purple-400 focus:ring-offset-0"
               />
               <span className="text-sm font-medium">
@@ -573,28 +673,117 @@ export default function ForensicAgentPage() {
         </div>
       )}
 
-      {/* Analysis Progress */}
-      {analyzing && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
-            <h3 className="text-lg font-semibold mb-4">Analyzing Incidents</h3>
-            <div className="mb-4">
-              <div className="flex justify-between text-sm mb-1">
-                <span>Progress</span>
-                <span>{progress.current} / {progress.total}</span>
+      {/* Analysis Progress Modal with Streaming Conversation */}
+      {showStreamModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  {analysisComplete ? (
+                    <span>✅</span>
+                  ) : (
+                    <span className="animate-pulse">🔬</span>
+                  )}
+                  {analysisComplete ? "Analysis Complete" : "Forensic Analysis in Progress"}
+                </h3>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    Incident {Math.min(progress.current + 1, progress.total)} / {progress.total}
+                  </span>
+                  {analysisComplete && (
+                    <button
+                      onClick={handleCloseStreamModal}
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      title="Close"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                <div
-                  className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-                  style={{ width: `${(progress.current / progress.total) * 100}%` }}
-                ></div>
+
+              {/* Overall Progress */}
+              <div className="mb-2">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="font-medium">{analysisComplete ? "All analyses completed" : (currentStep || "Initializing...")}</span>
+                  <span>{Math.round(streamProgress)}%</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      analysisComplete
+                        ? "bg-green-500"
+                        : "bg-gradient-to-r from-blue-500 to-purple-600"
+                    }`}
+                    style={{ width: `${analysisComplete ? 100 : streamProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {progress.currentId && !analysisComplete && (
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Analyzing: <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">{progress.currentId}</span>
+                </p>
+              )}
+            </div>
+
+            {/* Conversation Stream */}
+            <div
+              ref={streamContainerRef}
+              className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-900"
+              style={{ minHeight: "400px", maxHeight: "60vh" }}
+            >
+              {streamEvents.length === 0 ? (
+                <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                    <p>Starting analysis...</p>
+                  </div>
+                </div>
+              ) : (
+                streamEvents.map((event, idx) => (
+                  <StreamEventCard key={idx} event={event} />
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                  {analysisComplete ? (
+                    <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      Completed
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                      Live Stream
+                    </span>
+                  )}
+                  <span>|</span>
+                  <span>{streamEvents.length} events</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    LLM: <span className="font-medium text-gray-700 dark:text-gray-300">{llmInfo?.model || "Unknown"}</span> + SPARQL Reasoner
+                  </div>
+                  {analysisComplete && (
+                    <button
+                      onClick={handleCloseStreamModal}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                    >
+                      Close
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-            {progress.currentId && (
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Currently analyzing: <span className="font-mono">{progress.currentId}</span>
-              </p>
-            )}
           </div>
         </div>
       )}
@@ -1199,6 +1388,112 @@ function DetailField({ label, value }: { label: string; value: string }) {
     <div>
       <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</span>
       <p className="text-gray-900 dark:text-white mt-1">{value || "-"}</p>
+    </div>
+  );
+}
+
+// Stream Event Card Component
+function StreamEventCard({ event }: { event: StreamEvent }) {
+  const getEventIcon = () => {
+    switch (event.event_type) {
+      case "step_start":
+        return "🚀";
+      case "step_complete":
+        return "✅";
+      case "llm_prompt":
+        return "💬";
+      case "llm_response":
+        return "🤖";
+      case "sparql_query":
+        return "🔍";
+      case "sparql_result":
+        return "📊";
+      case "analysis_complete":
+        return "🎉";
+      case "error":
+        return "❌";
+      default:
+        return "📝";
+    }
+  };
+
+  const getEventColor = () => {
+    switch (event.event_type) {
+      case "step_start":
+        return "border-l-blue-500 bg-blue-50 dark:bg-blue-900/20";
+      case "step_complete":
+        return "border-l-green-500 bg-green-50 dark:bg-green-900/20";
+      case "llm_prompt":
+        return "border-l-purple-500 bg-purple-50 dark:bg-purple-900/20";
+      case "llm_response":
+        return "border-l-indigo-500 bg-indigo-50 dark:bg-indigo-900/20";
+      case "sparql_query":
+        return "border-l-orange-500 bg-orange-50 dark:bg-orange-900/20";
+      case "sparql_result":
+        return "border-l-amber-500 bg-amber-50 dark:bg-amber-900/20";
+      case "analysis_complete":
+        return "border-l-emerald-500 bg-emerald-50 dark:bg-emerald-900/20";
+      case "error":
+        return "border-l-red-500 bg-red-50 dark:bg-red-900/20";
+      default:
+        return "border-l-gray-500 bg-gray-50 dark:bg-gray-800";
+    }
+  };
+
+  const getRoleBadge = () => {
+    if (!event.message) return null;
+    const role = event.message.role;
+    const colors: Record<string, string> = {
+      user: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+      assistant: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+      tool: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
+      system: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
+    };
+    return (
+      <span className={`px-2 py-0.5 rounded text-xs font-medium ${colors[role] || colors.system}`}>
+        {role.toUpperCase()}
+      </span>
+    );
+  };
+
+  const formatTimestamp = (ts: string) => {
+    try {
+      const date = new Date(ts);
+      return date.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    } catch {
+      return "";
+    }
+  };
+
+  return (
+    <div className={`border-l-4 rounded-r-lg p-3 ${getEventColor()}`}>
+      <div className="flex items-start justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">{getEventIcon()}</span>
+          <span className="font-medium text-sm text-gray-900 dark:text-white">
+            {event.step_name || event.event_type.replace(/_/g, " ").toUpperCase()}
+          </span>
+          {getRoleBadge()}
+        </div>
+        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          {event.step_number && <span>Step {event.step_number}</span>}
+          <span>{formatTimestamp(event.timestamp)}</span>
+        </div>
+      </div>
+
+      {event.message && (
+        <div className="mt-2 text-sm text-gray-700 dark:text-gray-300 font-mono bg-white dark:bg-gray-800 rounded p-3 border border-gray-200 dark:border-gray-700 max-h-48 overflow-y-auto whitespace-pre-wrap">
+          <Markdown>{event.message.content}</Markdown>
+        </div>
+      )}
+
+      {event.data && !event.message && (
+        <div className="mt-2 text-sm font-mono bg-white dark:bg-gray-800 rounded p-3 border border-gray-200 dark:border-gray-700 max-h-48 overflow-y-auto">
+          <pre className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-xs">
+            {JSON.stringify(event.data, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }
