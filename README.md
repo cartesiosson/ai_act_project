@@ -262,7 +262,7 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ## Ontología
 
-### Versión: 0.37.4
+### Versión: 0.37.5
 
 | Propiedad | Valor |
 |-----------|-------|
@@ -368,15 +368,83 @@ El reasoner implementa **4 reglas de inferencia** basadas en la identificación 
 - `ai:WorkerNotificationRequirement`
 - `ai:Article5ProhibitionReview`
 
-### Mappings Multi-Framework
+### Integración ELI (European Legislation Identifier)
+
+SERAMIS v0.37.5 integra el **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** para proporcionar referencias persistentes y desreferenciables a la legislación oficial en EUR-Lex.
+
+| Propiedad | Descripción |
+|-----------|-------------|
+| **Prefijo** | `eli: <http://data.europa.eu/eli/ontology#>` |
+| **Propiedad** | `eli:cites` vincula conceptos a URIs EUR-Lex |
+| **Base URI** | `http://data.europa.eu/eli/reg/2024/1689` |
+| **Estándar** | Council Conclusions 2012/C 325/02 |
+
+**Ejemplo de URI ELI:**
+```turtle
+ai:HumanOversightRequirement eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_14/oj> .
+```
+
+Esta integración permite:
+- **Trazabilidad normativa**: Enlaces directos al texto legal oficial
+- **Persistencia**: URIs que sobreviven consolidaciones legislativas
+- **Interoperabilidad**: Estándar EU para referencias legislativas
+- **Auditoría**: Referencias verificables para compliance
+
+### Integración ISO/IEC 42001:2023
+
+La ontología incluye **15 mappings bidireccionales** con el estándar de gestión de IA [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html), candidato a estándar armonizado bajo el EU AI Act.
+
+| Requisito EU AI Act | Artículo | Control ISO 42001 | Sección |
+|---------------------|----------|-------------------|---------|
+| Risk Management | Art. 9 | Risk assessment and treatment | 8.1 |
+| Data Governance | Art. 10 | Data management | 8.3 |
+| Documentation | Art. 11-12 | Documentation and records | 8.4 |
+| Transparency | Art. 13 | Transparency and explainability | 8.7 |
+| Human Oversight | Art. 14 | Human oversight controls | 8.6 |
+| Accuracy/Robustness | Art. 15 | Performance evaluation | 8.2 |
+| Cybersecurity | Art. 15 | AI system security | 8.5.1 |
+| Conformity Assessment | Art. 43 | Internal audit | 9.2 |
+| Monitoring | Art. 72 | Monitoring and measurement | 9.1 |
+| Incident Response | Art. 73 | Incident management | 10.1 |
+
+**Propiedades de mapping:**
+```turtle
+ai:HumanOversightRequirement
+    ai:equivalentToISOControl iso:Control_8_6 ;
+    ai:isoSection "8.6" ;
+    ai:mappingConfidence "HIGH" .
+```
+
+### Integración NIST AI RMF 1.0
+
+La ontología incluye **16 mappings** con el [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), cubriendo las 4 funciones principales:
+
+| Función NIST | Categorías | Requisitos AI Act mapeados |
+|--------------|------------|----------------------------|
+| **GOVERN** | 1.1, 1.2, 1.3 | Derechos fundamentales, Gestión de riesgos, Documentación |
+| **MAP** | 2.1, 2.2, 2.3 | Clasificación de riesgo, Gobernanza de datos, No discriminación |
+| **MEASURE** | 3.1, 3.2, 3.3 | Precisión, Robustez, Evaluación de conformidad |
+| **MANAGE** | 4.1, 4.2, 4.3, 4.4 | Supervisión humana, Monitoreo, Transparencia, Ciberseguridad |
+
+**Propiedades de mapping:**
+```turtle
+ai:HumanOversightRequirement
+    ai:equivalentToNISTFunction nist:MANAGE_4_1 ;
+    ai:nistCategory "MANAGE-4.1" ;
+    ai:nistApplicabilityContext "GLOBAL_INCIDENTS, COMPARATIVE_ANALYSIS" .
+```
+
+### Mappings Multi-Framework (Resumen)
 
 | Framework | Tipo | Mappings | Confianza |
 |-----------|------|----------|-----------|
 | **EU AI Act** | Regulación obligatoria | Base | - |
-| **ISO 42001** | Estándar de certificación | 15 | 87% HIGH |
-| **NIST AI RMF** | Guía voluntaria | 18 | 100% HIGH |
+| **AIRO** | Ontología W3C | 30+ | Equivalencias OWL |
 | **DPV 2.2** | Vocabulario W3C | 14 | - |
-| **Total** | Multi-framework | **47+** | **94% HIGH** |
+| **ELI** | Identificador EU | 20+ | URIs persistentes |
+| **ISO 42001** | Estándar certificable | 15 | 87% HIGH |
+| **NIST AI RMF** | Guía voluntaria | 16 | 100% HIGH |
+| **Total** | Multi-framework | **95+** | **94% HIGH** |
 
 ---
 

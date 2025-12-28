@@ -2506,6 +2506,9 @@
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(2)"
   } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj"
+  } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ComplianceRequirement"
   } ],
@@ -2961,6 +2964,9 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ComplianceRequirement"
@@ -3556,6 +3562,9 @@
     "@language" : "en",
     "@value" : "Prohibited when based solely on profiling without objective prior criminal behavior"
   } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_d/oj"
+  } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ProhibitedPracticeCriterion"
   } ],
@@ -3648,6 +3657,11 @@
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5, Article 99(3)(a)"
   } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/oj"
+  }, {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_99/par_3/pnt_a/oj"
+  } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ComplianceRequirement"
   } ],
@@ -3670,6 +3684,9 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(2)"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ComplianceRequirement"
@@ -3754,6 +3771,9 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(2)"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ComplianceRequirement"
@@ -3955,6 +3975,9 @@
   }, {
     "@language" : "en",
     "@value" : "Prohibited with limited exceptions (Article 5.2)"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_h/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ProhibitedPracticeCriterion"
@@ -4326,6 +4349,9 @@
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(2)(c)"
   } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/pnt_c/oj"
+  } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#LegalException"
   } ],
@@ -4435,6 +4461,9 @@
     "@language" : "es",
     "@value" : "Prohibición absoluta - Aplica solo a autoridades públicas"
   } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_c/oj"
+  } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ProhibitedPracticeCriterion"
   } ],
@@ -4521,6 +4550,9 @@
   }, {
     "@language" : "es",
     "@value" : "Prohibición absoluta - Sin excepciones"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_a/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ProhibitedPracticeCriterion"
@@ -4807,6 +4839,9 @@
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(2)"
   } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj"
+  } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ComplianceRequirement"
   } ],
@@ -4829,6 +4864,9 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(2)(b)"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/pnt_b/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#LegalException"
@@ -5063,6 +5101,9 @@
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(2)(a)"
   } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/pnt_a/oj"
+  } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#LegalException"
   } ],
@@ -5102,6 +5143,9 @@
   }, {
     "@language" : "es",
     "@value" : "Prohibición absoluta - Sin excepciones"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_b/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ProhibitedPracticeCriterion"
@@ -5188,6 +5232,9 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#NamedIndividual" ],
   "http://ai-act.eu/ai#articleReference" : [ {
     "@value" : "Article 5(1)(b)"
+  } ],
+  "http://data.europa.eu/eli/ontology#cites" : [ {
+    "@id" : "http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_b/oj"
   } ],
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
     "@id" : "http://ai-act.eu/ai#ComplianceRequirement"
@@ -5380,10 +5427,10 @@
   "@type" : [ "http://www.w3.org/2002/07/owl#DatatypeProperty" ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "en",
-    "@value" : "Reference to the specific EU AI Act article that defines this criterion or requirement (e.g., 'Article 5(1)(a)', 'Article 5.2')"
+    "@value" : "Human-readable reference to the specific EU AI Act article (e.g., 'Article 5(1)(a)'). For machine-readable EUR-Lex links, use eli:cites property."
   }, {
     "@language" : "es",
-    "@value" : "Referencia al artículo específico del AI Act de la UE que define este criterio o requisito (ej. 'Artículo 5(1)(a)', 'Artículo 5.2')"
+    "@value" : "Referencia legible para humanos al artículo específico del AI Act (ej. 'Artículo 5(1)(a)'). Para enlaces EUR-Lex legibles por máquina, usar propiedad eli:cites."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#domain" : [ {
     "@id" : "http://ai-act.eu/ai#Criterion"
@@ -6071,42 +6118,45 @@
   } ],
   "http://purl.org/dc/terms/title" : [ {
     "@language" : "en",
-    "@value" : "AI Act Unified Ontology (v0.37.4)"
+    "@value" : "AI Act Unified Ontology (v0.37.5)"
   }, {
     "@language" : "es",
-    "@value" : "Ontología Unificada del AI Act (v0.37.4)"
+    "@value" : "Ontología Unificada del AI Act (v0.37.5)"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "es",
     "@value" : "Las reglas SWRL están externalizadas en el directorio rules/ para mejor mantenibilidad y auditabilidad"
   }, {
     "@language" : "es",
-    "@value" : "Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO y prácticas prohibidas del Artículo 5. Cobertura completa de sistemas de IA con riesgo inaceptable. Optimizado para detección forense de brechas de cumplimiento."
+    "@value" : "Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO, prácticas prohibidas del Artículo 5, e Identificador Europeo de Legislación (ELI). Cobertura completa de sistemas de IA con riesgo inaceptable con enlaces directos a EUR-Lex. Optimizado para detección forense de brechas de cumplimiento."
   }, {
     "@language" : "en",
     "@value" : "SWRL rules are externalized in the rules/ directory for better maintainability and auditability"
   }, {
     "@language" : "en",
-    "@value" : "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, and Article 5 prohibited practices. Complete coverage of unacceptable risk AI systems. Optimized for forensic compliance gap detection."
+    "@value" : "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Optimized for forensic compliance gap detection."
   } ],
   "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
     "@id" : "file:/Users/cartesio/workspace/ai_act_project/tools/shacl/"
   }, {
-    "@id" : "file:/Users/cartesio/workspace/ai_act_project/tools/tmp1765757101708/rules/"
+    "@id" : "file:/Users/cartesio/workspace/ai_act_project/tools/tmp1766938997155/rules/"
   } ],
   "http://www.w3.org/2002/07/owl#imports" : [ {
     "@id" : "https://w3id.org/airo"
   } ],
   "http://www.w3.org/2002/07/owl#versionIRI" : [ {
-    "@id" : "http://ai-act.eu/ai-act/0.37.4"
+    "@id" : "http://ai-act.eu/ai-act/0.37.5"
   } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
     "@language" : "en",
-    "@value" : "Version 0.37.4 released on 2025-12-14 with complete Article 5 (Prohibited Practices) implementation - Unacceptable Risk systems"
+    "@value" : "Version 0.37.5 released on 2025-12-23 with European Legislation Identifier (ELI) integration for EUR-Lex interoperability"
   }, {
     "@language" : "es",
-    "@value" : "Versión 0.37.4 publicada el 2025-12-14 con implementación completa del Artículo 5 (Prácticas Prohibidas) - Sistemas de riesgo inaceptable"
+    "@value" : "Versión 0.37.5 publicada el 2025-12-23 con integración del Identificador Europeo de Legislación (ELI) para interoperabilidad con EUR-Lex"
   } ]
+}, {
+  "@id" : "http://data.europa.eu/eli/ontology#cites",
+  "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]
 }, {
   "@id" : "http://purl.org/dc/terms/bibliographicCitation",
   "@type" : [ "http://www.w3.org/2002/07/owl#AnnotationProperty" ]

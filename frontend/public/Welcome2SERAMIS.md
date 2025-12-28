@@ -26,6 +26,10 @@ SERAMIS ontology integrates with established **W3C**, **EU**, and research ontol
 
 - **[ELI (European Legislation Identifier)](https://eur-lex.europa.eu/eli-register/about.html)**: Direct links to **EUR-Lex** official legislation using the EU standard for legislation identifiers. Each requirement and criterion references its **source article** via `eli:cites` (e.g., `art_14/oj` for Human Oversight). This enables **semantic traceability** to the official legal text and ensures **persistent, dereferenceable URIs** following Council Conclusions 2012/C 325/02.
 
+- **[ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html)**: 15 bidirectional mappings between **EU AI Act requirements** and **ISO 42001 controls** (Sections 5-10). Enables **multi-framework compliance analysis** and **forensic investigation** of certified systems. Properties: `ai:equivalentToISOControl`, `ai:isoSection`, `ai:mappingConfidence`.
+
+- **[NIST AI RMF 1.0](https://www.nist.gov/itl/ai-risk-management-framework)**: 16 mappings covering all 4 NIST functions (**GOVERN**, **MAP**, **MEASURE**, **MANAGE**) for **global incident forensics** and **US-EU comparative analysis**. Properties: `ai:equivalentToNISTFunction`, `ai:nistCategory`, `ai:nistApplicabilityContext`.
+
 ### Architecture
 
 SERAMIS integrates multiple components:

@@ -11,8 +11,8 @@
     "dpv-tech": "https://w3id.org/dpv/tech#",
     "dpv-legal-eu-aiact": "https://w3id.org/dpv/legal/eu/aiact#",
     "dpv-legal-eu-gdpr": "https://w3id.org/dpv/legal/eu/gdpr#",
-    "airo": "https://w3id.org/airo#",
-    "eli": "http://data.europa.eu/eli/ontology#",
+    "airo": "https://w3id.org/airo#"
+,
     "ai:activatesCriterion": {
       "@type": "@id"
     },
@@ -146,9 +146,6 @@
       "@type": "xsd:string"
     },
     "ai:triggersCriterion": {
-      "@type": "@id"
-    },
-    "eli:cites": {
       "@type": "@id"
     }
   }
