@@ -426,6 +426,10 @@ async def generate_evidence_plan(
 
         # Prepare request for forensic agent's evidence plan endpoint
         risk_level = existing.get("hasRiskLevel", "ai:HighRisk")
+        # Handle array or string
+        if isinstance(risk_level, list):
+            risk_level = risk_level[0] if risk_level else "ai:HighRisk"
+        risk_level = str(risk_level)
         # Normalize risk level for the evidence planner
         if risk_level.startswith("ai:"):
             risk_level = risk_level.replace("ai:", "")

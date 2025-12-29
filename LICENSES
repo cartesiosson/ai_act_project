@@ -56,11 +56,6 @@ El código fuente está disponible bajo los términos definidos por UNIR para Tr
 - **URL:** https://github.com/aio-libs/aiohttp
 - **Copyright:** © aio-libs contributors
 
-### Anthropic Python SDK
-- **License:** MIT
-- **URL:** https://github.com/anthropics/anthropic-sdk-python
-- **Copyright:** © Anthropic
-
 ### FastMCP
 - **License:** MIT
 - **URL:** https://github.com/jlowin/fastmcp

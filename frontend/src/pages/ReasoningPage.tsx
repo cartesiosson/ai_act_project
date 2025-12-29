@@ -268,13 +268,21 @@ export default function ReasoningPage() {
                 </p>
                 <p className="text-gray-700 dark:text-gray-300">
                   <strong>Risk Level:</strong>{" "}
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                    selectedSystem.data.hasRiskLevel?.includes("High")
-                      ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                      : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                  }`}>
-                    {selectedSystem.data.hasRiskLevel?.replace("ai:", "")}
-                  </span>
+                  {(() => {
+                    const riskLevel = Array.isArray(selectedSystem.data.hasRiskLevel)
+                      ? selectedSystem.data.hasRiskLevel[0]
+                      : selectedSystem.data.hasRiskLevel;
+                    const riskStr = String(riskLevel || "Unknown");
+                    return (
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                        riskStr.includes("High")
+                          ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                      }`}>
+                        {riskStr.replace("ai:", "")}
+                      </span>
+                    );
+                  })()}
                 </p>
                 {selectedSystem.data.aiaaic_id && (
                   <p className="text-gray-700 dark:text-gray-300">

@@ -101,7 +101,7 @@ export interface ForensicSystem {
   urn: string;
   hasName: string;
   hasOrganization: string;
-  hasRiskLevel: string;
+  hasRiskLevel: string | string[];
   complianceRatio: number;
   jurisdiction: string;
   source: string;

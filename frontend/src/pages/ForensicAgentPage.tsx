@@ -3,7 +3,6 @@ import Markdown from "react-markdown";
 import type { Incident, ForensicAnalysisResult, ForensicSystem, StreamEvent, AgentMode } from "../lib/forensicApi";
 import {
   loadIncidents,
-  analyzeIncident,
   analyzeIncidentStream,
   buildNarrative,
   getUniqueValues,
@@ -1062,14 +1061,22 @@ export default function ForensicAgentPage() {
                     </td>
                     <td className="p-2 truncate" title={fs.hasOrganization}>{fs.hasOrganization || "-"}</td>
                     <td className="p-2">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        fs.hasRiskLevel.includes("High") ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
-                        fs.hasRiskLevel.includes("Limited") ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" :
-                        fs.hasRiskLevel.includes("Minimal") ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" :
-                        "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                      }`}>
-                        {fs.hasRiskLevel.replace("ai:", "")}
-                      </span>
+                      {(() => {
+                        const riskLevel = Array.isArray(fs.hasRiskLevel)
+                          ? fs.hasRiskLevel[0] || ""
+                          : (fs.hasRiskLevel || "");
+                        const riskStr = String(riskLevel);
+                        return (
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            riskStr.includes("High") ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
+                            riskStr.includes("Limited") ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" :
+                            riskStr.includes("Minimal") ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" :
+                            "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                          }`}>
+                            {riskStr.replace("ai:", "")}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="p-2 whitespace-nowrap">
                       <button
@@ -1145,7 +1152,7 @@ export default function ForensicAgentPage() {
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
                   <p className="text-xs text-gray-500 dark:text-gray-400">Risk Level</p>
-                  <p className="font-medium">{selectedForensicSystem.hasRiskLevel.replace("ai:", "")}</p>
+                  <p className="font-medium">{(Array.isArray(selectedForensicSystem.hasRiskLevel) ? selectedForensicSystem.hasRiskLevel[0] : selectedForensicSystem.hasRiskLevel || "Unknown").replace("ai:", "")}</p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
                   <p className="text-xs text-gray-500 dark:text-gray-400">Compliance Ratio</p>
@@ -1191,7 +1198,7 @@ export default function ForensicAgentPage() {
               )}
 
               {/* Compliance Gaps */}
-              {selectedForensicSystem.missingRequirements?.length > 0 && (
+              {selectedForensicSystem.missingRequirements && selectedForensicSystem.missingRequirements.length > 0 && (
                 <div className="mb-6">
                   <h4 className="font-semibold mb-2 text-orange-600 dark:text-orange-400">Missing Requirements ({selectedForensicSystem.missingRequirements.length})</h4>
                   <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded">

@@ -345,9 +345,14 @@ def system_to_ttl(system: Dict[str, Any]) -> str:
     # Nivel de riesgo
     if system.get("hasRiskLevel"):
         risk_uri = system["hasRiskLevel"]
-        if not risk_uri.startswith("ai:"):
-            risk_uri = f"ai:{risk_uri}"
-        properties.append(f"{subject} ai:hasRiskLevel {risk_uri}")
+        # Handle array or string
+        if isinstance(risk_uri, list):
+            risk_uri = risk_uri[0] if risk_uri else None
+        if risk_uri:
+            risk_uri = str(risk_uri)
+            if not risk_uri.startswith("ai:"):
+                risk_uri = f"ai:{risk_uri}"
+            properties.append(f"{subject} ai:hasRiskLevel {risk_uri}")
 
     # Combinar prefijos y propiedades
     ttl_content = prefixes + "\n" + " .\n".join(properties) + " .\n"
@@ -772,9 +777,14 @@ def forensic_system_to_ttl(system: Dict[str, Any]) -> str:
     # Nivel de riesgo si existe
     if system.get("hasRiskLevel"):
         risk_level = system["hasRiskLevel"]
-        if not risk_level.startswith("ai:"):
-            risk_level = f"ai:{risk_level.split(':')[-1] if ':' in risk_level else risk_level}"
-        properties.append(f"{subject} ai:hasRiskLevel {risk_level}")
+        # Handle array or string
+        if isinstance(risk_level, list):
+            risk_level = risk_level[0] if risk_level else None
+        if risk_level:
+            risk_level = str(risk_level)
+            if not risk_level.startswith("ai:"):
+                risk_level = f"ai:{risk_level.split(':')[-1] if ':' in risk_level else risk_level}"
+            properties.append(f"{subject} ai:hasRiskLevel {risk_level}")
 
     # Si es decisión automatizada
     if system.get("isAutomatedDecision"):

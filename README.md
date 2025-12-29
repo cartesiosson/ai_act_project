@@ -47,32 +47,32 @@ La integración con **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github
 
 La integración con **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** proporciona URIs persistentes y desreferenciables para referenciar artículos específicos del AI Act en EUR-Lex, garantizando la interoperabilidad con el ecosistema legislativo europeo.
 
-Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, documentación y diseño arquitectónico.
+Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthropic), asistente de IA utilizado para acelerar el desarrollo de código, y la documentación.
 
 ---
 
 ## Índice
 
-- [Descripción](#descripción)
-- [Arquitectura del Sistema](#arquitectura-del-sistema)
-- [Instalación](#instalación)
-- [Módulos del Frontend](#módulos-del-frontend)
-- [Agente Forense](#agente-forense)
-- [Ontología](#ontología)
-  - [Integración AIRO](#integración-airo-ai-risk-ontology)
-  - [Integración DPV](#integración-dpv-data-privacy-vocabulary)
-  - [Razonamiento sobre Affected Persons](#razonamiento-sobre-affected-persons-art-86)
-  - [Mappings Multi-Framework](#mappings-multi-framework)
-- [Mecanismos de Inferencia](#mecanismos-de-inferencia)
-- [Stack Tecnológico](#stack-tecnológico)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [API Reference](#api-reference)
-- [Referencias](#referencias)
-- [Licencia](#licencia)
+- [1. Descripción](#1-descripción)
+- [2. Arquitectura del Sistema](#2-arquitectura-del-sistema)
+- [3. Instalación](#3-instalación)
+- [4. Módulos del Frontend](#4-módulos-del-frontend)
+- [5. Agente Forense](#5-agente-forense)
+- [6. Ontología](#6-ontología)
+  - [6.1 Integración AIRO](#61-integración-airo-ai-risk-ontology)
+  - [6.2 Integración DPV](#62-integración-dpv-data-privacy-vocabulary)
+  - [6.3 Razonamiento sobre Affected Persons](#63-razonamiento-sobre-affected-persons-art-86)
+  - [6.4 Mappings Multi-Framework](#64-mappings-multi-framework)
+- [7. Mecanismos de Inferencia](#7-mecanismos-de-inferencia)
+- [8. Stack Tecnológico](#8-stack-tecnológico)
+- [9. Estructura del Proyecto](#9-estructura-del-proyecto)
+- [10. API Reference](#10-api-reference)
+- [11. Referencias](#11-referencias)
+- [12. Licencia](#12-licencia)
 
 ---
 
-## Descripción
+## 1. Descripción
 
 SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.5) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
 
@@ -89,7 +89,7 @@ SERAMIS implementa un **sistema de evaluación semántica automatizada** para si
 
 ---
 
-## Arquitectura del Sistema
+## 2. Arquitectura del Sistema
 
 ```mermaid
 flowchart TB
@@ -154,7 +154,7 @@ flowchart TB
 
 ---
 
-## Instalación
+## 3. Instalación
 
 ### Prerrequisitos
 
@@ -166,8 +166,6 @@ flowchart TB
 
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/[usuario]/seramis.git
-cd seramis
 
 # 2. Iniciar todos los servicios
 docker-compose up -d
@@ -193,7 +191,7 @@ docker-compose ps
 
 ---
 
-## Módulos del Frontend
+## 4. Módulos del Frontend
 
 El frontend de SERAMIS proporciona una interfaz web completa para la gestión y análisis de sistemas de IA:
 
@@ -207,32 +205,140 @@ El frontend de SERAMIS proporciona una interfaz web completa para la gestión y 
 | **DPV Browser** | `/dpv` | Explorador interactivo del W3C Data Privacy Vocabulary 2.2 |
 | **Ontology Docs** | `/ontology` | Documentación de la ontología SERAMIS |
 
-### DPV Browser
+#### 4.1 Dashboard
 
-El **DPV Browser** (`/dpv`) es un explorador interactivo del [W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/) que permite navegar las taxonomías de:
+El **Dashboard** (`/`) es la página de bienvenida que presenta una visión general del sistema SERAMIS. Incluye:
 
-- **Riesgos de IA** (`dpv-ai:Risk`): Taxonomía de riesgos asociados a sistemas de IA
-- **Medidas Técnicas y Organizativas** (`dpv:TechnicalMeasure`, `dpv:OrganisationalMeasure`): Catálogo de medidas de cumplimiento
-- **Conceptos AI Act** (`dpv-legal-eu-aiact:`): Términos específicos del EU AI Act
-- **Propósitos y Bases Legales**: Taxonomías de procesamiento de datos
+- **Descripción del sistema**: Muestra el contenido del archivo `Welcome2SERAMIS.md` renderizado como Markdown
+- **Características principales**: Resumen de las funcionalidades clave de SERAMIS
+- **Interoperabilidad ontológica**: Enlaces a ontologías integradas (AIRO, DPV, ELI, ISO 42001, NIST AI RMF)
+- **Stack tecnológico**: Logos de las tecnologías utilizadas (React, Python, FastAPI, MongoDB, Jena Fuseki, Ollama)
+- **Licencia**: Información de licenciamiento CC BY-SA 4.0
 
-Esta herramienta facilita la consulta y comprensión del vocabulario DPV para la generación de planes de evidencia y la evaluación de cumplimiento.
+#### 4.2 AI Systems DB
+
+El módulo **AI Systems DB** (`/systems`) proporciona un formulario completo de registro de sistemas de IA con 8 secciones estructuradas según el EU AI Act:
+
+1. **System Identification**: Nombre y versión del sistema
+2. **System Purposes**: Propósitos del sistema alineados con el Anexo III del EU AI Act
+3. **Deployment Context**: Contextos de despliegue que activan requisitos regulatorios específicos
+4. **Technical Factors**: Tipos de algoritmo, escala del modelo y origen de datos de entrenamiento
+5. **System Capabilities**: Capacidades específicas que activan requisitos adicionales de cumplimiento
+6. **Capability Metrics (GPAI)**: Indicadores para clasificación GPAI según Arts. 51-55 (parámetros, autonomía, aplicabilidad general)
+7. **AIRO Stakeholders**: Identificación de stakeholders según AIRO y Art. 3 EU AI Act (Provider, Deployer, Developer, User, Affected Person)
+8. **Article 5 - Prohibited Practices**: Prácticas prohibidas de riesgo inaceptable con excepciones legales y autorización judicial
+
+Incluye:
+- **Validación en tiempo real** de campos obligatorios
+- **Vista previa** del sistema (SystemCard) antes de guardar
+- **Filtros y paginación** para la lista de sistemas existentes
+- **Acciones CRUD**: Crear, cargar, modificar y eliminar sistemas
+
+#### 4.3 AI Knowledge Graph
+
+El **AI Knowledge Graph** (`/graph`) proporciona una visualización 3D interactiva del grafo de conocimiento RDF almacenado en Apache Jena Fuseki utilizando `react-force-graph-3d` y Three.js:
+
+- **Visualización 3D**: Renderizado WebGL con nodos esféricos y enlaces direccionales
+- **Categorías de nodos**: Clasificación por colores según tipo (System, Purpose, Deployment, Technical, Capability, Compliance, AIRO)
+- **Filtros interactivos**: Filtrado por categoría de nodo y búsqueda textual
+- **Selección de sistema**: Selector desplegable para visualizar el grafo de un sistema específico
+- **Controles de visualización**:
+  - Ajuste de distancia entre nodos
+  - Toggle de etiquetas de nodos y enlaces
+  - Reset de vista
+- **Interacción**:
+  - Click en nodo: Enfocar cámara
+  - Arrastrar nodo: Fijar posición
+  - Right-click: Liberar nodo fijado
+- **Panel de información**: Muestra detalles del sistema seleccionado (nombre, nivel de riesgo, propósitos, contextos, URN)
+- **Estadísticas**: Contador de nodos y enlaces en tiempo real
+
+#### 4.4 AI Symbolic Reasoning
+
+El módulo **AI Symbolic Reasoning** (`/reasoning`) permite ejecutar inferencia semántica SWRL sobre sistemas de IA registrados:
+
+- **Selector dual de sistemas**:
+  - *Manual Systems*: Sistemas registrados manualmente en AI Systems DB
+  - *Forensic Analyzed Systems*: Sistemas derivados del análisis forense de incidentes AIAAIC
+- **Vista previa del sistema**: Muestra información relevante antes de ejecutar el razonamiento
+- **Resultados de inferencia**:
+  - Criterios normativos, técnicos y contextuales inferidos
+  - Requisitos generales y técnicos derivados
+  - Clasificación GPAI (si aplica)
+  - Nivel de riesgo inferido
+- **Exportación TTL**: Visualización del grafo RDF completo en formato Turtle
+
+#### 4.5 Forensic AI Agent
+
+El **Forensic AI Agent** (`/forensic`) proporciona análisis forense post-incidente de sistemas de IA utilizando datos del repositorio AIAAIC:
+
+- **Carga de incidentes**: Importación desde el repositorio AIAAIC (2,139+ incidentes)
+- **Filtros avanzados**: Por sector, país, año, tecnología y búsqueda textual
+- **Selección múltiple**: Permite analizar varios incidentes en lote
+- **Modos de análisis**:
+  - *Pipeline Mode*: Flujo determinista de 7 pasos
+  - *ReAct Agent Mode*: Agente autónomo con razonamiento iterativo
+- **Streaming en tiempo real**: Visualización paso a paso del proceso de análisis
+- **Opciones de análisis**:
+  - Con/sin plan de evidencias DPV
+  - Selección de proveedor LLM (Ollama/Anthropic)
+- **Resultados del análisis**:
+  - Clasificación de riesgo EU AI Act
+  - Requisitos aplicables
+  - Gaps de cumplimiento
+  - Mappings ISO 42001 y NIST AI RMF
+  - Plan de evidencias DPV (opcional)
+- **Gestión de sistemas analizados**: Lista de sistemas forenses persistidos con opciones de visualización y eliminación
+- **Exportación PDF**: Generación de informes forenses en PDF
+
+#### 4.6 DPV Browser
+
+El **DPV Browser** (`/dpv`) es un explorador de planes de evidencia basados en el [W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/):
+
+- **Carga de sistemas**: Muestra sistemas (forenses y manuales) que tienen planes de evidencia generados
+- **Visualización de planes**: Para cada gap de cumplimiento identificado:
+  - Requisito EU AI Act asociado
+  - Prioridad (CRITICAL, HIGH, MEDIUM, LOW)
+  - Medidas DPV recomendadas
+  - Roles responsables (Deployer, Provider, DPO, Legal, Technical)
+  - Plazos de implementación
+- **Items de evidencia**: Para cada requisito:
+  - Tipo de evidencia (Policy, Technical, Audit, Training, Assessment, Contractual)
+  - Frecuencia de recolección
+  - Plantillas de documentos sugeridas
+  - Guía de implementación
+- **Filtros**: Por prioridad, tipo de evidencia, rol responsable y búsqueda textual
+- **Estadísticas**: Resumen por prioridad, tipo y rol
+- **Recomendaciones**: Sugerencias automáticas basadas en los gaps identificados
+
+#### 4.7 Ontology Docs
+
+El módulo **Ontology Docs** (`/ontology`) proporciona acceso a la documentación de la ontología SERAMIS generada con WIDOCO:
+
+- **Documentación multilingüe**: Soporte para inglés y español (detectado automáticamente)
+- **Iframe integrado**: Visualización completa de la documentación HTML
+- **Contenido**:
+  - Descripción de clases OWL
+  - Propiedades de objeto y datos
+  - Individuos definidos
+  - Axiomas y restricciones
+  - Ejemplos de uso
 
 ---
 
-## Agente Forense
+## 5. Agente Forense
 
 El **Agente Forense** es un microservicio potenciado por LLM para análisis de cumplimiento post-incidente. Extrae información estructurada de narrativas de incidentes y evalúa el cumplimiento contra múltiples frameworks.
 
 📖 **Documentación completa:** [`forensic_agent/README.md`](forensic_agent/README.md)
 
-### Fuente de Datos: AIAAIC Repository
+### 5.1 Fuente de Datos: AIAAIC Repository
 
 El agente utiliza datos del **AI, Algorithmic, and Automation Incidents and Controversies (AIAAIC) Repository**, una base de datos independiente que documenta incidentes relacionados con sistemas de IA a nivel mundial.
 
 🔗 **AIAAIC Repository:** https://www.aiaaic.org/aiaaic-repository
 
-### Características
+### 5.2 Características
 
 | Característica | Descripción |
 |----------------|-------------|
@@ -243,7 +349,7 @@ El agente utiliza datos del **AI, Algorithmic, and Automation Incidents and Cont
 | **Evidence Planner** | Genera planes de evidencia con 14 requisitos y ~40 items de evidencia |
 | **Persistencia Dual** | Guarda en MongoDB + Fuseki RDF para consultas semánticas |
 
-### Ejemplo de Análisis
+### 5.3 Ejemplo de Análisis
 
 ```bash
 curl -X POST http://localhost:8002/forensic/analyze \
@@ -260,9 +366,9 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ---
 
-## Ontología
+## 6. Ontología
 
-### Versión: 0.37.5
+### 6.0 Versión: 0.37.5
 
 | Propiedad | Valor |
 |-----------|-------|
@@ -273,7 +379,7 @@ curl -X POST http://localhost:8002/forensic/analyze \
 | **Individuos** | 120+ |
 | **Tripletas** | ~2,000 |
 
-### Cobertura Regulatoria
+### 6.0.1 Cobertura Regulatoria
 
 - EU AI Act Anexo III (8/8 categorías de alto riesgo)
 - **Artículo 5** (Prácticas Prohibidas - Riesgo Inaceptable)
@@ -283,7 +389,7 @@ curl -X POST http://localhost:8002/forensic/analyze \
 - Shapes SHACL de validación
 - Reglas de inferencia SWRL
 
-### Integración AIRO (AI Risk Ontology)
+### 6.1 Integración AIRO (AI Risk Ontology)
 
 La ontología SERAMIS v0.37.2 incorpora compatibilidad con **AIRO** para la gestión de stakeholders según el EU AI Act:
 
@@ -302,7 +408,7 @@ Esta integración permite:
 - **Interoperabilidad**: Compatible con otras ontologías que usen AIRO
 - **Razonamiento sobre Affected Persons**: Inferencia automática de requisitos basados en personas afectadas
 
-### Integración DPV (Data Privacy Vocabulary)
+### 6.2 Integración DPV (Data Privacy Vocabulary)
 
 SERAMIS v1.1.0 integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** para la generación de planes de evidencia de cumplimiento.
 
@@ -313,7 +419,7 @@ SERAMIS v1.1.0 integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.
 | **dpv:risk** | Gestión de riesgos | Evaluación de gaps |
 | **dpv:legal/eu/aiact** | Conceptos específicos AI Act | Equivalencias semánticas |
 
-#### Tipos de Evidencia Definidos
+#### 6.2.1 Tipos de Evidencia Definidos
 
 El módulo `dpv-integration.ttl` define 6 tipos de evidencia:
 
@@ -326,7 +432,7 @@ El módulo `dpv-integration.ttl` define 6 tipos de evidencia:
 | `AssessmentEvidence` | Evaluaciones de impacto | FRIA Report, DPIA |
 | `ContractualEvidence` | Contratos y acuerdos | Data Processing Agreement |
 
-#### Mappings Requisito → Medida DPV
+#### 6.2.2 Mappings Requisito → Medida DPV
 
 ```turtle
 ai:HumanOversightRequirement
@@ -339,7 +445,7 @@ ai:FundamentalRightsAssessmentRequirement
     ai:requiresEvidence ai:FRIAReportEvidence .
 ```
 
-### Razonamiento sobre Affected Persons (Art. 86)
+### 6.3 Razonamiento sobre Affected Persons (Art. 86)
 
 El reasoner implementa **4 reglas de inferencia** basadas en la identificación de "Affected Persons" (personas afectadas por decisiones del sistema de IA):
 
@@ -368,7 +474,7 @@ El reasoner implementa **4 reglas de inferencia** basadas en la identificación 
 - `ai:WorkerNotificationRequirement`
 - `ai:Article5ProhibitionReview`
 
-### Integración ELI (European Legislation Identifier)
+### 6.4 Integración ELI (European Legislation Identifier)
 
 SERAMIS v0.37.5 integra el **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** para proporcionar referencias persistentes y desreferenciables a la legislación oficial en EUR-Lex.
 
@@ -390,7 +496,7 @@ Esta integración permite:
 - **Interoperabilidad**: Estándar EU para referencias legislativas
 - **Auditoría**: Referencias verificables para compliance
 
-### Integración ISO/IEC 42001:2023
+### 6.5 Integración ISO/IEC 42001:2023
 
 La ontología incluye **15 mappings bidireccionales** con el estándar de gestión de IA [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html), candidato a estándar armonizado bajo el EU AI Act.
 
@@ -415,7 +521,7 @@ ai:HumanOversightRequirement
     ai:mappingConfidence "HIGH" .
 ```
 
-### Integración NIST AI RMF 1.0
+### 6.6 Integración NIST AI RMF 1.0
 
 La ontología incluye **16 mappings** con el [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), cubriendo las 4 funciones principales:
 
@@ -434,7 +540,7 @@ ai:HumanOversightRequirement
     ai:nistApplicabilityContext "GLOBAL_INCIDENTS, COMPARATIVE_ANALYSIS" .
 ```
 
-### Mappings Multi-Framework (Resumen)
+### 6.7 Mappings Multi-Framework (Resumen)
 
 | Framework | Tipo | Mappings | Confianza |
 |-----------|------|----------|-----------|
@@ -448,11 +554,11 @@ ai:HumanOversightRequirement
 
 ---
 
-## Mecanismos de Inferencia
+## 7. Mecanismos de Inferencia
 
 SERAMIS implementa **tres mecanismos de inferencia** basados en diferentes secciones del EU AI Act para la clasificación automática de sistemas de IA:
 
-### 1. Inferencia por Propósito + Contexto (Anexo III)
+### 7.1 Inferencia por Propósito + Contexto (Anexo III)
 
 Clasifica sistemas de IA como **Alto Riesgo** basándose en la combinación del propósito del sistema y su contexto de despliegue, según las 8 categorías del Anexo III del EU AI Act.
 
@@ -481,7 +587,7 @@ flowchart LR
 - Migración, asilo y control fronterizo
 - Administración de justicia y procesos democráticos
 
-### 2. Inferencia por Experto Humano (Artículo 6.3)
+### 7.2 Inferencia por Experto Humano (Artículo 6.3)
 
 Permite que un **experto humano** identifique manualmente **criterios de riesgo adicionales** para sistemas que no son capturados por las reglas automáticas de Propósito + Contexto. Esta evaluación experta complementa la inferencia automática.
 
@@ -503,7 +609,7 @@ Si experto identifica riesgos no detectados automáticamente
 - Sistemas con riesgo contextual específico
 - Evaluación caso por caso por experto cualificado
 
-### 3. Inferencia para Modelos GPAI (Artículos 51-55)
+### 7.3 Inferencia para Modelos GPAI (Artículos 51-55)
 
 Clasifica **Modelos de Propósito General** (GPAI) y detecta aquellos con **Riesgo Sistémico** basándose en capacidad computacional y otros indicadores.
 
@@ -518,7 +624,7 @@ Si modelo GPAI tiene FLOPS ≥ 10^25
 - Capacidades de alto impacto determinadas por la Comisión
 - Número significativo de usuarios registrados
 
-### Resumen de Mecanismos
+### 7.4 Resumen de Mecanismos
 
 | Mecanismo | Base Legal | Entrada | Salida |
 |-----------|------------|---------|--------|
@@ -528,9 +634,9 @@ Si modelo GPAI tiene FLOPS ≥ 10^25
 
 ---
 
-## Stack Tecnológico
+## 8. Stack Tecnológico
 
-### Backend
+### 8.1 Backend
 - Python 3.11
 - FastAPI
 - RDFLib (procesamiento RDF/OWL)
@@ -538,7 +644,7 @@ Si modelo GPAI tiene FLOPS ≥ 10^25
 - Motor (MongoDB async)
 - FastMCP 2.0 (Model Context Protocol)
 
-### Frontend
+### 8.2 Frontend
 - React 19
 - TypeScript
 - Vite
@@ -546,11 +652,11 @@ Si modelo GPAI tiene FLOPS ≥ 10^25
 - react-force-graph-3d (visualización 3D)
 - Three.js (rendering WebGL)
 
-### AI/LLM
+### 8.3 AI/LLM
 - Ollama (runtime LLM local)
 - llama3.2:3b (modelo por defecto)
 
-### Infraestructura
+### 8.4 Infraestructura
 - Docker & Docker Compose
 - Apache Jena Fuseki
 - MongoDB 6
@@ -558,7 +664,7 @@ Si modelo GPAI tiene FLOPS ≥ 10^25
 
 ---
 
-## Estructura del Proyecto
+## 9. Estructura del Proyecto
 
 ```
 seramis/
@@ -607,9 +713,9 @@ seramis/
 
 ---
 
-## API Reference
+## 10. API Reference
 
-### Sistemas
+### 10.1 Sistemas
 
 ```http
 GET    /systems              # Listar sistemas
@@ -619,7 +725,7 @@ PUT    /systems/{urn}        # Actualizar sistema
 DELETE /systems/{urn}        # Eliminar sistema
 ```
 
-### Razonamiento
+### 10.2 Razonamiento
 
 ```http
 POST   /reasoning/system/{id}  # Ejecutar razonamiento SWRL
@@ -627,7 +733,7 @@ GET    /reasoning/rules        # Obtener reglas SWRL
 GET    /reasoning/status       # Estado del servicio
 ```
 
-### Análisis Forense
+### 10.3 Análisis Forense
 
 ```http
 POST   /forensic/analyze                    # Analizar narrativa de incidente
@@ -638,7 +744,7 @@ GET    /forensic/systems/{urn}              # Obtener análisis específico
 DELETE /forensic/systems/{urn}              # Eliminar análisis
 ```
 
-### MCP Tools
+### 10.4 MCP Tools
 
 ```python
 query_ontology(query)           # Ejecutar consultas SPARQL
@@ -652,7 +758,7 @@ get_ontology_stats()            # Estadísticas de la ontología
 
 ---
 
-## Referencias
+## 11. Referencias
 
 - **EU AI Act:** https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689
 - **W3C Data Privacy Vocabulary (DPV) 2.2:** https://w3c.github.io/dpv/
@@ -666,7 +772,7 @@ get_ontology_stats()            # Estadísticas de la ontología
 
 ---
 
-## Licencia
+## 12. Licencia
 
 Este proyecto utiliza la ontología EU AI Act licenciada bajo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
 

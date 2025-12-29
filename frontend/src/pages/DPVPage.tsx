@@ -2,6 +2,13 @@ import { useEffect, useState, useMemo } from "react";
 import { getForensicSystems, type ForensicSystem } from "../lib/forensicApi";
 import { fetchSystems } from "../lib/api";
 
+// Helper to normalize hasRiskLevel (can be string or array)
+function getRiskLevelStr(riskLevel: string | string[] | undefined): string {
+  if (!riskLevel) return "Unknown";
+  if (Array.isArray(riskLevel)) return riskLevel[0] || "Unknown";
+  return String(riskLevel);
+}
+
 // Types for Evidence Plan structure
 interface EvidenceItem {
   id: string;
@@ -330,7 +337,7 @@ export default function DPVPage() {
               <optgroup label="Manual Systems">
                 {systems.filter(s => s.source === "manual").map((sys) => (
                   <option key={sys.urn} value={sys.urn}>
-                    {sys.hasName} ({(sys.hasRiskLevel || "Unknown").replace("ai:", "")} - {sys.evidence_plan?.total_gaps || 0} requirements)
+                    {sys.hasName} ({getRiskLevelStr(sys.hasRiskLevel).replace("ai:", "")} - {sys.evidence_plan?.total_gaps || 0} requirements)
                   </option>
                 ))}
               </optgroup>
@@ -339,7 +346,7 @@ export default function DPVPage() {
               <optgroup label="Forensic Analyzed Systems">
                 {systems.filter(s => s.source === "forensic").map((sys) => (
                   <option key={sys.urn} value={sys.urn}>
-                    {sys.hasName} ({(sys.hasRiskLevel || "Unknown").replace("ai:", "")} - {sys.evidence_plan?.total_gaps || 0} gaps)
+                    {sys.hasName} ({getRiskLevelStr(sys.hasRiskLevel).replace("ai:", "")} - {sys.evidence_plan?.total_gaps || 0} gaps)
                   </option>
                 ))}
               </optgroup>
@@ -373,13 +380,13 @@ export default function DPVPage() {
             <p className="text-gray-700 dark:text-gray-300">
               <strong>Risk Level:</strong>{" "}
               <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                (selectedSystem.hasRiskLevel || "").includes("High")
+                getRiskLevelStr(selectedSystem.hasRiskLevel).includes("High")
                   ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                  : (selectedSystem.hasRiskLevel || "").includes("Limited")
+                  : getRiskLevelStr(selectedSystem.hasRiskLevel).includes("Limited")
                   ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                   : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
               }`}>
-                {(selectedSystem.hasRiskLevel || "Unknown").replace("ai:", "")}
+                {getRiskLevelStr(selectedSystem.hasRiskLevel).replace("ai:", "")}
               </span>
             </p>
             {selectedSystem.evidence_plan && (

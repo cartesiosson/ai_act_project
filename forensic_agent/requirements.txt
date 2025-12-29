@@ -6,9 +6,6 @@ uvicorn[standard]==0.32.1
 pydantic==2.10.3
 pydantic-settings==2.6.1
 
-# LLM Integration
-anthropic==0.40.0  # Claude API
-
 # LangChain/LangGraph for ReAct Agent
 langchain>=0.3.0
 langchain-ollama>=0.2.0

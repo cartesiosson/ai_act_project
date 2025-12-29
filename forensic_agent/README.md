@@ -718,7 +718,7 @@ Agradecemos a **Charlie Pownall** y al equipo de AIAAIC por su trabajo en la rec
 - **AIAAIC Repository:** https://www.aiaaic.org/aiaaic-repository
 - **GitHub:** https://github.com/AIAAIC/AIAAIC-Repository
 
-Este proyecto ha sido desarrollado con la asistencia de **Claude Sonnet** (Anthropic), utilizado como herramienta de desarrollo para la generación de código, documentación y diseño de arquitectura.
+Este proyecto ha sido desarrollado con la asistencia de **Claude Sonnet** (Anthropic), utilizado como herramienta de desarrollo para la generación de código y documentación.
 
 ---
 
