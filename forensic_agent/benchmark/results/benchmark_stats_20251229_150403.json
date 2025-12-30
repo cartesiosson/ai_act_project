@@ -1,0 +1,44 @@
+{
+  "summary": {
+    "total_incidents": 100,
+    "successful": 94,
+    "low_confidence": 0,
+    "failed": 6,
+    "success_rate": 94.0
+  },
+  "performance": {
+    "mean_time": 49.135025754888005,
+    "median_time": 51.88313865661621,
+    "min_time": 36.108755111694336,
+    "max_time": 70.10300803184509,
+    "stdev_time": 8.261526192422407
+  },
+  "quality": {
+    "mean_confidence": 0.853404255319149,
+    "median_confidence": 0.8366666666666667,
+    "min_confidence": 0.6966666666666668,
+    "max_confidence": 0.9166666666666666,
+    "stdev_confidence": 0.040220356964030514
+  },
+  "risk_distribution": {
+    "HighRisk": 90,
+    "Unacceptable": 4
+  },
+  "incident_distribution": {
+    "discrimination": 14,
+    "privacy_violation": 22,
+    "bias": 44,
+    "safety_failure": 9,
+    "SocialScoring": 1,
+    "unauthorized_access": 3,
+    "data_leakage": 1
+  },
+  "errors": [
+    "BENCH-0099: Unknown",
+    "BENCH-0070: Unknown",
+    "BENCH-0064: Unknown",
+    "BENCH-0061: Unknown",
+    "BENCH-0067: Unknown",
+    "BENCH-0042: Unknown"
+  ]
+}

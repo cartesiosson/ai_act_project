@@ -139,6 +139,123 @@ PURPOSE_MAPPING = {
     "gps tracking": "SurveillanceMonitoring",
 }
 
+# =============================================================================
+# EU AI ACT SCOPE FILTER (Article 2)
+# =============================================================================
+# Systems that are OUT OF SCOPE of the EU AI Act regulation
+# Based on Article 2 exclusions and Recitals 12-25
+
+# Purposes that are EXCLUDED from EU AI Act scope
+OUT_OF_SCOPE_PURPOSES = {
+    # Personal/non-professional use (Art. 2.10)
+    "Entertainment",           # Video games, recreational AI
+    "Gaming",                  # Game AI, NPCs
+    "PersonalAssistant",       # Personal use assistants
+    "EmailFiltering",          # Personal spam filters
+    "PersonalRecommendation",  # Personal content recommendations
+
+    # Research and development (Art. 2.6)
+    "ScientificResearch",      # Pure research, not deployed
+    "AcademicResearch",        # Academic experiments
+
+    # Open source (with conditions - Art. 2.12)
+    # Note: Open source can still be in scope if deployed in high-risk contexts
+}
+
+# Keywords that indicate OUT OF SCOPE systems
+OUT_OF_SCOPE_KEYWORDS = [
+    # Entertainment and gaming
+    "video game", "videogame", "game ai", "npc", "non-player character",
+    "gaming", "entertainment", "recreational", "play", "player",
+
+    # Personal non-professional use
+    "personal use", "home use", "private use", "hobby",
+    "personal assistant", "personal recommendation",
+
+    # Pure research (not deployed)
+    "research only", "experimental", "proof of concept", "prototype",
+    "academic experiment", "laboratory", "not deployed",
+]
+
+# Contexts that indicate the system IS in scope (overrides exclusions)
+IN_SCOPE_CONTEXTS = [
+    # If it affects real people's rights, it's in scope
+    "affects employment", "hiring decision", "credit decision",
+    "affects education", "affects health", "affects safety",
+    "public space", "law enforcement", "government", "public service",
+    "fundamental rights", "discrimination", "bias affecting",
+
+    # Harm to real persons - ALWAYS in scope
+    "arrest", "jail", "prison", "criminal", "prosecut",
+    "victim", "abuse", "harass", "harm", "damage",
+    "death", "injur", "kill", "fatal",
+    "deepfake", "non-consensual", "pornograph", "intimate image",
+    "fraud", "scam", "deceiv", "manipulat",
+    "sued", "lawsuit", "litigation", "fine", "penalt",
+    "sue ", " sues", "suing",  # Legal action variants
+
+    # High-risk AI systems always in scope (Annex III)
+    "facial recognition", "biometric", "emotion recognition",
+    "credit scor", "hiring", "recruitment",
+    "border", "migration", "asylum",
+
+    # Safety risks - always in scope
+    "dangerous", "weapon", "napalm", "explosive", "drug",
+    "tricked", "jailbreak", "bypass",
+]
+
+
+def is_in_eu_ai_act_scope(
+    purpose: str,
+    contexts: List[str] = None,
+    narrative: str = None
+) -> tuple[bool, str]:
+    """
+    Determine if an AI system falls within EU AI Act regulatory scope.
+
+    Based on Article 2 of EU AI Act:
+    - Art. 2.1: Applies to providers, deployers, importers, distributors
+    - Art. 2.6: Excludes AI for pure scientific research
+    - Art. 2.10: Excludes personal non-professional use
+    - Art. 2.12: Open source exceptions (with conditions)
+
+    Args:
+        purpose: The extracted primary purpose of the AI system
+        contexts: Deployment contexts
+        narrative: Original incident narrative (for keyword analysis)
+
+    Returns:
+        Tuple of (is_in_scope: bool, reason: str)
+    """
+    contexts = contexts or []
+    narrative = (narrative or "").lower()
+    purpose_lower = (purpose or "").lower()
+    contexts_lower = " ".join(contexts).lower()
+
+    # Check if purpose is explicitly out of scope
+    if purpose in OUT_OF_SCOPE_PURPOSES:
+        # But check if context overrides (affects real rights)
+        all_text = f"{narrative} {contexts_lower}"
+        for in_scope_indicator in IN_SCOPE_CONTEXTS:
+            if in_scope_indicator in all_text:
+                return True, f"In scope: {in_scope_indicator} despite {purpose} purpose"
+
+        return False, f"Out of scope: {purpose} is excluded under Article 2"
+
+    # Check for out-of-scope keywords in narrative
+    for keyword in OUT_OF_SCOPE_KEYWORDS:
+        if keyword in narrative or keyword in purpose_lower:
+            # Check for overriding in-scope indicators
+            all_text = f"{narrative} {contexts_lower}"
+            for in_scope_indicator in IN_SCOPE_CONTEXTS:
+                if in_scope_indicator in all_text:
+                    return True, f"In scope: {in_scope_indicator} despite '{keyword}' indicator"
+
+            return False, f"Out of scope: '{keyword}' indicates Article 2 exclusion"
+
+    # Default: in scope
+    return True, "In scope: No exclusion criteria detected"
+
 
 class ForensicSPARQLService:
     """
@@ -170,7 +287,9 @@ class ForensicSPARQLService:
         self,
         purpose: str,
         contexts: List[str],
-        data_types: List[str]
+        data_types: List[str],
+        performs_profiling: bool = False,
+        narrative: str = None
     ) -> Dict:
         """
         Query ontology for mandatory EU AI Act requirements via MCP.
@@ -179,10 +298,28 @@ class ForensicSPARQLService:
             purpose: Primary purpose (e.g., "BiometricIdentification")
             contexts: Deployment contexts (e.g., ["PublicSpaces", "HighVolume"])
             data_types: Data types processed (e.g., ["BiometricData"])
+            performs_profiling: Whether system performs profiling (Art. 6.3 - always HighRisk)
+            narrative: Original incident narrative for scope analysis
 
         Returns:
-            Dict with criteria, requirements, and risk level
+            Dict with criteria, requirements, risk level, and scope information
         """
+        # =====================================================================
+        # STEP 0: Check if system is within EU AI Act scope (Article 2)
+        # =====================================================================
+        in_scope, scope_reason = is_in_eu_ai_act_scope(purpose, contexts, narrative)
+
+        if not in_scope:
+            print(f"   ⚠ {scope_reason}")
+            return {
+                "criteria": [],
+                "requirements": [],
+                "risk_level": "OutOfScope",
+                "total_requirements": 0,
+                "in_scope": False,
+                "scope_reason": scope_reason
+            }
+
         # Build SPARQL query - map purpose to ontology IRI
         purpose_mapped = self._map_purpose_to_ontology(purpose) if purpose else ""
         purpose_uri = f"ai:{purpose_mapped}" if purpose_mapped else ""
@@ -259,11 +396,20 @@ class ForensicSPARQLService:
                 # Fallback: determine from input keywords when ontology has no data
                 risk_level = self._determine_risk_from_inputs(purpose, contexts, data_types)
 
+            # ARTICLE 6.3: Profiling ALWAYS escalates to HighRisk
+            # "An AI system referred to in Annex III shall always be considered
+            # to be high-risk where the AI system performs profiling of natural persons."
+            if performs_profiling and risk_level not in ["HighRisk", "Unacceptable"]:
+                print(f"   ⚠ Art. 6.3: Profiling detected → escalating from {risk_level} to HighRisk")
+                risk_level = "HighRisk"
+
             return {
                 "criteria": list(criteria),
                 "requirements": requirements,
                 "risk_level": risk_level,
-                "total_requirements": len(requirements)
+                "total_requirements": len(requirements),
+                "in_scope": True,
+                "scope_reason": scope_reason
             }
 
         except Exception as e:

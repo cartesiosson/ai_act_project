@@ -1,0 +1,53 @@
+{
+  "benchmark_version": "v1",
+  "timestamp": "2025-12-30T16:01:31.400953",
+  "summary": {
+    "total_incidents": 100,
+    "successful": 90,
+    "low_confidence": 0,
+    "failed": 10,
+    "success_rate": 90.0
+  },
+  "performance": {
+    "mean_time": 72.33301043245527,
+    "median_time": 76.15107703208923,
+    "min_time": 41.32774615287781,
+    "max_time": 89.09031200408936,
+    "stdev_time": 11.265054530063507
+  },
+  "quality": {
+    "mean_confidence": 0.8391481481481482,
+    "median_confidence": 0.8366666666666667,
+    "min_confidence": 0.6866666666666668,
+    "max_confidence": 0.9166666666666666,
+    "stdev_confidence": 0.03533524519988656
+  },
+  "risk_distribution": {
+    "HighRisk": 90
+  },
+  "expected_risk_distribution": {
+    "HighRisk": 90,
+    "MinimalRisk": 10
+  },
+  "incident_distribution": {
+    "copyright": 8,
+    "safety_failure": 2,
+    "bias": 26,
+    "transparency_failure": 8,
+    "discrimination": 5,
+    "privacy_violation": 40,
+    "unauthorized_access": 1
+  },
+  "errors": [
+    "BENCH-0068: Unknown",
+    "BENCH-0034: Unknown",
+    "BENCH-0080: Unknown",
+    "BENCH-0100: Unknown",
+    "BENCH-0099: Unknown",
+    "BENCH-0017: Unknown",
+    "BENCH-0036: Unknown",
+    "BENCH-0082: Unknown",
+    "BENCH-0083: Unknown",
+    "BENCH-0063: Unknown"
+  ]
+}

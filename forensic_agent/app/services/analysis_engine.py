@@ -93,7 +93,9 @@ class ForensicAnalysisEngine:
             eu_requirements = await self.sparql.query_mandatory_requirements(
                 purpose=incident.system.primary_purpose,
                 contexts=incident.system.deployment_context,
-                data_types=incident.system.processes_data_types
+                data_types=incident.system.processes_data_types,
+                performs_profiling=getattr(incident.system, 'performs_profiling', False),
+                narrative=incident.raw_narrative
             )
 
             print(f"   ✓ Risk level: {eu_requirements['risk_level']}")
@@ -339,7 +341,9 @@ class ForensicAnalysisEngine:
             eu_requirements = await self.sparql.query_mandatory_requirements(
                 purpose=incident.system.primary_purpose,
                 contexts=incident.system.deployment_context,
-                data_types=incident.system.processes_data_types
+                data_types=incident.system.processes_data_types,
+                performs_profiling=getattr(incident.system, 'performs_profiling', False),
+                narrative=incident.raw_narrative
             )
 
             yield StreamEvent(

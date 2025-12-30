@@ -1,0 +1,68 @@
+{
+  "benchmark_type": "REAL",
+  "benchmark_version": "v1",
+  "data_source": {
+    "source": "AIAAIC Repository",
+    "url": "https://www.aiaaic.org/aiaaic-repository",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "version": "December 2025",
+    "terms": "https://www.aiaaic.org/terms",
+    "citation": "Data provided by AIAAIC (https://www.aiaaic.org/aiaaic-repository) under CC BY-SA 4.0 license."
+  },
+  "timestamp": "2025-12-29T21:42:54.167491",
+  "summary": {
+    "total_incidents": 100,
+    "successful": 90,
+    "low_confidence": 0,
+    "failed": 10,
+    "success_rate": 90.0
+  },
+  "performance": {
+    "mean_time": 38.87565014362335,
+    "median_time": 37.58285903930664,
+    "min_time": 34.896442890167236,
+    "max_time": 47.39109396934509,
+    "stdev_time": 3.026865553497765
+  },
+  "quality": {
+    "mean_confidence": 0.8376296296296296,
+    "median_confidence": 0.8366666666666667,
+    "min_confidence": 0.7266666666666667,
+    "max_confidence": 0.9166666666666666,
+    "stdev_confidence": 0.036175617023450006
+  },
+  "risk_distribution": {
+    "HighRisk": 88,
+    "Unacceptable": 1,
+    "MinimalRisk": 1
+  },
+  "incident_distribution": {
+    "privacy_violation": 25,
+    "safety_failure": 10,
+    "transparency_failure": 16,
+    "bias": 12,
+    "Fairness": 2,
+    "Anthropomorphism; Dual use": 1,
+    "Mis/disinformation": 4,
+    "copyright": 8,
+    "adversarial_attack": 2,
+    "information degradation": 1,
+    "discrimination": 5,
+    "PredictivePolicing": 1,
+    "appropriation": 2,
+    "Copyright": 1
+  },
+  "errors": [
+    "AIAAIC1384: Unknown",
+    "AIAAIC0889: Unknown",
+    "AIAAIC1283: Unknown",
+    "AIAAIC0712: Unknown",
+    "AIAAIC0686: Unknown",
+    "AIAAIC1578: Unknown",
+    "AIAAIC1661: Unknown",
+    "AIAAIC1385: Unknown",
+    "AIAAIC0499: Unknown",
+    "AIAAIC1821: Unknown"
+  ]
+}

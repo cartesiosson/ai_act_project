@@ -109,10 +109,11 @@ Extract the following information in JSON format:
     "developer": "Entity that developed/created the AI system - may differ from deployer",
     "prohibited_practices": ["List of Article 5 prohibited practices if detected: SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification. Leave empty if none detected."],
     "legal_exceptions": ["If RealTimeBiometricIdentification is detected, check for legal exceptions: VictimSearchException, TerroristThreatException, SeriousCrimeException. Otherwise empty."],
-    "has_judicial_authorization": true/false/null "Only relevant if real-time biometric ID with exceptions. Does the narrative mention judicial/court authorization?"
+    "has_judicial_authorization": true/false/null "Only relevant if real-time biometric ID with exceptions. Does the narrative mention judicial/court authorization?",
+    "performs_profiling": true/false "Does the system perform profiling of natural persons? (Art. 6.3 EU AI Act - automatic risk escalation to HighRisk if true). Profiling = automated processing of personal data to evaluate, analyze or predict aspects concerning natural person's performance at work, economic situation, health, preferences, interests, reliability, behavior, location or movements."
   }},
   "incident": {{
-    "incident_type": "discrimination|bias|safety_failure|privacy_violation|transparency_failure|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|other",
+    "incident_type": "discrimination|bias|safety_failure|privacy_violation|transparency_failure|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other",
     "severity": "critical|high|medium|low",
     "affected_populations": ["List of affected groups"],
     "affected_count": number or null,
@@ -172,6 +173,8 @@ IMPORTANT EXTRACTION RULES:
   * privacy_violation: unauthorized data collection/use
   * transparency_failure: lack of disclosure about AI use
   * data_leakage: sensitive data exposed
+  * appropriation: using data/content without authorization for AI training
+  * copyright: AI system infringes copyrights or produces infringing content
 - For severity:
   * critical: widespread harm, fundamental rights violated
   * high: significant harm to many people
@@ -378,7 +381,8 @@ Respond with ONLY valid JSON, no additional text or markdown formatting.
         # Incident classification confidence - maps to AI Act violation categories
         known_types = [
             "discrimination", "bias", "safety_failure", "privacy_violation",
-            "transparency_failure", "data_leakage", "adversarial_attack"
+            "transparency_failure", "data_leakage", "adversarial_attack",
+            "appropriation", "copyright"
         ]
         incident_conf = 0.9 if extracted.incident.incident_type in known_types else 0.6
 

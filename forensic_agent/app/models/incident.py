@@ -26,6 +26,8 @@ class SystemProperties(BaseModel):
     prohibited_practices: List[str] = Field(default_factory=list, description="Prohibited practices under Article 5 (SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification)")
     legal_exceptions: List[str] = Field(default_factory=list, description="Legal exceptions claimed under Article 5.2 (only applicable to real-time biometric identification)")
     has_judicial_authorization: Optional[bool] = Field(None, description="Whether the system has prior judicial authorization (required for Article 5.2 exceptions)")
+    # ARTICLE 6.3: PROFILING ESCALATION (v0.38.0)
+    performs_profiling: bool = Field(False, description="Whether the system performs profiling of natural persons (Art. 6.3 EU AI Act - always HighRisk if true)")
 
 
 class IncidentClassification(BaseModel):
@@ -95,7 +97,8 @@ class ExtractedIncident(BaseModel):
                     "developer": "Facebook AI Research",
                     "prohibited_practices": [],
                     "legal_exceptions": [],
-                    "has_judicial_authorization": None
+                    "has_judicial_authorization": None,
+                    "performs_profiling": True
                 },
                 "incident": {
                     "incident_type": "discrimination",
