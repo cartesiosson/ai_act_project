@@ -1,0 +1,11 @@
+{
+    "narrative": "Chase Nasca takes own life after being swamped with unsolicited suicide videos. In 2022, 16-year-old Chase Nasca from New York took his own life after TikTok For You algorithm repeatedly recommended suicide and self-harm content to him. His parents allege the recommendation algorithm pushed harmful content despite their son not actively searching for it. The TikTok AI system used machine learning to analyze user behavior and recommend content that maximized engagement. The case highlights how content recommendation systems can cause real-world harm, particularly to minors struggling with mental health. The Nasca family filed a lawsuit against TikTok claiming the platform knew its algorithm was promoting dangerous content to vulnerable teenagers.",
+    "source": "AIAAIC Repository",
+    "metadata": {
+      "aiaaic_id": "AIAAIC1971",
+      "system_name": "TikTok For You",
+      "deployer": "TikTok",
+      "country": "USA",
+      "sector": "Media/entertainment"
+    }
+}

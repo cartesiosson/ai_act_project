@@ -1,20 +1,20 @@
 <http://ai-act.eu/ai-act> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionIRI> <http://ai-act.eu/ai-act/0.37.5> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionIRI> <http://ai-act.eu/ai-act/0.40.0> .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#imports> <https://w3id.org/airo> .
 <http://ai-act.eu/ai-act> <http://purl.org/dc/terms/created> "2025-11-22"^^<http://www.w3.org/2001/XMLSchema#date> .
 <http://ai-act.eu/ai-act> <http://purl.org/dc/terms/description> "Ontología unificada que describe los sistemas de IA regulados según el AI Act de la UE. Todos los conceptos consolidados bajo el namespace ai: para simplicidad. Incluye GPAI (Artículos 51-55), criterios contextuales y mapeos de estándares internacionales."@es .
 <http://ai-act.eu/ai-act> <http://purl.org/dc/terms/description> "Unified ontology describing regulated AI systems according to the EU AI Act. All concepts consolidated under ai: namespace for simplicity. Includes GPAI (Articles 51-55), contextual criteria, and international standards mappings."@en .
 <http://ai-act.eu/ai-act> <http://purl.org/dc/terms/license> <https://creativecommons.org/licenses/by/4.0/> .
-<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/title> "AI Act Unified Ontology (v0.37.5)"@en .
-<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/title> "Ontología Unificada del AI Act (v0.37.5)"@es .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/title> "AI Act Unified Ontology (v0.40.0)"@en .
+<http://ai-act.eu/ai-act> <http://purl.org/dc/terms/title> "Ontología Unificada del AI Act (v0.40.0)"@es .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Las reglas SWRL están externalizadas en el directorio rules/ para mejor mantenibilidad y auditabilidad"@es .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO, prácticas prohibidas del Artículo 5, e Identificador Europeo de Legislación (ELI). Cobertura completa de sistemas de IA con riesgo inaceptable con enlaces directos a EUR-Lex. Optimizado para detección forense de brechas de cumplimiento."@es .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO, prácticas prohibidas del Artículo 5, exclusiones de ámbito del Artículo 2 con detección de anulación, e Identificador Europeo de Legislación (ELI). Cobertura completa de sistemas de IA con riesgo inaceptable con enlaces directos a EUR-Lex. Determinación semántica de ámbito vía IRIs ontológicas en lugar de keywords hardcodeadas. Optimizado para detección forense de brechas de cumplimiento con enfoque ontology-first."@es .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "SWRL rules are externalized in the rules/ directory for better maintainability and auditability"@en .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Optimized for forensic compliance gap detection."@en .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, Article 2 scope exclusions with override detection, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Semantic scope determination via ontology IRIs instead of hardcoded keywords. Optimized for forensic compliance gap detection with ontology-first approach."@en .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/Users/cartesio/workspace/ai_act_project/tools/shacl/> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/Users/cartesio/workspace/ai_act_project/tools/tmp1766938997155/rules/> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.37.5 released on 2025-12-23 with European Legislation Identifier (ELI) integration for EUR-Lex interoperability"@en .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.37.5 publicada el 2025-12-23 con integración del Identificador Europeo de Legislación (ELI) para interoperabilidad con EUR-Lex"@es .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/Users/cartesio/workspace/ai_act_project/tools/tmp1767292071775/rules/> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.40.0 released on 2025-12-31. Architectural migration: code now uses ontology IRIs instead of ~150 hardcoded keywords for scope determination. Ontology-first approach where LLM extracts semantic concepts and Python validates against ontology classes."@en .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.40.0 publicada el 2025-12-31. Migración arquitectónica: el código ahora usa IRIs ontológicas en lugar de ~150 keywords hardcodeadas para determinación de ámbito. Enfoque ontology-first donde el LLM extrae conceptos semánticos y Python valida contra clases de la ontología."@es .
 # 
 # 
 # #################################################################
@@ -219,6 +219,15 @@
 <http://ai-act.eu/ai#hasOversightBody> <http://www.w3.org/2000/01/rdf-schema#label> "has oversight body"@en .
 <http://ai-act.eu/ai#hasOversightBody> <http://www.w3.org/2000/01/rdf-schema#label> "tiene organismo de supervisión"@es .
 # 
+# http://ai-act.eu/ai#hasPotentialExclusion
+<http://ai-act.eu/ai#hasPotentialExclusion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasPotentialExclusion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasPotentialExclusion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#hasPotentialExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "Links an IntelligentSystem to a ScopeExclusion that may apply to it based on its purpose. This exclusion can be overridden by deployment context. Derived from hasPurpose + mayBeExcludedBy chain."@en .
+<http://ai-act.eu/ai#hasPotentialExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "Vincula un IntelligentSystem a una ScopeExclusion que puede aplicarle basándose en su propósito. Esta exclusión puede ser anulada por el contexto de despliegue. Derivada de la cadena hasPurpose + mayBeExcludedBy."@es .
+<http://ai-act.eu/ai#hasPotentialExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "has potential exclusion"@en .
+<http://ai-act.eu/ai#hasPotentialExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "tiene exclusión potencial"@es .
+# 
 # http://ai-act.eu/ai#hasProhibitedPractice
 <http://ai-act.eu/ai#hasProhibitedPractice> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://ai-act.eu/ai#hasProhibitedPractice> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
@@ -245,6 +254,15 @@
 <http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#comment> "The primary purpose or intended use of an intelligent system."@en .
 <http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#label> "has Purpose"@en .
 <http://ai-act.eu/ai#hasPurpose> <http://www.w3.org/2000/01/rdf-schema#label> "tiene Propósito"@es .
+# 
+# http://ai-act.eu/ai#hasScopeOverride
+<http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#comment> "Links an IntelligentSystem to the DeploymentContext that overrides its potential scope exclusion. When present, the system is definitively IN SCOPE of the EU AI Act regardless of its purpose exclusion status."@en .
+<http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#comment> "Vincula un IntelligentSystem al DeploymentContext que anula su posible exclusión de ámbito. Cuando está presente, el sistema está definitivamente DENTRO DEL ÁMBITO del EU AI Act independientemente de su estado de exclusión de propósito."@es .
+<http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#label> "has scope override"@en .
+<http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#label> "tiene anulación de ámbito"@es .
 # 
 # http://ai-act.eu/ai#hasSubRequirement
 <http://ai-act.eu/ai#hasSubRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -280,6 +298,24 @@
 <http://ai-act.eu/ai#hasUser> <http://www.w3.org/2000/01/rdf-schema#comment> "Vincula un sistema de IA con sus usuarios. Usa airo:AIUser."@es .
 <http://ai-act.eu/ai#hasUser> <http://www.w3.org/2000/01/rdf-schema#label> "has user"@en .
 <http://ai-act.eu/ai#hasUser> <http://www.w3.org/2000/01/rdf-schema#label> "tiene usuario"@es .
+# 
+# http://ai-act.eu/ai#mayBeExcludedBy
+<http://ai-act.eu/ai#mayBeExcludedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#mayBeExcludedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#mayBeExcludedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#mayBeExcludedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un Propósito puede ser excluido del ámbito del EU AI Act por un criterio de exclusión específico. La exclusión aplica A MENOS QUE sea anulada por un contexto de despliegue."@es .
+<http://ai-act.eu/ai#mayBeExcludedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a Purpose may be excluded from EU AI Act scope by a specific exclusion criterion. The exclusion applies UNLESS overridden by a deployment context."@en .
+<http://ai-act.eu/ai#mayBeExcludedBy> <http://www.w3.org/2000/01/rdf-schema#label> "may be excluded by"@en .
+<http://ai-act.eu/ai#mayBeExcludedBy> <http://www.w3.org/2000/01/rdf-schema#label> "puede ser excluido por"@es .
+# 
+# http://ai-act.eu/ai#overridesExclusion
+<http://ai-act.eu/ai#overridesExclusion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#overridesExclusion> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#overridesExclusion> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#overridesExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indica que un Contexto de Despliegue anula (cancela) una exclusión de ámbito, trayendo el sistema de vuelta al ámbito del EU AI Act. Se usa cuando un sistema que de otro modo estaría excluido causa daño real, afecta derechos fundamentales o tiene consecuencias legales."@es .
+<http://ai-act.eu/ai#overridesExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates that a DeploymentContext overrides (cancels) a scope exclusion, bringing the system back into EU AI Act scope. Used when a system that would otherwise be excluded causes real-world harm, affects fundamental rights, or has legal consequences."@en .
+<http://ai-act.eu/ai#overridesExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "anula exclusión"@es .
+<http://ai-act.eu/ai#overridesExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "overrides exclusion"@en .
 # 
 # http://ai-act.eu/ai#triggersCriterion
 <http://ai-act.eu/ai#triggersCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -806,6 +842,15 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#comment> "Name or identifier for an entity."@en .
 <http://ai-act.eu/ai#hasName> <http://www.w3.org/2000/01/rdf-schema#label> "has Name"@en .
 # 
+# http://ai-act.eu/ai#hasScopeOverrideRationale
+<http://ai-act.eu/ai#hasScopeOverrideRationale> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#hasScopeOverrideRationale> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasScopeOverrideRationale> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#hasScopeOverrideRationale> <http://www.w3.org/2000/01/rdf-schema#comment> "Documentación que explica por qué un sistema con un propósito potencialmente excluido cae dentro del ámbito del EU AI Act debido a su contexto de despliegue. Requerido para auditoría de cumplimiento según el Artículo 2."@es .
+<http://ai-act.eu/ai#hasScopeOverrideRationale> <http://www.w3.org/2000/01/rdf-schema#comment> "Documentation explaining why a system with a potentially excluded purpose falls within EU AI Act scope due to its deployment context. Required for compliance audit per Article 2."@en .
+<http://ai-act.eu/ai#hasScopeOverrideRationale> <http://www.w3.org/2000/01/rdf-schema#label> "has scope override rationale"@en .
+<http://ai-act.eu/ai#hasScopeOverrideRationale> <http://www.w3.org/2000/01/rdf-schema#label> "tiene justificación de anulación de ámbito"@es .
+# 
 # http://ai-act.eu/ai#hasUrn
 <http://ai-act.eu/ai#hasUrn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 <http://ai-act.eu/ai#hasUrn> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#Identifiable> .
@@ -821,6 +866,15 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
 <http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#comment> "Version identifier for an entity."@en .
 <http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#label> "has Version"@en .
+# 
+# http://ai-act.eu/ai#isInEUAIActScope
+<http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/2000/01/rdf-schema#comment> "Boolean flag indicating whether the system falls within EU AI Act regulatory scope. True if: (1) no potential exclusion applies, or (2) a scope override context is present."@en .
+<http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/2000/01/rdf-schema#comment> "Flag booleano indicando si el sistema cae dentro del ámbito regulatorio del EU AI Act. True si: (1) no aplica ninguna exclusión potencial, o (2) está presente un contexto de anulación de ámbito."@es .
+<http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/2000/01/rdf-schema#label> "está en ámbito del EU AI Act"@es .
+<http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/2000/01/rdf-schema#label> "is in EU AI Act scope"@en .
 # 
 # http://ai-act.eu/ai#mandatoryCompliance
 <http://ai-act.eu/ai#mandatoryCompliance> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
@@ -855,6 +909,23 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#requiresExplainability> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates if the system requires explainability for affected persons per Art. 86 EU AI Act. Inferred when system is high-risk AND has affected persons."@en .
 <http://ai-act.eu/ai#requiresExplainability> <http://www.w3.org/2000/01/rdf-schema#label> "requiere explicabilidad"@es .
 <http://ai-act.eu/ai#requiresExplainability> <http://www.w3.org/2000/01/rdf-schema#label> "requires explainability"@en .
+# 
+# http://ai-act.eu/ai#requiresFRIA
+<http://ai-act.eu/ai#requiresFRIA> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#requiresFRIA> <http://www.w3.org/2000/01/rdf-schema#domain> _:genid38 .
+_:genid38 <http://www.w3.org/2002/07/owl#unionOf> _:genid40 .
+_:genid40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid39 .
+_:genid39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:genid39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#IntelligentSystem> .
+_:genid39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#DeploymentContext> .
+_:genid40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#requiresFRIA> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#requiresFRIA> <http://www.w3.org/2000/01/rdf-schema#comment> "Boolean flag indicating whether a Fundamental Rights Impact Assessment (FRIA) is required per Article 27. Automatically true for systems with scope override contexts (VictimImpact, LegalConsequences, CausesRealWorldHarm, MinorsAffected, BiometricProcessing)."@en .
+<http://ai-act.eu/ai#requiresFRIA> <http://www.w3.org/2000/01/rdf-schema#comment> "Flag booleano indicando si se requiere una Evaluación de Impacto en Derechos Fundamentales (EIFF) según el Artículo 27. Automáticamente true para sistemas con contextos de anulación de ámbito (VictimImpact, LegalConsequences, CausesRealWorldHarm, MinorsAffected, BiometricProcessing)."@es .
+<http://ai-act.eu/ai#requiresFRIA> <http://www.w3.org/2000/01/rdf-schema#label> "requiere EIFF"@es .
+<http://ai-act.eu/ai#requiresFRIA> <http://www.w3.org/2000/01/rdf-schema#label> "requires FRIA"@en .
 # 
 # http://ai-act.eu/ai#requiresFundamentalRightsAssessment
 <http://ai-act.eu/ai#requiresFundamentalRightsAssessment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
@@ -1082,6 +1153,14 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # http://ai-act.eu/ai#RobustnessRequirement
 <http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#TechnicalRequirement> .
+# 
+# http://ai-act.eu/ai#ScopeExclusion
+<http://ai-act.eu/ai#ScopeExclusion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#ScopeExclusion> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#Identifiable> .
+<http://ai-act.eu/ai#ScopeExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "Exclusion from EU AI Act scope per Article 2. Systems may be excluded from regulation under certain conditions."@en .
+<http://ai-act.eu/ai#ScopeExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "Exclusión del ámbito del EU AI Act según el Artículo 2. Los sistemas pueden quedar excluidos de la regulación bajo ciertas condiciones."@es .
+<http://ai-act.eu/ai#ScopeExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "Exclusión de Ámbito"@es .
+<http://ai-act.eu/ai#ScopeExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "Scope Exclusion"@en .
 # 
 # http://ai-act.eu/ai#SecurityRequirement
 <http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -1500,6 +1579,20 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#AdversarialRobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Adversarial Robustness Requirement"@en .
 <http://ai-act.eu/ai#AdversarialRobustnessRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Robustez Adversarial"@es .
 # 
+# http://ai-act.eu/ai#AffectsFundamentalRightsContext
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#PureScientificResearch> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://ai-act.eu/ai#requiresFRIA> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2 + Article 3(49)] Context where an AI system affects the fundamental rights of natural persons as defined in the EU Charter. This OVERRIDES all exclusions and brings the system into EU AI Act scope. Includes: right to human dignity, right to life, prohibition of torture, right to liberty, respect for private life, protection of personal data, freedom of expression, non-discrimination, rights of the child, rights of persons with disabilities."@en .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2 + Artículo 3(49)] Contexto donde un sistema de IA afecta los derechos fundamentales de personas físicas según la Carta de la UE. Esto ANULA todas las exclusiones y trae el sistema al ámbito del EU AI Act. Incluye: derecho a la dignidad humana, derecho a la vida, prohibición de tortura, derecho a la libertad, respeto a la vida privada, protección de datos personales, libertad de expresión, no discriminación, derechos del niño, derechos de personas con discapacidad."@es .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://www.w3.org/2000/01/rdf-schema#label> "Afecta Derechos Fundamentales"@es .
+<http://ai-act.eu/ai#AffectsFundamentalRightsContext> <http://www.w3.org/2000/01/rdf-schema#label> "Affects Fundamental Rights"@en .
+# 
 # http://ai-act.eu/ai#AnnexVIIISafeguardsCompliance
 <http://ai-act.eu/ai#AnnexVIIISafeguardsCompliance> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#AnnexVIIISafeguardsCompliance> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
@@ -1603,6 +1696,18 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # 
 # http://ai-act.eu/ai#BiometricIdentificationOrCategorization
 # 
+# http://ai-act.eu/ai#BiometricProcessingContext
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://ai-act.eu/ai#requiresFRIA> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[ANEXO III - Punto 1] Contexto que involucra procesamiento de datos biométricos para identificación o categorización. Según el Anexo III, los sistemas de identificación biométrica son de ALTO RIESGO independientemente del propósito. Esto ANULA exclusiones. Ejemplos: reconocimiento facial en juegos con fotos reales, detección de emociones en apps de entretenimiento, autenticación biométrica incluso para uso personal."@es .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[ANNEX III - Point 1] Context involving processing of biometric data for identification or categorization. Per Annex III, biometric identification systems are HIGH-RISK regardless of purpose. This OVERRIDES exclusions. Examples: facial recognition in games with real photos, emotion detection in entertainment apps, biometric authentication even for personal use."@en .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://www.w3.org/2000/01/rdf-schema#label> "Biometric Processing"@en .
+<http://ai-act.eu/ai#BiometricProcessingContext> <http://www.w3.org/2000/01/rdf-schema#label> "Procesamiento Biométrico"@es .
+# 
 # http://ai-act.eu/ai#BiometricSecurityRequirement
 <http://ai-act.eu/ai#BiometricSecurityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 # 
@@ -1615,6 +1720,20 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#BlackBoxDecisionRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Black-Box Decision Risk"@en .
 <http://ai-act.eu/ai#BlackBoxDecisionRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Riesgo de Decisión de Caja Negra"@es .
 # 
+# http://ai-act.eu/ai#CausesRealWorldHarmContext
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://ai-act.eu/ai#requiresFRIA> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_73/oj> .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 3(49) - Serious Incident] Context where an AI system causes or contributes to death, suicide, serious damage to health, serious damage to property, environment, or critical infrastructure. Per Article 3(49), a 'serious incident' brings the system into full regulatory scope regardless of original purpose. This context OVERRIDES exclusions for entertainment and personal use. Examples: TikTok algorithm contributing to teen suicide (Chase Nasca), video game causing seizures, personal assistant giving dangerous medical advice, entertainment app causing psychological harm. Triggers mandatory incident reporting per Article 73."@en .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 3(49) - Incidente Grave] Contexto donde un sistema de IA causa o contribuye a muerte, suicidio, daño grave a la salud, daño grave a la propiedad, medio ambiente o infraestructura crítica. Según el Artículo 3(49), un 'incidente grave' trae el sistema al ámbito regulatorio completo independientemente del propósito original. Este contexto ANULA exclusiones para entretenimiento y uso personal. Ejemplos: algoritmo de TikTok contribuyendo al suicidio de adolescentes (Chase Nasca), videojuego que causa convulsiones, asistente personal que da consejos médicos peligrosos, app de entretenimiento que causa daño psicológico. Activa reporte obligatorio de incidentes según Artículo 73."@es .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://www.w3.org/2000/01/rdf-schema#label> "Causa Daño Real"@es .
+<http://ai-act.eu/ai#CausesRealWorldHarmContext> <http://www.w3.org/2000/01/rdf-schema#label> "Causes Real World Harm"@en .
+# 
 # http://ai-act.eu/ai#ChildrenAndMinorsRiskCriterion
 <http://ai-act.eu/ai#ChildrenAndMinorsRiskCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#ChildrenAndMinorsRiskCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ContextualCriterion> .
@@ -1623,6 +1742,36 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#ChildrenAndMinorsRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "[CONTEXT] Los sistemas de IA que afectan a menores requieren medidas de protección mejoradas."@es .
 <http://ai-act.eu/ai#ChildrenAndMinorsRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Children and Minors Vulnerability"@en .
 <http://ai-act.eu/ai#ChildrenAndMinorsRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Vulnerabilidad de Menores"@es .
+# 
+# http://ai-act.eu/ai#ContentRecommendation
+<http://ai-act.eu/ai#ContentRecommendation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#ContentRecommendation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#ContentRecommendation> <http://ai-act.eu/ai#activatesCriterion> <http://ai-act.eu/ai#ContentRecommendationCriterion> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#ContentRecommendation> <http://ai-act.eu/ai#mayBeExcludedBy> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#ContentRecommendation> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#ContentRecommendation> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2 + Recital 12 + DSA - POTENTIALLY EXCLUDED but often IN SCOPE] Purpose for AI systems that recommend content to users based on their behavior, preferences, or profile. Includes social media feeds (TikTok For You, Instagram Explore, YouTube recommendations), news aggregators, and personalized content curation. May be excluded per Recital 12 when purely for entertainment without harm. EXCLUSION IS OVERRIDDEN when: (1) system causes death, suicide, or injury (Chase Nasca case), (2) affects minors (heightened scrutiny), (3) creates victims (deepfakes), (4) leads to legal consequences, (5) performs profiling (Art. 6.3). Most real-world recommendation systems fall IN SCOPE due to profiling and fundamental rights impact."@en .
+<http://ai-act.eu/ai#ContentRecommendation> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2 + Considerando 12 + DSA - POTENCIALMENTE EXCLUIDO pero frecuentemente EN ÁMBITO] Propósito para sistemas de IA que recomiendan contenido a usuarios basándose en su comportamiento, preferencias o perfil. Incluye feeds de redes sociales (TikTok For You, Instagram Explore, recomendaciones de YouTube), agregadores de noticias y curación de contenido personalizado. Puede ser excluido según el Considerando 12 cuando es puramente para entretenimiento sin daño. LA EXCLUSIÓN SE ANULA cuando: (1) el sistema causa muerte, suicidio o lesión (caso Chase Nasca), (2) afecta a menores (escrutinio reforzado), (3) crea víctimas (deepfakes), (4) lleva a consecuencias legales, (5) realiza perfilado (Art. 6.3). La mayoría de sistemas de recomendación reales caen EN ÁMBITO debido al perfilado e impacto en derechos fundamentales."@es .
+<http://ai-act.eu/ai#ContentRecommendation> <http://www.w3.org/2000/01/rdf-schema#label> "Content Recommendation"@en .
+<http://ai-act.eu/ai#ContentRecommendation> <http://www.w3.org/2000/01/rdf-schema#label> "Recomendación de Contenido"@es .
+# 
+# http://ai-act.eu/ai#ContentRecommendationCriterion
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#NormativeCriterion> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#BiasDetectionRequirement> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#HumanOversightRequirement> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#NonDiscriminationRequirement> .
+<http://ai-act.eu/ai#NonDiscriminationRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
+<http://ai-act.eu/ai#RiskManagementRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#TransparencyRequirement> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2022/2065/art_27/oj> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_6/par_3/oj> .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 6.3 + DSA + v0.39.0] Criterion for AI systems that recommend content to users through profiling. Most content recommendation systems perform profiling of natural persons (analyzing behavior, preferences, interests) and therefore fall under Article 6.3 automatic high-risk classification. Systems must implement transparency requirements (DSA Art. 27), non-discrimination safeguards, and human oversight. When affecting minors or causing harm (death, suicide, injury), additional FRIA requirements apply per Article 27."@en .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 6.3 + DSA + v0.39.0] Criterio para sistemas de IA que recomiendan contenido a usuarios mediante perfilado. La mayoría de sistemas de recomendación de contenido realizan perfilado de personas naturales (analizando comportamiento, preferencias, intereses) y por tanto caen bajo la clasificación automática de alto riesgo del Artículo 6.3. Los sistemas deben implementar requisitos de transparencia (DSA Art. 27), salvaguardas de no discriminación y supervisión humana. Cuando afectan a menores o causan daño (muerte, suicidio, lesión), aplican requisitos adicionales de FRIA según el Artículo 27."@es .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Content Recommendation Criterion"@en .
+<http://ai-act.eu/ai#ContentRecommendationCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Criterio de Recomendación de Contenido"@es .
 # 
 # http://ai-act.eu/ai#ConvolutionalNeuralNetwork
 <http://ai-act.eu/ai#ConvolutionalNeuralNetwork> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -1649,7 +1798,6 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#HumanOversightRequirement> .
 <http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#LoggingRequirement> .
 <http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
-<http://ai-act.eu/ai#RiskManagementRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RobustnessRequirement> .
 <http://ai-act.eu/ai#RobustnessRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#SystemSafetyRequirement> .
@@ -1772,7 +1920,6 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#DualUseRiskCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement> .
 <http://ai-act.eu/ai#DualUseRiskCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#HumanOversightRequirement> .
 <http://ai-act.eu/ai#DualUseRiskCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#NonDiscriminationRequirement> .
-<http://ai-act.eu/ai#NonDiscriminationRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#DualUseRiskCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RiskManagementRequirement> .
 <http://ai-act.eu/ai#DualUseRiskCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#RobustnessRequirement> .
 <http://ai-act.eu/ai#DualUseRiskCriterion> <http://ai-act.eu/ai#activatesRequirement> <http://ai-act.eu/ai#SystemSafetyRequirement> .
@@ -1839,6 +1986,16 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#ElderlyCategory> <http://www.w3.org/2000/01/rdf-schema#label> "Elderly"@en .
 <http://ai-act.eu/ai#ElderlyCategory> <http://www.w3.org/2000/01/rdf-schema#label> "Persona Mayor"@es .
 # 
+# http://ai-act.eu/ai#EmailFiltering
+<http://ai-act.eu/ai#EmailFiltering> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#EmailFiltering> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#EmailFiltering> <http://ai-act.eu/ai#mayBeExcludedBy> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#EmailFiltering> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#MinimalRisk> .
+<http://ai-act.eu/ai#EmailFiltering> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2(10) - POTENTIALLY EXCLUDED] Purpose for personal email spam filters and organization. May be excluded from EU AI Act scope per Article 2(10) when used for purely personal non-professional email management. EXCLUSION IS OVERRIDDEN when used for business email, affects employment decisions, or filters critical communications."@en .
+<http://ai-act.eu/ai#EmailFiltering> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2(10) - POTENCIALMENTE EXCLUIDO] Propósito para filtros de spam personales y organización de correo. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(10) cuando se usa para gestión de correo personal no profesional. LA EXCLUSIÓN SE ANULA cuando se usa para correo empresarial, afecta decisiones de empleo o filtra comunicaciones críticas."@es .
+<http://ai-act.eu/ai#EmailFiltering> <http://www.w3.org/2000/01/rdf-schema#label> "Email Filtering"@en .
+<http://ai-act.eu/ai#EmailFiltering> <http://www.w3.org/2000/01/rdf-schema#label> "Filtrado de Correo"@es .
+# 
 # http://ai-act.eu/ai#EmotionalManipulationContext
 <http://ai-act.eu/ai#EmotionalManipulationContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#EmotionalManipulationContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
@@ -1855,6 +2012,25 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#EncryptionRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Systems must encrypt sensitive data in transit and at rest."@en .
 <http://ai-act.eu/ai#EncryptionRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Encryption Requirement"@en .
 <http://ai-act.eu/ai#EncryptionRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Encriptación"@es .
+# 
+# http://ai-act.eu/ai#Entertainment
+<http://ai-act.eu/ai#Entertainment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#Entertainment> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#Entertainment> <http://ai-act.eu/ai#mayBeExcludedBy> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#Entertainment> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#MinimalRisk> .
+<http://ai-act.eu/ai#Entertainment> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2 + Recital 12 - POTENTIALLY EXCLUDED] Purpose for pure entertainment systems such as video games, recreational AI, NPCs, and leisure applications. May be excluded from EU AI Act scope per Recital 12 IF the system does not affect fundamental rights, does not cause real-world harm, and has no legal consequences. EXCLUSION IS OVERRIDDEN when the system causes harm to real persons, affects fundamental rights, or results in legal action."@en .
+<http://ai-act.eu/ai#Entertainment> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2 + Considerando 12 - POTENCIALMENTE EXCLUIDO] Propósito para sistemas de entretenimiento puro como videojuegos, IA recreativa, NPCs y aplicaciones de ocio. Puede ser excluido del ámbito del EU AI Act según el Considerando 12 SI el sistema no afecta derechos fundamentales, no causa daño real y no tiene consecuencias legales. LA EXCLUSIÓN SE ANULA cuando el sistema causa daño a personas reales, afecta derechos fundamentales o resulta en acciones legales."@es .
+<http://ai-act.eu/ai#Entertainment> <http://www.w3.org/2000/01/rdf-schema#label> "Entertainment"@en .
+<http://ai-act.eu/ai#Entertainment> <http://www.w3.org/2000/01/rdf-schema#label> "Entretenimiento"@es .
+# 
+# http://ai-act.eu/ai#EntertainmentWithoutRightsImpact
+<http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> <http://ai-act.eu/ai#articleReference> "Recital 12" .
+<http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> <http://www.w3.org/2000/01/rdf-schema#comment> "Pure entertainment systems (video games, recreational AI, NPCs) without impact on fundamental rights of natural persons. Per Recital 12, AI systems with limited impact on fundamental rights may have reduced obligations."@en .
+<http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de entretenimiento puro (videojuegos, IA recreativa, NPCs) sin impacto en derechos fundamentales de personas físicas. Según el Considerando 12, los sistemas de IA con impacto limitado en derechos fundamentales pueden tener obligaciones reducidas."@es .
+<http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> <http://www.w3.org/2000/01/rdf-schema#label> "Entertainment Without Rights Impact"@en .
+<http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> <http://www.w3.org/2000/01/rdf-schema#label> "Entretenimiento Sin Impacto en Derechos"@es .
 # 
 # http://ai-act.eu/ai#EssentialServicesAccessCriterion
 <http://ai-act.eu/ai#EssentialServicesAccessCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -2373,6 +2549,19 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#LearningCapability> <http://www.w3.org/2000/01/rdf-schema#label> "Capacidad de Aprendizaje"@es .
 <http://ai-act.eu/ai#LearningCapability> <http://www.w3.org/2000/01/rdf-schema#label> "Learning Capability"@en .
 # 
+# http://ai-act.eu/ai#LegalConsequencesContext
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://ai-act.eu/ai#requiresFRIA> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2 + Article 3(49)] Context where an AI system's operation results in legal consequences for natural persons. This OVERRIDES exclusions and brings the system into EU AI Act scope. Includes: arrests, criminal prosecution, jail/prison sentences, lawsuits, fines, penalties, court proceedings, regulatory sanctions, employment termination, denial of services based on AI decision. Examples: AI-based wrongful arrest, deepfake leading to prosecution, AI system causing legal liability, Nasca family lawsuit against TikTok."@en .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2 + Artículo 3(49)] Contexto donde la operación de un sistema de IA resulta en consecuencias legales para personas físicas. Esto ANULA exclusiones y trae el sistema al ámbito del EU AI Act. Incluye: arrestos, procesamientos penales, sentencias de cárcel/prisión, demandas, multas, sanciones, procedimientos judiciales, sanciones regulatorias, despido laboral, denegación de servicios basada en decisión de IA. Ejemplos: arresto indebido por IA, deepfake que lleva a procesamiento, sistema de IA que causa responsabilidad legal, demanda de la familia Nasca contra TikTok."@es .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://www.w3.org/2000/01/rdf-schema#label> "Consecuencias Legales"@es .
+<http://ai-act.eu/ai#LegalConsequencesContext> <http://www.w3.org/2000/01/rdf-schema#label> "Legal Consequences"@en .
+# 
 # http://ai-act.eu/ai#LimitationsDocumentationRequirement
 <http://ai-act.eu/ai#LimitationsDocumentationRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#LimitationsDocumentationRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DocumentationRequirement> .
@@ -2510,6 +2699,16 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/2000/01/rdf-schema#label> "Migration Control"@en .
 <http://ai-act.eu/ai#MigrationControl> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://w3id.org/airo#Border> .
 # 
+# http://ai-act.eu/ai#MilitaryDefenseUse
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://ai-act.eu/ai#articleReference> "Article 2(3)" .
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_2/par_3/oj> .
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://www.w3.org/2000/01/rdf-schema#comment> "AI systems developed or used exclusively for military purposes. This Regulation does not apply to AI systems developed or used exclusively for military purposes."@en .
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de IA desarrollados o utilizados exclusivamente con fines militares. Este Reglamento no se aplica a sistemas de IA desarrollados o utilizados exclusivamente con fines militares."@es .
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://www.w3.org/2000/01/rdf-schema#label> "Military Defense Use"@en .
+<http://ai-act.eu/ai#MilitaryDefenseUse> <http://www.w3.org/2000/01/rdf-schema#label> "Uso Militar y de Defensa"@es .
+# 
 # http://ai-act.eu/ai#MinimalRisk
 <http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#MinimalRisk> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#RiskLevel> .
@@ -2527,6 +2726,19 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#MinorCategory> <http://www.w3.org/2000/01/rdf-schema#comment> "Persons under 18 years of age - enhanced protection per Recital 28."@en .
 <http://ai-act.eu/ai#MinorCategory> <http://www.w3.org/2000/01/rdf-schema#label> "Menor"@es .
 <http://ai-act.eu/ai#MinorCategory> <http://www.w3.org/2000/01/rdf-schema#label> "Minor"@en .
+# 
+# http://ai-act.eu/ai#MinorsAffectedContext
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://ai-act.eu/ai#requiresFRIA> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2 + Article 27 + Recital 47] Context where an AI system affects minors (persons under 18 years old). Children and teenagers are considered vulnerable natural persons requiring heightened protection. This OVERRIDES exclusions regardless of original purpose (entertainment, gaming, personal use). Examples: TikTok For You algorithm affecting teenagers, AI chatbots interacting with minors, gaming AI targeting young users, educational recommendation systems. The presence of minors triggers automatic FRIA requirement per Article 27."@en .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2 + Artículo 27 + Considerando 47] Contexto donde un sistema de IA afecta a menores (personas menores de 18 años). Los niños y adolescentes son considerados personas naturales vulnerables que requieren protección reforzada. Esto ANULA exclusiones independientemente del propósito original (entretenimiento, juegos, uso personal). Ejemplos: algoritmo TikTok For You afectando adolescentes, chatbots de IA interactuando con menores, IA de juegos dirigida a usuarios jóvenes, sistemas de recomendación educativa. La presencia de menores activa automáticamente el requisito de FRIA según el Artículo 27."@es .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://www.w3.org/2000/01/rdf-schema#label> "Contexto de Menores Afectados"@es .
+<http://ai-act.eu/ai#MinorsAffectedContext> <http://www.w3.org/2000/01/rdf-schema#label> "Minors Affected Context"@en .
 # 
 # http://ai-act.eu/ai#MisinformationAmplificationRiskCriterion
 <http://ai-act.eu/ai#MisinformationAmplificationRiskCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -2624,6 +2836,16 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#PerformanceMonitoringRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Performance Monitoring Requirement"@en .
 <http://ai-act.eu/ai#PerformanceMonitoringRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Monitoreo de Rendimiento"@es .
 # 
+# http://ai-act.eu/ai#PersonalAssistantUse
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://ai-act.eu/ai#mayBeExcludedBy> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#MinimalRisk> .
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2(10) - POTENTIALLY EXCLUDED] Purpose for personal AI assistants used in purely personal non-professional activities. May be excluded from EU AI Act scope per Article 2(10) when used by natural persons for purely personal activities. EXCLUSION IS OVERRIDDEN when the assistant is used professionally, affects third parties, or causes harm."@en .
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2(10) - POTENCIALMENTE EXCLUIDO] Propósito para asistentes de IA personales utilizados en actividades puramente personales no profesionales. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(10) cuando es usado por personas físicas para actividades puramente personales. LA EXCLUSIÓN SE ANULA cuando el asistente se usa profesionalmente, afecta a terceros o causa daño."@es .
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://www.w3.org/2000/01/rdf-schema#label> "Personal Assistant Use"@en .
+<http://ai-act.eu/ai#PersonalAssistantUse> <http://www.w3.org/2000/01/rdf-schema#label> "Uso de Asistente Personal"@es .
+# 
 # http://ai-act.eu/ai#PersonalDataRetentionRiskCriterion
 <http://ai-act.eu/ai#PersonalDataRetentionRiskCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#PersonalDataRetentionRiskCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ContextualCriterion> .
@@ -2631,6 +2853,16 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#PersonalDataRetentionRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "[CONTEXT] AI systems retaining personal data long-term require data governance."@en .
 <http://ai-act.eu/ai#PersonalDataRetentionRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Personal Data Retention"@en .
 <http://ai-act.eu/ai#PersonalDataRetentionRiskCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Retención de Datos Personales"@es .
+# 
+# http://ai-act.eu/ai#PersonalNonProfessionalUse
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://ai-act.eu/ai#articleReference> "Article 2(10)" .
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_2/par_10/oj> .
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://www.w3.org/2000/01/rdf-schema#comment> "AI systems used for purely personal non-professional activities. This Regulation does not apply to natural persons using AI systems in the course of a purely personal non-professional activity."@en .
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de IA utilizados para actividades puramente personales no profesionales. Este Reglamento no se aplica a personas físicas que utilicen sistemas de IA en el curso de una actividad puramente personal no profesional."@es .
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://www.w3.org/2000/01/rdf-schema#label> "Personal Non-Professional Use"@en .
+<http://ai-act.eu/ai#PersonalNonProfessionalUse> <http://www.w3.org/2000/01/rdf-schema#label> "Uso Personal No Profesional"@es .
 # 
 # http://ai-act.eu/ai#PlanningCapability
 <http://ai-act.eu/ai#PlanningCapability> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -2762,6 +2994,16 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#PublicSpaces> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 5.1.h] Espacios públicamente accesibles donde la identificación biométrica remota en tiempo real está generalmente prohibida excepto bajo excepciones muy limitadas (Artículo 5.2). Incluye calles, plazas, centros comerciales, aeropuertos, estaciones de tren y otras áreas libremente accesibles al público. La identificación biométrica en tiempo real en espacios públicos para aplicación de la ley requiere autorización judicial y está sujeta a condiciones estrictas."@es .
 <http://ai-act.eu/ai#PublicSpaces> <http://www.w3.org/2000/01/rdf-schema#label> "Espacios Públicos"@es .
 <http://ai-act.eu/ai#PublicSpaces> <http://www.w3.org/2000/01/rdf-schema#label> "Public Spaces"@en .
+# 
+# http://ai-act.eu/ai#PureScientificResearch
+<http://ai-act.eu/ai#PureScientificResearch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#PureScientificResearch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#PureScientificResearch> <http://ai-act.eu/ai#articleReference> "Article 2(6)" .
+<http://ai-act.eu/ai#PureScientificResearch> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_2/par_6/oj> .
+<http://ai-act.eu/ai#PureScientificResearch> <http://www.w3.org/2000/01/rdf-schema#comment> "AI systems used exclusively for scientific research and development. This Regulation does not apply to AI systems developed or used exclusively for scientific research and development."@en .
+<http://ai-act.eu/ai#PureScientificResearch> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de IA utilizados exclusivamente para investigación y desarrollo científico. Este Reglamento no se aplica a sistemas de IA desarrollados o utilizados exclusivamente para investigación y desarrollo científico."@es .
+<http://ai-act.eu/ai#PureScientificResearch> <http://www.w3.org/2000/01/rdf-schema#label> "Investigación Científica Pura"@es .
+<http://ai-act.eu/ai#PureScientificResearch> <http://www.w3.org/2000/01/rdf-schema#label> "Pure Scientific Research"@en .
 # 
 # http://ai-act.eu/ai#RandomForest
 <http://ai-act.eu/ai#RandomForest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -2903,6 +3145,16 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#SafetyCriticalContext> <http://www.w3.org/2000/01/rdf-schema#comment> "Deployment contexts where system failures could result in serious harm to health, safety, or human life."@en .
 <http://ai-act.eu/ai#SafetyCriticalContext> <http://www.w3.org/2000/01/rdf-schema#label> "Contexto crítico de seguridad"@es .
 <http://ai-act.eu/ai#SafetyCriticalContext> <http://www.w3.org/2000/01/rdf-schema#label> "Safety Critical Context"@en .
+# 
+# http://ai-act.eu/ai#ScientificResearch
+<http://ai-act.eu/ai#ScientificResearch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#ScientificResearch> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#Purpose> .
+<http://ai-act.eu/ai#ScientificResearch> <http://ai-act.eu/ai#mayBeExcludedBy> <http://ai-act.eu/ai#PureScientificResearch> .
+<http://ai-act.eu/ai#ScientificResearch> <http://ai-act.eu/ai#expectedRiskLevel> <http://ai-act.eu/ai#MinimalRisk> .
+<http://ai-act.eu/ai#ScientificResearch> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2(6) - POTENTIALLY EXCLUDED] Purpose for AI systems used exclusively for scientific research and development. May be excluded from EU AI Act scope per Article 2(6). EXCLUSION IS OVERRIDDEN when research results in deployed systems, affects human subjects without consent, or has commercial applications."@en .
+<http://ai-act.eu/ai#ScientificResearch> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2(6) - POTENCIALMENTE EXCLUIDO] Propósito para sistemas de IA utilizados exclusivamente para investigación y desarrollo científico. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(6). LA EXCLUSIÓN SE ANULA cuando la investigación resulta en sistemas desplegados, afecta a sujetos humanos sin consentimiento o tiene aplicaciones comerciales."@es .
+<http://ai-act.eu/ai#ScientificResearch> <http://www.w3.org/2000/01/rdf-schema#label> "Investigación Científica"@es .
+<http://ai-act.eu/ai#ScientificResearch> <http://www.w3.org/2000/01/rdf-schema#label> "Scientific Research"@en .
 # 
 # http://ai-act.eu/ai#SecureDeploymentRequirement
 <http://ai-act.eu/ai#SecureDeploymentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -3095,6 +3347,16 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#TerroristThreatException> <http://www.w3.org/2000/01/rdf-schema#label> "Excepción de Amenaza Terrorista (Art. 5.2.b)"@es .
 <http://ai-act.eu/ai#TerroristThreatException> <http://www.w3.org/2000/01/rdf-schema#label> "Terrorist Threat Exception (Art. 5.2.b)"@en .
 # 
+# http://ai-act.eu/ai#ThirdCountryExclusion
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ScopeExclusion> .
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://ai-act.eu/ai#articleReference> "Article 2(7)" .
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_2/par_7/oj> .
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "AI systems placed on the market or put into service in third countries where output is used in the Union. Partial applicability applies."@en .
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://www.w3.org/2000/01/rdf-schema#comment> "Sistemas de IA puestos en el mercado o en servicio en países terceros donde la salida se utiliza en la Unión. Se aplica aplicabilidad parcial."@es .
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "Exclusión de Países Terceros"@es .
+<http://ai-act.eu/ai#ThirdCountryExclusion> <http://www.w3.org/2000/01/rdf-schema#label> "Third Country Exclusion"@en .
+# 
 # http://ai-act.eu/ai#TraceabilityRequirement
 <http://ai-act.eu/ai#TraceabilityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#TechnicalRequirement> .
 <http://ai-act.eu/ai#TraceabilityRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 12] High-risk AI systems shall technically allow for automatic recording of events (logs) over the lifetime of the system. Logging capabilities shall enable recording of events relevant for identifying risks, facilitating post-market monitoring, and tracking system operation. Logs must be retained appropriately to ensure traceability and accountability."@en .
@@ -3161,6 +3423,19 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#UserNotificationRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Systems must notify users when they interact with AI-generated content."@en .
 <http://ai-act.eu/ai#UserNotificationRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Notificación al Usuario"@es .
 <http://ai-act.eu/ai#UserNotificationRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "User Notification Requirement"@en .
+# 
+# http://ai-act.eu/ai#VictimImpactContext
+<http://ai-act.eu/ai#VictimImpactContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#VictimImpactContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeploymentContext> .
+<http://ai-act.eu/ai#VictimImpactContext> <http://ai-act.eu/ai#assignsRiskLevel> <http://ai-act.eu/ai#HighRisk> .
+<http://ai-act.eu/ai#VictimImpactContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#EntertainmentWithoutRightsImpact> .
+<http://ai-act.eu/ai#VictimImpactContext> <http://ai-act.eu/ai#overridesExclusion> <http://ai-act.eu/ai#PersonalNonProfessionalUse> .
+<http://ai-act.eu/ai#VictimImpactContext> <http://ai-act.eu/ai#requiresFRIA> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#VictimImpactContext> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> .
+<http://ai-act.eu/ai#VictimImpactContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 2 + Article 3(49)] Context where an AI system creates identifiable victims who suffer harm, abuse, harassment, or damage. This OVERRIDES exclusions regardless of original purpose. Examples: non-consensual deepfake pornography victims (South Korean schools), AI-generated harassment targeting individuals, synthetic media used for fraud or defamation, Chase Nasca as victim of algorithmic harm. The existence of real victims brings any AI system into regulatory scope."@en .
+<http://ai-act.eu/ai#VictimImpactContext> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 2 + Artículo 3(49)] Contexto donde un sistema de IA crea víctimas identificables que sufren daño, abuso, acoso o perjuicio. Esto ANULA exclusiones independientemente del propósito original. Ejemplos: víctimas de pornografía deepfake no consentida (escuelas de Corea del Sur), acoso generado por IA dirigido a individuos, medios sintéticos usados para fraude o difamación, Chase Nasca como víctima de daño algorítmico. La existencia de víctimas reales trae cualquier sistema de IA al ámbito regulatorio."@es .
+<http://ai-act.eu/ai#VictimImpactContext> <http://www.w3.org/2000/01/rdf-schema#label> "Impacto en Víctimas"@es .
+<http://ai-act.eu/ai#VictimImpactContext> <http://www.w3.org/2000/01/rdf-schema#label> "Victim Impact"@en .
 # 
 # http://ai-act.eu/ai#VictimSearchException
 <http://ai-act.eu/ai#VictimSearchException> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -3357,22 +3632,22 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # #################################################################
 # 
 # 
-_:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AllDifferent> .
-_:genid38 <http://www.w3.org/2002/07/owl#distinctMembers> _:genid43 .
+_:genid41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#AllDifferent> .
+_:genid41 <http://www.w3.org/2002/07/owl#distinctMembers> _:genid46 .
+_:genid46 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid45 .
+_:genid45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid44 .
+_:genid44 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid43 .
 _:genid43 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid42 .
-_:genid42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid41 .
-_:genid41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid40 .
-_:genid40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid39 .
-_:genid39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:genid39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#UnacceptableRisk> .
-_:genid39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#MinimalRisk> .
-_:genid40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#MediumRisk> .
-_:genid41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#LimitedRisk> .
+_:genid42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:genid42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#UnacceptableRisk> .
 _:genid42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
-_:genid43 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#HighRisk> .
+_:genid43 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#MinimalRisk> .
 _:genid43 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid44 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#MediumRisk> .
+_:genid44 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#LimitedRisk> .
+_:genid45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:genid46 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://ai-act.eu/ai#HighRisk> .
+_:genid46 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
 # 
 # Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/

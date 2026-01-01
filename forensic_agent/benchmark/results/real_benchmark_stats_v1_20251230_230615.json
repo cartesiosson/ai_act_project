@@ -1,0 +1,42 @@
+{
+  "benchmark_type": "REAL",
+  "benchmark_version": "v1",
+  "data_source": {
+    "source": "AIAAIC Repository",
+    "url": "https://www.aiaaic.org/aiaaic-repository",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "version": "December 2025",
+    "terms": "https://www.aiaaic.org/terms",
+    "citation": "Data provided by AIAAIC (https://www.aiaaic.org/aiaaic-repository) under CC BY-SA 4.0 license."
+  },
+  "timestamp": "2025-12-30T23:06:15.684280",
+  "summary": {
+    "total_incidents": 1,
+    "successful": 1,
+    "low_confidence": 0,
+    "failed": 0,
+    "success_rate": 100.0
+  },
+  "performance": {
+    "mean_time": 69.30841898918152,
+    "median_time": 69.30841898918152,
+    "min_time": 69.30841898918152,
+    "max_time": 69.30841898918152,
+    "stdev_time": 0
+  },
+  "quality": {
+    "mean_confidence": 0.8366666666666667,
+    "median_confidence": 0.8366666666666667,
+    "min_confidence": 0.8366666666666667,
+    "max_confidence": 0.8366666666666667,
+    "stdev_confidence": 0
+  },
+  "risk_distribution": {
+    "HighRisk": 1
+  },
+  "incident_distribution": {
+    "safety_failure": 1
+  },
+  "errors": []
+}

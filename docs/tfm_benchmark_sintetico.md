@@ -209,36 +209,81 @@ SI propósito ∉ Anexo III ∧ profiling = false → MinimalRisk
 
 **Nota sobre exenciones (Art. 6.3 a-d):** El reglamento permite que sistemas del Anexo III se consideren NO alto riesgo si realizan tareas procedimentales limitadas, mejoran resultados humanos previos, o realizan tareas preparatorias. Sin embargo, **ninguna exención aplica si el sistema realiza profiling**.
 
-### 4.4 Ámbito de Aplicación del EU AI Act (Artículo 2)
+### 4.4 Ámbito de Aplicación del EU AI Act (Artículo 2) - Enfoque Semántico v0.38.0
 
-**Importante:** No todos los sistemas de IA caen dentro del ámbito de aplicación del EU AI Act. El Artículo 2 del reglamento establece exclusiones específicas que afectan a la validez de ciertos casos de prueba:
+**Importante:** No todos los sistemas de IA caen dentro del ámbito de aplicación del EU AI Act. El Artículo 2 del reglamento establece exclusiones específicas que afectan a la validez de ciertos casos de prueba.
 
-**Sistemas EXCLUIDOS del ámbito de aplicación:**
+#### Modelado Ontológico de Exclusiones (v0.38.0)
 
-| Exclusión | Artículo | Ejemplos en el benchmark |
-|-----------|----------|--------------------------|
-| Uso personal no profesional | Art. 2.10 | EmailFiltering (filtros de spam personales) |
-| Investigación científica pura | Art. 2.6 | Modelos experimentales no desplegados |
-| Entretenimiento sin impacto en derechos | Recital 12 | Entertainment (videojuegos, NPCs) |
+A partir de la versión 0.38.0 de la ontología, las exclusiones del Artículo 2 se modelan **semánticamente** mediante clases y propiedades OWL:
 
-**Implicaciones para el benchmark sintético:**
+**Clases de exclusión (`ai:ScopeExclusion`):**
 
-El benchmark V1 incluye deliberadamente **10 casos de prueba MinimalRisk** con propósitos `EmailFiltering` y `Entertainment`. Estos casos presentan un desafío particular:
+| Exclusión | Clase Ontológica | Artículo | Ejemplos en benchmark |
+|-----------|------------------|----------|----------------------|
+| Uso personal no profesional | `PersonalNonProfessionalUse` | Art. 2.10 | EmailFiltering |
+| Investigación científica pura | `PureScientificResearch` | Art. 2.6 | Modelos experimentales |
+| Entretenimiento sin impacto | `EntertainmentWithoutRightsImpact` | Recital 12 | Entertainment, Gaming |
 
-1. **Desde la perspectiva técnica**: Son sistemas de IA que pueden exhibir sesgos o fallos
-2. **Desde la perspectiva regulatoria**: Están **fuera del ámbito de aplicación** del EU AI Act porque:
-   - No afectan derechos fundamentales de personas reales
-   - Son de uso personal/recreativo
-   - No toman decisiones que impacten acceso a servicios, empleo, educación, etc.
+**Propiedades semánticas:**
+
+```turtle
+ai:mayBeExcludedBy a owl:ObjectProperty ;
+    rdfs:domain ai:Purpose ;
+    rdfs:range ai:ScopeExclusion ;
+    rdfs:comment "Purpose may be excluded from scope by this exclusion" .
+
+ai:overridesExclusion a owl:ObjectProperty ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range ai:ScopeExclusion ;
+    rdfs:comment "Context overrides exclusion (brings back into scope)" .
+```
+
+#### Contextos que Anulan Exclusiones
+
+La ontología modela contextos que **traen sistemas de vuelta al ámbito de aplicación**:
+
+| Contexto | Clase Ontológica | Exclusiones que Anula |
+|----------|------------------|----------------------|
+| Consecuencias legales | `LegalConsequencesContext` | Entertainment, PersonalUse |
+| Impacto en víctimas | `VictimImpactContext` | Entertainment, PersonalUse |
+| Causa daño real | `CausesRealWorldHarmContext` | Entertainment |
+| Afecta derechos fundamentales | `AffectsFundamentalRightsContext` | Todas |
+
+#### Implicaciones para el Benchmark Sintético
+
+El benchmark V1 incluye **10 casos de prueba** con propósitos `EmailFiltering` y `Entertainment` (videojuegos). Estos casos demuestran el funcionamiento del filtro de scope:
+
+1. **Caso puro de videojuego (OutOfScope):**
+   - Propósito: `Gaming` → exclusión `EntertainmentWithoutRightsImpact`
+   - Narrativa: "NPCBrain video game AI exhibited unexpected behavior..."
+   - Sin contextos override detectados
+   - **Resultado: OutOfScope** ✓
+
+2. **Caso de entertainment con víctimas (IN SCOPE):**
+   - Propósito: `Entertainment` → exclusión potencial
+   - Narrativa contiene: "jailed", "victims", "deepfake"
+   - Contextos detectados: `LegalConsequencesContext`, `VictimImpactContext`
+   - **Resultado: HighRisk** (exclusión anulada) ✓
+
+#### Lógica de Determinación de Scope
+
+```
+SI propósito tiene exclusión (ai:mayBeExcludedBy):
+    SI narrativa contiene contexto override (ai:overridesExclusion):
+        → IN SCOPE (clasificar normalmente)
+    SINO:
+        → OUT OF SCOPE
+SINO:
+    → IN SCOPE (clasificar normalmente)
+```
 
 **Definición de "serious incident" (Art. 3.49)**: El EU AI Act define incidente grave como aquel que directa o indirectamente causa:
 - Muerte o daño grave a la salud
 - Disrupción seria e irreversible de infraestructura crítica
 - **Infracción de derechos fundamentales**
 
-Un sesgo en un NPC de videojuego, aunque sea un problema técnico, **NO constituye un incidente regulatorio** porque no infringe derechos fundamentales de personas reales.
-
-**Consecuencia para la evaluación**: Los 10 casos MinimalRisk del benchmark sintético son técnicamente correctos como pruebas de extracción, pero representan sistemas que el EU AI Act no pretende regular. El sistema implementa un filtro de ámbito de aplicación que puede clasificarlos como `OutOfScope`.
+**Consecuencia para la evaluación**: Los casos de videojuegos puros (sin víctimas reales ni consecuencias legales) son correctamente clasificados como `OutOfScope`. Los casos de "entertainment" que involucran víctimas reales (como deepfakes no consensuales) son correctamente traídos de vuelta al scope y clasificados como `HighRisk`.
 
 ### 4.5 Métricas de Clasificación
 
@@ -267,6 +312,36 @@ Los resultados presentados corresponden a múltiples ejecuciones del benchmark s
 - Aumentados casos de `privacy_violation` (de 23.4% a 28.9%)
 - Incluidos casos de `MinimalRisk` (10 casos: EmailFiltering y Entertainment)
 - Añadidos tipos de incidente: `appropriation` y `copyright`
+
+### 5.0.1 Cambios en V1 + Ontología v0.38.0 (30/12/2025)
+
+**Implementación del enfoque semántico para determinación de scope:**
+
+- **Ontología v0.38.0**: Clases `ai:ScopeExclusion` con instancias para Art. 2 exclusions
+- **Propiedades**: `ai:mayBeExcludedBy` (Purpose → Exclusion), `ai:overridesExclusion` (Context → Exclusion)
+- **Contextos override**: `LegalConsequencesContext`, `VictimImpactContext`, `CausesRealWorldHarmContext`, etc.
+
+**Resultados de validación (100 incidentes sintéticos, 30/12/2025):**
+
+| Métrica | Valor |
+|---------|-------|
+| Total incidentes | 100 |
+| Exitosos | 93 (93.0%) |
+| Fallidos | 7 |
+| Confidence media | 0.844 |
+| HighRisk | 86 (92.5%) |
+| OutOfScope | 7 (7.5%) |
+
+**Casos OutOfScope correctamente identificados (videojuegos puros):**
+- GameEngine video game AI
+- NPCBrain video game AI
+- EntertainAI video game AI (múltiples instancias)
+- PlayBot video game AI
+
+**Funcionamiento del filtro semántico:**
+1. Propósito `Gaming`/`Entertainment` → exclusión `EntertainmentWithoutRightsImpact`
+2. Narrativa de videojuego sin víctimas ni consecuencias legales
+3. Sin contextos override detectados → **OutOfScope** ✓
 
 ### 5.1 Resumen Ejecutivo
 

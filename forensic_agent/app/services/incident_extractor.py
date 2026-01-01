@@ -95,7 +95,7 @@ Extract the following information in JSON format:
   "system": {{
     "system_name": "Name of the AI system",
     "system_type": "vision|nlp|tabular|multimodal|other",
-    "primary_purpose": "REQUIRED - Main purpose. MUST be one of these EU AI Act ontology values: BiometricIdentification, LawEnforcementSupport, MigrationControl, EducationAccess, RecruitmentOrEmployment, WorkforceEvaluationPurpose, CriticalInfrastructureOperation, HealthCare, JudicialDecisionSupport, PublicServiceAllocation, GenerativeAIContentCreation, SurveillanceMonitoring. Choose the closest match. Use CriticalInfrastructureOperation for autonomous vehicles, robots, drones, weapons, Tesla, autopilot. Use SurveillanceMonitoring for smart home devices, cameras, doorbells, tracking. Use GenerativeAIContentCreation for AI art, chatbots, LLMs, deepfakes.",
+    "primary_purpose": "REQUIRED - Main purpose. MUST be one of these EU AI Act ontology values: BiometricIdentification, LawEnforcementSupport, MigrationControl, EducationAccess, RecruitmentOrEmployment, WorkforceEvaluationPurpose, CriticalInfrastructureOperation, HealthCare, JudicialDecisionSupport, PublicServiceAllocation, GenerativeAIContentCreation, SurveillanceMonitoring, ContentRecommendation, Entertainment. Choose the closest match. Use CriticalInfrastructureOperation for autonomous vehicles, robots, drones, weapons, Tesla, autopilot. Use SurveillanceMonitoring for smart home devices, cameras, doorbells, tracking. Use GenerativeAIContentCreation for AI art, chatbots, LLMs, deepfakes. Use ContentRecommendation for recommendation algorithms, social media feeds, TikTok For You, YouTube recommendations, news feeds. Use Entertainment for video games, gaming AI, NPCs.",
     "processes_data_types": ["BiometricData", "PersonalData", "HealthData", "LocationData", "FinancialData", etc.],
     "deployment_context": ["PublicSpaces", "HighVolume", "RealTime", "CriticalInfrastructure", "EducationContext", "EmploymentContext", "LawEnforcementContext", "HealthcareContext", "MigrationContext", etc.],
     "is_automated_decision": true/false,
@@ -110,7 +110,11 @@ Extract the following information in JSON format:
     "prohibited_practices": ["List of Article 5 prohibited practices if detected: SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification. Leave empty if none detected."],
     "legal_exceptions": ["If RealTimeBiometricIdentification is detected, check for legal exceptions: VictimSearchException, TerroristThreatException, SeriousCrimeException. Otherwise empty."],
     "has_judicial_authorization": true/false/null "Only relevant if real-time biometric ID with exceptions. Does the narrative mention judicial/court authorization?",
-    "performs_profiling": true/false "Does the system perform profiling of natural persons? (Art. 6.3 EU AI Act - automatic risk escalation to HighRisk if true). Profiling = automated processing of personal data to evaluate, analyze or predict aspects concerning natural person's performance at work, economic situation, health, preferences, interests, reliability, behavior, location or movements."
+    "performs_profiling": true/false "Does the system perform profiling of natural persons? (Art. 6.3 EU AI Act - automatic risk escalation to HighRisk if true). Profiling = automated processing of personal data to evaluate, analyze or predict aspects concerning natural person's performance at work, economic situation, health, preferences, interests, reliability, behavior, location or movements.",
+    "scope_override_contexts": ["CRITICAL FOR SCOPE DETERMINATION - List all that apply: CausesRealWorldHarmContext (if death, injury, suicide, physical harm occurred), VictimImpactContext (if identifiable victims were harmed), AffectsFundamentalRightsContext (if right to life, dignity, privacy, non-discrimination were violated), LegalConsequencesContext (if legal proceedings, arrests, lawsuits resulted), MinorsAffectedContext (if children/teenagers under 18 were affected)"],
+    "causes_death_or_injury": true/false "CRITICAL - Did this incident result in death, suicide, physical injury, or bodily harm? Keywords: death, died, killed, suicide, injury, injured, harm, hospitalized",
+    "affects_minors": true/false "CRITICAL - Were minors (persons under 18 years old) affected? Keywords: child, children, minor, teenager, teen, student, 16 years old, young person, kid",
+    "affects_vulnerable_groups": true/false "Were vulnerable groups affected? Keywords: elderly, disabled, disability, homeless, economically disadvantaged, mental health"
   }},
   "incident": {{
     "incident_type": "discrimination|bias|safety_failure|privacy_violation|transparency_failure|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other",
@@ -165,6 +169,8 @@ IMPORTANT EXTRACTION RULES:
     - PublicServiceAllocation: credit scoring, social benefits, insurance, welfare
     - GenerativeAIContentCreation: AI art, chatbots, LLMs, deepfakes, synthetic media, image/text generation
     - SurveillanceMonitoring: smart home devices, cameras, doorbells (Ring), CCTV, tracking, IoT security
+    - ContentRecommendation: recommendation algorithms, social media feeds, TikTok For You, YouTube recommendations, news feeds, content personalization
+    - Entertainment: video games, gaming AI, NPCs, game companions, recreational AI
   * Map the described purpose to the closest matching IRI above
 - For incident_type:
   * discrimination: unfair treatment of protected groups
@@ -207,6 +213,27 @@ IMPORTANT EXTRACTION RULES:
   * true: Narrative explicitly mentions court/judicial/magistrate authorization
   * false: Narrative explicitly states NO authorization
   * null: Authorization status unknown from narrative
+- For scope_override_contexts (CRITICAL FOR Article 2 SCOPE DETERMINATION - v0.39.0):
+  * These contexts bring systems that might otherwise be excluded (entertainment, personal use) INTO EU AI Act scope
+  * CausesRealWorldHarmContext: If the incident resulted in death, suicide, physical injury, harm, hospitalization
+    - Keywords: death, died, killed, suicide, injury, injured, harm, hospitalized, fatal, casualty
+  * VictimImpactContext: If there are identifiable victims who suffered harm
+    - Keywords: victim, victims, harmed, suffered, affected person, injured party
+  * AffectsFundamentalRightsContext: If fundamental rights were violated
+    - Keywords: right to life, dignity, privacy violated, discrimination, fundamental rights
+  * LegalConsequencesContext: If legal proceedings resulted from the incident
+    - Keywords: lawsuit, sued, legal action, court, prosecution, criminal charges, regulatory action
+  * MinorsAffectedContext: If children or teenagers (under 18) were affected
+    - Keywords: child, children, minor, teenager, teen, student, young person, kid, adolescent, years old (with age under 18)
+  * ALWAYS check the narrative for these contexts even if the purpose seems excluded (entertainment, gaming, etc.)
+- For causes_death_or_injury:
+  * CRITICAL: Set to TRUE if ANY mention of: death, suicide, killed, died, fatal, injury, injured, hospitalized, physical harm
+  * This is the most important field for scope override detection
+- For affects_minors:
+  * Set to TRUE if narrative mentions: children, minors, teenagers, students, or any age under 18
+  * Example: "16 years old", "teenager", "high school student" → affects_minors = true
+- For affects_vulnerable_groups:
+  * Set to TRUE if narrative mentions: elderly, disabled, homeless, economically disadvantaged, mental health patients
 
 Respond with ONLY valid JSON, no additional text or markdown formatting.
 """
@@ -282,6 +309,10 @@ Respond with ONLY valid JSON, no additional text or markdown formatting.
         )
         system_data["deployment_context"] = self._normalize_to_list(
             system_data.get("deployment_context"), "deployment_context"
+        )
+        # v0.39.0: Normalize scope override contexts
+        system_data["scope_override_contexts"] = self._normalize_to_list(
+            system_data.get("scope_override_contexts"), "scope_override_contexts"
         )
 
         # Normalize incident data

@@ -485,3 +485,223 @@ ai:responsibleRole a owl:DatatypeProperty ;
     rdfs:domain ai:EvidencePlan ;
     rdfs:range xsd:string ;
     rdfs:comment "Role responsible for generating this evidence: DEPLOYER, PROVIDER, DPO, LEGAL, TECHNICAL"@en .
+
+
+# =============================================================================
+# DPV MAPPINGS FOR SCOPE EXCLUSIONS (v0.39.0)
+# =============================================================================
+# Maps EU AI Act Article 2 scope exclusions to DPV concepts
+# These mappings enable semantic interoperability for scope determination
+
+# --- New Properties for Scope Mappings ---
+
+ai:mapsToDPVConcept a owl:ObjectProperty ;
+    rdfs:label "maps to DPV concept"@en, "mapea a concepto DPV"@es ;
+    rdfs:comment "Maps AI Act concept to equivalent DPV concept"@en .
+
+ai:mapsToDPVPurpose a owl:ObjectProperty ;
+    rdfs:label "maps to DPV purpose"@en, "mapea a proposito DPV"@es ;
+    rdfs:domain ai:ScopeExclusion ;
+    rdfs:comment "Maps scope exclusion to equivalent DPV purpose concept"@en .
+
+ai:mapsToDPVProcessingContext a owl:ObjectProperty ;
+    rdfs:label "maps to DPV processing context"@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:comment "Maps deployment context to DPV processing context"@en .
+
+ai:mapsToDPVRisk a owl:ObjectProperty ;
+    rdfs:label "maps to DPV risk"@en, "mapea a riesgo DPV"@es ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:comment "Maps context to DPV risk category"@en .
+
+ai:mapsToDPVLegalBasis a owl:ObjectProperty ;
+    rdfs:label "maps to DPV legal basis"@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:comment "Maps context to DPV legal basis"@en .
+
+ai:mapsToDPVDataSubject a owl:ObjectProperty ;
+    rdfs:label "maps to DPV data subject"@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:comment "Maps context to DPV data subject category"@en .
+
+ai:mapsToDPVData a owl:ObjectProperty ;
+    rdfs:label "maps to DPV data category"@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:comment "Maps context to DPV data category"@en .
+
+ai:mapsToDPVProcessing a owl:ObjectProperty ;
+    rdfs:label "maps to DPV processing"@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:comment "Maps context to DPV processing operation"@en .
+
+ai:triggersDPVObligation a owl:ObjectProperty ;
+    rdfs:label "triggers DPV obligation"@en, "activa obligacion DPV"@es ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:comment "Context triggers a DPV organizational measure obligation (e.g., DPIA)"@en .
+
+
+# --- Scope Exclusion Mappings to DPV Purposes ---
+
+ai:PersonalNonProfessionalUse
+    ai:mapsToDPVConcept dpv:PersonalUse ;
+    ai:mapsToDPVPurpose dpv:PersonalUse ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/par_10/oj> ;
+    rdfs:comment "Maps to DPV personal use purpose - non-professional activities excluded from AI Act scope"@en .
+
+ai:PureScientificResearch
+    ai:mapsToDPVConcept dpv:AcademicResearch ;
+    ai:mapsToDPVPurpose dpv:ScientificResearch ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/par_6/oj> ;
+    rdfs:comment "Maps to DPV academic/scientific research purpose - pure research excluded from AI Act scope"@en .
+
+ai:EntertainmentWithoutRightsImpact
+    ai:mapsToDPVConcept dpv:ServiceProvision ;
+    ai:mapsToDPVPurpose dpv:ProvideEntertainment ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/rec_12/oj> ;
+    rdfs:comment "Maps to DPV entertainment service provision - entertainment without rights impact excluded per Recital 12"@en .
+
+ai:MilitaryDefenseUse
+    ai:mapsToDPVConcept dpv:PublicSecurity ;
+    ai:mapsToDPVPurpose dpv:NationalSecurity ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/par_3/oj> ;
+    rdfs:comment "Maps to DPV national security purpose - military/defense use excluded with exceptions"@en .
+
+
+# --- Override Context Mappings to DPV Risks and Contexts ---
+
+ai:LegalConsequencesContext
+    ai:mapsToDPVProcessingContext dpv:LegalProceeding ;
+    ai:mapsToDPVLegalBasis dpv:LegalObligation ;
+    ai:mapsToDPVRisk dpv-risk:LegalRisk ;
+    rdfs:comment "Context where legal proceedings result from AI actions - overrides exclusions"@en .
+
+ai:VictimImpactContext
+    ai:mapsToDPVRisk dpv-risk:HarmToIndividuals ;
+    ai:mapsToDPVDataSubject dpv:VulnerableDataSubject ;
+    ai:triggersDPVObligation dpv:ImpactAssessment ;
+    rdfs:comment "Context where identifiable victims are affected - overrides exclusions and triggers DPIA"@en .
+
+ai:CausesRealWorldHarmContext
+    ai:mapsToDPVRisk dpv-risk:PhysicalHarm ;
+    ai:mapsToDPVRisk dpv-risk:MaterialDamage ;
+    ai:triggersDPVObligation dpv:ImpactAssessment ;
+    rdfs:comment "Context where real-world physical or material harm occurs - overrides exclusions"@en .
+
+ai:AffectsFundamentalRightsContext
+    ai:mapsToDPVRisk dpv-risk:RightsImpact ;
+    ai:triggersDPVObligation dpv:DPIA ;
+    ai:triggersDPVObligation dpv:ImpactAssessment ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> ;
+    rdfs:comment "Context affecting fundamental rights - overrides ALL exclusions and triggers FRIA per Art. 27"@en .
+
+ai:BiometricProcessingContext
+    ai:mapsToDPVData dpv:BiometricData ;
+    ai:mapsToDPVProcessing dpv:Collect ;
+    ai:mapsToDPVProcessing dpv:Use ;
+    ai:triggersDPVObligation dpv:DPIA ;
+    eli:cites <http://data.europa.eu/eli/reg/2016/679/art_9/oj> ;
+    rdfs:comment "Context involving biometric data processing - overrides exclusions and triggers GDPR Art. 9 obligations"@en .
+
+
+# =============================================================================
+# FRIA TRIGGERS FROM OVERRIDE CONTEXTS (v0.39.0)
+# =============================================================================
+# Fundamental Rights Impact Assessment (FRIA) requirements per Article 27
+# Override contexts that bring systems back into scope may require FRIA
+
+# --- New Properties for FRIA ---
+
+ai:requiresFRIA a owl:DatatypeProperty ;
+    rdfs:label "requires FRIA"@en, "requiere EIFF"@es ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Indicates whether this context requires a Fundamental Rights Impact Assessment per Art. 27"@en .
+
+ai:friaCategory a owl:DatatypeProperty ;
+    rdfs:label "FRIA category"@en, "categoria EIFF"@es ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Category of FRIA assessment required based on impact type"@en .
+
+ai:friaUrgency a owl:DatatypeProperty ;
+    rdfs:label "FRIA urgency"@en, "urgencia EIFF"@es ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Urgency level for FRIA completion: Low, Medium, High, Critical"@en .
+
+ai:friaArticle a owl:DatatypeProperty ;
+    rdfs:label "FRIA article reference"@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range xsd:string ;
+    rdfs:comment "EU AI Act article reference mandating FRIA for this context"@en .
+
+
+# --- Override Contexts with FRIA Requirements ---
+
+ai:VictimImpactContext
+    ai:requiresFRIA "true"^^xsd:boolean ;
+    ai:friaCategory "Direct harm to individuals" ;
+    ai:friaUrgency "High" ;
+    ai:friaArticle "Article 27 - FRIA for deployers affecting natural persons" .
+
+ai:AffectsFundamentalRightsContext
+    ai:requiresFRIA "true"^^xsd:boolean ;
+    ai:friaCategory "Fundamental rights impact" ;
+    ai:friaUrgency "Critical" ;
+    ai:friaArticle "Article 27.1 - Mandatory FRIA for high-risk AI affecting fundamental rights" .
+
+ai:LegalConsequencesContext
+    ai:requiresFRIA "true"^^xsd:boolean ;
+    ai:friaCategory "Legal proceedings impact" ;
+    ai:friaUrgency "High" ;
+    ai:friaArticle "Article 27 - FRIA for systems with legal effects on natural persons" .
+
+ai:CausesRealWorldHarmContext
+    ai:requiresFRIA "true"^^xsd:boolean ;
+    ai:friaCategory "Physical or material harm" ;
+    ai:friaUrgency "Critical" ;
+    ai:friaArticle "Article 27 + Article 73 - FRIA and mandatory incident reporting" .
+
+ai:BiometricProcessingContext
+    ai:requiresFRIA "true"^^xsd:boolean ;
+    ai:friaCategory "Biometric data processing" ;
+    ai:friaUrgency "High" ;
+    ai:friaArticle "Article 27.1 - FRIA for biometric identification by deployers" .
+
+
+# --- Scope Override Assessment Evidence ---
+
+ai:ScopeOverrideAssessmentRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Scope Override Assessment Requirement"@en ;
+    ai:mapsToDPVMeasure dpv:LegalBasis ;
+    ai:mapsToDPVMeasure dpv:ImpactAssessment ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/oj> ;
+    ai:requiresEvidence ai:ScopeJustificationEvidence,
+        ai:ContextOverrideAnalysisEvidence .
+
+ai:ScopeJustificationEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Document justifying why system is in/out of EU AI Act scope based on Article 2 exclusions"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ONCE" .
+
+ai:ContextOverrideAnalysisEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Analysis of deployment contexts that bring excluded purposes back into EU AI Act scope"@en ;
+    ai:evidencePriority "CRITICAL" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+
+# --- FRIA Specific Evidence ---
+
+ai:FRIAConsultationEvidence a ai:AssessmentEvidence ;
+    ai:evidenceDescription "Records of stakeholder consultation during FRIA process including affected persons representatives"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:FRIARemediationPlanEvidence a ai:PolicyEvidence ;
+    ai:evidenceDescription "Plan for remediating identified fundamental rights risks with timelines and responsible parties"@en ;
+    ai:evidencePriority "HIGH" ;
+    ai:evidenceFrequency "ANNUALLY" .
+
+ai:FundamentalRightsAssessmentRequirement
+    ai:requiresEvidence ai:FRIAConsultationEvidence,
+        ai:FRIARemediationPlanEvidence .

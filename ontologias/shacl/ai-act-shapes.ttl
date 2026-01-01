@@ -163,4 +163,180 @@ ai:MultilingualDocShape a sh:NodeShape ;
             "Todas las entidades etiquetadas deben proporcionar etiquetas en inglés y español."@es
     ] .
 
+# ===== ARTICLE 2: SCOPE SHAPES (v0.39.0) =====
+# Shape definitions for validating scope determination under Article 2
+
+# SHAPE 8: Scope Exclusion Shape
+ai:ScopeExclusionShape a sh:NodeShape ;
+    sh:targetClass ai:ScopeExclusion ;
+    rdfs:label "Scope Exclusion Shape"@en,
+        "Forma de Exclusión de Ámbito"@es ;
+    rdfs:comment "Validates Article 2 scope exclusion instances."@en,
+        "Valida instancias de exclusión de ámbito del Artículo 2."@es ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 2 ;  # EN y ES
+        sh:message "ScopeExclusion must have labels in English and Spanish."@en,
+            "ScopeExclusion debe tener etiquetas en inglés y español."@es
+    ] ;
+    sh:property [
+        sh:path ai:articleReference ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "ScopeExclusion must reference the applicable Article 2 paragraph."@en,
+            "ScopeExclusion debe referenciar el párrafo aplicable del Artículo 2."@es
+    ] ;
+    sh:property [
+        sh:path rdfs:comment ;
+        sh:minCount 1 ;
+        sh:message "ScopeExclusion must have documentation explaining the exclusion criteria."@en,
+            "ScopeExclusion debe tener documentación explicando los criterios de exclusión."@es
+    ] .
+
+# SHAPE 9: Scope Override Context Shape
+ai:ScopeOverrideContextShape a sh:NodeShape ;
+    sh:targetClass ai:DeploymentContext ;
+    rdfs:label "Scope Override Context Shape"@en,
+        "Forma de Contexto de Anulación de Ámbito"@es ;
+    rdfs:comment "Validates contexts that can override scope exclusions."@en,
+        "Valida contextos que pueden anular exclusiones de ámbito."@es ;
+    sh:property [
+        sh:path ai:overridesExclusion ;
+        sh:class ai:ScopeExclusion ;
+        sh:message "Override context must link to the ScopeExclusion it overrides."@en,
+            "Contexto de anulación debe vincularse a la ScopeExclusion que anula."@es
+    ] .
+
+# SHAPE 10: System Scope Determination Shape
+ai:SystemScopeDeterminationShape a sh:NodeShape ;
+    sh:targetClass ai:IntelligentSystem ;
+    rdfs:label "System Scope Determination Shape"@en,
+        "Forma de Determinación de Ámbito del Sistema"@es ;
+    rdfs:comment "Validates scope determination for systems with potentially excluded purposes."@en,
+        "Valida determinación de ámbito para sistemas con propósitos potencialmente excluidos."@es ;
+
+    # If system has a scope override, it must have FRIA requirement
+    sh:sparql [
+        sh:message "System with scope override must have FRIA requirement (Article 27)."@en,
+            "Sistema con anulación de ámbito debe tener requisito de FRIA (Artículo 27)."@es ;
+        sh:prefixes ai: ;
+        sh:select """
+            SELECT $this
+            WHERE {
+                $this ai:hasScopeOverride ?override .
+                FILTER NOT EXISTS {
+                    $this ai:hasComplianceRequirement ai:FundamentalRightsAssessmentRequirement .
+                }
+            }
+        """
+    ] .
+
+# SHAPE 11: FRIA Requirement Shape (Article 27)
+ai:FRIARequirementShape a sh:NodeShape ;
+    sh:targetClass ai:IntelligentSystem ;
+    rdfs:label "FRIA Requirement Shape"@en,
+        "Forma de Requisito FRIA"@es ;
+    rdfs:comment "Validates systems requiring Fundamental Rights Impact Assessment."@en,
+        "Valida sistemas que requieren Evaluación de Impacto en Derechos Fundamentales."@es ;
+
+    # System with override context affecting fundamental rights must have FRIA
+    sh:sparql [
+        sh:message "System affecting fundamental rights must document FRIA per Article 27."@en,
+            "Sistema que afecta derechos fundamentales debe documentar FRIA según Artículo 27."@es ;
+        sh:prefixes ai: ;
+        sh:select """
+            SELECT $this
+            WHERE {
+                $this ai:hasDeploymentContext ai:AffectsFundamentalRightsContext .
+                FILTER NOT EXISTS {
+                    $this ai:requiresFRIA true .
+                }
+            }
+        """
+    ] .
+
+# SHAPE 12: Purpose Exclusion Mapping Shape
+ai:PurposeExclusionMappingShape a sh:NodeShape ;
+    sh:targetClass ai:Purpose ;
+    rdfs:label "Purpose Exclusion Mapping Shape"@en,
+        "Forma de Mapeo de Exclusión de Propósito"@es ;
+    rdfs:comment "Validates that purposes with potential exclusions are properly documented."@en,
+        "Valida que propósitos con exclusiones potenciales estén correctamente documentados."@es ;
+    sh:property [
+        sh:path ai:mayBeExcludedBy ;
+        sh:class ai:ScopeExclusion ;
+        sh:message "If purpose may be excluded, it must reference a valid ScopeExclusion."@en,
+            "Si propósito puede ser excluido, debe referenciar una ScopeExclusion válida."@es
+    ] .
+
+# SHAPE 13: Victim Impact Context Validation
+ai:VictimImpactContextShape a sh:NodeShape ;
+    sh:targetClass ai:IntelligentSystem ;
+    rdfs:label "Victim Impact Context Shape"@en,
+        "Forma de Contexto de Impacto en Víctimas"@es ;
+    rdfs:comment "Validates systems deployed in victim impact contexts."@en,
+        "Valida sistemas desplegados en contextos de impacto en víctimas."@es ;
+
+    sh:sparql [
+        sh:message "System in victim impact context must have heightened FRIA and protection measures."@en,
+            "Sistema en contexto de impacto en víctimas debe tener FRIA reforzada y medidas de protección."@es ;
+        sh:prefixes ai: ;
+        sh:select """
+            SELECT $this
+            WHERE {
+                $this ai:hasDeploymentContext ai:VictimImpactContext .
+                FILTER NOT EXISTS {
+                    $this ai:hasComplianceRequirement ai:FundamentalRightsAssessmentRequirement .
+                }
+            }
+        """
+    ] .
+
+# SHAPE 14: Legal Consequences Context Validation
+ai:LegalConsequencesContextShape a sh:NodeShape ;
+    sh:targetClass ai:IntelligentSystem ;
+    rdfs:label "Legal Consequences Context Shape"@en,
+        "Forma de Contexto de Consecuencias Legales"@es ;
+    rdfs:comment "Validates systems producing legal effects on natural persons."@en,
+        "Valida sistemas que producen efectos legales en personas naturales."@es ;
+
+    sh:sparql [
+        sh:message "System producing legal effects must have human oversight and appeal mechanisms."@en,
+            "Sistema que produce efectos legales debe tener supervisión humana y mecanismos de apelación."@es ;
+        sh:prefixes ai: ;
+        sh:select """
+            SELECT $this
+            WHERE {
+                $this ai:hasDeploymentContext ai:LegalConsequencesContext .
+                FILTER NOT EXISTS {
+                    $this ai:hasComplianceRequirement ai:HumanOversightRequirement .
+                }
+            }
+        """
+    ] .
+
+# SHAPE 15: Scope Override Documentation Shape
+ai:ScopeOverrideDocumentationShape a sh:NodeShape ;
+    sh:targetClass ai:IntelligentSystem ;
+    rdfs:label "Scope Override Documentation Shape"@en,
+        "Forma de Documentación de Anulación de Ámbito"@es ;
+    rdfs:comment "Validates that systems with scope overrides have proper documentation."@en,
+        "Valida que sistemas con anulaciones de ámbito tengan documentación apropiada."@es ;
+
+    sh:sparql [
+        sh:message "System with scope override must document the override rationale per Article 2."@en,
+            "Sistema con anulación de ámbito debe documentar la justificación según Artículo 2."@es ;
+        sh:prefixes ai: ;
+        sh:select """
+            SELECT $this ?override
+            WHERE {
+                $this ai:hasPotentialExclusion ?exclusion .
+                $this ai:hasScopeOverride ?override .
+                FILTER NOT EXISTS {
+                    $this ai:hasScopeOverrideRationale ?rationale .
+                }
+            }
+        """
+    ] .
+
 # ===== END SHACL SHAPES =====

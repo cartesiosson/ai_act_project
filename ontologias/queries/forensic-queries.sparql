@@ -355,3 +355,192 @@ ORDER BY DESC(?violationCount)
 # 1. HISTORICAL_COMPLIANCE_STATE → What SHOULD have been done
 # 2. ARTICLE_6_3_HIDDEN_REQUIREMENTS → What WAS overlooked
 # 3. ENFORCEMENT_SEVERITY → Determine if willful negligence
+
+
+# ============================================================
+# QUERY 11: DETERMINE SCOPE (Article 2) - v0.38.0
+# ============================================================
+# Determine if an AI system falls within the scope of the EU AI Act
+# Based on Article 2 exclusions and contexts that override those exclusions
+# Usage: First step in forensic analysis - is this system even regulated?
+
+QUERY: DETERMINE_SCOPE
+SELECT ?system ?purpose ?purposeLabel ?exclusion ?exclusionLabel ?context ?contextLabel ?overridesExclusion ?inScope ?scopeReason
+WHERE {
+  # Find the system with its purpose and context
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  ?purpose rdfs:label ?purposeLabel .
+  ?context rdfs:label ?contextLabel .
+
+  # Check if the purpose has a potential exclusion
+  OPTIONAL {
+    ?purpose ai:mayBeExcludedBy ?exclusion .
+    ?exclusion rdfs:label ?exclusionLabel .
+  }
+
+  # Check if any context overrides the exclusion
+  OPTIONAL {
+    ?context ai:overridesExclusion ?overriddenExclusion .
+    FILTER (?overriddenExclusion = ?exclusion)
+    BIND(true AS ?overridesExclusion)
+  }
+
+  # Determine if system is IN SCOPE:
+  # 1. IN SCOPE if NO exclusion applies (most purposes)
+  # 2. IN SCOPE if exclusion IS overridden by context
+  # 3. OUT OF SCOPE only if exclusion applies AND is NOT overridden
+  BIND(
+    IF(!BOUND(?exclusion),
+      true,
+      IF(BOUND(?overridesExclusion) && ?overridesExclusion = true,
+        true,
+        false
+      )
+    ) AS ?inScope
+  )
+
+  # Generate human-readable scope reason
+  BIND(
+    IF(!BOUND(?exclusion),
+      CONCAT("IN SCOPE: Purpose '", ?purposeLabel, "' has no exclusion criteria - full EU AI Act applies"),
+      IF(BOUND(?overridesExclusion) && ?overridesExclusion = true,
+        CONCAT("IN SCOPE: Exclusion '", ?exclusionLabel, "' is OVERRIDDEN by context '", ?contextLabel, "' - system brought back into EU AI Act scope"),
+        CONCAT("OUT OF SCOPE: Purpose '", ?purposeLabel, "' excluded by '", ?exclusionLabel, "' and no overriding context detected")
+      )
+    ) AS ?scopeReason
+  )
+}
+ORDER BY ?system ?purpose
+---
+
+
+# ============================================================
+# QUERY 12: SCOPE EXCLUSION CHECK (Simplified ASK version)
+# ============================================================
+# Quick check: Is this specific purpose/context combination IN SCOPE?
+# Returns true if system IS regulated, false if excluded
+
+QUERY: IS_IN_SCOPE_ASK
+ASK WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  # Check if purpose has exclusion
+  OPTIONAL {
+    ?purpose ai:mayBeExcludedBy ?exclusion .
+  }
+
+  # Check if context overrides exclusion
+  OPTIONAL {
+    ?context ai:overridesExclusion ?exclusion .
+    BIND(true AS ?overridden)
+  }
+
+  # System is IN SCOPE if:
+  # 1. No exclusion exists, OR
+  # 2. Exclusion is overridden by context
+  FILTER (
+    !BOUND(?exclusion) ||
+    BOUND(?overridden)
+  )
+}
+---
+
+
+# ============================================================
+# QUERY 13: LIST SCOPE EXCLUSIONS
+# ============================================================
+# Get all defined scope exclusions and their legal references
+
+QUERY: LIST_SCOPE_EXCLUSIONS
+SELECT ?exclusion ?label ?articleReference ?comment
+WHERE {
+  ?exclusion a ai:ScopeExclusion ;
+             rdfs:label ?label .
+
+  OPTIONAL { ?exclusion ai:articleReference ?articleReference }
+  OPTIONAL { ?exclusion rdfs:comment ?comment }
+
+  FILTER (lang(?label) = "en")
+  FILTER (!BOUND(?comment) || lang(?comment) = "en")
+}
+ORDER BY ?exclusion
+---
+
+
+# ============================================================
+# QUERY 14: LIST EXCLUSION-OVERRIDING CONTEXTS
+# ============================================================
+# Get all contexts that can override scope exclusions
+
+QUERY: LIST_OVERRIDE_CONTEXTS
+SELECT ?context ?label ?overridesExclusion ?exclusionLabel ?comment
+WHERE {
+  ?context a ai:DeploymentContext ;
+           ai:overridesExclusion ?overridesExclusion ;
+           rdfs:label ?label .
+
+  ?overridesExclusion rdfs:label ?exclusionLabel .
+
+  OPTIONAL { ?context rdfs:comment ?comment }
+
+  FILTER (lang(?label) = "en")
+  FILTER (lang(?exclusionLabel) = "en")
+  FILTER (!BOUND(?comment) || lang(?comment) = "en")
+}
+ORDER BY ?context ?overridesExclusion
+---
+
+
+# ============================================================
+# QUERY 15: PURPOSES WITH POTENTIAL EXCLUSIONS
+# ============================================================
+# List all purposes that may be excluded from EU AI Act scope
+
+QUERY: POTENTIALLY_EXCLUDED_PURPOSES
+SELECT ?purpose ?label ?exclusion ?exclusionLabel ?exclusionArticle
+WHERE {
+  ?purpose a ai:Purpose ;
+           ai:mayBeExcludedBy ?exclusion ;
+           rdfs:label ?label .
+
+  ?exclusion rdfs:label ?exclusionLabel .
+  OPTIONAL { ?exclusion ai:articleReference ?exclusionArticle }
+
+  FILTER (lang(?label) = "en")
+  FILTER (lang(?exclusionLabel) = "en")
+}
+ORDER BY ?purpose
+---
+
+
+# ============================================================
+# USAGE: SEMANTIC SCOPE DETERMINATION WORKFLOW
+# ============================================================
+#
+# For forensic analysis, follow this workflow:
+#
+# Step 1: DETERMINE_SCOPE
+#   - First determine if the incident's AI system is even regulated
+#   - If OUT OF SCOPE (e.g., pure video game NPC), no further EU AI Act analysis
+#   - If IN SCOPE, proceed with compliance gap analysis
+#
+# Step 2: Check if scope was INITIALLY excluded but brought back:
+#   - If exclusion was overridden by context (e.g., entertainment → caused harm)
+#   - This indicates the system's real-world impact exceeded its stated purpose
+#   - Important for enforcement: potentially higher liability
+#
+# Step 3: If IN SCOPE, proceed with existing queries:
+#   - PROPER_CLASSIFICATION → Identify correct risk level
+#   - MANDATORY_REQUIREMENTS → Get compliance requirements
+#   - COMPLIANCE_GAPS → Find violations
+#
+# Example workflow for Case 15 (Deepfake pornography creator):
+# 1. DETERMINE_SCOPE: Purpose=Entertainment, Context=VictimImpactContext
+#    → Result: IN SCOPE (VictimImpactContext overrides EntertainmentWithoutRightsImpact)
+# 2. Scope reason: "Exclusion overridden - real victims identified"
+# 3. Proceed with full compliance analysis under HighRisk category

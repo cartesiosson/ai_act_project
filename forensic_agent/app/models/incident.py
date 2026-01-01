@@ -1,7 +1,7 @@
 """Incident extraction data models"""
 
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 
 
@@ -23,11 +23,30 @@ class SystemProperties(BaseModel):
     deployer: Optional[str] = Field(None, description="Entity deploying the AI system (Art. 3.4 EU AI Act)")
     developer: Optional[str] = Field(None, description="Entity that developed the AI system")
     # ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
-    prohibited_practices: List[str] = Field(default_factory=list, description="Prohibited practices under Article 5 (SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification)")
-    legal_exceptions: List[str] = Field(default_factory=list, description="Legal exceptions claimed under Article 5.2 (only applicable to real-time biometric identification)")
+    prohibited_practices: Optional[List[str]] = Field(default_factory=list, description="Prohibited practices under Article 5 (SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification)")
+    legal_exceptions: Optional[List[str]] = Field(default_factory=list, description="Legal exceptions claimed under Article 5.2 (only applicable to real-time biometric identification)")
     has_judicial_authorization: Optional[bool] = Field(None, description="Whether the system has prior judicial authorization (required for Article 5.2 exceptions)")
     # ARTICLE 6.3: PROFILING ESCALATION (v0.38.0)
-    performs_profiling: bool = Field(False, description="Whether the system performs profiling of natural persons (Art. 6.3 EU AI Act - always HighRisk if true)")
+    performs_profiling: Optional[bool] = Field(False, description="Whether the system performs profiling of natural persons (Art. 6.3 EU AI Act - always HighRisk if true)")
+    # ARTICLE 2: SCOPE OVERRIDE DETECTION (v0.39.0)
+    # These fields detect contexts that bring potentially excluded systems INTO EU AI Act scope
+    scope_override_contexts: Optional[List[str]] = Field(default_factory=list, description="Scope override contexts detected: CausesRealWorldHarmContext, VictimImpactContext, AffectsFundamentalRightsContext, LegalConsequencesContext, MinorsAffectedContext")
+    causes_death_or_injury: Optional[bool] = Field(False, description="Whether the incident caused death or physical injury")
+    affects_minors: Optional[bool] = Field(False, description="Whether minors (under 18) were affected")
+    affects_vulnerable_groups: Optional[bool] = Field(False, description="Whether vulnerable groups were affected (elderly, disabled, economically disadvantaged)")
+
+    # Validators to handle None values from LLM extraction
+    @field_validator('prohibited_practices', 'legal_exceptions', 'scope_override_contexts', mode='before')
+    @classmethod
+    def coerce_none_to_list(cls, v):
+        """Convert None to empty list for list fields"""
+        return v if v is not None else []
+
+    @field_validator('performs_profiling', 'causes_death_or_injury', 'affects_minors', 'affects_vulnerable_groups', mode='before')
+    @classmethod
+    def coerce_none_to_false(cls, v):
+        """Convert None to False for boolean fields"""
+        return v if v is not None else False
 
 
 class IncidentClassification(BaseModel):

@@ -14,22 +14,22 @@
      xmlns:terms="http://purl.org/dc/terms/"
      xmlns:ontology="http://data.europa.eu/eli/ontology#">
     <owl:Ontology rdf:about="http://ai-act.eu/ai-act">
-        <owl:versionIRI rdf:resource="http://ai-act.eu/ai-act/0.37.5"/>
+        <owl:versionIRI rdf:resource="http://ai-act.eu/ai-act/0.40.0"/>
         <owl:imports rdf:resource="https://w3id.org/airo"/>
         <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2025-11-22</terms:created>
         <terms:description xml:lang="es">Ontología unificada que describe los sistemas de IA regulados según el AI Act de la UE. Todos los conceptos consolidados bajo el namespace ai: para simplicidad. Incluye GPAI (Artículos 51-55), criterios contextuales y mapeos de estándares internacionales.</terms:description>
         <terms:description xml:lang="en">Unified ontology describing regulated AI systems according to the EU AI Act. All concepts consolidated under ai: namespace for simplicity. Includes GPAI (Articles 51-55), contextual criteria, and international standards mappings.</terms:description>
         <terms:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
-        <terms:title xml:lang="en">AI Act Unified Ontology (v0.37.5)</terms:title>
-        <terms:title xml:lang="es">Ontología Unificada del AI Act (v0.37.5)</terms:title>
+        <terms:title xml:lang="en">AI Act Unified Ontology (v0.40.0)</terms:title>
+        <terms:title xml:lang="es">Ontología Unificada del AI Act (v0.40.0)</terms:title>
         <rdfs:comment xml:lang="es">Las reglas SWRL están externalizadas en el directorio rules/ para mejor mantenibilidad y auditabilidad</rdfs:comment>
-        <rdfs:comment xml:lang="es">Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO, prácticas prohibidas del Artículo 5, e Identificador Europeo de Legislación (ELI). Cobertura completa de sistemas de IA con riesgo inaceptable con enlaces directos a EUR-Lex. Optimizado para detección forense de brechas de cumplimiento.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO, prácticas prohibidas del Artículo 5, exclusiones de ámbito del Artículo 2 con detección de anulación, e Identificador Europeo de Legislación (ELI). Cobertura completa de sistemas de IA con riesgo inaceptable con enlaces directos a EUR-Lex. Determinación semántica de ámbito vía IRIs ontológicas en lugar de keywords hardcodeadas. Optimizado para detección forense de brechas de cumplimiento con enfoque ontology-first.</rdfs:comment>
         <rdfs:comment xml:lang="en">SWRL rules are externalized in the rules/ directory for better maintainability and auditability</rdfs:comment>
-        <rdfs:comment xml:lang="en">Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Optimized for forensic compliance gap detection.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, Article 2 scope exclusions with override detection, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Semantic scope determination via ontology IRIs instead of hardcoded keywords. Optimized for forensic compliance gap detection with ontology-first approach.</rdfs:comment>
         <rdfs:seeAlso rdf:resource="file:/Users/cartesio/workspace/ai_act_project/tools/shacl/"/>
-        <rdfs:seeAlso rdf:resource="file:/Users/cartesio/workspace/ai_act_project/tools/tmp1766938997155/rules/"/>
-        <owl:versionInfo xml:lang="en">Version 0.37.5 released on 2025-12-23 with European Legislation Identifier (ELI) integration for EUR-Lex interoperability</owl:versionInfo>
-        <owl:versionInfo xml:lang="es">Versión 0.37.5 publicada el 2025-12-23 con integración del Identificador Europeo de Legislación (ELI) para interoperabilidad con EUR-Lex</owl:versionInfo>
+        <rdfs:seeAlso rdf:resource="file:/Users/cartesio/workspace/ai_act_project/tools/tmp1767292071775/rules/"/>
+        <owl:versionInfo xml:lang="en">Version 0.40.0 released on 2025-12-31. Architectural migration: code now uses ontology IRIs instead of ~150 hardcoded keywords for scope determination. Ontology-first approach where LLM extracts semantic concepts and Python validates against ontology classes.</owl:versionInfo>
+        <owl:versionInfo xml:lang="es">Versión 0.40.0 publicada el 2025-12-31. Migración arquitectónica: el código ahora usa IRIs ontológicas en lugar de ~150 keywords hardcodeadas para determinación de ámbito. Enfoque ontology-first donde el LLM extrae conceptos semánticos y Python valida contra clases de la ontología.</owl:versionInfo>
     </owl:Ontology>
     
 
@@ -393,6 +393,20 @@
     
 
 
+    <!-- http://ai-act.eu/ai#hasPotentialExclusion -->
+
+
+    <owl:ObjectProperty rdf:about="http://ai-act.eu/ai#hasPotentialExclusion">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#IntelligentSystem"/>
+        <rdfs:range rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <rdfs:comment xml:lang="en">Links an IntelligentSystem to a ScopeExclusion that may apply to it based on its purpose. This exclusion can be overridden by deployment context. Derived from hasPurpose + mayBeExcludedBy chain.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Vincula un IntelligentSystem a una ScopeExclusion que puede aplicarle basándose en su propósito. Esta exclusión puede ser anulada por el contexto de despliegue. Derivada de la cadena hasPurpose + mayBeExcludedBy.</rdfs:comment>
+        <rdfs:label xml:lang="en">has potential exclusion</rdfs:label>
+        <rdfs:label xml:lang="es">tiene exclusión potencial</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://ai-act.eu/ai#hasProhibitedPractice -->
 
 
@@ -431,6 +445,20 @@
         <rdfs:comment xml:lang="en">The primary purpose or intended use of an intelligent system.</rdfs:comment>
         <rdfs:label xml:lang="en">has Purpose</rdfs:label>
         <rdfs:label xml:lang="es">tiene Propósito</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#hasScopeOverride -->
+
+
+    <owl:ObjectProperty rdf:about="http://ai-act.eu/ai#hasScopeOverride">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#IntelligentSystem"/>
+        <rdfs:range rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <rdfs:comment xml:lang="en">Links an IntelligentSystem to the DeploymentContext that overrides its potential scope exclusion. When present, the system is definitively IN SCOPE of the EU AI Act regardless of its purpose exclusion status.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Vincula un IntelligentSystem al DeploymentContext que anula su posible exclusión de ámbito. Cuando está presente, el sistema está definitivamente DENTRO DEL ÁMBITO del EU AI Act independientemente de su estado de exclusión de propósito.</rdfs:comment>
+        <rdfs:label xml:lang="en">has scope override</rdfs:label>
+        <rdfs:label xml:lang="es">tiene anulación de ámbito</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -485,6 +513,34 @@
         <rdfs:comment xml:lang="es">Vincula un sistema de IA con sus usuarios. Usa airo:AIUser.</rdfs:comment>
         <rdfs:label xml:lang="en">has user</rdfs:label>
         <rdfs:label xml:lang="es">tiene usuario</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#mayBeExcludedBy -->
+
+
+    <owl:ObjectProperty rdf:about="http://ai-act.eu/ai#mayBeExcludedBy">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <rdfs:range rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <rdfs:comment xml:lang="es">Indica que un Propósito puede ser excluido del ámbito del EU AI Act por un criterio de exclusión específico. La exclusión aplica A MENOS QUE sea anulada por un contexto de despliegue.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Indicates that a Purpose may be excluded from EU AI Act scope by a specific exclusion criterion. The exclusion applies UNLESS overridden by a deployment context.</rdfs:comment>
+        <rdfs:label xml:lang="en">may be excluded by</rdfs:label>
+        <rdfs:label xml:lang="es">puede ser excluido por</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#overridesExclusion -->
+
+
+    <owl:ObjectProperty rdf:about="http://ai-act.eu/ai#overridesExclusion">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <rdfs:range rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <rdfs:comment xml:lang="es">Indica que un Contexto de Despliegue anula (cancela) una exclusión de ámbito, trayendo el sistema de vuelta al ámbito del EU AI Act. Se usa cuando un sistema que de otro modo estaría excluido causa daño real, afecta derechos fundamentales o tiene consecuencias legales.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Indicates that a DeploymentContext overrides (cancels) a scope exclusion, bringing the system back into EU AI Act scope. Used when a system that would otherwise be excluded causes real-world harm, affects fundamental rights, or has legal consequences.</rdfs:comment>
+        <rdfs:label xml:lang="es">anula exclusión</rdfs:label>
+        <rdfs:label xml:lang="en">overrides exclusion</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -1324,6 +1380,20 @@
     
 
 
+    <!-- http://ai-act.eu/ai#hasScopeOverrideRationale -->
+
+
+    <owl:DatatypeProperty rdf:about="http://ai-act.eu/ai#hasScopeOverrideRationale">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#IntelligentSystem"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment xml:lang="es">Documentación que explica por qué un sistema con un propósito potencialmente excluido cae dentro del ámbito del EU AI Act debido a su contexto de despliegue. Requerido para auditoría de cumplimiento según el Artículo 2.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Documentation explaining why a system with a potentially excluded purpose falls within EU AI Act scope due to its deployment context. Required for compliance audit per Article 2.</rdfs:comment>
+        <rdfs:label xml:lang="en">has scope override rationale</rdfs:label>
+        <rdfs:label xml:lang="es">tiene justificación de anulación de ámbito</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://ai-act.eu/ai#hasUrn -->
 
 
@@ -1346,6 +1416,20 @@
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
         <rdfs:comment xml:lang="en">Version identifier for an entity.</rdfs:comment>
         <rdfs:label xml:lang="en">has Version</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#isInEUAIActScope -->
+
+
+    <owl:DatatypeProperty rdf:about="http://ai-act.eu/ai#isInEUAIActScope">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#IntelligentSystem"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <rdfs:comment xml:lang="en">Boolean flag indicating whether the system falls within EU AI Act regulatory scope. True if: (1) no potential exclusion applies, or (2) a scope override context is present.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Flag booleano indicando si el sistema cae dentro del ámbito regulatorio del EU AI Act. True si: (1) no aplica ninguna exclusión potencial, o (2) está presente un contexto de anulación de ámbito.</rdfs:comment>
+        <rdfs:label xml:lang="es">está en ámbito del EU AI Act</rdfs:label>
+        <rdfs:label xml:lang="en">is in EU AI Act scope</rdfs:label>
     </owl:DatatypeProperty>
     
 
@@ -1400,6 +1484,27 @@
         <rdfs:comment xml:lang="en">Indicates if the system requires explainability for affected persons per Art. 86 EU AI Act. Inferred when system is high-risk AND has affected persons.</rdfs:comment>
         <rdfs:label xml:lang="es">requiere explicabilidad</rdfs:label>
         <rdfs:label xml:lang="en">requires explainability</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#requiresFRIA -->
+
+
+    <owl:DatatypeProperty rdf:about="http://ai-act.eu/ai#requiresFRIA">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://ai-act.eu/ai#DeploymentContext"/>
+                    <rdf:Description rdf:about="http://ai-act.eu/ai#IntelligentSystem"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <rdfs:comment xml:lang="en">Boolean flag indicating whether a Fundamental Rights Impact Assessment (FRIA) is required per Article 27. Automatically true for systems with scope override contexts (VictimImpact, LegalConsequences, CausesRealWorldHarm, MinorsAffected, BiometricProcessing).</rdfs:comment>
+        <rdfs:comment xml:lang="es">Flag booleano indicando si se requiere una Evaluación de Impacto en Derechos Fundamentales (EIFF) según el Artículo 27. Automáticamente true para sistemas con contextos de anulación de ámbito (VictimImpact, LegalConsequences, CausesRealWorldHarm, MinorsAffected, BiometricProcessing).</rdfs:comment>
+        <rdfs:label xml:lang="es">requiere EIFF</rdfs:label>
+        <rdfs:label xml:lang="en">requires FRIA</rdfs:label>
     </owl:DatatypeProperty>
     
 
@@ -1773,6 +1878,19 @@
 
     <owl:Class rdf:about="http://ai-act.eu/ai#RobustnessRequirement">
         <rdfs:subClassOf rdf:resource="http://ai-act.eu/ai#TechnicalRequirement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ai-act.eu/ai#ScopeExclusion -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#ScopeExclusion">
+        <rdfs:subClassOf rdf:resource="http://ai-act.eu/ai#Identifiable"/>
+        <rdfs:comment xml:lang="en">Exclusion from EU AI Act scope per Article 2. Systems may be excluded from regulation under certain conditions.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Exclusión del ámbito del EU AI Act según el Artículo 2. Los sistemas pueden quedar excluidos de la regulación bajo ciertas condiciones.</rdfs:comment>
+        <rdfs:label xml:lang="es">Exclusión de Ámbito</rdfs:label>
+        <rdfs:label xml:lang="en">Scope Exclusion</rdfs:label>
     </owl:Class>
     
 
@@ -2566,6 +2684,25 @@
     
 
 
+    <!-- http://ai-act.eu/ai#AffectsFundamentalRightsContext -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#AffectsFundamentalRightsContext">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <ai:assignsRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#PureScientificResearch"/>
+        <ai:requiresFRIA rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:requiresFRIA>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_27/oj"/>
+        <rdfs:comment xml:lang="en">[Article 2 + Article 3(49)] Context where an AI system affects the fundamental rights of natural persons as defined in the EU Charter. This OVERRIDES all exclusions and brings the system into EU AI Act scope. Includes: right to human dignity, right to life, prohibition of torture, right to liberty, respect for private life, protection of personal data, freedom of expression, non-discrimination, rights of the child, rights of persons with disabilities.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2 + Artículo 3(49)] Contexto donde un sistema de IA afecta los derechos fundamentales de personas físicas según la Carta de la UE. Esto ANULA todas las exclusiones y trae el sistema al ámbito del EU AI Act. Incluye: derecho a la dignidad humana, derecho a la vida, prohibición de tortura, derecho a la libertad, respeto a la vida privada, protección de datos personales, libertad de expresión, no discriminación, derechos del niño, derechos de personas con discapacidad.</rdfs:comment>
+        <rdfs:label xml:lang="es">Afecta Derechos Fundamentales</rdfs:label>
+        <rdfs:label xml:lang="en">Affects Fundamental Rights</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#AnnexVIIISafeguardsCompliance -->
 
 
@@ -2711,6 +2848,23 @@
     
 
 
+    <!-- http://ai-act.eu/ai#BiometricProcessingContext -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#BiometricProcessingContext">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <ai:assignsRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:requiresFRIA rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:requiresFRIA>
+        <rdfs:comment xml:lang="es">[ANEXO III - Punto 1] Contexto que involucra procesamiento de datos biométricos para identificación o categorización. Según el Anexo III, los sistemas de identificación biométrica son de ALTO RIESGO independientemente del propósito. Esto ANULA exclusiones. Ejemplos: reconocimiento facial en juegos con fotos reales, detección de emociones en apps de entretenimiento, autenticación biométrica incluso para uso personal.</rdfs:comment>
+        <rdfs:comment xml:lang="en">[ANNEX III - Point 1] Context involving processing of biometric data for identification or categorization. Per Annex III, biometric identification systems are HIGH-RISK regardless of purpose. This OVERRIDES exclusions. Examples: facial recognition in games with real photos, emotion detection in entertainment apps, biometric authentication even for personal use.</rdfs:comment>
+        <rdfs:label xml:lang="en">Biometric Processing</rdfs:label>
+        <rdfs:label xml:lang="es">Procesamiento Biométrico</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#BiometricSecurityRequirement -->
 
 
@@ -2732,6 +2886,25 @@
     
 
 
+    <!-- http://ai-act.eu/ai#CausesRealWorldHarmContext -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#CausesRealWorldHarmContext">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <ai:assignsRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:requiresFRIA rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:requiresFRIA>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_27/oj"/>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_73/oj"/>
+        <rdfs:comment xml:lang="en">[Article 3(49) - Serious Incident] Context where an AI system causes or contributes to death, suicide, serious damage to health, serious damage to property, environment, or critical infrastructure. Per Article 3(49), a &apos;serious incident&apos; brings the system into full regulatory scope regardless of original purpose. This context OVERRIDES exclusions for entertainment and personal use. Examples: TikTok algorithm contributing to teen suicide (Chase Nasca), video game causing seizures, personal assistant giving dangerous medical advice, entertainment app causing psychological harm. Triggers mandatory incident reporting per Article 73.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 3(49) - Incidente Grave] Contexto donde un sistema de IA causa o contribuye a muerte, suicidio, daño grave a la salud, daño grave a la propiedad, medio ambiente o infraestructura crítica. Según el Artículo 3(49), un &apos;incidente grave&apos; trae el sistema al ámbito regulatorio completo independientemente del propósito original. Este contexto ANULA exclusiones para entretenimiento y uso personal. Ejemplos: algoritmo de TikTok contribuyendo al suicidio de adolescentes (Chase Nasca), videojuego que causa convulsiones, asistente personal que da consejos médicos peligrosos, app de entretenimiento que causa daño psicológico. Activa reporte obligatorio de incidentes según Artículo 73.</rdfs:comment>
+        <rdfs:label xml:lang="es">Causa Daño Real</rdfs:label>
+        <rdfs:label xml:lang="en">Causes Real World Harm</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#ChildrenAndMinorsRiskCriterion -->
 
 
@@ -2742,6 +2915,44 @@
         <rdfs:comment xml:lang="es">[CONTEXT] Los sistemas de IA que afectan a menores requieren medidas de protección mejoradas.</rdfs:comment>
         <rdfs:label xml:lang="en">Children and Minors Vulnerability</rdfs:label>
         <rdfs:label xml:lang="es">Vulnerabilidad de Menores</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#ContentRecommendation -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#ContentRecommendation">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <ai:activatesCriterion rdf:resource="http://ai-act.eu/ai#ContentRecommendationCriterion"/>
+        <ai:mayBeExcludedBy rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:expectedRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <rdfs:comment xml:lang="en">[Article 2 + Recital 12 + DSA - POTENTIALLY EXCLUDED but often IN SCOPE] Purpose for AI systems that recommend content to users based on their behavior, preferences, or profile. Includes social media feeds (TikTok For You, Instagram Explore, YouTube recommendations), news aggregators, and personalized content curation. May be excluded per Recital 12 when purely for entertainment without harm. EXCLUSION IS OVERRIDDEN when: (1) system causes death, suicide, or injury (Chase Nasca case), (2) affects minors (heightened scrutiny), (3) creates victims (deepfakes), (4) leads to legal consequences, (5) performs profiling (Art. 6.3). Most real-world recommendation systems fall IN SCOPE due to profiling and fundamental rights impact.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2 + Considerando 12 + DSA - POTENCIALMENTE EXCLUIDO pero frecuentemente EN ÁMBITO] Propósito para sistemas de IA que recomiendan contenido a usuarios basándose en su comportamiento, preferencias o perfil. Incluye feeds de redes sociales (TikTok For You, Instagram Explore, recomendaciones de YouTube), agregadores de noticias y curación de contenido personalizado. Puede ser excluido según el Considerando 12 cuando es puramente para entretenimiento sin daño. LA EXCLUSIÓN SE ANULA cuando: (1) el sistema causa muerte, suicidio o lesión (caso Chase Nasca), (2) afecta a menores (escrutinio reforzado), (3) crea víctimas (deepfakes), (4) lleva a consecuencias legales, (5) realiza perfilado (Art. 6.3). La mayoría de sistemas de recomendación reales caen EN ÁMBITO debido al perfilado e impacto en derechos fundamentales.</rdfs:comment>
+        <rdfs:label xml:lang="en">Content Recommendation</rdfs:label>
+        <rdfs:label xml:lang="es">Recomendación de Contenido</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#ContentRecommendationCriterion -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#ContentRecommendationCriterion">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#NormativeCriterion"/>
+        <ai:activatesRequirement rdf:resource="http://ai-act.eu/ai#BiasDetectionRequirement"/>
+        <ai:activatesRequirement rdf:resource="http://ai-act.eu/ai#FundamentalRightsAssessmentRequirement"/>
+        <ai:activatesRequirement rdf:resource="http://ai-act.eu/ai#HumanOversightRequirement"/>
+        <ai:activatesRequirement rdf:resource="http://ai-act.eu/ai#NonDiscriminationRequirement"/>
+        <ai:activatesRequirement rdf:resource="http://ai-act.eu/ai#RiskManagementRequirement"/>
+        <ai:activatesRequirement rdf:resource="http://ai-act.eu/ai#TransparencyRequirement"/>
+        <ai:assignsRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2022/2065/art_27/oj"/>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_6/par_3/oj"/>
+        <rdfs:comment xml:lang="en">[Article 6.3 + DSA + v0.39.0] Criterion for AI systems that recommend content to users through profiling. Most content recommendation systems perform profiling of natural persons (analyzing behavior, preferences, interests) and therefore fall under Article 6.3 automatic high-risk classification. Systems must implement transparency requirements (DSA Art. 27), non-discrimination safeguards, and human oversight. When affecting minors or causing harm (death, suicide, injury), additional FRIA requirements apply per Article 27.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 6.3 + DSA + v0.39.0] Criterio para sistemas de IA que recomiendan contenido a usuarios mediante perfilado. La mayoría de sistemas de recomendación de contenido realizan perfilado de personas naturales (analizando comportamiento, preferencias, intereses) y por tanto caen bajo la clasificación automática de alto riesgo del Artículo 6.3. Los sistemas deben implementar requisitos de transparencia (DSA Art. 27), salvaguardas de no discriminación y supervisión humana. Cuando afectan a menores o causan daño (muerte, suicidio, lesión), aplican requisitos adicionales de FRIA según el Artículo 27.</rdfs:comment>
+        <rdfs:label xml:lang="en">Content Recommendation Criterion</rdfs:label>
+        <rdfs:label xml:lang="es">Criterio de Recomendación de Contenido</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -3071,6 +3282,21 @@
     
 
 
+    <!-- http://ai-act.eu/ai#EmailFiltering -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#EmailFiltering">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <ai:mayBeExcludedBy rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:expectedRiskLevel rdf:resource="http://ai-act.eu/ai#MinimalRisk"/>
+        <rdfs:comment xml:lang="en">[Article 2(10) - POTENTIALLY EXCLUDED] Purpose for personal email spam filters and organization. May be excluded from EU AI Act scope per Article 2(10) when used for purely personal non-professional email management. EXCLUSION IS OVERRIDDEN when used for business email, affects employment decisions, or filters critical communications.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2(10) - POTENCIALMENTE EXCLUIDO] Propósito para filtros de spam personales y organización de correo. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(10) cuando se usa para gestión de correo personal no profesional. LA EXCLUSIÓN SE ANULA cuando se usa para correo empresarial, afecta decisiones de empleo o filtra comunicaciones críticas.</rdfs:comment>
+        <rdfs:label xml:lang="en">Email Filtering</rdfs:label>
+        <rdfs:label xml:lang="es">Filtrado de Correo</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#EmotionalManipulationContext -->
 
 
@@ -3094,6 +3320,35 @@
         <rdfs:comment xml:lang="en">Systems must encrypt sensitive data in transit and at rest.</rdfs:comment>
         <rdfs:label xml:lang="en">Encryption Requirement</rdfs:label>
         <rdfs:label xml:lang="es">Requisito de Encriptación</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#Entertainment -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#Entertainment">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <ai:mayBeExcludedBy rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:expectedRiskLevel rdf:resource="http://ai-act.eu/ai#MinimalRisk"/>
+        <rdfs:comment xml:lang="en">[Article 2 + Recital 12 - POTENTIALLY EXCLUDED] Purpose for pure entertainment systems such as video games, recreational AI, NPCs, and leisure applications. May be excluded from EU AI Act scope per Recital 12 IF the system does not affect fundamental rights, does not cause real-world harm, and has no legal consequences. EXCLUSION IS OVERRIDDEN when the system causes harm to real persons, affects fundamental rights, or results in legal action.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2 + Considerando 12 - POTENCIALMENTE EXCLUIDO] Propósito para sistemas de entretenimiento puro como videojuegos, IA recreativa, NPCs y aplicaciones de ocio. Puede ser excluido del ámbito del EU AI Act según el Considerando 12 SI el sistema no afecta derechos fundamentales, no causa daño real y no tiene consecuencias legales. LA EXCLUSIÓN SE ANULA cuando el sistema causa daño a personas reales, afecta derechos fundamentales o resulta en acciones legales.</rdfs:comment>
+        <rdfs:label xml:lang="en">Entertainment</rdfs:label>
+        <rdfs:label xml:lang="es">Entretenimiento</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#EntertainmentWithoutRightsImpact -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <ai:articleReference>Recital 12</ai:articleReference>
+        <rdfs:comment xml:lang="en">Pure entertainment systems (video games, recreational AI, NPCs) without impact on fundamental rights of natural persons. Per Recital 12, AI systems with limited impact on fundamental rights may have reduced obligations.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Sistemas de entretenimiento puro (videojuegos, IA recreativa, NPCs) sin impacto en derechos fundamentales de personas físicas. Según el Considerando 12, los sistemas de IA con impacto limitado en derechos fundamentales pueden tener obligaciones reducidas.</rdfs:comment>
+        <rdfs:label xml:lang="en">Entertainment Without Rights Impact</rdfs:label>
+        <rdfs:label xml:lang="es">Entretenimiento Sin Impacto en Derechos</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -3879,6 +4134,24 @@
     
 
 
+    <!-- http://ai-act.eu/ai#LegalConsequencesContext -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#LegalConsequencesContext">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <ai:assignsRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:requiresFRIA rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:requiresFRIA>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_27/oj"/>
+        <rdfs:comment xml:lang="en">[Article 2 + Article 3(49)] Context where an AI system&apos;s operation results in legal consequences for natural persons. This OVERRIDES exclusions and brings the system into EU AI Act scope. Includes: arrests, criminal prosecution, jail/prison sentences, lawsuits, fines, penalties, court proceedings, regulatory sanctions, employment termination, denial of services based on AI decision. Examples: AI-based wrongful arrest, deepfake leading to prosecution, AI system causing legal liability, Nasca family lawsuit against TikTok.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2 + Artículo 3(49)] Contexto donde la operación de un sistema de IA resulta en consecuencias legales para personas físicas. Esto ANULA exclusiones y trae el sistema al ámbito del EU AI Act. Incluye: arrestos, procesamientos penales, sentencias de cárcel/prisión, demandas, multas, sanciones, procedimientos judiciales, sanciones regulatorias, despido laboral, denegación de servicios basada en decisión de IA. Ejemplos: arresto indebido por IA, deepfake que lleva a procesamiento, sistema de IA que causa responsabilidad legal, demanda de la familia Nasca contra TikTok.</rdfs:comment>
+        <rdfs:label xml:lang="es">Consecuencias Legales</rdfs:label>
+        <rdfs:label xml:lang="en">Legal Consequences</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#LimitationsDocumentationRequirement -->
 
 
@@ -4086,6 +4359,21 @@
     
 
 
+    <!-- http://ai-act.eu/ai#MilitaryDefenseUse -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#MilitaryDefenseUse">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <ai:articleReference>Article 2(3)</ai:articleReference>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_2/par_3/oj"/>
+        <rdfs:comment xml:lang="en">AI systems developed or used exclusively for military purposes. This Regulation does not apply to AI systems developed or used exclusively for military purposes.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Sistemas de IA desarrollados o utilizados exclusivamente con fines militares. Este Reglamento no se aplica a sistemas de IA desarrollados o utilizados exclusivamente con fines militares.</rdfs:comment>
+        <rdfs:label xml:lang="en">Military Defense Use</rdfs:label>
+        <rdfs:label xml:lang="es">Uso Militar y de Defensa</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#MinimalRisk -->
 
 
@@ -4110,6 +4398,24 @@
         <rdfs:comment xml:lang="en">Persons under 18 years of age - enhanced protection per Recital 28.</rdfs:comment>
         <rdfs:label xml:lang="es">Menor</rdfs:label>
         <rdfs:label xml:lang="en">Minor</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#MinorsAffectedContext -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#MinorsAffectedContext">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <ai:assignsRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:requiresFRIA rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:requiresFRIA>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_27/oj"/>
+        <rdfs:comment xml:lang="en">[Article 2 + Article 27 + Recital 47] Context where an AI system affects minors (persons under 18 years old). Children and teenagers are considered vulnerable natural persons requiring heightened protection. This OVERRIDES exclusions regardless of original purpose (entertainment, gaming, personal use). Examples: TikTok For You algorithm affecting teenagers, AI chatbots interacting with minors, gaming AI targeting young users, educational recommendation systems. The presence of minors triggers automatic FRIA requirement per Article 27.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2 + Artículo 27 + Considerando 47] Contexto donde un sistema de IA afecta a menores (personas menores de 18 años). Los niños y adolescentes son considerados personas naturales vulnerables que requieren protección reforzada. Esto ANULA exclusiones independientemente del propósito original (entretenimiento, juegos, uso personal). Ejemplos: algoritmo TikTok For You afectando adolescentes, chatbots de IA interactuando con menores, IA de juegos dirigida a usuarios jóvenes, sistemas de recomendación educativa. La presencia de menores activa automáticamente el requisito de FRIA según el Artículo 27.</rdfs:comment>
+        <rdfs:label xml:lang="es">Contexto de Menores Afectados</rdfs:label>
+        <rdfs:label xml:lang="en">Minors Affected Context</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -4266,6 +4572,21 @@
     
 
 
+    <!-- http://ai-act.eu/ai#PersonalAssistantUse -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#PersonalAssistantUse">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <ai:mayBeExcludedBy rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:expectedRiskLevel rdf:resource="http://ai-act.eu/ai#MinimalRisk"/>
+        <rdfs:comment xml:lang="en">[Article 2(10) - POTENTIALLY EXCLUDED] Purpose for personal AI assistants used in purely personal non-professional activities. May be excluded from EU AI Act scope per Article 2(10) when used by natural persons for purely personal activities. EXCLUSION IS OVERRIDDEN when the assistant is used professionally, affects third parties, or causes harm.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2(10) - POTENCIALMENTE EXCLUIDO] Propósito para asistentes de IA personales utilizados en actividades puramente personales no profesionales. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(10) cuando es usado por personas físicas para actividades puramente personales. LA EXCLUSIÓN SE ANULA cuando el asistente se usa profesionalmente, afecta a terceros o causa daño.</rdfs:comment>
+        <rdfs:label xml:lang="en">Personal Assistant Use</rdfs:label>
+        <rdfs:label xml:lang="es">Uso de Asistente Personal</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#PersonalDataRetentionRiskCriterion -->
 
 
@@ -4275,6 +4596,21 @@
         <rdfs:comment xml:lang="en">[CONTEXT] AI systems retaining personal data long-term require data governance.</rdfs:comment>
         <rdfs:label xml:lang="en">Personal Data Retention</rdfs:label>
         <rdfs:label xml:lang="es">Retención de Datos Personales</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#PersonalNonProfessionalUse -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#PersonalNonProfessionalUse">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <ai:articleReference>Article 2(10)</ai:articleReference>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_2/par_10/oj"/>
+        <rdfs:comment xml:lang="en">AI systems used for purely personal non-professional activities. This Regulation does not apply to natural persons using AI systems in the course of a purely personal non-professional activity.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Sistemas de IA utilizados para actividades puramente personales no profesionales. Este Reglamento no se aplica a personas físicas que utilicen sistemas de IA en el curso de una actividad puramente personal no profesional.</rdfs:comment>
+        <rdfs:label xml:lang="en">Personal Non-Professional Use</rdfs:label>
+        <rdfs:label xml:lang="es">Uso Personal No Profesional</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -4473,6 +4809,21 @@
         <rdfs:comment xml:lang="es">[Artículo 5.1.h] Espacios públicamente accesibles donde la identificación biométrica remota en tiempo real está generalmente prohibida excepto bajo excepciones muy limitadas (Artículo 5.2). Incluye calles, plazas, centros comerciales, aeropuertos, estaciones de tren y otras áreas libremente accesibles al público. La identificación biométrica en tiempo real en espacios públicos para aplicación de la ley requiere autorización judicial y está sujeta a condiciones estrictas.</rdfs:comment>
         <rdfs:label xml:lang="es">Espacios Públicos</rdfs:label>
         <rdfs:label xml:lang="en">Public Spaces</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#PureScientificResearch -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#PureScientificResearch">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <ai:articleReference>Article 2(6)</ai:articleReference>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_2/par_6/oj"/>
+        <rdfs:comment xml:lang="en">AI systems used exclusively for scientific research and development. This Regulation does not apply to AI systems developed or used exclusively for scientific research and development.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Sistemas de IA utilizados exclusivamente para investigación y desarrollo científico. Este Reglamento no se aplica a sistemas de IA desarrollados o utilizados exclusivamente para investigación y desarrollo científico.</rdfs:comment>
+        <rdfs:label xml:lang="es">Investigación Científica Pura</rdfs:label>
+        <rdfs:label xml:lang="en">Pure Scientific Research</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -4685,6 +5036,21 @@
         <rdfs:comment xml:lang="en">Deployment contexts where system failures could result in serious harm to health, safety, or human life.</rdfs:comment>
         <rdfs:label xml:lang="es">Contexto crítico de seguridad</rdfs:label>
         <rdfs:label xml:lang="en">Safety Critical Context</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#ScientificResearch -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#ScientificResearch">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#Purpose"/>
+        <ai:mayBeExcludedBy rdf:resource="http://ai-act.eu/ai#PureScientificResearch"/>
+        <ai:expectedRiskLevel rdf:resource="http://ai-act.eu/ai#MinimalRisk"/>
+        <rdfs:comment xml:lang="en">[Article 2(6) - POTENTIALLY EXCLUDED] Purpose for AI systems used exclusively for scientific research and development. May be excluded from EU AI Act scope per Article 2(6). EXCLUSION IS OVERRIDDEN when research results in deployed systems, affects human subjects without consent, or has commercial applications.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2(6) - POTENCIALMENTE EXCLUIDO] Propósito para sistemas de IA utilizados exclusivamente para investigación y desarrollo científico. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(6). LA EXCLUSIÓN SE ANULA cuando la investigación resulta en sistemas desplegados, afecta a sujetos humanos sin consentimiento o tiene aplicaciones comerciales.</rdfs:comment>
+        <rdfs:label xml:lang="es">Investigación Científica</rdfs:label>
+        <rdfs:label xml:lang="en">Scientific Research</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -4972,6 +5338,21 @@
     
 
 
+    <!-- http://ai-act.eu/ai#ThirdCountryExclusion -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#ThirdCountryExclusion">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#ScopeExclusion"/>
+        <ai:articleReference>Article 2(7)</ai:articleReference>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_2/par_7/oj"/>
+        <rdfs:comment xml:lang="en">AI systems placed on the market or put into service in third countries where output is used in the Union. Partial applicability applies.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Sistemas de IA puestos en el mercado o en servicio en países terceros donde la salida se utiliza en la Unión. Se aplica aplicabilidad parcial.</rdfs:comment>
+        <rdfs:label xml:lang="es">Exclusión de Países Terceros</rdfs:label>
+        <rdfs:label xml:lang="en">Third Country Exclusion</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#TraceabilityRequirement -->
 
 
@@ -5076,6 +5457,24 @@
         <rdfs:comment xml:lang="en">Systems must notify users when they interact with AI-generated content.</rdfs:comment>
         <rdfs:label xml:lang="es">Requisito de Notificación al Usuario</rdfs:label>
         <rdfs:label xml:lang="en">User Notification Requirement</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#VictimImpactContext -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#VictimImpactContext">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeploymentContext"/>
+        <ai:assignsRiskLevel rdf:resource="http://ai-act.eu/ai#HighRisk"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#EntertainmentWithoutRightsImpact"/>
+        <ai:overridesExclusion rdf:resource="http://ai-act.eu/ai#PersonalNonProfessionalUse"/>
+        <ai:requiresFRIA rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:requiresFRIA>
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_27/oj"/>
+        <rdfs:comment xml:lang="en">[Article 2 + Article 3(49)] Context where an AI system creates identifiable victims who suffer harm, abuse, harassment, or damage. This OVERRIDES exclusions regardless of original purpose. Examples: non-consensual deepfake pornography victims (South Korean schools), AI-generated harassment targeting individuals, synthetic media used for fraud or defamation, Chase Nasca as victim of algorithmic harm. The existence of real victims brings any AI system into regulatory scope.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 2 + Artículo 3(49)] Contexto donde un sistema de IA crea víctimas identificables que sufren daño, abuso, acoso o perjuicio. Esto ANULA exclusiones independientemente del propósito original. Ejemplos: víctimas de pornografía deepfake no consentida (escuelas de Corea del Sur), acoso generado por IA dirigido a individuos, medios sintéticos usados para fraude o difamación, Chase Nasca como víctima de daño algorítmico. La existencia de víctimas reales trae cualquier sistema de IA al ámbito regulatorio.</rdfs:comment>
+        <rdfs:label xml:lang="es">Impacto en Víctimas</rdfs:label>
+        <rdfs:label xml:lang="en">Victim Impact</rdfs:label>
     </owl:NamedIndividual>
     
 

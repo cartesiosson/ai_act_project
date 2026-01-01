@@ -1,0 +1,2709 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix ai: <http://ai-act.eu/ai#> .
+@prefix airo: <https://w3id.org/airo#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix iso: <http://iso.org/42001#> .
+@prefix nist: <http://nist.gov/ai-rmf#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+
+
+# ===== VERSION HISTORY =====
+# v0.40.0 (2025-12-31) - SEMANTIC SCOPE DETERMINATION MIGRATION:
+#   - ARCHITECTURAL: Migrated sparql_queries.py from keyword-based to semantic scope determination
+#   - REMOVED: ~150 hardcoded keywords from Python code (OUT_OF_SCOPE_KEYWORDS, FALLBACK_EXCLUSION_KEYWORDS)
+#   - STRATEGY: LLM extracts semantic concepts → Python validates against ontology
+#   - VALIDATION: Scope override contexts validated against ontology classes:
+#     * ai:CausesRealWorldHarmContext, ai:VictimImpactContext
+#     * ai:AffectsFundamentalRightsContext, ai:LegalConsequencesContext
+#     * ai:MinorsAffectedContext, ai:BiometricProcessingContext
+#   - BENEFIT: Ontology-first approach - code references ontology IRIs, not ad-hoc keywords
+#   - BENCHMARK: 100% success rate maintained after migration (5/5 cases)
+#   - TFM ALIGNMENT: Fulfills thesis objective of semantic compliance classification
+#   - NOTE: Ontology structure unchanged from v0.39.0; this version documents code migration
+#
+# v0.39.0 (2025-12-31) - SCOPE OVERRIDE DETECTION & CONTENT RECOMMENDATION:
+#   - ADDED: ai:MinorsAffectedContext override context for systems affecting children/teenagers
+#   - ADDED: ai:ContentRecommendation purpose with full criteria and requirements
+#   - ADDED: ai:ContentRecommendationCriterion for recommendation algorithms (social media, news feeds)
+#   - ADDED: ai:hasScopeOverride property (IntelligentSystem → DeploymentContext)
+#   - ADDED: ai:isInEUAIActScope property (IntelligentSystem → boolean)
+#   - ADDED: ai:hasPotentialExclusion property (IntelligentSystem → ScopeExclusion)
+#   - ADDED: ai:requiresFRIA property for contexts requiring FRIA per Article 27
+#   - ADDED: ai:hasScopeOverrideRationale property for documentation
+#   - ENHANCED: Entertainment purpose with ContentRecommendation mapping
+#   - PURPOSE: Complete scope override detection for forensic analysis
+#   - BENEFIT: Accurate classification of entertainment/recommendation systems causing real harm
+#   - VALIDATED: Against Chase Nasca (TikTok), deepfake, and psychosis cases from AIAAIC
+#
+# v0.38.0 (2025-12-30) - ARTICLE 2 SCOPE EXCLUSIONS (SEMANTIC SCOPE DETERMINATION):
+#   - ADDED: ai:ScopeExclusion class hierarchy for Article 2 scope exclusions
+#   - ADDED: ai:PersonalNonProfessionalUse exclusion (Article 2.10)
+#   - ADDED: ai:PureScientificResearch exclusion (Article 2.6)
+#   - ADDED: ai:MilitaryDefenseUse exclusion (Article 2.3)
+#   - ADDED: ai:EntertainmentWithoutRightsImpact exclusion (Recital 12)
+#   - ADDED: ai:ThirdCountryExclusion exclusion (Article 2.7)
+#   - ADDED: ai:mayBeExcludedBy property (Purpose → ScopeExclusion)
+#   - ADDED: ai:overridesExclusion property (DeploymentContext → ScopeExclusion)
+#   - ADDED: ai:Entertainment, ai:PersonalAssistant, ai:EmailFiltering purposes with exclusion links
+#   - ADDED: ai:AffectsFundamentalRightsContext, ai:CausesRealWorldHarmContext, ai:LegalConsequencesContext
+#   - PURPOSE: Enable semantic scope determination via SPARQL instead of ad-hoc keyword filtering
+#   - BENEFIT: Scalable, auditable, ontology-driven scope classification
+#   - ELI: Links to EUR-Lex Article 2 paragraphs
+#
+# v0.37.5 (2025-12-23) - EUROPEAN LEGISLATION IDENTIFIER (ELI) INTEGRATION:
+#   - ADDED: eli: prefix for European Legislation Identifier ontology
+#   - ADDED: eli:cites property linking criteria/requirements to EUR-Lex URIs
+#   - ADDED: ELI URIs for all Article 5 prohibited practices (5.1.a, 5.1.b, 5.1.c, 5.1.d, 5.1.h)
+#   - ADDED: ELI URIs for Article 5.2 exceptions (victim search, terrorist threat, serious crime)
+#   - ADDED: ELI URIs for Article 5 enforcement requirements
+#   - ADDED: ELI URIs for key high-risk requirements (Articles 9, 10, 11, 12, 13, 14, 15, 27)
+#   - MAINTAINED: ai:articleReference for human-readable backward compatibility
+#   - INTEROPERABILITY: Direct links to EUR-Lex consolidated legislation
+#   - REFERENCE: Council Conclusions 2012/C 325/02, Decision (EU) 2017/1191
+#
+# v0.37.4 (2025-12-15) - ARTICLE 5: PROHIBITED PRACTICES + OOPS! FIXES:
+#   - OOPS! P10 FIX: Added disjointness declarations:
+#     * RiskLevel instances (AllDifferent): UnacceptableRisk, HighRisk, LimitedRisk, MinimalRisk, MediumRisk
+#     * Purpose owl:disjointWith DeploymentContext
+#   - OOPS! P31 FIX: Changed 3 incorrect owl:equivalentClass to skos:closeMatch:
+#     * ai:IntelligentSystem ↔ airo:AISystem (not equivalent: AI Act Annex I restrictions)
+#     * ai:TrainingDataOrigin ↔ airo:DataSource (not equivalent: specific vs general)
+#     * ai:AlgorithmType ↔ airo:AlgorithmCategory (not equivalent: different taxonomies)
+#   - MAJOR ADDITION: Complete Article 5 implementation (prohibited AI practices)
+#   - ADDED: ProhibitedPracticeCriterion base class + 5 prohibited practices
+#   - ADDED: SubliminalManipulationCriterion (Art. 5.1.a)
+#   - ADDED: VulnerabilityExploitationCriterion (Art. 5.1.b)
+#   - ADDED: SocialScoringCriterion (Art. 5.1.c)
+#   - ADDED: PredictivePolicingProfilingCriterion (Art. 5.1.d)
+#   - ADDED: RealTimeBiometricIdentificationCriterion (Art. 5.1.h)
+#   - ADDED: LegalException class + 3 exceptions (Art. 5.2)
+#   - ADDED: 4 new properties (hasProhibitedPractice, articleReference, prohibitionScope, hasException)
+#   - ADDED: 7 new requirements for Art. 5 enforcement and exceptions
+#   - ADDED: 4 new prohibited purposes + PublicSpaces context + ProfilingAlgorithm type
+#   - COVERAGE: 100% of Article 5 prohibited practices with limited exceptions
+#   - PENALTIES: Maximum enforcement (€35M or 7% global revenue)
+#
+# v0.37.3 (2025-12-12) - FORENSIC BENCHMARK OPTIMIZATION:
+#   - BENCHMARK: Coverage improved from 31.8% to 88.2% (+56.4%)
+#   - ADDED: FairnessRequirement class for Article 10 compliance
+#   - ADDED: FairnessRequirement to RecruitmentEmploymentCriterion, WorkforceEvaluationCriterion, EssentialServicesAccessCriterion
+#   - ADDED: BiasDetectionRequirement to EssentialServicesAccessCriterion
+#   - ADDED: RobustnessRequirement to EssentialServicesAccessCriterion
+#   - ADDED: AccuracyRequirement to EssentialServicesAccessCriterion and SystemicRiskAssessmentCriterion
+#   - ADDED: AccuracyEvaluationRequirement to SystemicRiskAssessmentCriterion
+#   - ADDED: NonDiscriminationRequirement to DualUseRiskCriterion
+#   - ADDED: FundamentalRightsAssessmentRequirement to DualUseRiskCriterion
+#   - IMPROVED: Requirement activation coverage for Safety, Accuracy, and Fairness issues
+#   - VALIDATED: Against AIAAIC incident database (10 real-world cases)
+#
+# v0.37.2 (2025-11-22) - UNIFIED NAMESPACE:
+#   - CONSOLIDATED: All concepts from gpai:, ctx:, iso: merged into ai:
+#   - ADDED: Missing base classes (DocumentationRequirement, DataGovernanceRequirement)
+#   - STRUCTURE: Unified ontology under ai: namespace with semantic tags
+#   - All 14 GPAI concepts now under ai: (ai:GeneralPurposeAIModel, etc.)
+#   - All 15 contextual criteria now under ai: (ai:ChildrenAndMinorsContext, etc.)
+#   - All 9 ISO 42001 concepts now under ai: (ai:ISO42001SecurityRequirement, etc.)
+#   - REMOVED: NIST RMF concepts (separate US-based framework, not EU AI Act requirement)
+#   - FIXED: ai:DocumentationRequirement class definition
+#   - FIXED: ai:DataGovernanceRequirement class definition
+#   - FIXED: Corrected spelling "MisinformationAmplificationRiskContext" (was "Amplifcation")
+#   - FIXED: Corrected RDF predicates in airo-mappings-extended.ttl (rdfs:subClassOf for classes)
+#   - TOTAL: 100+ concepts unified in single namespace for simplicity
+#
+# v0.37.1 (2025-11-22):
+#   - ADDED: WorkforceEvaluationPurpose for Annex III point 2
+#   - ADDED: WorkforceEvaluationCriterion with high-risk requirements
+#   - ADDED: Spanish translations for 100+ critical terms
+#   - CLARIFIED: Semantic distinction between activatesCriterion and triggersCriterion
+#
+# v0.37.0 (2025-11-16):
+#   - Complete EU AI Act Annex I algorithm taxonomy
+#   - New properties for model scale and system capabilities
+#   - AIRO ontology integration
+# =====
+
+<http://ai-act.eu/ai-act> a owl:Ontology ;
+    owl:imports <https://w3id.org/airo> ;
+    dct:created "2025-11-22"^^xsd:date ;
+    dct:description "Unified ontology describing regulated AI systems according to the EU AI Act. All concepts consolidated under ai: namespace for simplicity. Includes GPAI (Articles 51-55), contextual criteria, and international standards mappings."@en,
+        "Ontología unificada que describe los sistemas de IA regulados según el AI Act de la UE. Todos los conceptos consolidados bajo el namespace ai: para simplicidad. Incluye GPAI (Artículos 51-55), criterios contextuales y mapeos de estándares internacionales."@es ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dct:title "AI Act Unified Ontology (v0.40.0)"@en,
+        "Ontología Unificada del AI Act (v0.40.0)"@es ;
+    rdfs:comment "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, Article 2 scope exclusions with override detection, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Semantic scope determination via ontology IRIs instead of hardcoded keywords. Optimized for forensic compliance gap detection with ontology-first approach."@en,
+        "Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO, prácticas prohibidas del Artículo 5, exclusiones de ámbito del Artículo 2 con detección de anulación, e Identificador Europeo de Legislación (ELI). Cobertura completa de sistemas de IA con riesgo inaceptable con enlaces directos a EUR-Lex. Determinación semántica de ámbito vía IRIs ontológicas en lugar de keywords hardcodeadas. Optimizado para detección forense de brechas de cumplimiento con enfoque ontology-first."@es ;
+    owl:versionIRI <http://ai-act.eu/ai-act/0.40.0> ;
+    owl:versionInfo "Version 0.40.0 released on 2025-12-31. Architectural migration: code now uses ontology IRIs instead of ~150 hardcoded keywords for scope determination. Ontology-first approach where LLM extracts semantic concepts and Python validates against ontology classes."@en,
+        "Versión 0.40.0 publicada el 2025-12-31. Migración arquitectónica: el código ahora usa IRIs ontológicas en lugar de ~150 keywords hardcodeadas para determinación de ámbito. Enfoque ontology-first donde el LLM extrae conceptos semánticos y Python valida contra clases de la ontología."@es ;
+    rdfs:seeAlso <rules/>, <../shacl/> ;
+    rdfs:comment "SWRL rules are externalized in the rules/ directory for better maintainability and auditability"@en,
+        "Las reglas SWRL están externalizadas en el directorio rules/ para mejor mantenibilidad y auditabilidad"@es .
+
+
+# ===== CLARIFICACIÓN SEMÁNTICA =====
+# Distinción entre propiedades de activación:
+# - activatesCriterion: Usada por Purpose para indicar criterios DIRECTAMENTE ACTIVADOS por el propósito principal
+# - triggersCriterion: Usada por DeploymentContext para indicar criterios DISPARADOS por el contexto
+# Esta distinción permite evaluar tanto la funcionalidad principal como el contexto de despliegue
+# =====
+
+# ===== ARQUITECTURA DE NAMESPACES =====
+# Esta ontología v0.37.2 consolida TODO bajo ai: para simplicidad
+# Notas de origen semántico:
+# - [GPAI]: Conceptos específicos de modelos de IA de propósito general (Articles 51-55)
+# - [CONTEXT]: Criterios contextuales para evaluación avanzada
+# - [ISO]: Conceptos alineados con ISO/IEC 42001
+# - [NIST]: Conceptos alineados con NIST AI Risk Management Framework
+# En futuras versiones (post-v0.37.2), estos podrían separarse en módulos si es necesario
+# =====
+
+# ===== BASE CLASSES - ENTITY HIERARCHY =====
+
+ai:Criterion a owl:Class ;
+    rdfs:label "Criterion"@en,
+        "Criterio"@es ;
+    rdfs:comment "A general criterion used for risk assessment, compliance, or classification of AI systems under the EU AI Act."@en,
+        "Criterio general utilizado para la evaluación de riesgos, cumplimiento o clasificación de sistemas de IA según el AI Act."@es .
+
+ai:Identifiable a owl:Class ;
+    rdfs:label "Identifiable"@en,
+        "Identificable"@es ;
+    rdfs:comment "Any entity that can be identified by a URN or IRI."@en,
+        "Cualquier entidad que puede ser identificada por URN o IRI."@es .
+
+ai:IntelligentSystem a owl:Class ;
+    rdfs:label "Intelligent System"@en,
+        "Sistema Inteligente"@es ;
+    rdfs:comment "Artificial Intelligence system as defined by the EU AI Act: a machine-based system designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, which, for explicit or implicit objectives, infers, recommends, or decides outputs influencing physical or virtual environments."@en,
+        "Sistema de inteligencia artificial según el AI Act de la UE: sistema basado en máquinas diseñado para operar con distintos niveles de autonomía y que puede mostrar adaptabilidad tras su despliegue, que, para objetivos explícitos o implícitos, infiere, recomienda o decide resultados que influyen en entornos físicos o virtuales."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:hasUrn a owl:DatatypeProperty ;
+    rdfs:label "has URN"@en,
+        "tiene URN"@es ;
+    rdfs:comment "URN identifier assigned to identifiable entities."@en,
+        "URN asignado a entidades identificables."@es ;
+    rdfs:domain ai:Identifiable ;
+    rdfs:range xsd:string .
+
+ai:hasHttpIri a owl:DatatypeProperty ;
+    rdfs:label "has HttpIri"@en,
+        "tiene HttpIri"@es ;
+    rdfs:comment "IRI identifier assigned to identifiable entities."@en,
+        "IRI asignado a entidades identificables."@es ;
+    rdfs:domain ai:Identifiable ;
+    rdfs:range xsd:string .
+
+# ===== MISSING BASE CLASSES - NOW DEFINED =====
+
+ai:DocumentationRequirement a owl:Class ;
+    rdfs:label "Documentation Requirement"@en,
+        "Requisito de Documentación"@es ;
+    rdfs:comment "Requirements related to technical documentation, system cards, model cards, and other documentation of AI systems."@en,
+        "Requisitos relacionados con documentación técnica, tarjetas de sistema, tarjetas de modelo y otra documentación de sistemas de IA."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+ai:DataGovernanceRequirement a owl:Class ;
+    rdfs:label "Data Governance Requirement"@en,
+        "Requisito de Gobernanza de Datos"@es ;
+    rdfs:comment "Requirements related to data management, quality, provenance, and governance for training and operational data."@en,
+        "Requisitos relacionados con gestión de datos, calidad, procedencia y gobernanza de datos de entrenamiento y operacionales."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+# ===== GENERAL PURPOSE AI MODELS (GPAI) - [GPAI] =====
+# EU AI Act Articles 51-55
+# These classes define GPAI-specific systems and requirements
+
+ai:GeneralPurposeAIModel a owl:Class ;
+    rdfs:label "General Purpose AI Model"@en,
+        "Modelo de IA de Propósito General"@es ;
+    rdfs:comment "[GPAI] AI model that exhibits similar capabilities to other models and can be used for a wide range of downstream applications. Defined in Article 3(1d) of EU AI Act."@en,
+        "[GPAI] Modelo de IA que exhibe capacidades similares a otros modelos y puede usarse para una amplia gama de aplicaciones descendentes. Definido en el Artículo 3(1d) del AI Act."@es ;
+    rdfs:subClassOf ai:IntelligentSystem .
+
+ai:HighCapabilityGPAIModel a owl:Class ;
+    rdfs:label "High Capability GPAI Model"@en,
+        "Modelo GPAI de Alta Capacidad"@es ;
+    rdfs:comment "[GPAI] GPAI models with systemic risk due to their high level of capability, particularly in areas like dual-use potential and broad applicability."@en,
+        "[GPAI] Modelos GPAI con riesgo sistémico debido a su alto nivel de capacidad."@es ;
+    rdfs:subClassOf ai:GeneralPurposeAIModel .
+
+# ===== GPAI REQUIREMENTS (Articles 51-55) - [GPAI] =====
+
+ai:GPAIProviderObligationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "GPAI Provider Obligations (Article 51)"@en,
+        "Obligaciones del Proveedor GPAI (Artículo 51)"@es ;
+    rdfs:comment "[GPAI] Provider of GPAI models must ensure technical documentation, safety evaluation, and risk assessment. Article 51."@en,
+        "[GPAI] El proveedor de modelos GPAI debe asegurar documentación técnica, evaluación de seguridad y evaluación de riesgos. Artículo 51."@es .
+
+ai:GPAITransparencyRequirement a ai:TransparencyRequirement ;
+    rdfs:label "GPAI Transparency Requirements (Article 52)"@en,
+        "Requisitos de Transparencia GPAI (Artículo 52)"@es ;
+    rdfs:comment "[GPAI] GPAI providers must ensure transparency about model characteristics and training data. Article 52."@en,
+        "[GPAI] Los proveedores GPAI deben asegurar transparencia sobre características del modelo y datos de entrenamiento. Artículo 52."@es .
+
+ai:UnionDatabaseNotificationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Union Database Notification (Article 53)"@en,
+        "Requisito de Notificación a Base de Datos de la Unión (Artículo 53)"@es ;
+    rdfs:comment "[GPAI] High-capability GPAI providers must register in the Union database. Article 53."@en,
+        "[GPAI] Los proveedores GPAI de alta capacidad deben registrarse en la base de datos de la Unión. Artículo 53."@es ;
+    ai:mandatoryCompliance true .
+
+ai:ModelEvaluationRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Model Evaluation and Benchmarking (Article 54)"@en,
+        "Evaluación y Benchmarking de Modelos (Artículo 54)"@es ;
+    rdfs:comment "[GPAI] GPAI models must be evaluated against appropriate benchmarks and standards. Article 54."@en,
+        "[GPAI] Los modelos GPAI deben evaluarse contra puntos de referencia y estándares apropiados. Artículo 54."@es .
+
+ai:PostMarketMonitoringRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Post-Market Monitoring (Article 55)"@en,
+        "Monitoreo Post-Mercado (Artículo 55)"@es ;
+    rdfs:comment "[GPAI] Providers must implement systems for monitoring GPAI models after market release. Article 55."@en,
+        "[GPAI] Los proveedores deben implementar sistemas para monitorear modelos GPAI después del lanzamiento al mercado. Artículo 55."@es .
+
+ai:SystemicRiskAssessmentCriterion a ai:NormativeCriterion ;
+    rdfs:label "Systemic Risk Assessment for GPAI"@en,
+        "Evaluación de Riesgo Sistémico para GPAI"@es ;
+    rdfs:comment "[GPAI] High-capability GPAI models must undergo systemic risk assessment due to their potential impact on society."@en,
+        "[GPAI] Los modelos GPAI de alta capacidad deben someterse a evaluación de riesgo sistémico."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:GPAITransparencyRequirement,
+        ai:GPAIProviderObligationRequirement,
+        ai:RiskManagementRequirement,
+        ai:DocumentationRequirement,
+        ai:TransparencyRequirement,
+        ai:AccuracyRequirement,
+        ai:AccuracyEvaluationRequirement .
+
+ai:DualUseRiskCriterion a ai:NormativeCriterion ;
+    rdfs:label "Dual-Use Risk Criterion"@en,
+        "Criterio de Riesgo de Uso Dual"@es ;
+    rdfs:comment "[GPAI] GPAI models with dual-use potential must be evaluated for both beneficial and harmful applications."@en,
+        "[GPAI] Los modelos GPAI con potencial de uso dual deben evaluarse para aplicaciones beneficiosas y dañinas."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:SystemSafetyRequirement,
+        ai:RiskManagementRequirement,
+        ai:RobustnessRequirement,
+        ai:HumanOversightRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:FundamentalRightsAssessmentRequirement .
+
+ai:GPAIDataQualityRequirement a ai:DataGovernanceRequirement ;
+    rdfs:label "GPAI Training Data Quality"@en,
+        "Calidad de Datos de Entrenamiento GPAI"@es ;
+    rdfs:comment "[GPAI] Training data quality is critical for GPAI models' safety and reliability."@en ;
+    rdfs:comment "[GPAI] La calidad de los datos de entrenamiento es crítica para la seguridad y confiabilidad de los modelos GPAI."@es .
+
+ai:GPAIPerformanceMonitoringRequirement a ai:TechnicalRequirement ;
+    rdfs:label "GPAI Performance Monitoring"@en,
+        "Monitoreo de Rendimiento GPAI"@es ;
+    rdfs:comment "[GPAI] Continuous monitoring of GPAI model performance and degradation."@en ;
+    rdfs:comment "[GPAI] Monitoreo continuo del rendimiento del modelo GPAI y su degradación."@es .
+
+ai:GPAIDocumentationRequirement a ai:DocumentationRequirement ;
+    rdfs:label "GPAI Documentation"@en,
+        "Documentación GPAI"@es ;
+    rdfs:comment "[GPAI] Comprehensive documentation required for GPAI models."@en ;
+    rdfs:comment "[GPAI] Documentación integral requerida para los modelos GPAI."@es .
+
+ai:HighCapabilityGPAIComplianceRequirement a ai:ComplianceRequirement ;
+    rdfs:label "High-Capability GPAI Compliance"@en,
+        "Cumplimiento GPAI de Alta Capacidad"@es ;
+    rdfs:comment "[GPAI] Enhanced requirements for GPAI models with high systemic risk."@en ;
+    rdfs:comment "[GPAI] Requisitos mejorados para modelos GPAI con alto riesgo sistémico."@es .
+
+ai:AnnexVIIISafeguardsCompliance a ai:ComplianceRequirement ;
+    rdfs:label "Annex VIII Safeguards Compliance"@en,
+        "Cumplimiento de Salvaguardas del Anexo VIII"@es ;
+    rdfs:comment "[GPAI] Alignment with Annex VIII safeguards for high-risk GPAI."@en ;
+    rdfs:comment "[GPAI] Alineación con salvaguardas del Anexo VIII para GPAI de alto riesgo."@es .
+
+# ===== CONTEXTUAL CRITERIA - [CONTEXT] =====
+# Advanced contextual evaluation criteria for complex AI system assessments
+
+ai:ChildrenAndMinorsRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Children and Minors Vulnerability"@en,
+        "Vulnerabilidad de Menores"@es ;
+    rdfs:comment "[CONTEXT] AI systems affecting children or minors require enhanced protection measures."@en,
+        "[CONTEXT] Los sistemas de IA que afectan a menores requieren medidas de protección mejoradas."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:ElderlyAndDisabledRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Elderly and Disabled Vulnerability"@en,
+        "Vulnerabilidad de Ancianos y Personas Discapacitadas"@es ;
+    rdfs:comment "[CONTEXT] AI systems affecting elderly or disabled individuals require accessibility and protection provisions."@en,
+        "[CONTEXT] Los sistemas de IA que afectan a personas mayores o discapacitadas requieren provisiones de accesibilidad."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:SocioeconomicVulnerabilityRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Socioeconomic Vulnerability"@en,
+        "Vulnerabilidad Socioeconómica"@es ;
+    rdfs:comment "[CONTEXT] AI systems affecting economically disadvantaged populations require fair and equitable design."@en,
+        "[CONTEXT] Los sistemas de IA que afectan a poblaciones económicamente desfavorecidas requieren diseño justo."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:AutonomousDecisionmakingRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Autonomous Decisionmaking"@en,
+        "Toma de Decisiones Autónoma"@es ;
+    rdfs:comment "[CONTEXT] AI systems making autonomous decisions without human oversight present elevated risk."@en,
+        "[CONTEXT] Los sistemas de IA que toman decisiones autónomas sin supervisión humana presentan riesgo elevado."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:RealTimeAutonomousRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Real-Time Autonomous System"@en,
+        "Sistema Autónomo en Tiempo Real"@es ;
+    rdfs:comment "[CONTEXT] Real-time autonomous systems require continuous monitoring and safety mechanisms."@en,
+        "[CONTEXT] Los sistemas autónomos en tiempo real requieren monitoreo continuo y mecanismos de seguridad."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:WidespreadSystemicImpactRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Widespread Systemic Impact"@en,
+        "Impacto Sistémico Generalizado"@es ;
+    rdfs:comment "[CONTEXT] AI systems with potential for widespread or systemic societal impact require governance."@en,
+        "[CONTEXT] Los sistemas de IA con impacto potencial sistémico requieren gobernanza."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:CriticalInfrastructureInterdependencyRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Critical Infrastructure Interdependency"@en,
+        "Interdependencia de Infraestructura Crítica"@es ;
+    rdfs:comment "[CONTEXT] AI systems in critical infrastructure with interdependencies require robustness."@en ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:BlackBoxDecisionRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Black-Box Decision Risk"@en,
+        "Riesgo de Decisión de Caja Negra"@es ;
+    rdfs:comment "[CONTEXT] AI systems with unexplainable decision-making require enhanced transparency."@en,
+        "[CONTEXT] Los sistemas de IA con toma de decisiones inexplicable requieren transparencia mejorada."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:HighStakesDecisionWithoutAppealRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "High-Stakes Decision Without Appeal"@en,
+        "Decisión de Alto Riesgo Sin Apelación"@es ;
+    rdfs:comment "[CONTEXT] AI systems making high-stakes decisions without appeal mechanisms require human oversight."@en ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:HistoricalBiasReplicationRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Historical Bias Replication Risk"@en,
+        "Riesgo de Replicación de Sesgo Histórico"@es ;
+    rdfs:comment "[CONTEXT] AI systems trained on historically biased data must implement bias mitigation."@en,
+        "[CONTEXT] Los sistemas de IA entrenados con datos sesgados históricamente requieren mitigación de sesgo."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:ProtectedCharacteristicInferenceRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Protected Characteristic Inference"@en,
+        "Inferencia de Características Protegidas"@es ;
+    rdfs:comment "[CONTEXT] AI systems capable of inferring protected characteristics require discrimination safeguards."@en,
+        "[CONTEXT] Los sistemas de IA capaces de inferir características protegidas requieren salvaguardas."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:BiometricDataSensitivityRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Biometric Data Processing"@en,
+        "Procesamiento de Datos Biométricos"@es ;
+    rdfs:comment "[CONTEXT] AI systems processing biometric data require privacy and security protections."@en,
+        "[CONTEXT] Los sistemas de IA que procesan datos biométricos requieren protecciones de privacidad."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:PersonalDataRetentionRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Personal Data Retention"@en,
+        "Retención de Datos Personales"@es ;
+    rdfs:comment "[CONTEXT] AI systems retaining personal data long-term require data governance."@en ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:LargeScaleEnvironmentalImpactRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Large-Scale Environmental Impact"@en,
+        "Impacto Ambiental a Gran Escala"@es ;
+    rdfs:comment "[CONTEXT] AI systems with potential large-scale environmental impact require assessment."@en,
+        "[CONTEXT] Los sistemas de IA con impacto ambiental potencial a gran escala requieren evaluación."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+ai:MisinformationAmplificationRiskCriterion a ai:ContextualCriterion ;
+    rdfs:label "Misinformation Amplification Risk"@en,
+        "Riesgo de Amplificación de Desinformación"@es ;
+    rdfs:comment "[CONTEXT] AI systems in content curation or generation with misinformation risks require safeguards."@en,
+        "[CONTEXT] Los sistemas de IA en generación de contenido con riesgos de desinformación requieren salvaguardas."@es ;
+    ai:assignsRiskLevel ai:HighRisk .
+
+# ===== v0.39.0: CONTENT RECOMMENDATION CRITERION =====
+# Criterion for recommendation algorithms with mandatory requirements
+
+ai:ContentRecommendationCriterion a ai:NormativeCriterion ;
+    rdfs:label "Content Recommendation Criterion"@en,
+        "Criterio de Recomendación de Contenido"@es ;
+    rdfs:comment "[Article 6.3 + DSA + v0.39.0] Criterion for AI systems that recommend content to users through profiling. Most content recommendation systems perform profiling of natural persons (analyzing behavior, preferences, interests) and therefore fall under Article 6.3 automatic high-risk classification. Systems must implement transparency requirements (DSA Art. 27), non-discrimination safeguards, and human oversight. When affecting minors or causing harm (death, suicide, injury), additional FRIA requirements apply per Article 27."@en,
+        "[Artículo 6.3 + DSA + v0.39.0] Criterio para sistemas de IA que recomiendan contenido a usuarios mediante perfilado. La mayoría de sistemas de recomendación de contenido realizan perfilado de personas naturales (analizando comportamiento, preferencias, intereses) y por tanto caen bajo la clasificación automática de alto riesgo del Artículo 6.3. Los sistemas deben implementar requisitos de transparencia (DSA Art. 27), salvaguardas de no discriminación y supervisión humana. Cuando afectan a menores o causan daño (muerte, suicidio, lesión), aplican requisitos adicionales de FRIA según el Artículo 27."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:RiskManagementRequirement,
+        ai:FundamentalRightsAssessmentRequirement,
+        ai:BiasDetectionRequirement ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_6/par_3/oj>,
+        <http://data.europa.eu/eli/reg/2022/2065/art_27/oj> .
+
+# ===== ARTICLE 5: PROHIBITED PRACTICES (UNACCEPTABLE RISK) =====
+# EU AI Act Article 5 - AI practices that are completely prohibited or subject to very limited exceptions
+# These systems pose unacceptable risk to fundamental rights, safety, and democratic values
+# Maximum penalties: €35M or 7% of total worldwide annual turnover (whichever is higher)
+
+# ===== BASE CLASSES =====
+
+ai:ProhibitedPracticeCriterion a owl:Class ;
+    rdfs:subClassOf ai:Criterion ;
+    rdfs:label "Prohibited Practice Criterion"@en,
+        "Criterio de Práctica Prohibida"@es ;
+    rdfs:comment "AI practices that pose unacceptable risk and are prohibited under Article 5 of the EU AI Act. These systems cannot be placed on the market, put into service, or used in the EU under any circumstances, or only under very limited exceptions with strict conditions. Violations result in maximum penalties (€35M or 7% global annual turnover)."@en,
+        "Prácticas de IA que representan un riesgo inaceptable y están prohibidas bajo el Artículo 5 del AI Act de la UE. Estos sistemas no pueden comercializarse, ponerse en servicio o utilizarse en la UE bajo ninguna circunstancia, o solo bajo excepciones muy limitadas con condiciones estrictas. Las violaciones resultan en sanciones máximas (€35M o 7% de la facturación global anual)."@es .
+
+ai:LegalException a owl:Class ;
+    rdfs:label "Legal Exception"@en,
+        "Excepción Legal"@es ;
+    rdfs:comment "Limited exceptions to Article 5 prohibitions, applicable only to specific prohibited practices under strict conditions defined in Article 5.2. Requires prior judicial authorization, proportionality assessment, and temporal/spatial limitations."@en,
+        "Excepciones limitadas a las prohibiciones del Artículo 5, aplicables solo a prácticas prohibidas específicas bajo condiciones estrictas definidas en el Artículo 5.2. Requiere autorización judicial previa, evaluación de proporcionalidad y limitaciones temporales/espaciales."@es .
+
+# ===== NEW PROPERTIES FOR ARTICLE 5 =====
+
+ai:hasProhibitedPractice a owl:ObjectProperty ;
+    rdfs:label "has Prohibited Practice"@en,
+        "tiene Práctica Prohibida"@es ;
+    rdfs:comment "Links an AI system to a prohibited practice it implements or exhibits. Systems with prohibited practices cannot be deployed in the EU (with very limited exceptions for certain practices)."@en,
+        "Vincula un sistema de IA con una práctica prohibida que implementa o exhibe. Los sistemas con prácticas prohibidas no pueden desplegarse en la UE (con excepciones muy limitadas para ciertas prácticas)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:ProhibitedPracticeCriterion .
+
+ai:articleReference a owl:DatatypeProperty ;
+    rdfs:label "article reference"@en,
+        "referencia de artículo"@es ;
+    rdfs:comment "Human-readable reference to the specific EU AI Act article (e.g., 'Article 5(1)(a)'). For machine-readable EUR-Lex links, use eli:cites property."@en,
+        "Referencia legible para humanos al artículo específico del AI Act (ej. 'Artículo 5(1)(a)'). Para enlaces EUR-Lex legibles por máquina, usar propiedad eli:cites."@es ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range xsd:string .
+
+# ===== ELI - EUROPEAN LEGISLATION IDENTIFIER =====
+# ELI provides persistent, dereferenceable URIs for EU legislation
+# Reference: Council Conclusions 2012/C 325/02, Decision (EU) 2017/1191
+# Base URI for AI Act: http://data.europa.eu/eli/reg/2024/1689
+
+# ELI URI patterns for AI Act (Regulation 2024/1689):
+# - Full regulation: http://data.europa.eu/eli/reg/2024/1689/oj
+# - Article X: http://data.europa.eu/eli/reg/2024/1689/art_X/oj
+# - Article X paragraph Y: http://data.europa.eu/eli/reg/2024/1689/art_X/par_Y/oj
+# - Article X paragraph Y point Z: http://data.europa.eu/eli/reg/2024/1689/art_X/par_Y/pnt_Z/oj
+# - Annex N: http://data.europa.eu/eli/reg/2024/1689/anx_N/oj
+
+# Note: eli:cites is used as per ELI ontology specification for citing legislation
+
+ai:prohibitionScope a owl:DatatypeProperty ;
+    rdfs:label "prohibition scope"@en,
+        "alcance de prohibición"@es ;
+    rdfs:comment "Describes the scope and nature of the prohibition: 'Absolute prohibition - No exceptions', 'Prohibited with limited exceptions (Article 5.2)', 'Prohibited for public authorities only', etc."@en,
+        "Describe el alcance y la naturaleza de la prohibición: 'Prohibición absoluta - Sin excepciones', 'Prohibido con excepciones limitadas (Artículo 5.2)', 'Prohibido solo para autoridades públicas', etc."@es ;
+    rdfs:domain ai:ProhibitedPracticeCriterion ;
+    rdfs:range xsd:string .
+
+ai:hasException a owl:ObjectProperty ;
+    rdfs:label "has exception"@en,
+        "tiene excepción"@es ;
+    rdfs:comment "Links a prohibited practice to its legal exceptions (if any). Only applicable to certain Article 5 prohibitions, notably real-time remote biometric identification (Art. 5.1.h) which has limited exceptions under Article 5.2."@en,
+        "Vincula una práctica prohibida con sus excepciones legales (si las hay). Solo aplicable a ciertas prohibiciones del Artículo 5, notablemente la identificación biométrica remota en tiempo real (Art. 5.1.h) que tiene excepciones limitadas bajo el Artículo 5.2."@es ;
+    rdfs:domain ai:ProhibitedPracticeCriterion ;
+    rdfs:range ai:LegalException .
+
+# ===== 5 PROHIBITED PRACTICES =====
+
+# 1. SUBLIMINAL MANIPULATION (Article 5.1.a)
+
+ai:SubliminalManipulationCriterion a ai:ProhibitedPracticeCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Subliminal Manipulation (Article 5.1.a)"@en,
+        "Manipulación Subliminal (Artículo 5.1.a)"@es ;
+    rdfs:comment "AI systems deploying subliminal techniques beyond a person's consciousness to materially distort their behavior in a manner that causes or is likely to cause that person or another person physical or psychological harm. Examples: subliminal audio/visual cues in advertising to manipulate purchases, apps using subconscious triggers to induce addictive behavior. ABSOLUTELY PROHIBITED - NO EXCEPTIONS."@en,
+        "Sistemas de IA que despliegan técnicas subliminales más allá de la conciencia de una persona para distorsionar materialmente su comportamiento de manera que cause o pueda causar a esa persona u otra persona daño físico o psicológico. Ejemplos: señales audiovisuales subliminales en publicidad para manipular compras, apps que usan desencadenantes subconscientes para inducir comportamiento adictivo. ABSOLUTAMENTE PROHIBIDO - SIN EXCEPCIONES."@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    ai:articleReference "Article 5(1)(a)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_a/oj> ;
+    ai:prohibitionScope "Absolute prohibition - No exceptions"@en,
+        "Prohibición absoluta - Sin excepciones"@es ;
+    ai:activatesRequirement ai:ProhibitionEnforcementRequirement,
+        ai:MarketWithdrawalRequirement .
+
+# 2. EXPLOITATION OF VULNERABILITIES (Article 5.1.b)
+
+ai:VulnerabilityExploitationCriterion a ai:ProhibitedPracticeCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Exploitation of Vulnerabilities (Article 5.1.b)"@en,
+        "Explotación de Vulnerabilidades (Artículo 5.1.b)"@es ;
+    rdfs:comment "AI systems exploiting vulnerabilities of specific groups of persons due to their age, physical or mental disability, or specific social or economic situation, to materially distort their behavior in a manner that causes or is likely to cause harm. Protected groups: minors (age vulnerability), persons with disabilities (physical/mental disability), economically disadvantaged persons (socioeconomic vulnerability). Examples: toys with AI that manipulate children into purchases, loan apps exploiting digital illiteracy of elderly, systems pressuring persons with cognitive disabilities into unfavorable financial decisions. ABSOLUTELY PROHIBITED - NO EXCEPTIONS."@en,
+        "Sistemas de IA que explotan vulnerabilidades de grupos específicos de personas debido a su edad, discapacidad física o mental, o situación social o económica específica, para distorsionar materialmente su comportamiento de manera que cause o pueda causar daño. Grupos protegidos: menores (vulnerabilidad por edad), personas con discapacidad (discapacidad física/mental), personas económicamente desfavorecidas (vulnerabilidad socioeconómica). Ejemplos: juguetes con IA que manipulan a niños para realizar compras, apps de préstamos que explotan analfabetismo digital de ancianos, sistemas que presionan a personas con discapacidad cognitiva hacia decisiones financieras desfavorables. ABSOLUTAMENTE PROHIBIDO - SIN EXCEPCIONES."@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    ai:articleReference "Article 5(1)(b)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_b/oj> ;
+    ai:prohibitionScope "Absolute prohibition - No exceptions"@en,
+        "Prohibición absoluta - Sin excepciones"@es ;
+    ai:activatesRequirement ai:ProhibitionEnforcementRequirement,
+        ai:MarketWithdrawalRequirement,
+        ai:VulnerablePopulationProtectionRequirement .
+
+# 3. SOCIAL SCORING (Article 5.1.c)
+
+ai:SocialScoringCriterion a ai:ProhibitedPracticeCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Social Scoring by Public Authorities (Article 5.1.c)"@en,
+        "Puntuación Social por Autoridades Públicas (Artículo 5.1.c)"@es ;
+    rdfs:comment "AI systems for evaluation or classification of the trustworthiness of natural persons over a certain period of time based on their social behavior or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of: (i) detrimental or unfavorable treatment of certain natural persons or whole groups thereof in social contexts which are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavorable treatment that is unjustified or disproportionate to their social behavior or its gravity. ONLY APPLIES TO PUBLIC AUTHORITIES. Examples: China-style 'social credit' systems, citizen trustworthiness scoring affecting access to public services, classification systems penalizing association with 'problematic' persons. ABSOLUTELY PROHIBITED - NO EXCEPTIONS."@en,
+        "Sistemas de IA para evaluación o clasificación de la fiabilidad de personas físicas durante un cierto período de tiempo basándose en su comportamiento social o características personales o de personalidad conocidas, inferidas o predichas, con la puntuación social conduciendo a cualquiera o ambos de: (i) trato perjudicial o desfavorable de ciertas personas físicas o grupos enteros de ellas en contextos sociales no relacionados con los contextos en los que los datos se generaron o recopilaron originalmente; (ii) trato perjudicial o desfavorable que es injustificado o desproporcionado respecto a su comportamiento social o su gravedad. SOLO APLICA A AUTORIDADES PÚBLICAS. Ejemplos: sistemas de 'crédito social' estilo China, puntuación de fiabilidad de ciudadanos que afecta acceso a servicios públicos, sistemas de clasificación que penalizan la asociación con personas 'problemáticas'. ABSOLUTAMENTE PROHIBIDO - SIN EXCEPCIONES."@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    ai:articleReference "Article 5(1)(c)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_c/oj> ;
+    ai:prohibitionScope "Absolute prohibition - Applies to public authorities only"@en,
+        "Prohibición absoluta - Aplica solo a autoridades públicas"@es ;
+    ai:activatesRequirement ai:ProhibitionEnforcementRequirement,
+        ai:MarketWithdrawalRequirement,
+        ai:FundamentalRightsAssessmentRequirement .
+
+# 4. PREDICTIVE POLICING BASED ON PROFILING (Article 5.1.d)
+
+ai:PredictivePolicingProfilingCriterion a ai:ProhibitedPracticeCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Risk Assessment Based Solely on Profiling (Article 5.1.d)"@en,
+        "Evaluación de Riesgo Basada Solo en Perfilado (Artículo 5.1.d)"@es ;
+    rdfs:comment "AI systems for making risk assessments of natural persons to assess or predict the risk of a natural person committing a criminal offense, based SOLELY on profiling a natural person or on assessing their personality traits and characteristics. KEY DISTINCTION: Risk assessment based on objective and verifiable prior criminal behavior IS ALLOWED. Only prohibited when based solely on profiling without evidence of actual criminal behavior. Examples PROHIBITED: Systems predicting criminality based only on race, zip code, education level, family history without any prior criminal record; AI labeling persons as 'high crime risk' based purely on demographic profiles. Examples ALLOWED: Recidivism risk assessment based on documented prior convictions, fraud detection based on anomalous transaction patterns."@en,
+        "Sistemas de IA para realizar evaluaciones de riesgo de personas físicas para evaluar o predecir el riesgo de que una persona física cometa un delito, basándose SOLO en el perfilado de una persona física o en la evaluación de sus rasgos y características de personalidad. DISTINCIÓN CLAVE: La evaluación de riesgo basada en comportamiento delictivo previo objetivo y verificable SÍ ESTÁ PERMITIDA. Solo prohibido cuando se basa únicamente en perfilado sin evidencia de comportamiento delictivo real. Ejemplos PROHIBIDOS: Sistemas que predicen criminalidad basándose solo en raza, código postal, nivel educativo, historial familiar sin ningún antecedente delictivo previo; IA que etiqueta personas como 'alto riesgo delictivo' basándose puramente en perfiles demográficos. Ejemplos PERMITIDOS: Evaluación de riesgo de reincidencia basada en condenas previas documentadas, detección de fraude basada en patrones de transacciones anómalos."@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    ai:articleReference "Article 5(1)(d)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_d/oj> ;
+    ai:prohibitionScope "Prohibited when based solely on profiling without objective prior criminal behavior"@en,
+        "Prohibido cuando se basa solo en perfilado sin comportamiento delictivo previo objetivo"@es ;
+    ai:activatesRequirement ai:ProhibitionEnforcementRequirement,
+        ai:MarketWithdrawalRequirement,
+        ai:NonDiscriminationRequirement .
+
+# 5. REAL-TIME REMOTE BIOMETRIC IDENTIFICATION (Article 5.1.h with exceptions in Article 5.2)
+
+ai:RealTimeBiometricIdentificationCriterion a ai:ProhibitedPracticeCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Real-Time Remote Biometric Identification in Public Spaces (Article 5.1.h)"@en,
+        "Identificación Biométrica Remota en Tiempo Real en Espacios Públicos (Artículo 5.1.h)"@es ;
+    rdfs:comment "'Real-time' remote biometric identification systems for the purpose of law enforcement in publicly accessible spaces. GENERALLY PROHIBITED with LIMITED EXCEPTIONS under Article 5.2. Exceptions allowed ONLY for: (a) targeted search for victims (abduction, trafficking, sexual exploitation, missing persons); (b) prevention of specific, present, or foreseeable terrorist threat; (c) detection, localization, identification of perpetrators of crimes punishable by minimum 3 years imprisonment (Annex II list). All exceptions require PRIOR JUDICIAL AUTHORIZATION (or administrative with subsequent judicial review in urgent cases), proportionality assessment, temporal/spatial limitation, and public registry notification. Examples PROHIBITED: Continuous facial recognition in public demonstrations, mass surveillance in shopping malls. Examples ALLOWED (with authorization): Targeted facial recognition search for kidnapped child at train station for 24 hours with judicial order."@en,
+        "Sistemas de identificación biométrica remota 'en tiempo real' con fines de aplicación de la ley en espacios públicamente accesibles. GENERALMENTE PROHIBIDO con EXCEPCIONES LIMITADAS bajo el Artículo 5.2. Excepciones permitidas SOLO para: (a) búsqueda específica de víctimas (secuestro, trata, explotación sexual, personas desaparecidas); (b) prevención de amenaza terrorista específica, presente o previsible; (c) detección, localización, identificación de autores de delitos punibles con mínimo 3 años de prisión (lista Anexo II). Todas las excepciones requieren AUTORIZACIÓN JUDICIAL PREVIA (o administrativa con revisión judicial posterior en casos urgentes), evaluación de proporcionalidad, limitación temporal/espacial y notificación en registro público. Ejemplos PROHIBIDOS: Reconocimiento facial continuo en manifestaciones públicas, vigilancia masiva en centros comerciales. Ejemplos PERMITIDOS (con autorización): Búsqueda de reconocimiento facial específica para niño secuestrado en estación de tren durante 24 horas con orden judicial."@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    ai:articleReference "Article 5(1)(h)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_h/oj> ;
+    ai:prohibitionScope "Prohibited with limited exceptions (Article 5.2)"@en,
+        "Prohibido con excepciones limitadas (Artículo 5.2)"@es ;
+    ai:hasException ai:VictimSearchException,
+        ai:TerroristThreatException,
+        ai:SeriousCrimeException ;
+    ai:activatesRequirement ai:JudicialAuthorizationRequirement,
+        ai:ProportionalityAssessmentRequirement,
+        ai:TemporalSpatialLimitationRequirement,
+        ai:PublicRegistryNotificationRequirement,
+        ai:BiometricSecurityRequirement .
+
+# ===== LEGAL EXCEPTIONS (Article 5.2) =====
+# Only applicable to real-time remote biometric identification (Art. 5.1.h)
+
+ai:VictimSearchException a ai:LegalException,
+    owl:NamedIndividual ;
+    rdfs:label "Victim Search Exception (Art. 5.2.a)"@en,
+        "Excepción de Búsqueda de Víctimas (Art. 5.2.a)"@es ;
+    rdfs:comment "Exception for targeted search for specific potential victims of abduction, trafficking in human beings, or sexual exploitation of human beings, as well as for the search of missing persons. Requires judicial authorization, strict proportionality, and temporal/spatial limitations. Must be targeted search for identified victims, not general surveillance."@en,
+        "Excepción para búsqueda específica de víctimas potenciales específicas de secuestro, trata de seres humanos o explotación sexual de seres humanos, así como para la búsqueda de personas desaparecidas. Requiere autorización judicial, proporcionalidad estricta y limitaciones temporales/espaciales. Debe ser búsqueda específica de víctimas identificadas, no vigilancia general."@es ;
+    ai:articleReference "Article 5(2)(a)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/pnt_a/oj> .
+
+ai:TerroristThreatException a ai:LegalException,
+    owl:NamedIndividual ;
+    rdfs:label "Terrorist Threat Exception (Art. 5.2.b)"@en,
+        "Excepción de Amenaza Terrorista (Art. 5.2.b)"@es ;
+    rdfs:comment "Exception for prevention of a specific, present or reasonably foreseeable terrorist threat. Requires judicial authorization, proportionality assessment demonstrating threat is specific and imminent, temporal/spatial limitation to threat scope. Not applicable for general counter-terrorism surveillance."@en,
+        "Excepción para prevención de una amenaza terrorista específica, presente o razonablemente previsible. Requiere autorización judicial, evaluación de proporcionalidad que demuestre que la amenaza es específica e inminente, limitación temporal/espacial al alcance de la amenaza. No aplicable para vigilancia general antiterrorista."@es ;
+    ai:articleReference "Article 5(2)(b)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/pnt_b/oj> .
+
+ai:SeriousCrimeException a ai:LegalException,
+    owl:NamedIndividual ;
+    rdfs:label "Serious Crime Exception (Art. 5.2.c)"@en,
+        "Excepción de Delitos Graves (Art. 5.2.c)"@es ;
+    rdfs:comment "Exception for detection, localization, identification of perpetrators or suspects of criminal offences punishable by a custodial sentence of a maximum of at least three years as defined in the law of that Member State. Crimes must be listed in Annex II (includes trafficking, sexual exploitation, drug trafficking, weapons trafficking, homicide, terrorism, organized crime, etc.). Requires judicial authorization, proportionality assessment, temporal/spatial limitation. Not applicable for minor offenses."@en,
+        "Excepción para detección, localización, identificación de autores o sospechosos de delitos punibles con pena privativa de libertad de un máximo de al menos tres años según lo definido en la ley de ese Estado miembro. Los delitos deben estar listados en el Anexo II (incluye trata, explotación sexual, tráfico de drogas, tráfico de armas, homicidio, terrorismo, crimen organizado, etc.). Requiere autorización judicial, evaluación de proporcionalidad, limitación temporal/espacial. No aplicable para delitos menores."@es ;
+    ai:articleReference "Article 5(2)(c)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/pnt_c/oj> .
+
+# ===== NEW REQUIREMENTS FOR ARTICLE 5 =====
+
+# Requirements for Article 5.2 exceptions
+
+ai:JudicialAuthorizationRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Judicial Authorization Requirement (Art. 5.2)"@en,
+        "Requisito de Autorización Judicial (Art. 5.2)"@es ;
+    rdfs:comment "Prior judicial authorization required for use of real-time remote biometric identification under Article 5.2 exceptions. Authorization must be obtained from a judicial authority or an independent administrative authority whose decision is binding. In duly justified situations of urgency, use may be authorized by an administrative authority with subsequent judicial review within 48 hours. Authorization must specify: objective pursued, temporal limitation, geographic limitation, categories of persons that may be identified."@en,
+        "Autorización judicial previa requerida para el uso de identificación biométrica remota en tiempo real bajo las excepciones del Artículo 5.2. La autorización debe obtenerse de una autoridad judicial o una autoridad administrativa independiente cuya decisión sea vinculante. En situaciones de urgencia debidamente justificadas, el uso puede ser autorizado por una autoridad administrativa con revisión judicial posterior en 48 horas. La autorización debe especificar: objetivo perseguido, limitación temporal, limitación geográfica, categorías de personas que pueden ser identificadas."@es ;
+    ai:articleReference "Article 5(2)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj> .
+
+ai:ProportionalityAssessmentRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Proportionality Assessment Requirement (Art. 5.2)"@en,
+        "Requisito de Evaluación de Proporcionalidad (Art. 5.2)"@es ;
+    rdfs:comment "Assessment demonstrating that the use of real-time remote biometric identification is strictly necessary, proportional to the legitimate objective pursued, and that the objective cannot be effectively achieved by other less intrusive means. Must consider: severity and probability of harm, benefits vs. risks to fundamental rights, availability of alternative measures, safeguards implemented."@en,
+        "Evaluación que demuestre que el uso de identificación biométrica remota en tiempo real es estrictamente necesario, proporcional al objetivo legítimo perseguido, y que el objetivo no puede alcanzarse eficazmente por otros medios menos intrusivos. Debe considerar: gravedad y probabilidad del daño, beneficios vs. riesgos para derechos fundamentales, disponibilidad de medidas alternativas, salvaguardas implementadas."@es ;
+    ai:articleReference "Article 5(2)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj> .
+
+ai:TemporalSpatialLimitationRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Temporal and Spatial Limitation Requirement (Art. 5.2)"@en,
+        "Requisito de Limitación Temporal y Espacial (Art. 5.2)"@es ;
+    rdfs:comment "Use of real-time remote biometric identification must be limited in time (duration specified in authorization, proportional to objective) and geographic scope (specific location or area specified in authorization). Continuous or open-ended surveillance is prohibited. System must be deactivated immediately upon expiration of authorization or achievement of objective."@en,
+        "El uso de identificación biométrica remota en tiempo real debe estar limitado en el tiempo (duración especificada en la autorización, proporcional al objetivo) y alcance geográfico (ubicación o área específica especificada en la autorización). La vigilancia continua o indefinida está prohibida. El sistema debe desactivarse inmediatamente al vencer la autorización o lograr el objetivo."@es ;
+    ai:articleReference "Article 5(2)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj> .
+
+ai:PublicRegistryNotificationRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Public Registry Notification Requirement (Art. 5.2)"@en,
+        "Requisito de Notificación en Registro Público (Art. 5.2)"@es ;
+    rdfs:comment "Each use of real-time remote biometric identification under Article 5.2 exceptions must be notified to the relevant market surveillance authority and the national data protection authority. Information to be logged in publicly accessible database (with exception for ongoing investigations): authorization issuing authority, date/time of authorization, duration of use, geographic area, justification, results obtained. Ensures transparency and accountability."@en,
+        "Cada uso de identificación biométrica remota en tiempo real bajo las excepciones del Artículo 5.2 debe notificarse a la autoridad de vigilancia del mercado pertinente y a la autoridad nacional de protección de datos. Información a registrar en base de datos públicamente accesible (con excepción para investigaciones en curso): autoridad que emite la autorización, fecha/hora de autorización, duración del uso, área geográfica, justificación, resultados obtenidos. Garantiza transparencia y rendición de cuentas."@es ;
+    ai:articleReference "Article 5(2)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_2/oj> .
+
+# General Article 5 enforcement requirements
+
+ai:ProhibitionEnforcementRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Prohibition Enforcement Requirement (Art. 5)"@en,
+        "Requisito de Aplicación de Prohibición (Art. 5)"@es ;
+    rdfs:comment "AI systems violating Article 5 prohibitions must not be placed on the market, put into service, or used in the European Union. Market surveillance authorities shall order immediate cessation of use and withdrawal from the market. Maximum administrative fines apply: up to €35,000,000 or, if the offender is an undertaking, up to 7% of its total worldwide annual turnover for the preceding financial year, whichever is higher (Article 99(3)(a))."@en,
+        "Los sistemas de IA que violen las prohibiciones del Artículo 5 no deben comercializarse, ponerse en servicio o utilizarse en la Unión Europea. Las autoridades de vigilancia del mercado ordenarán el cese inmediato del uso y la retirada del mercado. Se aplican multas administrativas máximas: hasta €35.000.000 o, si el infractor es una empresa, hasta el 7% de su facturación total mundial anual del ejercicio financiero anterior, lo que sea mayor (Artículo 99(3)(a))."@es ;
+    ai:articleReference "Article 5, Article 99(3)(a)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/oj>,
+        <http://data.europa.eu/eli/reg/2024/1689/art_99/par_3/pnt_a/oj> .
+
+ai:MarketWithdrawalRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Market Withdrawal Requirement (Art. 5)"@en,
+        "Requisito de Retirada del Mercado (Art. 5)"@es ;
+    rdfs:comment "AI systems identified as violating Article 5 prohibitions that are already placed on the market or put into service must be immediately withdrawn from the market and recalled. Providers and deployers must notify competent authorities within 24 hours of detection. All data collected through prohibited systems must be deleted in compliance with GDPR."@en,
+        "Los sistemas de IA identificados como violadores de las prohibiciones del Artículo 5 que ya están comercializados o puestos en servicio deben retirarse inmediatamente del mercado y ser recuperados. Los proveedores y desplegadores deben notificar a las autoridades competentes dentro de las 24 horas posteriores a la detección. Todos los datos recopilados a través de sistemas prohibidos deben eliminarse en cumplimiento del RGPD."@es ;
+    ai:articleReference "Article 5" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/oj> .
+
+ai:VulnerablePopulationProtectionRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Vulnerable Population Protection Requirement (Art. 5.1.b)"@en,
+        "Requisito de Protección de Población Vulnerable (Art. 5.1.b)"@es ;
+    rdfs:comment "Enhanced protections for vulnerable groups (minors, persons with physical or mental disabilities, economically disadvantaged persons) against AI systems that exploit their vulnerabilities. Providers must implement safeguards preventing targeting or exploitation of vulnerabilities. Systems interacting with vulnerable populations require additional ethical review and impact assessments."@en,
+        "Protecciones mejoradas para grupos vulnerables (menores, personas con discapacidades físicas o mentales, personas económicamente desfavorecidas) contra sistemas de IA que explotan sus vulnerabilidades. Los proveedores deben implementar salvaguardas que impidan la orientación o explotación de vulnerabilidades. Los sistemas que interactúan con poblaciones vulnerables requieren revisión ética adicional y evaluaciones de impacto."@es ;
+    ai:articleReference "Article 5(1)(b)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_5/par_1/pnt_b/oj> .
+
+# ===== ISO 42001 MAPPINGS - [ISO] =====
+# Alignment with ISO/IEC 42001:2023 AI Management System Standard
+
+ai:ISO42001SecurityRequirement a ai:TechnicalRequirement ;
+    rdfs:label "ISO 42001 Security Requirement"@en,
+        "Requisito de Seguridad ISO 42001"@es ;
+    rdfs:comment "[ISO] Security controls aligned with ISO/IEC 42001 AI Management System Standard."@en,
+        "[ISO] Controles de seguridad alineados con estándar ISO/IEC 42001 de Sistema de Gestión de IA."@es .
+
+ai:ISO42001GovernanceRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Governance Requirement"@en,
+        "Requisito de Gobernanza ISO 42001"@es ;
+    rdfs:comment "[ISO] Governance and organizational requirements per ISO/IEC 42001."@en,
+        "[ISO] Requisitos de gobernanza y organizacionales según ISO/IEC 42001."@es .
+
+ai:ISO42001DataGovernanceRequirement a ai:DataGovernanceRequirement ;
+    rdfs:label "ISO 42001 Data Governance"@en,
+        "Gobernanza de Datos ISO 42001"@es ;
+    rdfs:comment "[ISO] Data management and governance aligned with ISO/IEC 42001."@en,
+        "[ISO] Gestión y gobernanza de datos alineados con ISO/IEC 42001."@es .
+
+ai:RiskManagementRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Risk Management System Requirement (Article 9)"@en,
+        "Requisito de Sistema de Gestión de Riesgos (Artículo 9)"@es ;
+    rdfs:comment "[Article 9] Providers of high-risk AI systems shall establish, implement, document and maintain a risk management system. The system shall consist of a continuous iterative process throughout the entire lifecycle of a high-risk AI system, requiring regular systematic updating. It shall include identification and analysis of known and reasonably foreseeable risks, estimation and evaluation of risks, evaluation of other possibly arising risks, and adoption of appropriate risk management measures."@en,
+        "[Artículo 9] Los proveedores de sistemas de IA de alto riesgo deben establecer, implementar, documentar y mantener un sistema de gestión de riesgos. El sistema debe consistir en un proceso iterativo continuo durante todo el ciclo de vida del sistema de IA de alto riesgo, requiriendo actualización sistemática regular. Debe incluir identificación y análisis de riesgos conocidos y razonablemente previsibles, estimación y evaluación de riesgos, evaluación de otros riesgos que puedan surgir, y adopción de medidas apropiadas de gestión de riesgos."@es .
+
+ai:ISO42001RiskManagementRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Risk Management"@en,
+        "Gestión de Riesgos ISO 42001"@es ;
+    rdfs:comment "[ISO] Risk management framework per ISO/IEC 42001."@en,
+        "[ISO] Marco de gestión de riesgos según ISO/IEC 42001."@es .
+
+ai:ISO42001PerformanceMonitoringRequirement a ai:TechnicalRequirement ;
+    rdfs:label "ISO 42001 Performance Monitoring"@en,
+        "Monitoreo de Rendimiento ISO 42001"@es ;
+    rdfs:comment "[ISO] Performance monitoring and measurement per ISO/IEC 42001."@en,
+        "[ISO] Monitoreo y medición de rendimiento según ISO/IEC 42001."@es .
+
+ai:ISO42001DocumentationRequirement a ai:DocumentationRequirement ;
+    rdfs:label "ISO 42001 Documentation"@en,
+        "Documentación ISO 42001"@es ;
+    rdfs:comment "[ISO] Documentation requirements per ISO/IEC 42001 AI management system."@en,
+        "[ISO] Requisitos de documentación según sistema de gestión de IA ISO/IEC 42001."@es .
+
+ai:ISO42001TrainingRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Training Requirement"@en,
+        "Requisito de Capacitación ISO 42001"@es ;
+    rdfs:comment "[ISO] Personnel training and competence per ISO/IEC 42001."@en ;
+    rdfs:comment "[ISO] Capacitación de personal y competencia según ISO/IEC 42001."@es .
+
+ai:ISO42001AuditRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Audit Requirement"@en,
+        "Requisito de Auditoría ISO 42001"@es ;
+    rdfs:comment "[ISO] Internal audit requirements per ISO/IEC 42001."@en ;
+    rdfs:comment "[ISO] Requisitos de auditoría interna según ISO/IEC 42001."@es .
+
+ai:ISO42001ComplianceVerificationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "ISO 42001 Compliance Verification"@en,
+        "Verificación de Cumplimiento ISO 42001"@es ;
+    rdfs:comment "[ISO] Compliance verification and management review per ISO/IEC 42001."@en,
+        "[ISO] Verificación de cumplimiento y revisión de gestión según ISO/IEC 42001."@es .
+
+# ===== CORE RISK LEVELS - UNCHANGED FROM v0.37.1 =====
+
+ai:UnacceptableRisk a ai:RiskLevel ;
+    rdfs:label "Unacceptable Risk"@en,
+        "Riesgo Inaceptable"@es ;
+    rdfs:comment "Risk level that cannot be accepted; systems must be prohibited."@en ;
+    rdfs:comment "Nivel de riesgo que no puede ser aceptado; los sistemas deben ser prohibidos."@es .
+
+ai:HighRisk a ai:RiskLevel ;
+    rdfs:label "High Risk"@en,
+        "Riesgo Alto"@es ;
+    rdfs:comment "High-risk AI systems require specific obligations and governance."@en ;
+    rdfs:comment "Los sistemas de IA de alto riesgo requieren obligaciones específicas y gobernanza."@es .
+
+ai:LimitedRisk a ai:RiskLevel ;
+    rdfs:label "Limited Risk"@en,
+        "Riesgo Limitado"@es ;
+    rdfs:comment "Systems with limited risk require transparency and user information."@en ;
+    rdfs:comment "Los sistemas con riesgo limitado requieren transparencia e información del usuario."@es .
+
+ai:MinimalRisk a ai:RiskLevel ;
+    rdfs:label "Minimal Risk"@en,
+        "Riesgo Mínimo"@es ;
+    rdfs:comment "Systems with minimal risk have minimal or no specific obligations."@en ;
+    rdfs:comment "Los sistemas con riesgo mínimo tienen obligaciones mínimas o nulas."@es .
+
+ai:MediumRisk a ai:RiskLevel ;
+    rdfs:label "Medium Risk"@en,
+        "Riesgo Medio"@es ;
+    rdfs:comment "Systems with medium risk require balanced governance and oversight."@en ;
+    rdfs:comment "Los sistemas con riesgo medio requieren gobernanza equilibrada."@es .
+
+# P10 FIX: Declare RiskLevel instances as mutually distinct (disjoint individuals)
+# An AI system cannot have multiple risk levels simultaneously per EU AI Act
+[] a owl:AllDifferent ;
+    owl:distinctMembers (
+        ai:UnacceptableRisk
+        ai:HighRisk
+        ai:LimitedRisk
+        ai:MinimalRisk
+        ai:MediumRisk
+    ) .
+
+# ===== CORE CRITERION TYPES - UNCHANGED FROM v0.37.1 =====
+
+ai:NormativeCriterion a owl:Class ;
+    rdfs:label "Normative Criterion"@en,
+        "Criterio Normativo"@es ;
+    rdfs:comment "Criterion based on legal, regulatory, or governance norms."@en ;
+    rdfs:comment "Criterio basado en normas legales, regulatorias o de gobernanza."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:TechnicalCriterion a owl:Class ;
+    rdfs:label "Technical Criterion"@en,
+        "Criterio Técnico"@es ;
+    rdfs:comment "Criterion based on technical, algorithmic, or system architecture considerations."@en ;
+    rdfs:comment "Criterio basado en consideraciones técnicas o arquitectónicas de sistemas."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:ContextualCriterion a owl:Class ;
+    rdfs:label "Contextual Criterion"@en,
+        "Criterio Contextual"@es ;
+    rdfs:comment "Criterion based on the deployment, usage, or application context of AI systems."@en ;
+    rdfs:comment "Criterio basado en el contexto de despliegue, uso o aplicación de sistemas de IA."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:SystemCapabilityCriterion a owl:Class ;
+    rdfs:label "System Capability Criterion"@en,
+        "Criterio de Capacidad del Sistema"@es ;
+    rdfs:comment "Criterion based on the inherent capabilities of AI systems (scale, autonomy, adaptability)."@en,
+        "Criterio basado en las capacidades inherentes de los sistemas de IA."@es ;
+    rdfs:subClassOf ai:TechnicalCriterion .
+
+# ===== CORE REQUIREMENT TYPES - UNCHANGED FROM v0.37.1 =====
+
+ai:ComplianceRequirement a owl:Class ;
+    rdfs:label "Compliance Requirement"@en,
+        "Requisito de Cumplimiento"@es ;
+    rdfs:comment "Requirement that must be satisfied for compliance with regulations."@en ;
+    rdfs:comment "Requisito que debe satisfacerse para cumplimiento regulatorio."@es ;
+    rdfs:subClassOf ai:Criterion .
+
+ai:TransparencyRequirement a owl:Class ;
+    rdfs:label "Transparency Requirement"@en,
+        "Requisito de Transparencia"@es ;
+    rdfs:comment "Requirement for transparency in AI system design, operation, or decision-making."@en,
+        "Requisito de transparencia en diseño, operación o toma de decisiones de sistemas de IA."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+ai:TechnicalRequirement a owl:Class ;
+    rdfs:label "Technical Requirement"@en,
+        "Requisito Técnico"@es ;
+    rdfs:comment "Requirement related to technical implementation, architecture, or performance."@en ;
+    rdfs:comment "Requisito relacionado con implementación técnica, arquitectura o rendimiento."@es ;
+    rdfs:subClassOf ai:ComplianceRequirement .
+
+ai:RobustnessRequirement a owl:Class ;
+    rdfs:label "Robustness Requirement"@en,
+        "Requisito de Robustez"@es ;
+    rdfs:comment "Requirement for resilience, reliability, and robustness of AI systems."@en,
+        "Requisito de resiliencia, confiabilidad y robustez de sistemas de IA."@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:SecurityRequirement a owl:Class ;
+    rdfs:label "Security Requirement"@en,
+        "Requisito de Seguridad"@es ;
+    rdfs:comment "Requirement for cybersecurity, data protection, and integrity."@en ;
+    rdfs:comment "Requisito de ciberseguridad, protección de datos e integridad."@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:LoggingRequirement a owl:Class ;
+    rdfs:label "Logging Requirement"@en,
+        "Requisito de Registro"@es ;
+    rdfs:comment "Requirement for activity logging, auditing, and traceability."@en ;
+    rdfs:comment "Requisito de registro de actividades, auditoría y trazabilidad."@es ;
+    rdfs:subClassOf ai:TechnicalRequirement .
+
+ai:RiskLevel a owl:Class ;
+    rdfs:label "Risk Level"@en,
+        "Nivel de Riesgo"@es ;
+    rdfs:comment "Classification of risk associated with AI systems or their use."@en ;
+    rdfs:comment "Clasificación del riesgo asociado con sistemas de IA o su uso."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+# ===== CORE ENTITY TYPES - UNCHANGED FROM v0.37.1 =====
+
+ai:Purpose a owl:Class ;
+    rdfs:label "Purpose"@en,
+        "Propósito"@es ;
+    rdfs:comment "Primary intended use or objective of an AI system."@en ;
+    rdfs:comment "Uso previsto principal u objetivo de un sistema de IA."@es ;
+    rdfs:subClassOf ai:ContextOrPurpose .
+
+ai:DeploymentContext a owl:Class ;
+    rdfs:label "Deployment Context"@en,
+        "Contexto de Despliegue"@es ;
+    rdfs:comment "Context in which an AI system is deployed or operated."@en ;
+    rdfs:comment "Contexto en el cual se despliega u opera un sistema de IA."@es ;
+    rdfs:subClassOf ai:ContextOrPurpose ;
+    owl:disjointWith ai:Purpose .  # P10 FIX: Purpose and DeploymentContext are disjoint
+
+ai:ContextOrPurpose a owl:Class ;
+    rdfs:label "Context Or Purpose"@en,
+        "Contexto o Propósito"@es ;
+    rdfs:comment "Superclass for both contextual and purpose-based classifications."@en ;
+    rdfs:comment "Superclase para clasificaciones contextuales y basadas en propósito."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+# ===== ARTICLE 2 SCOPE EXCLUSIONS (v0.38.0) =====
+# These classes model the exclusions from EU AI Act scope as defined in Article 2
+# Enables semantic determination of whether an AI system is within EU AI Act scope
+
+ai:ScopeExclusion a owl:Class ;
+    rdfs:label "Scope Exclusion"@en,
+        "Exclusión de Ámbito"@es ;
+    rdfs:comment "Exclusion from EU AI Act scope per Article 2. Systems may be excluded from regulation under certain conditions."@en,
+        "Exclusión del ámbito del EU AI Act según el Artículo 2. Los sistemas pueden quedar excluidos de la regulación bajo ciertas condiciones."@es ;
+    rdfs:subClassOf ai:Identifiable .
+
+ai:PersonalNonProfessionalUse a ai:ScopeExclusion,
+    owl:NamedIndividual ;
+    rdfs:label "Personal Non-Professional Use"@en,
+        "Uso Personal No Profesional"@es ;
+    ai:articleReference "Article 2(10)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/par_10/oj> ;
+    rdfs:comment "AI systems used for purely personal non-professional activities. This Regulation does not apply to natural persons using AI systems in the course of a purely personal non-professional activity."@en,
+        "Sistemas de IA utilizados para actividades puramente personales no profesionales. Este Reglamento no se aplica a personas físicas que utilicen sistemas de IA en el curso de una actividad puramente personal no profesional."@es .
+
+ai:PureScientificResearch a ai:ScopeExclusion,
+    owl:NamedIndividual ;
+    rdfs:label "Pure Scientific Research"@en,
+        "Investigación Científica Pura"@es ;
+    ai:articleReference "Article 2(6)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/par_6/oj> ;
+    rdfs:comment "AI systems used exclusively for scientific research and development. This Regulation does not apply to AI systems developed or used exclusively for scientific research and development."@en,
+        "Sistemas de IA utilizados exclusivamente para investigación y desarrollo científico. Este Reglamento no se aplica a sistemas de IA desarrollados o utilizados exclusivamente para investigación y desarrollo científico."@es .
+
+ai:MilitaryDefenseUse a ai:ScopeExclusion,
+    owl:NamedIndividual ;
+    rdfs:label "Military Defense Use"@en,
+        "Uso Militar y de Defensa"@es ;
+    ai:articleReference "Article 2(3)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/par_3/oj> ;
+    rdfs:comment "AI systems developed or used exclusively for military purposes. This Regulation does not apply to AI systems developed or used exclusively for military purposes."@en,
+        "Sistemas de IA desarrollados o utilizados exclusivamente con fines militares. Este Reglamento no se aplica a sistemas de IA desarrollados o utilizados exclusivamente con fines militares."@es .
+
+ai:EntertainmentWithoutRightsImpact a ai:ScopeExclusion,
+    owl:NamedIndividual ;
+    rdfs:label "Entertainment Without Rights Impact"@en,
+        "Entretenimiento Sin Impacto en Derechos"@es ;
+    ai:articleReference "Recital 12" ;
+    rdfs:comment "Pure entertainment systems (video games, recreational AI, NPCs) without impact on fundamental rights of natural persons. Per Recital 12, AI systems with limited impact on fundamental rights may have reduced obligations."@en,
+        "Sistemas de entretenimiento puro (videojuegos, IA recreativa, NPCs) sin impacto en derechos fundamentales de personas físicas. Según el Considerando 12, los sistemas de IA con impacto limitado en derechos fundamentales pueden tener obligaciones reducidas."@es .
+
+ai:ThirdCountryExclusion a ai:ScopeExclusion,
+    owl:NamedIndividual ;
+    rdfs:label "Third Country Exclusion"@en,
+        "Exclusión de Países Terceros"@es ;
+    ai:articleReference "Article 2(7)" ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_2/par_7/oj> ;
+    rdfs:comment "AI systems placed on the market or put into service in third countries where output is used in the Union. Partial applicability applies."@en,
+        "Sistemas de IA puestos en el mercado o en servicio en países terceros donde la salida se utiliza en la Unión. Se aplica aplicabilidad parcial."@es .
+
+# ===== SCOPE EXCLUSION PROPERTIES (v0.38.0) =====
+
+ai:mayBeExcludedBy a owl:ObjectProperty ;
+    rdfs:label "may be excluded by"@en,
+        "puede ser excluido por"@es ;
+    rdfs:comment "Indicates that a Purpose may be excluded from EU AI Act scope by a specific exclusion criterion. The exclusion applies UNLESS overridden by a deployment context."@en,
+        "Indica que un Propósito puede ser excluido del ámbito del EU AI Act por un criterio de exclusión específico. La exclusión aplica A MENOS QUE sea anulada por un contexto de despliegue."@es ;
+    rdfs:domain ai:Purpose ;
+    rdfs:range ai:ScopeExclusion .
+
+ai:overridesExclusion a owl:ObjectProperty ;
+    rdfs:label "overrides exclusion"@en,
+        "anula exclusión"@es ;
+    rdfs:comment "Indicates that a DeploymentContext overrides (cancels) a scope exclusion, bringing the system back into EU AI Act scope. Used when a system that would otherwise be excluded causes real-world harm, affects fundamental rights, or has legal consequences."@en,
+        "Indica que un Contexto de Despliegue anula (cancela) una exclusión de ámbito, trayendo el sistema de vuelta al ámbito del EU AI Act. Se usa cuando un sistema que de otro modo estaría excluido causa daño real, afecta derechos fundamentales o tiene consecuencias legales."@es ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range ai:ScopeExclusion .
+
+# ===== v0.39.0: SCOPE DETERMINATION PROPERTIES =====
+# Properties for tracking scope override status on individual systems
+
+ai:hasScopeOverride a owl:ObjectProperty ;
+    rdfs:label "has scope override"@en,
+        "tiene anulación de ámbito"@es ;
+    rdfs:comment "Links an IntelligentSystem to the DeploymentContext that overrides its potential scope exclusion. When present, the system is definitively IN SCOPE of the EU AI Act regardless of its purpose exclusion status."@en,
+        "Vincula un IntelligentSystem al DeploymentContext que anula su posible exclusión de ámbito. Cuando está presente, el sistema está definitivamente DENTRO DEL ÁMBITO del EU AI Act independientemente de su estado de exclusión de propósito."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:DeploymentContext .
+
+ai:hasPotentialExclusion a owl:ObjectProperty ;
+    rdfs:label "has potential exclusion"@en,
+        "tiene exclusión potencial"@es ;
+    rdfs:comment "Links an IntelligentSystem to a ScopeExclusion that may apply to it based on its purpose. This exclusion can be overridden by deployment context. Derived from hasPurpose + mayBeExcludedBy chain."@en,
+        "Vincula un IntelligentSystem a una ScopeExclusion que puede aplicarle basándose en su propósito. Esta exclusión puede ser anulada por el contexto de despliegue. Derivada de la cadena hasPurpose + mayBeExcludedBy."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:ScopeExclusion .
+
+ai:isInEUAIActScope a owl:DatatypeProperty ;
+    rdfs:label "is in EU AI Act scope"@en,
+        "está en ámbito del EU AI Act"@es ;
+    rdfs:comment "Boolean flag indicating whether the system falls within EU AI Act regulatory scope. True if: (1) no potential exclusion applies, or (2) a scope override context is present."@en,
+        "Flag booleano indicando si el sistema cae dentro del ámbito regulatorio del EU AI Act. True si: (1) no aplica ninguna exclusión potencial, o (2) está presente un contexto de anulación de ámbito."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:requiresFRIA a owl:DatatypeProperty ;
+    rdfs:label "requires FRIA"@en,
+        "requiere EIFF"@es ;
+    rdfs:comment "Boolean flag indicating whether a Fundamental Rights Impact Assessment (FRIA) is required per Article 27. Automatically true for systems with scope override contexts (VictimImpact, LegalConsequences, CausesRealWorldHarm, MinorsAffected, BiometricProcessing)."@en,
+        "Flag booleano indicando si se requiere una Evaluación de Impacto en Derechos Fundamentales (EIFF) según el Artículo 27. Automáticamente true para sistemas con contextos de anulación de ámbito (VictimImpact, LegalConsequences, CausesRealWorldHarm, MinorsAffected, BiometricProcessing)."@es ;
+    rdfs:domain [ a owl:Class ; owl:unionOf (ai:IntelligentSystem ai:DeploymentContext) ] ;
+    rdfs:range xsd:boolean .
+
+ai:hasScopeOverrideRationale a owl:DatatypeProperty ;
+    rdfs:label "has scope override rationale"@en,
+        "tiene justificación de anulación de ámbito"@es ;
+    rdfs:comment "Documentation explaining why a system with a potentially excluded purpose falls within EU AI Act scope due to its deployment context. Required for compliance audit per Article 2."@en,
+        "Documentación que explica por qué un sistema con un propósito potencialmente excluido cae dentro del ámbito del EU AI Act debido a su contexto de despliegue. Requerido para auditoría de cumplimiento según el Artículo 2."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+# ===== CORE PROPERTIES - UNCHANGED FROM v0.37.1 =====
+
+ai:activatesCriterion a owl:ObjectProperty ;
+    rdfs:label "activates Criterion"@en ;
+    rdfs:comment "Indicates that a Purpose directly activates a Criterion."@en ;
+    rdfs:domain ai:Purpose ;
+    rdfs:range ai:Criterion .
+
+ai:triggersCriterion a owl:ObjectProperty ;
+    rdfs:label "triggers Criterion"@en ;
+    rdfs:comment "Indicates that a DeploymentContext triggers a Criterion."@en ;
+    rdfs:domain ai:DeploymentContext ;
+    rdfs:range ai:Criterion .
+
+ai:assignsRiskLevel a owl:ObjectProperty ;
+    rdfs:label "assigns Risk Level"@en ;
+    rdfs:comment "Indicates the risk level assigned by a Criterion."@en ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:RiskLevel .
+
+ai:activatesRequirement a owl:ObjectProperty ;
+    rdfs:label "activates Requirement"@en ;
+    rdfs:comment "Indicates that a Criterion activates a Requirement."@en ;
+    rdfs:domain ai:Criterion ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:hasSubRequirement a owl:ObjectProperty ;
+    rdfs:label "has Sub-Requirement"@en ;
+    rdfs:comment "Indicates sub-requirements nested within a parent Requirement."@en ;
+    rdfs:domain ai:ComplianceRequirement ;
+    rdfs:range ai:ComplianceRequirement .
+
+ai:hasName a owl:DatatypeProperty ;
+    rdfs:label "has Name"@en ;
+    rdfs:comment "Name or identifier for an entity."@en ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:hasVersion a owl:DatatypeProperty ;
+    rdfs:label "has Version"@en ;
+    rdfs:comment "Version identifier for an entity."@en ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:string .
+
+ai:hasDocumentationType a owl:DatatypeProperty ;
+    rdfs:label "has Documentation Type"@en ;
+    rdfs:comment "Type of documentation required."@en ;
+    rdfs:domain ai:DocumentationRequirement ;
+    rdfs:range xsd:string .
+
+ai:mandatoryCompliance a owl:DatatypeProperty ;
+    rdfs:label "mandatory Compliance"@en ;
+    rdfs:comment "Boolean indicating if compliance is mandatory."@en ;
+    rdfs:domain ai:ComplianceRequirement ;
+    rdfs:range xsd:boolean .
+
+# ===== INTELLIGENT SYSTEM PROPERTIES =====
+
+ai:hasPurpose a owl:ObjectProperty ;
+    rdfs:label "has Purpose"@en,
+        "tiene Propósito"@es ;
+    rdfs:comment "The primary purpose or intended use of an intelligent system."@en,
+        "El propósito principal o uso previsto de un sistema inteligente."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Purpose .
+
+ai:hasDeploymentContext a owl:ObjectProperty ;
+    rdfs:label "has Deployment Context"@en,
+        "tiene Contexto de Despliegue"@es ;
+    rdfs:comment "The context in which an intelligent system is deployed or operates."@en,
+        "El contexto en el que un sistema inteligente se despliega u opera."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:DeploymentContext .
+
+ai:hasTrainingDataOrigin a owl:ObjectProperty ;
+    rdfs:label "has Training Data Origin"@en,
+        "tiene Origen de Datos de Entrenamiento"@es ;
+    rdfs:comment "The source or origin of training data used in an intelligent system."@en,
+        "La fuente u origen de los datos de entrenamiento utilizados en un sistema inteligente."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:TrainingDataOrigin .
+
+ai:hasAlgorithmType a owl:ObjectProperty ;
+    rdfs:label "has Algorithm Type"@en,
+        "tiene Tipo de Algoritmo"@es ;
+    rdfs:comment "The type of algorithm or machine learning approach used."@en,
+        "El tipo de algoritmo o enfoque de aprendizaje automático utilizado."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:AlgorithmType .
+
+ai:hasModelScale a owl:ObjectProperty ;
+    rdfs:label "has Model Scale"@en,
+        "tiene Escala de Modelo"@es ;
+    rdfs:comment "The scale or size category of the model."@en,
+        "La escala o categoría de tamaño del modelo."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:ModelScale .
+
+# ===== NEW CRITERION PROPERTIES (Option C - Clear Division) =====
+# These three properties replace the confusing hasSystemCapabilityCriteria
+# Each addresses a distinct EU AI Act mechanism with clear semantics
+
+ai:hasActivatedCriterion a owl:ObjectProperty ;
+    rdfs:label "has Activated Criterion"@en,
+        "tiene Criterio Activado"@es ;
+    rdfs:comment "Criterion automatically derived from Purpose or DeploymentContext through SWRL rules. Corresponds to Annex III high-risk activity triggers."@en,
+        "Criterio derivado automáticamente de Propósito o Contexto de Despliegue mediante reglas SWRL. Corresponde a disparadores de actividades de alto riesgo del Anexo III."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+ai:hasManuallyIdentifiedCriterion a owl:ObjectProperty ;
+    rdfs:label "has Manually Identified Criterion"@en,
+        "tiene Criterio Identificado Manualmente"@es ;
+    rdfs:comment "Criterion identified by expert evaluation beyond automated rules. Addresses Article 6(3) residual high-risk cases not covered by Annex III."@en,
+        "Criterio identificado por evaluación de expertos más allá de las reglas automatizadas. Aborda casos residuales de alto riesgo del Artículo 6(3) no cubiertos por el Anexo III."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+ai:hasCapabilityMetric a owl:ObjectProperty ;
+    rdfs:label "has Capability Metric"@en,
+        "tiene Métrica de Capacidad"@es ;
+    rdfs:comment "Technical capability indicator triggering General Purpose AI (GPAI) classification. Corresponds to Articles 51-55 GPAI systemic risk assessment."@en,
+        "Indicador técnico de capacidad que dispara la clasificación de IA de Propósito General (GPAI). Corresponde a la evaluación de riesgo sistémico del GPAI de los Artículos 51-55."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range ai:Criterion .
+
+# ===== MISSING CRITERION DEFINITIONS =====
+# These criteria are referenced by Purpose/Context instances but were not previously defined
+# Adding definitions with their activated requirements (for Phase 3 derivation)
+
+ai:BiometricIdentificationCriterion a ai:NormativeCriterion ;
+    rdfs:label "Biometric Identification Criterion"@en,
+        "Criterio de Identificación Biométrica"@es ;
+    rdfs:comment "[ANNEX III - Point 1] Biometric identification of individuals in public spaces. Directly affects fundamental rights (privacy, identity). High-risk system."@en,
+        "[ANEXO III - Punto 1] Identificación biométrica de individuos en espacios públicos. Afecta directamente los derechos fundamentales (privacidad, identidad). Sistema de alto riesgo."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:DataGovernanceRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:TraceabilityRequirement,
+        ai:DocumentationRequirement,
+        ai:AccuracyEvaluationRequirement .
+
+ai:EducationEvaluationCriterion a ai:NormativeCriterion ;
+    rdfs:label "Education Evaluation Criterion"@en,
+        "Criterio de Evaluación Educativa"@es ;
+    rdfs:comment "[ANNEX III] AI systems used for evaluating or assessing students. May affect fundamental rights and fair treatment. Includes protection of minors."@en,
+        "[ANEXO III] Sistemas de IA utilizados para evaluar o calificar a estudiantes. Puede afectar los derechos fundamentales y trato justo. Incluye protección de menores."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:ProtectionOfMinorsRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement .
+
+ai:CriticalInfrastructureCriterion a ai:NormativeCriterion ;
+    rdfs:label "Critical Infrastructure Criterion"@en,
+        "Criterio de Infraestructura Crítica"@es ;
+    rdfs:comment "[ANNEX III] AI systems managing critical infrastructure. High-risk due to potential public safety impact."@en,
+        "[ANEXO III] Sistemas de IA que gestionan infraestructura crítica. Alto riesgo por posible impacto en seguridad pública."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:SystemSafetyRequirement,
+        ai:RobustnessRequirement,
+        ai:HumanOversightRequirement,
+        ai:DocumentationRequirement,
+        ai:TransparencyRequirement,
+        ai:LoggingRequirement,
+        ai:RiskManagementRequirement .
+
+ai:JudicialSupportCriterion a ai:NormativeCriterion ;
+    rdfs:label "Judicial Decision Support Criterion"@en,
+        "Criterio de Apoyo a Decisiones Judiciales"@es ;
+    rdfs:comment "[ANNEX III - Point 6] AI systems supporting judicial decisions. Directly affects fundamental rights and right to fair trial."@en,
+        "[ANEXO III - Punto 6] Sistemas de IA que apoyan decisiones judiciales. Afecta directamente los derechos fundamentales y derecho a juicio justo."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DocumentationRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:TraceabilityRequirement,
+        ai:LoggingRequirement .
+
+# Requirements that should exist for fundamental rights contexts
+# Adding them as they are referenced by criteria but may not be fully defined
+
+ai:FundamentalRightsAssessmentRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Fundamental Rights Assessment Requirement"@en,
+        "Requisito de Evaluación de Derechos Fundamentales"@es ;
+    rdfs:comment "Assessment of impact on fundamental rights protected by the EU Charter of Fundamental Rights and EU Treaties."@en,
+        "Evaluación del impacto en los derechos fundamentales protegidos por la Carta de Derechos Fundamentales de la UE."@es .
+
+ai:PrivacyProtectionRequirement a ai:DataGovernanceRequirement ;
+    rdfs:label "Privacy Protection Requirement"@en,
+        "Requisito de Protección de Privacidad"@es ;
+    rdfs:comment "Compliance with GDPR and privacy-by-design principles."@en,
+        "Cumplimiento de RGPD y principios de privacidad por diseño."@es .
+
+ai:ProtectionOfMinorsRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Protection of Minors Requirement"@en,
+        "Requisito de Protección de Menores"@es ;
+    rdfs:comment "Special protections for AI systems affecting children and minors, including parental consent and child-safe design."@en,
+        "Protecciones especiales para sistemas de IA que afecten a niños y menores."@es .
+
+ai:SystemSafetyRequirement a ai:TechnicalRequirement ;
+    rdfs:label "System Safety Requirement"@en,
+        "Requisito de Seguridad del Sistema"@es ;
+    rdfs:comment "Safety standards and failsafes for systems managing critical infrastructure."@en,
+        "Estándares de seguridad y sistemas de parada para infraestructura crítica."@es .
+
+ai:EssentialServicesAccessCriterion a ai:NormativeCriterion ;
+    rdfs:label "Essential Services Access Criterion"@en,
+        "Criterio de Acceso a Servicios Esenciales"@es ;
+    rdfs:comment "[ANNEX III] AI systems involved in allocation of public services or public benefits (healthcare, education, social assistance). High-risk due to impact on vulnerable populations and fundamental rights."@en,
+        "[ANEXO III] Sistemas de IA implicados en la asignación de servicios públicos o beneficios. Alto riesgo por impacto en poblaciones vulnerables y derechos fundamentales."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:FairnessRequirement,
+        ai:BiasDetectionRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:AccuracyRequirement,
+        ai:RobustnessRequirement .
+
+ai:LawEnforcementCriterion a ai:NormativeCriterion ;
+    rdfs:label "Law Enforcement Criterion"@en,
+        "Criterio de Aplicación de la Ley"@es ;
+    rdfs:comment "[ANNEX III - Point 7] AI systems for law enforcement purposes, including criminal investigation, risk assessment, and identification of individuals. Very high-risk due to impact on freedom, privacy, and justice."@en,
+        "[ANEXO III - Punto 7] Sistemas de IA para aplicación de la ley, investigación criminal, evaluación de riesgos e identificación. Riesgo muy alto por impacto en libertad, privacidad y justicia."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:RobustnessRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement,
+        ai:BiasDetectionRequirement,
+        ai:LoggingRequirement .
+
+ai:MigrationBorderCriterion a ai:NormativeCriterion ;
+    rdfs:label "Migration and Border Control Criterion"@en,
+        "Criterio de Control Migratorio y Fronterizo"@es ;
+    rdfs:comment "[ANNEX III - Point 5] AI systems for migration, asylum and border control. High-risk due to impact on freedom of movement and fundamental rights of vulnerable populations."@en,
+        "[ANEXO III - Punto 5] Sistemas de IA para migración, asilo y control fronterizo. Alto riesgo por impacto en libertad de circulación y derechos fundamentales."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:DocumentationRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:BiasDetectionRequirement .
+
+ai:HealthCareCriterion a ai:NormativeCriterion ;
+    rdfs:label "Health Care Criterion"@en,
+        "Criterio de Atención Sanitaria"@es ;
+    rdfs:comment "[ANNEX III - Point 5(a)] AI systems intended to be used as medical devices or as safety components of medical devices. High-risk due to direct impact on health, safety and wellbeing of individuals."@en,
+        "[ANEXO III - Punto 5(a)] Sistemas de IA destinados a ser utilizados como productos sanitarios o como componentes de seguridad de productos sanitarios. Alto riesgo por impacto directo en la salud, seguridad y bienestar de las personas."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:DocumentationRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:RobustnessRequirement,
+        ai:TraceabilityRequirement .
+
+ai:RecruitmentEmploymentCriterion a ai:NormativeCriterion ;
+    rdfs:label "Recruitment and Employment Criterion"@en,
+        "Criterio de Reclutamiento y Empleo"@es ;
+    rdfs:comment "[ANNEX III - Point 4] AI systems for recruitment, selection, and employment decisions. High-risk due to impact on employment rights, non-discrimination, and fair treatment."@en,
+        "[ANEXO III - Punto 4] Sistemas de IA para decisiones de reclutamiento, selección y empleo. Alto riesgo por impacto en derechos laborales, no discriminación y trato justo."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:FairnessRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:DocumentationRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:BiasDetectionRequirement,
+        ai:TraceabilityRequirement,
+        ai:LoggingRequirement .
+
+ai:WorkforceEvaluationCriterion a ai:NormativeCriterion ;
+    rdfs:label "Workforce Evaluation Criterion"@en,
+        "Criterio de Evaluación de la Fuerza Laboral"@es ;
+    rdfs:comment "[ANNEX III - Point 2] AI systems for evaluation, assessment, or scoring of individual workers for management of work, promotion decisions, or termination. High-risk due to impact on employment rights and fundamental rights."@en,
+        "[ANEXO III - Punto 2] Sistemas de IA para evaluación y puntuación de trabajadores. Alto riesgo por impacto en derechos laborales y derechos fundamentales."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:NonDiscriminationRequirement,
+        ai:FairnessRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:DocumentationRequirement,
+        ai:AccuracyEvaluationRequirement,
+        ai:BiasDetectionRequirement,
+        ai:TraceabilityRequirement,
+        ai:LoggingRequirement .
+
+# Additional requirements referenced but possibly not defined
+ai:NonDiscriminationRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Non-Discrimination Requirement"@en,
+        "Requisito de No Discriminación"@es ;
+    rdfs:comment "Compliance with non-discrimination laws and ensuring fair and unbiased treatment, particularly for protected characteristics and vulnerable groups."@en,
+        "Cumplimiento con leyes antidiscriminación y garantía de trato justo e imparcial."@es .
+
+ai:BiasDetectionRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Bias Detection Requirement"@en,
+        "Requisito de Detección de Sesgos"@es ;
+    rdfs:comment "Systematic methods to detect, measure, and mitigate biases in AI system outputs and decision-making."@en,
+        "Métodos sistemáticos para detectar, medir y mitigar sesgos en los resultados del sistema de IA."@es .
+
+ai:FairnessRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Fairness Requirement"@en,
+        "Requisito de Equidad"@es ;
+    rdfs:comment "Ensures AI systems treat all individuals and groups fairly without unjustified discrimination. Encompasses procedural fairness, outcome fairness, and equal treatment across protected characteristics."@en,
+        "Garantiza que los sistemas de IA traten a todos los individuos y grupos de manera justa sin discriminación injustificada."@es .
+
+ai:HumanOversightRequirement a ai:ComplianceRequirement ;
+    rdfs:label "Human Oversight Requirement (Article 14)"@en,
+        "Requisito de Supervisión Humana (Artículo 14)"@es ;
+    rdfs:comment "[Article 14] High-risk AI systems shall be designed and developed to be effectively overseen by natural persons during use. Human oversight shall aim to prevent or minimise risks to health, safety or fundamental rights. Includes ability to understand system capacities and limitations, monitor operation, detect anomalies, and intervene or override when necessary."@en,
+        "[Artículo 14] Los sistemas de IA de alto riesgo deben diseñarse para ser supervisados eficazmente por personas durante su uso. La supervisión humana debe prevenir o minimizar riesgos para la salud, seguridad o derechos fundamentales. Incluye capacidad de comprender capacidades y limitaciones del sistema, monitorear operación, detectar anomalías e intervenir cuando sea necesario."@es .
+
+ai:AccuracyEvaluationRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Accuracy Evaluation Requirement (Article 15)"@en,
+        "Requisito de Evaluación de Precisión (Artículo 15)"@es ;
+    rdfs:comment "[Article 15] High-risk AI systems shall be designed to achieve an appropriate level of accuracy throughout their lifecycle. Accuracy levels and relevant metrics shall be declared in accompanying instructions. Systems must perform consistently and be resilient to errors, faults or inconsistencies in the environment or due to interaction with persons or other systems."@en,
+        "[Artículo 15] Los sistemas de IA de alto riesgo deben diseñarse para lograr un nivel apropiado de precisión durante todo su ciclo de vida. Los niveles de precisión y métricas relevantes deben declararse en las instrucciones. Los sistemas deben funcionar consistentemente y ser resilientes a errores, fallos o inconsistencias."@es .
+
+ai:TraceabilityRequirement a ai:TechnicalRequirement ;
+    rdfs:label "Traceability Requirement (Article 12)"@en,
+        "Requisito de Trazabilidad (Artículo 12)"@es ;
+    rdfs:comment "[Article 12] High-risk AI systems shall technically allow for automatic recording of events (logs) over the lifetime of the system. Logging capabilities shall enable recording of events relevant for identifying risks, facilitating post-market monitoring, and tracking system operation. Logs must be retained appropriately to ensure traceability and accountability."@en,
+        "[Artículo 12] Los sistemas de IA de alto riesgo deben permitir técnicamente el registro automático de eventos (logs) durante toda la vida útil del sistema. Las capacidades de registro deben permitir registrar eventos relevantes para identificar riesgos, facilitar el monitoreo post-comercialización y rastrear la operación del sistema."@es .
+
+# ===== PURPOSE INSTANCES =====
+# These are the specific purposes covered under EU AI Act Annex III
+
+ai:GenerativeAIContentCreation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Generative AI Content Creation"@en,
+        "Creación de Contenido con IA Generativa"@es ;
+    rdfs:comment "[GPAI - Articles 50-52] Purpose for general-purpose AI models used to generate text, images, audio, video or other content. Subject to transparency and safety obligations under Chapter V. Includes deepfakes, synthetic media, and AI-generated creative content."@en,
+        "[GPAI - Artículos 50-52] Propósito para modelos de IA de propósito general usados para generar texto, imágenes, audio, video u otro contenido. Sujeto a obligaciones de transparencia y seguridad bajo el Capítulo V. Incluye deepfakes, medios sintéticos y contenido creativo generado por IA."@es ;
+    ai:activatesCriterion ai:SystemicRiskAssessmentCriterion,
+        ai:DualUseRiskCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:SystemicRiskAssessmentCriterion .
+
+ai:SurveillanceMonitoring a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Surveillance and Monitoring"@en,
+        "Vigilancia y Monitoreo"@es ;
+    rdfs:comment "[ANNEX III - Points 1, 7] Purpose for AI systems used for surveillance, monitoring, or tracking of individuals. Includes video surveillance, behavioral monitoring, location tracking, and mass observation systems. High-risk due to impact on privacy, freedom, and fundamental rights."@en,
+        "[ANEXO III - Puntos 1, 7] Propósito para sistemas de IA utilizados para vigilancia, monitoreo o seguimiento de individuos. Incluye videovigilancia, monitoreo de comportamiento, rastreo de ubicación y sistemas de observación masiva. Alto riesgo por impacto en privacidad, libertad y derechos fundamentales."@es ;
+    ai:activatesCriterion ai:SurveillanceRiskCriterion,
+        ai:BiometricIdentificationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:SurveillanceRiskCriterion .
+
+ai:BiometricIdentification a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Biometric identification"@en,
+        "Identificación biométrica"@es ;
+    rdfs:comment "Purpose involving biometric identification of individuals in public spaces, referenced in Annex III, point 1."@en,
+        "Propósito que implica la identificación biométrica de individuos en espacios públicos, referenciado en el Anexo III, punto 1."@es ;
+    ai:activatesCriterion ai:BiometricIdentificationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:BiometricIdentificationCriterion,
+        ai:BiometricIdentificationOrCategorization .
+
+ai:CriticalInfrastructureOperation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Critical Infrastructure Operation"@en,
+        "Operación de Infraestructura Crítica"@es ;
+    rdfs:comment "[ANNEX III - Point 2] AI systems for management and operation of critical infrastructure including road traffic, water, gas, heating, electricity supply, autonomous vehicles. High-risk due to impact on essential services and public safety."@en,
+        "[ANEXO III - Punto 2] Sistemas de IA para gestión y operación de infraestructura crítica incluyendo tráfico, agua, gas, calefacción, electricidad, vehículos autónomos. Alto riesgo por impacto en servicios esenciales y seguridad pública."@es ;
+    ai:activatesCriterion ai:CriticalInfrastructureCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:CriticalInfrastructureCriterion .
+
+ai:EducationAccess a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Education Access"@en,
+        "Acceso a la educación"@es ;
+    ai:activatesCriterion ai:EducationEvaluationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:EducationEvaluationCriterion ;
+    rdfs:comment "Evaluation for access to education or training."@en,
+        "Evaluación para el acceso a educación o formación."@es .
+
+ai:HealthCare a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Health Care"@en,
+        "Atención Sanitaria"@es ;
+    rdfs:comment "[ANNEX III - Point 5(a)] Purpose for healthcare and medical AI systems, including medical diagnosis, clinical decision support, and patient care. High-risk due to impact on health and safety."@en,
+        "[ANEXO III - Punto 5(a)] Propósito para sistemas de IA sanitarios y médicos, incluyendo diagnóstico médico, apoyo a decisiones clínicas y atención al paciente. Alto riesgo por impacto en salud y seguridad."@es ;
+    ai:activatesCriterion ai:HealthCareCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:HealthCareCriterion .
+
+ai:JudicialDecisionSupport a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Judicial Decision Support"@en,
+        "Apoyo a la decisión judicial"@es ;
+    rdfs:comment "[ANNEX III - Point 8] AI systems for administration of justice and democratic processes, including research and interpretation of facts and law, sentencing decisions, recidivism prediction. High-risk due to impact on fundamental rights and access to justice."@en,
+        "[ANEXO III - Punto 8] Sistemas de IA para administración de justicia y procesos democráticos, incluyendo investigación e interpretación de hechos y derecho, decisiones de sentencia, predicción de reincidencia. Alto riesgo por impacto en derechos fundamentales y acceso a la justicia."@es ;
+    ai:activatesCriterion ai:JudicialSupportCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:JudicialSupportCriterion .
+
+ai:LawEnforcementSupport a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Law Enforcement Support"@en,
+        "Apoyo a la aplicación de la ley"@es ;
+    rdfs:comment "[ANNEX III - Point 6] AI systems for law enforcement purposes, including individual risk assessment, polygraphs, evidence reliability, crime analytics, profiling. High-risk due to impact on liberty, privacy, and fundamental rights."@en,
+        "[ANEXO III - Punto 6] Sistemas de IA para aplicación de la ley, incluyendo evaluación de riesgo individual, polígrafos, fiabilidad de pruebas, análisis criminal, perfilado. Alto riesgo por impacto en libertad, privacidad y derechos fundamentales."@es ;
+    ai:activatesCriterion ai:LawEnforcementCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:LawEnforcementCriterion .
+
+ai:MigrationControl a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Migration Control"@en,
+        "Control migratorio"@es ;
+    ai:activatesCriterion ai:MigrationBorderCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:MigrationBorderCriterion ;
+    rdfs:comment "Migration, asylum and border control management."@en,
+        "Gestión de migración, asilo y control fronterizo."@es .
+
+ai:PublicServiceAllocation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Public Service Allocation"@en,
+        "Asignación de servicios públicos"@es ;
+    ai:activatesCriterion ai:EssentialServicesAccessCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion ;
+    rdfs:comment "Determination of access to essential public services."@en,
+        "Determinación de acceso a servicios públicos esenciales."@es .
+
+ai:RecruitmentOrEmployment a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Recruitment and Employment"@en,
+        "Reclutamiento y empleo"@es ;
+    rdfs:comment "[ANNEX III - Point 4] AI systems for recruitment and selection of candidates, job advertisements, CV screening, candidate evaluation, interview decisions. High-risk due to impact on employment rights and non-discrimination."@en,
+        "[ANEXO III - Punto 4] Sistemas de IA para reclutamiento y selección de candidatos, anuncios de empleo, filtrado de CV, evaluación de candidatos, decisiones de entrevistas. Alto riesgo por impacto en derechos laborales y no discriminación."@es ;
+    ai:activatesCriterion ai:RecruitmentEmploymentCriterion ;
+    ai:expectedRiskLevel ai:HighRisk ;
+    ai:triggersCriterion ai:RecruitmentEmploymentCriterion .
+
+ai:WorkforceEvaluationPurpose a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Workforce Evaluation Purpose"@en,
+        "Propósito de Evaluación de Trabajadores"@es ;
+    rdfs:comment "Systems specifically designed to evaluate worker performance, capabilities, or suitability for employment decisions. Regulated under Annex III, point 2."@en,
+        "Sistemas específicamente diseñados para evaluar el desempeño, capacidades o idoneidad de trabajadores para decisiones laborales. Regulado bajo el Anexo III, punto 2."@es ;
+    ai:activatesCriterion ai:WorkforceEvaluationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk .
+
+# ===== PROHIBITED PURPOSES (Article 5) =====
+# Purposes that indicate prohibited practices under Article 5
+
+ai:SubliminalManipulation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Subliminal Manipulation"@en,
+        "Manipulación Subliminal"@es ;
+    rdfs:comment "[Article 5.1.a - PROHIBITED] Purpose for AI systems deploying subliminal techniques beyond a person's consciousness to materially distort their behavior causing harm. Systems with this purpose are ABSOLUTELY PROHIBITED in the EU with no exceptions. Examples: subliminal audio/visual cues in advertising, subconscious triggers for addictive behavior."@en,
+        "[Artículo 5.1.a - PROHIBIDO] Propósito para sistemas de IA que despliegan técnicas subliminales más allá de la conciencia de una persona para distorsionar materialmente su comportamiento causando daño. Los sistemas con este propósito están ABSOLUTAMENTE PROHIBIDOS en la UE sin excepciones. Ejemplos: señales audiovisuales subliminales en publicidad, desencadenantes subconscientes para comportamiento adictivo."@es ;
+    ai:activatesCriterion ai:SubliminalManipulationCriterion ;
+    ai:expectedRiskLevel ai:UnacceptableRisk .
+
+ai:BehaviorManipulation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Behavior Manipulation"@en,
+        "Manipulación de Comportamiento"@es ;
+    rdfs:comment "[Article 5.1.b - PROHIBITED when exploiting vulnerabilities] Purpose for AI systems designed to manipulate human behavior, particularly when targeting vulnerable populations. When combined with vulnerable population contexts (minors, disabled, economically disadvantaged), triggers Article 5.1.b prohibition. Examples: manipulative apps targeting children, persuasive systems exploiting elderly."@en,
+        "[Artículo 5.1.b - PROHIBIDO cuando explota vulnerabilidades] Propósito para sistemas de IA diseñados para manipular el comportamiento humano, particularmente cuando se dirigen a poblaciones vulnerables. Cuando se combina con contextos de población vulnerable (menores, discapacitados, desfavorecidos económicamente), desencadena la prohibición del Artículo 5.1.b. Ejemplos: apps manipuladoras dirigidas a niños, sistemas persuasivos que explotan ancianos."@es ;
+    ai:activatesCriterion ai:VulnerabilityExploitationCriterion ;
+    ai:expectedRiskLevel ai:UnacceptableRisk .
+
+ai:SocialScoring a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Social Scoring"@en,
+        "Puntuación Social"@es ;
+    rdfs:comment "[Article 5.1.c - PROHIBITED for public authorities] Purpose for AI systems that evaluate or classify the trustworthiness of natural persons based on their social behavior or personal characteristics, leading to detrimental treatment in unrelated contexts. ABSOLUTELY PROHIBITED when used by public authorities. Examples: China-style 'social credit' systems, citizen trustworthiness scoring affecting access to public services."@en,
+        "[Artículo 5.1.c - PROHIBIDO para autoridades públicas] Propósito para sistemas de IA que evalúan o clasifican la fiabilidad de personas físicas basándose en su comportamiento social o características personales, conduciendo a trato perjudicial en contextos no relacionados. ABSOLUTAMENTE PROHIBIDO cuando es usado por autoridades públicas. Ejemplos: sistemas de 'crédito social' estilo China, puntuación de fiabilidad de ciudadanos que afecta acceso a servicios públicos."@es ;
+    ai:activatesCriterion ai:SocialScoringCriterion ;
+    ai:expectedRiskLevel ai:UnacceptableRisk .
+
+ai:CrimeRiskPrediction a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Crime Risk Prediction"@en,
+        "Predicción de Riesgo Delictivo"@es ;
+    rdfs:comment "[Article 5.1.d - PROHIBITED when based solely on profiling] Purpose for AI systems to assess or predict the risk of a natural person committing a criminal offense. PROHIBITED when based SOLELY on profiling without objective and verifiable prior criminal behavior. Risk assessment based on documented prior criminal behavior IS ALLOWED. Examples PROHIBITED: Pre-crime prediction based only on demographics. Examples ALLOWED: Recidivism risk based on prior convictions."@en,
+        "[Artículo 5.1.d - PROHIBIDO cuando se basa solo en perfilado] Propósito para sistemas de IA para evaluar o predecir el riesgo de que una persona física cometa un delito. PROHIBIDO cuando se basa SOLO en perfilado sin comportamiento delictivo previo objetivo y verificable. La evaluación de riesgo basada en comportamiento delictivo previo documentado SÍ ESTÁ PERMITIDA. Ejemplos PROHIBIDOS: Predicción pre-crimen basada solo en demografía. Ejemplos PERMITIDOS: Riesgo de reincidencia basado en condenas previas."@es ;
+    ai:activatesCriterion ai:PredictivePolicingProfilingCriterion ;
+    ai:expectedRiskLevel ai:UnacceptableRisk .
+
+# ===== POTENTIALLY EXCLUDED PURPOSES (Article 2) - v0.38.0 =====
+# These purposes MAY be excluded from EU AI Act scope if no overriding context exists
+
+ai:Entertainment a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Entertainment"@en,
+        "Entretenimiento"@es ;
+    rdfs:comment "[Article 2 + Recital 12 - POTENTIALLY EXCLUDED] Purpose for pure entertainment systems such as video games, recreational AI, NPCs, and leisure applications. May be excluded from EU AI Act scope per Recital 12 IF the system does not affect fundamental rights, does not cause real-world harm, and has no legal consequences. EXCLUSION IS OVERRIDDEN when the system causes harm to real persons, affects fundamental rights, or results in legal action."@en,
+        "[Artículo 2 + Considerando 12 - POTENCIALMENTE EXCLUIDO] Propósito para sistemas de entretenimiento puro como videojuegos, IA recreativa, NPCs y aplicaciones de ocio. Puede ser excluido del ámbito del EU AI Act según el Considerando 12 SI el sistema no afecta derechos fundamentales, no causa daño real y no tiene consecuencias legales. LA EXCLUSIÓN SE ANULA cuando el sistema causa daño a personas reales, afecta derechos fundamentales o resulta en acciones legales."@es ;
+    ai:mayBeExcludedBy ai:EntertainmentWithoutRightsImpact ;
+    ai:expectedRiskLevel ai:MinimalRisk .
+
+# ===== v0.39.0: CONTENT RECOMMENDATION PURPOSE =====
+# Purpose for recommendation algorithms (TikTok, YouTube, social media feeds)
+
+ai:ContentRecommendation a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Content Recommendation"@en,
+        "Recomendación de Contenido"@es ;
+    rdfs:comment "[Article 2 + Recital 12 + DSA - POTENTIALLY EXCLUDED but often IN SCOPE] Purpose for AI systems that recommend content to users based on their behavior, preferences, or profile. Includes social media feeds (TikTok For You, Instagram Explore, YouTube recommendations), news aggregators, and personalized content curation. May be excluded per Recital 12 when purely for entertainment without harm. EXCLUSION IS OVERRIDDEN when: (1) system causes death, suicide, or injury (Chase Nasca case), (2) affects minors (heightened scrutiny), (3) creates victims (deepfakes), (4) leads to legal consequences, (5) performs profiling (Art. 6.3). Most real-world recommendation systems fall IN SCOPE due to profiling and fundamental rights impact."@en,
+        "[Artículo 2 + Considerando 12 + DSA - POTENCIALMENTE EXCLUIDO pero frecuentemente EN ÁMBITO] Propósito para sistemas de IA que recomiendan contenido a usuarios basándose en su comportamiento, preferencias o perfil. Incluye feeds de redes sociales (TikTok For You, Instagram Explore, recomendaciones de YouTube), agregadores de noticias y curación de contenido personalizado. Puede ser excluido según el Considerando 12 cuando es puramente para entretenimiento sin daño. LA EXCLUSIÓN SE ANULA cuando: (1) el sistema causa muerte, suicidio o lesión (caso Chase Nasca), (2) afecta a menores (escrutinio reforzado), (3) crea víctimas (deepfakes), (4) lleva a consecuencias legales, (5) realiza perfilado (Art. 6.3). La mayoría de sistemas de recomendación reales caen EN ÁMBITO debido al perfilado e impacto en derechos fundamentales."@es ;
+    ai:mayBeExcludedBy ai:EntertainmentWithoutRightsImpact ;
+    ai:activatesCriterion ai:ContentRecommendationCriterion ;
+    ai:expectedRiskLevel ai:HighRisk .
+
+ai:PersonalAssistantUse a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Personal Assistant Use"@en,
+        "Uso de Asistente Personal"@es ;
+    rdfs:comment "[Article 2(10) - POTENTIALLY EXCLUDED] Purpose for personal AI assistants used in purely personal non-professional activities. May be excluded from EU AI Act scope per Article 2(10) when used by natural persons for purely personal activities. EXCLUSION IS OVERRIDDEN when the assistant is used professionally, affects third parties, or causes harm."@en,
+        "[Artículo 2(10) - POTENCIALMENTE EXCLUIDO] Propósito para asistentes de IA personales utilizados en actividades puramente personales no profesionales. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(10) cuando es usado por personas físicas para actividades puramente personales. LA EXCLUSIÓN SE ANULA cuando el asistente se usa profesionalmente, afecta a terceros o causa daño."@es ;
+    ai:mayBeExcludedBy ai:PersonalNonProfessionalUse ;
+    ai:expectedRiskLevel ai:MinimalRisk .
+
+ai:EmailFiltering a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Email Filtering"@en,
+        "Filtrado de Correo"@es ;
+    rdfs:comment "[Article 2(10) - POTENTIALLY EXCLUDED] Purpose for personal email spam filters and organization. May be excluded from EU AI Act scope per Article 2(10) when used for purely personal non-professional email management. EXCLUSION IS OVERRIDDEN when used for business email, affects employment decisions, or filters critical communications."@en,
+        "[Artículo 2(10) - POTENCIALMENTE EXCLUIDO] Propósito para filtros de spam personales y organización de correo. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(10) cuando se usa para gestión de correo personal no profesional. LA EXCLUSIÓN SE ANULA cuando se usa para correo empresarial, afecta decisiones de empleo o filtra comunicaciones críticas."@es ;
+    ai:mayBeExcludedBy ai:PersonalNonProfessionalUse ;
+    ai:expectedRiskLevel ai:MinimalRisk .
+
+ai:ScientificResearch a ai:Purpose,
+    owl:NamedIndividual ;
+    rdfs:label "Scientific Research"@en,
+        "Investigación Científica"@es ;
+    rdfs:comment "[Article 2(6) - POTENTIALLY EXCLUDED] Purpose for AI systems used exclusively for scientific research and development. May be excluded from EU AI Act scope per Article 2(6). EXCLUSION IS OVERRIDDEN when research results in deployed systems, affects human subjects without consent, or has commercial applications."@en,
+        "[Artículo 2(6) - POTENCIALMENTE EXCLUIDO] Propósito para sistemas de IA utilizados exclusivamente para investigación y desarrollo científico. Puede ser excluido del ámbito del EU AI Act según el Artículo 2(6). LA EXCLUSIÓN SE ANULA cuando la investigación resulta en sistemas desplegados, afecta a sujetos humanos sin consentimiento o tiene aplicaciones comerciales."@es ;
+    ai:mayBeExcludedBy ai:PureScientificResearch ;
+    ai:expectedRiskLevel ai:MinimalRisk .
+
+# ===== DEPLOYMENT CONTEXT INSTANCES =====
+# These are contexts in which AI systems are deployed
+
+ai:Education a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Education"@en,
+        "Educación"@es ;
+    rdfs:comment "Deployment context involving education or training."@en,
+        "Contexto de despliegue que involucra educación o formación."@es ;
+    ai:triggersCriterion ai:EducationEvaluationCriterion .
+
+ai:Healthcare a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Healthcare"@en,
+        "Salud"@es ;
+    rdfs:comment "Deployment context involving healthcare, medical services, or health-related activities. Relevant for AI systems used in diagnosis, treatment, patient management, or healthcare administration."@en,
+        "Contexto de despliegue que involucra la salud, servicios médicos o actividades relacionadas con la atención sanitaria. Relevante para sistemas de IA utilizados en diagnóstico, tratamiento, gestión de pacientes o administración sanitaria."@es ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion .
+
+ai:PublicServices a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Public Services"@en,
+        "Servicios Públicos"@es ;
+    rdfs:comment "Deployment context involving public services."@en,
+        "Contexto de despliegue que involucra servicios públicos."@es ;
+    ai:triggersCriterion ai:EssentialServicesAccessCriterion .
+
+ai:VulnerablePopulationContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Vulnerable Population Context"@en,
+        "Contexto de población vulnerable"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Systems used in contexts involving vulnerable populations (children, elderly, disabled persons, marginalized groups), requiring enhanced protection."@en,
+        "Sistemas utilizados en contextos que involucran poblaciones vulnerables (niños, ancianos, personas con discapacidades, grupos marginados), requiriendo protección reforzada."@es .
+
+ai:HighStakesDecisionContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "High Stakes Decision Context"@en,
+        "Contexto de decisión de alto impacto"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts where AI decisions have significant consequences for individuals' life opportunities, safety, or well-being."@en,
+        "Contextos donde las decisiones de IA tienen consecuencias significativas para las oportunidades de vida, seguridad o bienestar de las personas."@es .
+
+ai:SafetyCriticalContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Safety Critical Context"@en,
+        "Contexto crítico de seguridad"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Deployment contexts where system failures could result in serious harm to health, safety, or human life."@en,
+        "Contextos de despliegue donde fallos del sistema podrían resultar en daños graves a la salud, seguridad o vida humana."@es .
+
+ai:LimitedTransparencyContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Limited Transparency Context"@en,
+        "Contexto de transparencia limitada"@es ;
+    ai:assignsRiskLevel ai:LimitedRisk ;
+    rdfs:comment "Contexts where AI systems interact with users but may not be immediately recognizable as AI, requiring transparency obligations."@en,
+        "Contextos donde los sistemas de IA interactúan con usuarios pero pueden no ser inmediatamente reconocibles como IA, requiriendo obligaciones de transparencia."@es .
+
+ai:SocialManipulationContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Social Manipulation Context"@en,
+        "Contexto de manipulación social"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts where AI systems could manipulate human behavior in harmful ways, prohibited under Article 5."@en,
+        "Contextos donde los sistemas de IA podrían manipular el comportamiento humano de maneras dañinas, prohibido bajo el Artículo 5."@es .
+
+ai:EmotionalManipulationContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Emotional Manipulation Context"@en,
+        "Contexto de manipulación emocional"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts where AI systems exploit psychological vulnerabilities or emotional states to cause harm, prohibited under Article 5(1)(a)."@en,
+        "Contextos donde los sistemas de IA explotan vulnerabilidades psicológicas o estados emocionales para causar daño, prohibido bajo el Artículo 5(1)(a)."@es .
+
+ai:MassPublicSurveillanceContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Mass Public Surveillance Context"@en,
+        "Contexto de vigilancia pública masiva"@es ;
+    ai:assignsRiskLevel ai:UnacceptableRisk ;
+    rdfs:comment "Contexts involving indiscriminate surveillance or mass data collection threatening democratic values, prohibited under the AI Act."@en,
+        "Contextos que involucran vigilancia indiscriminada o recolección masiva de datos amenazando valores democráticos, prohibido bajo el AI Act."@es .
+
+ai:LowRiskGeneralContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Low Risk General Context"@en,
+        "Contexto general de bajo riesgo"@es ;
+    ai:assignsRiskLevel ai:MinimalRisk ;
+    rdfs:comment "General deployment contexts with minimal risk to fundamental rights, safety, or societal values."@en,
+        "Contextos generales de despliegue con riesgo mínimo para derechos fundamentales, seguridad o valores sociales."@es .
+
+ai:RealTimeProcessing a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Real Time Processing"@en,
+        "Procesamiento en Tiempo Real"@es ;
+    rdfs:comment "Deployment context for real-time processing environments."@en,
+        "Contexto de despliegue para entornos de procesamiento en tiempo real."@es .
+
+ai:HighVolumeProcessing a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "High Volume Processing"@en,
+        "Procesamiento de Alto Volumen"@es ;
+    rdfs:comment "Deployment context for high-volume processing environments."@en,
+        "Contexto de despliegue para entornos de procesamiento de alto volumen."@es .
+
+ai:DataGovernanceContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Data Governance Context"@en,
+        "Contexto de gobernanza de datos"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving sensitive data processing, biometric data, or personal data requiring enhanced governance."@en,
+        "Contextos que involucran procesamiento de datos sensibles, datos biométricos o datos personales que requieren gobernanza mejorada."@es .
+
+ai:TrainingDataQualityContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Training Data Quality Context"@en,
+        "Contexto de calidad de datos de entrenamiento"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts where training data quality, bias, or representativeness significantly impacts system reliability and fairness."@en,
+        "Contextos donde la calidad, sesgo o representatividad de los datos de entrenamiento impacta significativamente la confiabilidad y equidad del sistema."@es .
+
+ai:FinancialServicesContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Financial Services Context"@en,
+        "Contexto de servicios financieros"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving creditworthiness assessment, insurance pricing, or financial risk evaluation affecting individuals' access to financial services."@en,
+        "Contextos que involucran evaluación de solvencia crediticia, precios de seguros o evaluación de riesgo financiero que afecta el acceso a servicios financieros."@es .
+
+ai:WorkplaceMonitoringContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Workplace Monitoring Context"@en,
+        "Contexto de monitoreo laboral"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "Contexts involving AI systems for employee monitoring, performance evaluation, or workplace surveillance."@en,
+        "Contextos que involucran sistemas de IA para monitoreo de empleados, evaluación de rendimiento o vigilancia en el lugar de trabajo."@es .
+
+ai:PublicSpaces a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Public Spaces"@en,
+        "Espacios Públicos"@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    rdfs:comment "[Article 5.1.h] Publicly accessible spaces where real-time remote biometric identification is generally prohibited except under very limited exceptions (Article 5.2). Includes streets, squares, shopping malls, airports, train stations, and other areas freely accessible to the public. Real-time biometric ID in public spaces for law enforcement requires judicial authorization and is subject to strict conditions."@en,
+        "[Artículo 5.1.h] Espacios públicamente accesibles donde la identificación biométrica remota en tiempo real está generalmente prohibida excepto bajo excepciones muy limitadas (Artículo 5.2). Incluye calles, plazas, centros comerciales, aeropuertos, estaciones de tren y otras áreas libremente accesibles al público. La identificación biométrica en tiempo real en espacios públicos para aplicación de la ley requiere autorización judicial y está sujeta a condiciones estrictas."@es .
+
+# ===== SCOPE EXCLUSION OVERRIDE CONTEXTS (Article 2) - v0.38.0 =====
+# These contexts OVERRIDE (cancel) scope exclusions, bringing systems back into EU AI Act scope
+# A system with an excluded purpose becomes IN SCOPE if deployed in these contexts
+
+ai:AffectsFundamentalRightsContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Affects Fundamental Rights"@en,
+        "Afecta Derechos Fundamentales"@es ;
+    ai:overridesExclusion ai:EntertainmentWithoutRightsImpact,
+        ai:PersonalNonProfessionalUse,
+        ai:PureScientificResearch ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:requiresFRIA true ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> ;
+    rdfs:comment "[Article 2 + Article 3(49)] Context where an AI system affects the fundamental rights of natural persons as defined in the EU Charter. This OVERRIDES all exclusions and brings the system into EU AI Act scope. Includes: right to human dignity, right to life, prohibition of torture, right to liberty, respect for private life, protection of personal data, freedom of expression, non-discrimination, rights of the child, rights of persons with disabilities."@en,
+        "[Artículo 2 + Artículo 3(49)] Contexto donde un sistema de IA afecta los derechos fundamentales de personas físicas según la Carta de la UE. Esto ANULA todas las exclusiones y trae el sistema al ámbito del EU AI Act. Incluye: derecho a la dignidad humana, derecho a la vida, prohibición de tortura, derecho a la libertad, respeto a la vida privada, protección de datos personales, libertad de expresión, no discriminación, derechos del niño, derechos de personas con discapacidad."@es .
+
+ai:CausesRealWorldHarmContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Causes Real World Harm"@en,
+        "Causa Daño Real"@es ;
+    ai:overridesExclusion ai:EntertainmentWithoutRightsImpact,
+        ai:PersonalNonProfessionalUse ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:requiresFRIA true ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_27/oj>,
+        <http://data.europa.eu/eli/reg/2024/1689/art_73/oj> ;
+    rdfs:comment "[Article 3(49) - Serious Incident] Context where an AI system causes or contributes to death, suicide, serious damage to health, serious damage to property, environment, or critical infrastructure. Per Article 3(49), a 'serious incident' brings the system into full regulatory scope regardless of original purpose. This context OVERRIDES exclusions for entertainment and personal use. Examples: TikTok algorithm contributing to teen suicide (Chase Nasca), video game causing seizures, personal assistant giving dangerous medical advice, entertainment app causing psychological harm. Triggers mandatory incident reporting per Article 73."@en,
+        "[Artículo 3(49) - Incidente Grave] Contexto donde un sistema de IA causa o contribuye a muerte, suicidio, daño grave a la salud, daño grave a la propiedad, medio ambiente o infraestructura crítica. Según el Artículo 3(49), un 'incidente grave' trae el sistema al ámbito regulatorio completo independientemente del propósito original. Este contexto ANULA exclusiones para entretenimiento y uso personal. Ejemplos: algoritmo de TikTok contribuyendo al suicidio de adolescentes (Chase Nasca), videojuego que causa convulsiones, asistente personal que da consejos médicos peligrosos, app de entretenimiento que causa daño psicológico. Activa reporte obligatorio de incidentes según Artículo 73."@es .
+
+ai:LegalConsequencesContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Legal Consequences"@en,
+        "Consecuencias Legales"@es ;
+    ai:overridesExclusion ai:EntertainmentWithoutRightsImpact,
+        ai:PersonalNonProfessionalUse ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:requiresFRIA true ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> ;
+    rdfs:comment "[Article 2 + Article 3(49)] Context where an AI system's operation results in legal consequences for natural persons. This OVERRIDES exclusions and brings the system into EU AI Act scope. Includes: arrests, criminal prosecution, jail/prison sentences, lawsuits, fines, penalties, court proceedings, regulatory sanctions, employment termination, denial of services based on AI decision. Examples: AI-based wrongful arrest, deepfake leading to prosecution, AI system causing legal liability, Nasca family lawsuit against TikTok."@en,
+        "[Artículo 2 + Artículo 3(49)] Contexto donde la operación de un sistema de IA resulta en consecuencias legales para personas físicas. Esto ANULA exclusiones y trae el sistema al ámbito del EU AI Act. Incluye: arrestos, procesamientos penales, sentencias de cárcel/prisión, demandas, multas, sanciones, procedimientos judiciales, sanciones regulatorias, despido laboral, denegación de servicios basada en decisión de IA. Ejemplos: arresto indebido por IA, deepfake que lleva a procesamiento, sistema de IA que causa responsabilidad legal, demanda de la familia Nasca contra TikTok."@es .
+
+ai:VictimImpactContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Victim Impact"@en,
+        "Impacto en Víctimas"@es ;
+    ai:overridesExclusion ai:EntertainmentWithoutRightsImpact,
+        ai:PersonalNonProfessionalUse ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:requiresFRIA true ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> ;
+    rdfs:comment "[Article 2 + Article 3(49)] Context where an AI system creates identifiable victims who suffer harm, abuse, harassment, or damage. This OVERRIDES exclusions regardless of original purpose. Examples: non-consensual deepfake pornography victims (South Korean schools), AI-generated harassment targeting individuals, synthetic media used for fraud or defamation, Chase Nasca as victim of algorithmic harm. The existence of real victims brings any AI system into regulatory scope."@en,
+        "[Artículo 2 + Artículo 3(49)] Contexto donde un sistema de IA crea víctimas identificables que sufren daño, abuso, acoso o perjuicio. Esto ANULA exclusiones independientemente del propósito original. Ejemplos: víctimas de pornografía deepfake no consentida (escuelas de Corea del Sur), acoso generado por IA dirigido a individuos, medios sintéticos usados para fraude o difamación, Chase Nasca como víctima de daño algorítmico. La existencia de víctimas reales trae cualquier sistema de IA al ámbito regulatorio."@es .
+
+ai:BiometricProcessingContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Biometric Processing"@en,
+        "Procesamiento Biométrico"@es ;
+    ai:overridesExclusion ai:EntertainmentWithoutRightsImpact,
+        ai:PersonalNonProfessionalUse ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:requiresFRIA true ;
+    rdfs:comment "[ANNEX III - Point 1] Context involving processing of biometric data for identification or categorization. Per Annex III, biometric identification systems are HIGH-RISK regardless of purpose. This OVERRIDES exclusions. Examples: facial recognition in games with real photos, emotion detection in entertainment apps, biometric authentication even for personal use."@en,
+        "[ANEXO III - Punto 1] Contexto que involucra procesamiento de datos biométricos para identificación o categorización. Según el Anexo III, los sistemas de identificación biométrica son de ALTO RIESGO independientemente del propósito. Esto ANULA exclusiones. Ejemplos: reconocimiento facial en juegos con fotos reales, detección de emociones en apps de entretenimiento, autenticación biométrica incluso para uso personal."@es .
+
+# ===== v0.39.0: MINORS AFFECTED CONTEXT =====
+# Critical override context for systems affecting children and teenagers
+
+ai:MinorsAffectedContext a ai:DeploymentContext,
+    owl:NamedIndividual ;
+    rdfs:label "Minors Affected Context"@en,
+        "Contexto de Menores Afectados"@es ;
+    ai:overridesExclusion ai:EntertainmentWithoutRightsImpact,
+        ai:PersonalNonProfessionalUse ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:requiresFRIA true ;
+    eli:cites <http://data.europa.eu/eli/reg/2024/1689/art_27/oj> ;
+    rdfs:comment "[Article 2 + Article 27 + Recital 47] Context where an AI system affects minors (persons under 18 years old). Children and teenagers are considered vulnerable natural persons requiring heightened protection. This OVERRIDES exclusions regardless of original purpose (entertainment, gaming, personal use). Examples: TikTok For You algorithm affecting teenagers, AI chatbots interacting with minors, gaming AI targeting young users, educational recommendation systems. The presence of minors triggers automatic FRIA requirement per Article 27."@en,
+        "[Artículo 2 + Artículo 27 + Considerando 47] Contexto donde un sistema de IA afecta a menores (personas menores de 18 años). Los niños y adolescentes son considerados personas naturales vulnerables que requieren protección reforzada. Esto ANULA exclusiones independientemente del propósito original (entretenimiento, juegos, uso personal). Ejemplos: algoritmo TikTok For You afectando adolescentes, chatbots de IA interactuando con menores, IA de juegos dirigida a usuarios jóvenes, sistemas de recomendación educativa. La presencia de menores activa automáticamente el requisito de FRIA según el Artículo 27."@es .
+
+# ===== TRAINING DATA ORIGIN INSTANCES =====
+# Represents the source of training data
+
+ai:InternalDataset a ai:TrainingDataOrigin,
+    owl:NamedIndividual ;
+    rdfs:label "Internal Dataset"@en,
+        "Datos Internos"@es ;
+    rdfs:comment "Dataset originating from internal sources. Typically has lower risk profile due to known provenance and controlled access."@en,
+        "Conjunto de datos originado en fuentes internas. Típicamente tiene un perfil de riesgo menor debido a la procedencia conocida y acceso controlado."@es .
+
+ai:ExternalDataset a ai:TrainingDataOrigin,
+    owl:NamedIndividual ;
+    rdfs:label "External Dataset"@en,
+        "Datos Externos"@es ;
+    ai:requiresDataGovernance ai:DataGovernanceRequirement,
+        ai:TraceabilityRequirement ;
+    rdfs:comment "Dataset originating from external sources. May require enhanced data governance and quality assurance measures."@en,
+        "Conjunto de datos originado en fuentes externas. Puede requerir medidas mejoradas de gobernanza y aseguramiento de la calidad."@es .
+
+ai:SyntheticDataset a ai:TrainingDataOrigin,
+    owl:NamedIndividual ;
+    rdfs:label "Synthetic Dataset"@en,
+        "Datos Sintéticos"@es ;
+    ai:requiresDataGovernance ai:TransparencyRequirement,
+        ai:DocumentationRequirement ;
+    rdfs:comment "Dataset generated synthetically. Requires validation of quality and representativeness, with transparency obligations about synthetic data use."@en,
+        "Conjunto de datos generado sintéticamente. Requiere validación de calidad y representatividad, con obligaciones de transparencia sobre el uso de datos sintéticos."@es .
+
+# ===== RISK LEVEL INSTANCES =====
+# Risk levels according to EU AI Act Article 6
+
+ai:MinimalRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Minimal Risk"@en,
+        "Riesgo Mínimo"@es ;
+    rdfs:comment "AI systems with minimal or no risk. Not subject to specific obligations under the AI Act."@en,
+        "Sistemas de IA con riesgo mínimo o nulo. No están sujetos a obligaciones específicas según el AI Act."@es .
+
+ai:LimitedRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Limited Risk"@en,
+        "Riesgo Limitado"@es ;
+    rdfs:comment "Systems requiring transparency obligations. Examples include chatbots or content generators."@en,
+        "Sistemas que requieren obligaciones de transparencia. Por ejemplo, chatbots o generadores de contenido."@es .
+
+ai:HighRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "High Risk"@en,
+        "Alto Riesgo"@es ;
+    rdfs:comment "AI systems classified as high-risk according to the EU AI Act. Subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights."@en,
+        "Sistemas de IA clasificados como de alto riesgo según el AI Act de la UE. Sujetos a requisitos regulatorios estrictos debido a su posible impacto en la salud, la seguridad o los derechos fundamentales."@es .
+
+ai:UnacceptableRisk a ai:RiskLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Unacceptable Risk"@en,
+        "Riesgo Inaceptable"@es ;
+    rdfs:comment "AI systems classified as unacceptable risk according to the EU AI Act. Strictly prohibited due to their unacceptable threat to safety, fundamental rights, or democratic values."@en,
+        "Sistemas de IA clasificados como de riesgo inaceptable según el AI Act de la UE. Estrictamente prohibidos por su amenaza inaceptable a la seguridad, los derechos fundamentales o los valores democráticos."@es .
+
+# ===== MODEL SCALE INSTANCES =====
+# Model scale classifications
+
+ai:SmallModelScale a ai:ModelScale,
+    owl:NamedIndividual ;
+    rdfs:label "Small Model Scale"@en,
+        "Escala de Modelo Pequeño"@es ;
+    rdfs:comment "Small-scale model optimized for edge devices or limited resources."@en,
+        "Modelo de pequeña escala optimizado para dispositivos edge o recursos limitados."@es .
+
+ai:RegularModelScale a ai:ModelScale,
+    owl:NamedIndividual ;
+    rdfs:label "Regular Model Scale"@en,
+        "Escala de Modelo Regular"@es ;
+    rdfs:comment "Standard-scale model with typical computational requirements."@en,
+        "Modelo de escala estándar con requisitos computacionales típicos."@es .
+
+ai:FoundationModelScale a ai:ModelScale,
+    owl:NamedIndividual ;
+    rdfs:label "Foundation Model Scale"@en,
+        "Escala de Modelo Fundacional"@es ;
+    rdfs:comment "Large-scale pre-trained model typically requiring >10^25 FLOPs, subject to GPAI obligations under Articles 51-53."@en,
+        "Modelo pre-entrenado a gran escala que típicamente requiere >10^25 FLOPs, sujeto a obligaciones GPAI bajo Artículos 51-53."@es .
+
+# ===== SYSTEM CAPABILITY CRITERIA INSTANCES =====
+
+ai:ReasoningCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Reasoning Capability"@en,
+        "Capacidad de Razonamiento"@es ;
+    rdfs:comment "System can perform logical reasoning and inference over complex domains."@en,
+        "Sistema que puede realizar razonamiento lógico e inferencia sobre dominios complejos."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:ExplainabilityRequirement,
+        ai:DocumentationRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement .
+
+ai:PlanningCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Planning Capability"@en,
+        "Capacidad de Planificación"@es ;
+    rdfs:comment "System can generate plans and strategies to achieve specified objectives."@en,
+        "Sistema que puede generar planes y estrategias para lograr objetivos especificados."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement,
+        ai:RobustnessRequirement .
+
+ai:PerceptionCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Perception Capability"@en,
+        "Capacidad de Percepción"@es ;
+    rdfs:comment "System can sense and interpret information from its environment."@en,
+        "Sistema que puede detectar e interpretar información de su entorno."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:AccuracyEvaluationRequirement,
+        ai:DataGovernanceRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement .
+
+ai:InteractionCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Interaction Capability"@en,
+        "Capacidad de Interacción"@es ;
+    rdfs:comment "System can interact with users and other systems effectively."@en,
+        "Sistema que puede interactuar con usuarios y otros sistemas de manera efectiva."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:UserNotificationRequirement,
+        ai:DocumentationRequirement,
+        ai:DataGovernanceRequirement .
+
+ai:LearningCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Learning Capability"@en,
+        "Capacidad de Aprendizaje"@es ;
+    rdfs:comment "System can adapt and improve its behavior based on experience."@en,
+        "Sistema que puede adaptarse y mejorar su comportamiento basado en la experiencia."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:DataGovernanceRequirement,
+        ai:BiasDetectionRequirement,
+        ai:MonitoringRequirement,
+        ai:DocumentationRequirement,
+        ai:TraceabilityRequirement .
+
+ai:OptimizationCapability a ai:SystemCapabilityCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Optimization Capability"@en,
+        "Capacidad de Optimización"@es ;
+    rdfs:comment "System can find efficient solutions within constrained parameters."@en,
+        "Sistema que puede encontrar soluciones eficientes dentro de parámetros restringidos."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:RobustnessRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DocumentationRequirement,
+        ai:DataGovernanceRequirement .
+
+# ===== ALGORITHM TYPE INSTANCES =====
+
+ai:NeuralNetwork a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Neural Network"@en,
+        "Red Neuronal"@es ;
+    rdfs:comment "Artificial neural networks including deep learning architectures."@en,
+        "Redes neuronales artificiales incluidas las arquitecturas de aprendizaje profundo."@es .
+
+ai:TransformerModel a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Transformer Model"@en,
+        "Modelo Transformer"@es ;
+    rdfs:comment "Transformer-based architectures for sequence processing and language understanding."@en,
+        "Arquitecturas basadas en Transformer para procesamiento de secuencias y comprensión del lenguaje."@es .
+
+ai:DecisionTree a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Decision Tree"@en,
+        "Árbol de Decisión"@es ;
+    rdfs:comment "Tree-based decision models for classification and regression."@en,
+        "Modelos de decisión basados en árboles para clasificación y regresión."@es .
+
+ai:BayesianModel a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Bayesian Model"@en,
+        "Modelo Bayesiano"@es ;
+    rdfs:comment "Probabilistic models based on Bayesian inference and reasoning."@en,
+        "Modelos probabilísticos basados en inferencia y razonamiento Bayesiano."@es .
+
+ai:SupportVectorMachine a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Support Vector Machine"@en,
+        "Máquina de Vectores de Soporte"@es ;
+    rdfs:comment "SVM algorithms for classification and regression tasks."@en,
+        "Algoritmos SVM para tareas de clasificación y regresión."@es .
+
+ai:RandomForest a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Random Forest"@en,
+        "Bosque Aleatorio"@es ;
+    rdfs:comment "Ensemble methods using multiple decision trees."@en,
+        "Métodos de conjunto que utilizan múltiples árboles de decisión."@es .
+
+ai:GradientBoosting a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Gradient Boosting"@en,
+        "Impulso de Gradiente"@es ;
+    rdfs:comment "Ensemble method building models sequentially with gradient optimization."@en,
+        "Método de conjunto que construye modelos secuencialmente con optimización de gradiente."@es .
+
+ai:ConvolutionalNeuralNetwork a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Convolutional Neural Network"@en,
+        "Red Neuronal Convolucional"@es ;
+    rdfs:comment "CNN architectures specialized for image and spatial data processing."@en,
+        "Arquitecturas CNN especializadas para procesamiento de imágenes y datos espaciales."@es .
+
+ai:RecurrentNeuralNetwork a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Recurrent Neural Network"@en,
+        "Red Neuronal Recurrente"@es ;
+    rdfs:comment "RNN architectures for sequential data processing and temporal dependencies."@en,
+        "Arquitecturas RNN para procesamiento de datos secuenciales y dependencias temporales."@es .
+
+ai:GeneticAlgorithm a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Genetic Algorithm"@en,
+        "Algoritmo Genético"@es ;
+    rdfs:comment "Evolutionary algorithms inspired by biological natural selection."@en,
+        "Algoritmos evolutivos inspirados en la selección natural biológica."@es .
+
+ai:ProfilingAlgorithm a ai:AlgorithmType,
+    owl:NamedIndividual ;
+    rdfs:label "Profiling Algorithm"@en,
+        "Algoritmo de Perfilado"@es ;
+    rdfs:comment "[Article 5.1.d relevance] Algorithms designed to create profiles of individuals based on their characteristics, traits, or behavior patterns. When used SOLELY for predicting crime risk WITHOUT objective prior criminal behavior evidence, violates Article 5.1.d. Profiling for other purposes (marketing, recommendations) may be allowed subject to GDPR. Examples: demographic profiling, behavioral pattern analysis, personality trait assessment."@en,
+        "[Relevancia Artículo 5.1.d] Algoritmos diseñados para crear perfiles de individuos basándose en sus características, rasgos o patrones de comportamiento. Cuando se usa SOLO para predecir riesgo delictivo SIN evidencia objetiva de comportamiento delictivo previo, viola el Artículo 5.1.d. El perfilado para otros propósitos (marketing, recomendaciones) puede estar permitido sujeto al RGPD. Ejemplos: perfilado demográfico, análisis de patrones de comportamiento, evaluación de rasgos de personalidad."@es .
+
+# ===== CONTEXTUAL CRITERIA INSTANCES =====
+
+ai:FundamentalRightsContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Fundamental Rights Context"@en,
+        "Contexto de Derechos Fundamentales"@es ;
+    rdfs:comment "Systems that may impact fundamental rights protected by the EU Charter."@en,
+        "Sistemas que pueden afectar los derechos fundamentales protegidos por la Carta de la UE."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:HumanOversightRequirement,
+        ai:TransparencyRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:DocumentationRequirement .
+
+ai:TransparencyContextualCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Limited Transparency Context"@en,
+        "Contexto de Transparencia Limitada"@es ;
+    rdfs:comment "Systems operating in contexts where transparency is inherently limited."@en,
+        "Sistemas que operan en contextos donde la transparencia es inherentemente limitada."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:TransparencyRequirement,
+        ai:ExplainabilityRequirement,
+        ai:DocumentationRequirement,
+        ai:HumanOversightRequirement .
+
+ai:SurveillanceRiskCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Surveillance Context"@en,
+        "Contexto de Vigilancia"@es ;
+    rdfs:comment "Systems used for mass surveillance or monitoring of populations."@en,
+        "Sistemas utilizados para vigilancia masiva o monitoreo de poblaciones."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:PrivacyProtectionRequirement,
+        ai:TransparencyRequirement,
+        ai:HumanOversightRequirement,
+        ai:DataGovernanceRequirement,
+        ai:LoggingRequirement,
+        ai:DocumentationRequirement .
+
+ai:ManipulationRiskCriterion a ai:ContextualCriterion,
+    owl:NamedIndividual ;
+    rdfs:label "Manipulation Risk Context"@en,
+        "Contexto de Riesgo de Manipulación"@es ;
+    rdfs:comment "Systems with potential for social or emotional manipulation."@en,
+        "Sistemas con potencial para manipulación social o emocional."@es ;
+    ai:assignsRiskLevel ai:HighRisk ;
+    ai:activatesRequirement ai:FundamentalRightsAssessmentRequirement,
+        ai:TransparencyRequirement,
+        ai:UserNotificationRequirement,
+        ai:DocumentationRequirement,
+        ai:HumanOversightRequirement .
+
+# ===== COMPLIANCE REQUIREMENT INSTANCES =====
+
+ai:UserNotificationRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "User Notification Requirement"@en,
+        "Requisito de Notificación al Usuario"@es ;
+    rdfs:comment "Systems must notify users when they interact with AI-generated content."@en,
+        "Los sistemas deben notificar a los usuarios cuando interactúan con contenido generado por IA."@es .
+
+ai:AuditTrailRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Audit Trail Requirement"@en,
+        "Requisito de Rastro de Auditoría"@es ;
+    rdfs:comment "Systems must maintain comprehensive audit trails of decisions and operations."@en,
+        "Los sistemas deben mantener registros de auditoría exhaustivos de decisiones y operaciones."@es .
+
+ai:RiskAssessmentRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Risk Assessment Requirement"@en,
+        "Requisito de Evaluación de Riesgos"@es ;
+    rdfs:comment "Systems must undergo thorough risk assessments before deployment."@en,
+        "Los sistemas deben someterse a evaluaciones exhaustivas de riesgos antes del despliegue."@es .
+
+ai:GovernanceDocumentationRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Governance Documentation Requirement"@en,
+        "Requisito de Documentación de Gobernanza"@es ;
+    rdfs:comment "Systems must have documented governance structures and accountability mechanisms."@en,
+        "Los sistemas deben tener estructuras de gobernanza documentadas y mecanismos de responsabilidad."@es .
+
+ai:ExternalAuditRequirement a ai:ComplianceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "External Audit Requirement"@en,
+        "Requisito de Auditoría Externa"@es ;
+    rdfs:comment "High-risk systems must be subject to regular external audits."@en,
+        "Los sistemas de alto riesgo deben estar sujetos a auditorías externas regulares."@es .
+
+# ===== TECHNICAL REQUIREMENT INSTANCES =====
+
+ai:PerformanceMonitoringRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Performance Monitoring Requirement"@en,
+        "Requisito de Monitoreo de Rendimiento"@es ;
+    rdfs:comment "Systems must continuously monitor their performance metrics and deviations."@en,
+        "Los sistemas deben monitorear continuamente sus métricas de rendimiento y desviaciones."@es .
+
+ai:InputValidationRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Input Validation Requirement"@en,
+        "Requisito de Validación de Entrada"@es ;
+    rdfs:comment "Systems must validate all inputs for correctness and security."@en,
+        "Los sistemas deben validar todas las entradas para corrección y seguridad."@es .
+
+ai:OutputExplanationRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Output Explanation Requirement"@en,
+        "Requisito de Explicación de Salida"@es ;
+    rdfs:comment "Systems must provide explanations for their decisions to end users."@en,
+        "Los sistemas deben proporcionar explicaciones de sus decisiones a los usuarios finales."@es .
+
+ai:RecoveryMechanismRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Recovery Mechanism Requirement"@en,
+        "Requisito de Mecanismo de Recuperación"@es ;
+    rdfs:comment "Systems must have mechanisms to recover from failures and errors."@en,
+        "Los sistemas deben tener mecanismos para recuperarse de fallos y errores."@es .
+
+ai:LoggingRequirement a ai:TechnicalRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Logging Requirement"@en,
+        "Requisito de Registro"@es ;
+    rdfs:comment "Systems must maintain detailed logs of all operations and decisions."@en,
+        "Los sistemas deben mantener registros detallados de todas las operaciones y decisiones."@es .
+
+# ===== SECURITY REQUIREMENT INSTANCES =====
+
+ai:EncryptionRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Encryption Requirement"@en,
+        "Requisito de Encriptación"@es ;
+    rdfs:comment "Systems must encrypt sensitive data in transit and at rest."@en,
+        "Los sistemas deben encriptar datos sensibles en tránsito y en reposo."@es .
+
+ai:AccessControlRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Access Control Requirement"@en,
+        "Requisito de Control de Acceso"@es ;
+    rdfs:comment "Systems must implement strict access control policies."@en,
+        "Los sistemas deben implementar políticas de control de acceso estrictas."@es .
+
+ai:VulnerabilityManagementRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Vulnerability Management Requirement"@en,
+        "Requisito de Gestión de Vulnerabilidades"@es ;
+    rdfs:comment "Systems must have processes for identifying and managing vulnerabilities."@en,
+        "Los sistemas deben tener procesos para identificar y gestionar vulnerabilidades."@es .
+
+ai:SecureDeploymentRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Secure Deployment Requirement"@en,
+        "Requisito de Despliegue Seguro"@es ;
+    rdfs:comment "Systems must be deployed using secure configuration and processes."@en,
+        "Los sistemas deben desplegarse utilizando configuración y procesos seguros."@es .
+
+ai:IncidentResponseRequirement a ai:SecurityRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Incident Response Requirement"@en,
+        "Requisito de Respuesta a Incidentes"@es ;
+    rdfs:comment "Systems must have documented incident response procedures."@en,
+        "Los sistemas deben tener procedimientos de respuesta a incidentes documentados."@es .
+
+# ===== ROBUSTNESS REQUIREMENT INSTANCES =====
+
+ai:AdversarialRobustnessRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Adversarial Robustness Requirement"@en,
+        "Requisito de Robustez Adversarial"@es ;
+    rdfs:comment "Systems must be robust against adversarial attacks and manipulations."@en,
+        "Los sistemas deben ser robustos contra ataques y manipulaciones adversariales."@es .
+
+ai:DistributionShiftRobustnessRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Distribution Shift Robustness Requirement"@en,
+        "Requisito de Robustez ante Cambios de Distribución"@es ;
+    rdfs:comment "Systems must maintain performance when input distributions shift."@en,
+        "Los sistemas deben mantener el rendimiento cuando las distribuciones de entrada cambian."@es .
+
+ai:OutOfDistributionDetectionRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Out-of-Distribution Detection Requirement"@en,
+        "Requisito de Detección Fuera de Distribución"@es ;
+    rdfs:comment "Systems must detect and handle out-of-distribution inputs appropriately."@en,
+        "Los sistemas deben detectar y manejar apropiadamente entradas fuera de distribución."@es .
+
+ai:GracefulDegradationRequirement a ai:RobustnessRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Graceful Degradation Requirement"@en,
+        "Requisito de Degradación Elegante"@es ;
+    rdfs:comment "Systems must degrade gracefully when encountering unexpected situations."@en,
+        "Los sistemas deben degradarse elegantemente cuando encuentran situaciones inesperadas."@es .
+
+# ===== DOCUMENTATION REQUIREMENT INSTANCES =====
+
+ai:ModelCardDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Model Card Documentation Requirement"@en,
+        "Requisito de Documentación de Tarjeta de Modelo"@es ;
+    rdfs:comment "Systems must provide model cards documenting their design and capabilities."@en,
+        "Los sistemas deben proporcionar tarjetas de modelo documentando su diseño y capacidades."@es .
+
+ai:DatasetDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Dataset Documentation Requirement"@en,
+        "Requisito de Documentación de Conjunto de Datos"@es ;
+    rdfs:comment "Systems must document their training and operational datasets."@en,
+        "Los sistemas deben documentar sus conjuntos de datos de entrenamiento y operacionales."@es .
+
+ai:SystemDescriptionDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "System Description Documentation Requirement"@en,
+        "Requisito de Documentación de Descripción del Sistema"@es ;
+    rdfs:comment "Systems must provide detailed technical descriptions and architecture documentation."@en,
+        "Los sistemas deben proporcionar descripciones técnicas detalladas y documentación de arquitectura."@es .
+
+ai:LimitationsDocumentationRequirement a ai:DocumentationRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Limitations Documentation Requirement"@en,
+        "Requisito de Documentación de Limitaciones"@es ;
+    rdfs:comment "Systems must document their limitations and failure modes."@en,
+        "Los sistemas deben documentar sus limitaciones y modos de fallo."@es .
+
+# ===== DATA GOVERNANCE REQUIREMENT INSTANCES =====
+
+ai:DataQualityRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Quality Requirement"@en,
+        "Requisito de Calidad de Datos"@es ;
+    rdfs:comment "Systems must ensure high quality standards for all training and operational data."@en,
+        "Los sistemas deben asegurar estándares altos de calidad para todos los datos de entrenamiento y operacionales."@es .
+
+ai:DataPrivacyRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Privacy Requirement"@en,
+        "Requisito de Privacidad de Datos"@es ;
+    rdfs:comment "Systems must comply with data privacy regulations and best practices."@en,
+        "Los sistemas deben cumplir con regulaciones de privacidad de datos y mejores prácticas."@es .
+
+ai:DataProvenanceRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Provenance Requirement"@en,
+        "Requisito de Procedencia de Datos"@es ;
+    rdfs:comment "Systems must track the provenance and origin of all data used."@en,
+        "Los sistemas deben rastrear la procedencia y origen de todos los datos utilizados."@es .
+
+ai:DataRetentionRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Retention Requirement"@en,
+        "Requisito de Retención de Datos"@es ;
+    rdfs:comment "Systems must have policies for appropriate data retention and deletion."@en,
+        "Los sistemas deben tener políticas para retención y eliminación apropiada de datos."@es .
+
+ai:DataAccessControlRequirement a ai:DataGovernanceRequirement,
+    owl:NamedIndividual ;
+    rdfs:label "Data Access Control Requirement"@en,
+        "Requisito de Control de Acceso a Datos"@es ;
+    rdfs:comment "Systems must implement strict controls over who can access sensitive data."@en,
+        "Los sistemas deben implementar controles estrictos sobre quién puede acceder a datos sensibles."@es .
+
+# ===== ISO REQUIREMENT INSTANCES =====
+
+ai:ISO42001ProcessRequirement a ai:ISORequirement,
+    owl:NamedIndividual ;
+    rdfs:label "ISO 42001 Process Requirement"@en,
+        "Requisito de Proceso ISO 42001"@es ;
+    rdfs:comment "Systems must comply with ISO/IEC 42001 AI management system processes."@en,
+        "Los sistemas deben cumplir con los procesos del sistema de gestión de IA ISO/IEC 42001."@es .
+
+ai:ISO42001DocumentationRequirement a ai:ISORequirement,
+    owl:NamedIndividual ;
+    rdfs:label "ISO 42001 Documentation Requirement"@en,
+        "Requisito de Documentación ISO 42001"@es ;
+    rdfs:comment "Systems must maintain documentation required by ISO/IEC 42001."@en,
+        "Los sistemas deben mantener documentación requerida por ISO/IEC 42001."@es .
+
+ai:ISO42001RiskRequirement a ai:ISORequirement,
+    owl:NamedIndividual ;
+    rdfs:label "ISO 42001 Risk Requirement"@en,
+        "Requisito de Riesgo ISO 42001"@es ;
+    rdfs:comment "Systems must implement risk management according to ISO/IEC 42001."@en,
+        "Los sistemas deben implementar gestión de riesgos según ISO/IEC 42001."@es .
+
+# ===== TRANSPARENCY LEVEL INSTANCES =====
+
+ai:FullTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Full Transparency"@en,
+        "Transparencia Total"@es ;
+    rdfs:comment "Complete transparency with detailed explanations of all decisions."@en,
+        "Transparencia completa con explicaciones detalladas de todas las decisiones."@es .
+
+ai:HighTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "High Transparency"@en,
+        "Transparencia Alta"@es ;
+    rdfs:comment "High level of transparency with explanations of key decisions."@en,
+        "Nivel alto de transparencia con explicaciones de decisiones clave."@es .
+
+ai:MediumTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Medium Transparency"@en,
+        "Transparencia Media"@es ;
+    rdfs:comment "Moderate transparency with explanations available upon request."@en,
+        "Transparencia moderada con explicaciones disponibles bajo demanda."@es .
+
+ai:LowTransparencyLevel a ai:TransparencyLevel,
+    owl:NamedIndividual ;
+    rdfs:label "Low Transparency"@en,
+        "Transparencia Baja"@es ;
+    rdfs:comment "Limited transparency due to technical or business constraints."@en,
+        "Transparencia limitada debido a restricciones técnicas o comerciales."@es .
+
+# ===== AIRO INTEROPERABILITY MAPPINGS =====
+# Mapping 30+ AI Act ontology concepts to AIRO for seamless interoperability
+# These mappings enable cross-ontology reasoning and query federation
+# Last updated: 2025-11-22 with full equivalentClass and rdfs:seeAlso relationships
+
+# ===== Core System Mappings =====
+# P31 FIX: Changed owl:equivalentClass to skos:closeMatch (concepts are related but not identical)
+ai:IntelligentSystem skos:closeMatch airo:AISystem ;
+    rdfs:comment "Close match between AI Act IntelligentSystem and AIRO AISystem. Not equivalent: IntelligentSystem has specific AI Act Annex I restrictions."@en,
+        "Correspondencia cercana entre IntelligentSystem del AI Act y AISystem de AIRO. No equivalentes: IntelligentSystem tiene restricciones específicas del Anexo I."@es ;
+    rdfs:seeAlso airo:AISystem .
+
+# ===== Purpose/Function Mappings =====
+ai:Purpose owl:equivalentClass airo:Purpose ;
+    rdfs:seeAlso airo:Purpose .
+
+ai:BiometricIdentification rdfs:seeAlso airo:BiometricIdentification ;
+    rdfs:comment "AIRO has equivalent concept for biometric identification."@en .
+
+ai:CriticalInfrastructureOperation rdfs:seeAlso airo:CriticalInfrastructure ;
+    rdfs:comment "Mapped to AIRO's critical infrastructure domain."@en .
+
+ai:EducationAccess rdfs:seeAlso airo:Education ;
+    rdfs:comment "Educational system context in AIRO framework."@en .
+
+ai:JudicialDecisionSupport rdfs:seeAlso airo:Justice ;
+    rdfs:comment "Judicial domain covered by AIRO Justice module."@en .
+
+ai:LawEnforcementSupport rdfs:seeAlso airo:LawEnforcement ;
+    rdfs:comment "Law enforcement context in AIRO."@en .
+
+ai:MigrationControl rdfs:seeAlso airo:Border ;
+    rdfs:comment "Border and migration control in AIRO."@en .
+
+ai:HealthCare rdfs:seeAlso airo:Healthcare ;
+    rdfs:comment "Healthcare domain in AIRO framework."@en .
+
+# ===== Criterion/Evaluation Mappings =====
+ai:Criterion owl:equivalentClass airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:EvaluationCriterion ;
+    rdfs:comment "AI Act criteria map to AIRO evaluation criteria."@en,
+        "Los criterios del AI Act se mapean a criterios de evaluación de AIRO."@es .
+
+ai:NormativeCriterion rdfs:subClassOf airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:RegulatoryRequirement .
+
+ai:TechnicalCriterion rdfs:subClassOf airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:TechnicalRequirement .
+
+ai:ContextualCriterion rdfs:subClassOf airo:EvaluationCriterion ;
+    rdfs:seeAlso airo:ContextualFactor .
+
+# ===== Risk Assessment Mappings =====
+ai:RiskAssessment owl:equivalentClass airo:RiskAssessment ;
+    rdfs:seeAlso airo:RiskAssessment ;
+    rdfs:comment "Risk assessment processes aligned between AI Act and AIRO."@en .
+
+ai:RiskLevel owl:equivalentClass airo:RiskLevel ;
+    rdfs:seeAlso airo:RiskLevel .
+
+ai:HighRisk owl:equivalentClass airo:HighRiskLevel ;
+    rdfs:seeAlso airo:HighRiskLevel .
+
+ai:UnacceptableRisk owl:equivalentClass airo:CriticalRiskLevel ;
+    rdfs:seeAlso airo:CriticalRiskLevel .
+
+ai:LimitedRisk rdfs:seeAlso airo:MediumRiskLevel ;
+    rdfs:comment "Limited risk in AI Act corresponds to medium risk in AIRO."@en .
+
+ai:MinimalRisk owl:equivalentClass airo:LowRiskLevel ;
+    rdfs:seeAlso airo:LowRiskLevel .
+
+# ===== Compliance Requirement Mappings =====
+ai:ComplianceRequirement owl:equivalentClass airo:ComplianceRequirement ;
+    rdfs:seeAlso airo:ComplianceRequirement ;
+    rdfs:comment "AI Act compliance requirements align with AIRO framework."@en,
+        "Los requisitos de cumplimiento del AI Act se alinean con AIRO."@es .
+
+ai:TechnicalRequirement rdfs:subClassOf airo:TechnicalRequirement ;
+    rdfs:seeAlso airo:TechnicalRequirement .
+
+ai:DataGovernanceRequirement rdfs:seeAlso airo:DataGovernance ;
+    rdfs:comment "Data governance requirements in both frameworks."@en .
+
+ai:HumanOversightRequirement rdfs:seeAlso airo:HumanOversight ;
+    rdfs:comment "Human oversight is a key concept in both AI Act and AIRO."@en .
+
+ai:TransparencyRequirement rdfs:seeAlso airo:Transparency ;
+    rdfs:comment "Transparency requirements aligned with AIRO."@en .
+
+ai:NonDiscriminationRequirement rdfs:seeAlso airo:FairnessAndNonDiscrimination ;
+    rdfs:comment "Fairness and non-discrimination in AIRO."@en .
+
+ai:FundamentalRightsAssessmentRequirement rdfs:seeAlso airo:FundamentalRights ;
+    rdfs:comment "Fundamental rights assessment is covered in AIRO."@en .
+
+# ===== Data and Algorithm Mappings =====
+# P31 FIX: Changed owl:equivalentClass to skos:closeMatch (TrainingDataOrigin is specifically about training data origin, not any data source)
+ai:TrainingDataOrigin skos:closeMatch airo:DataSource ;
+    rdfs:comment "Close match: TrainingDataOrigin specifically refers to origin of training data, while DataSource is more general."@en ;
+    rdfs:seeAlso airo:DataSource .
+
+# P31 FIX: Changed owl:equivalentClass to skos:closeMatch (related taxonomies but not identical classification)
+ai:AlgorithmType skos:closeMatch airo:AlgorithmCategory ;
+    rdfs:seeAlso airo:AlgorithmCategory ;
+    rdfs:comment "Close match: Algorithm classification aligned between frameworks but with different taxonomies."@en .
+
+ai:MachineLearningAlgorithm rdfs:seeAlso airo:MachineLearning ;
+    rdfs:comment "ML algorithms covered in both frameworks."@en .
+
+ai:KnowledgeBasedAlgorithm rdfs:seeAlso airo:KnowledgeBasedSystem ;
+    rdfs:comment "Knowledge-based approaches in AIRO."@en .
+
+# ===== Actor/Stakeholder Mappings =====
+ai:Actor owl:equivalentClass airo:Stakeholder ;
+    rdfs:seeAlso airo:Stakeholder ;
+    rdfs:comment "AI Act actors correspond to AIRO stakeholders."@en,
+        "Los actores del AI Act corresponden a stakeholders de AIRO."@es .
+
+ai:Provider rdfs:seeAlso airo:Provider ;
+    rdfs:comment "Provider role in both frameworks."@en .
+
+ai:Deployer rdfs:seeAlso airo:Deployer ;
+    rdfs:comment "Deployer role aligned in frameworks."@en .
+
+ai:OversightBody rdfs:seeAlso airo:Regulator ;
+    rdfs:comment "Regulatory oversight bodies in AIRO."@en .
+
+# ===== Deployment Context Mappings =====
+ai:DeploymentContext owl:equivalentClass airo:Context ;
+    rdfs:seeAlso airo:Context ;
+    rdfs:comment "Deployment contexts match AIRO contexts."@en,
+        "Los contextos de despliegue coinciden con contextos AIRO."@es .
+
+ai:Healthcare rdfs:seeAlso airo:HealthcareDomain ;
+    rdfs:comment "Healthcare domain in both frameworks."@en .
+
+ai:Education rdfs:seeAlso airo:EducationDomain ;
+    rdfs:comment "Education sector recognized in AIRO."@en .
+
+ai:PublicServices rdfs:seeAlso airo:PublicSectorContext ;
+    rdfs:comment "Public sector deployment context."@en .
+
+ai:Employment rdfs:seeAlso airo:WorkplaceDomain ;
+    rdfs:comment "Employment/workplace domain."@en .
+
+# ===== Additional Concept Mappings =====
+ai:VulnerablePopulationContext rdfs:seeAlso airo:VulnerableGroup ;
+    rdfs:comment "Special protection for vulnerable populations."@en .
+
+ai:BiometricIdentificationCriterion rdfs:seeAlso airo:BiometricProcessing ;
+    rdfs:comment "Biometric data handling and protection."@en .
+
+ai:JudicialSupportCriterion rdfs:seeAlso airo:JusticeAndLaw ;
+    rdfs:comment "Justice system applications in AIRO."@en .
+
+ai:ProtectionOfMinors rdfs:seeAlso airo:ChildProtection ;
+    rdfs:comment "Special protection for children."@en .
+
+ai:DueProcess rdfs:seeAlso airo:ProcessFairness ;
+    rdfs:comment "Fair processes required in both frameworks."@en .
+
+ai:PrivacyProtection rdfs:seeAlso airo:Privacy ;
+    rdfs:comment "Privacy requirements aligned in both frameworks."@en .
+
+# ===== AIRO STAKEHOLDER OBJECT PROPERTIES =====
+# These properties link AI systems to AIRO stakeholder classes
+# Enables responsibility traceability per EU AI Act Articles 3.3-3.4
+
+# Provider (Art. 3.3) - places AI system on the market
+ai:hasProvider a owl:ObjectProperty ;
+    rdfs:label "has provider"@en, "tiene proveedor"@es ;
+    rdfs:comment "Links an AI system to its provider (Art. 3.3 EU AI Act). Uses airo:AIProvider."@en,
+        "Vincula un sistema de IA con su proveedor (Art. 3.3 EU AI Act). Usa airo:AIProvider."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIProvider .
+
+# Deployer (Art. 3.4) - uses AI system under their authority
+ai:hasDeployer a owl:ObjectProperty ;
+    rdfs:label "has deployer"@en, "tiene desplegador"@es ;
+    rdfs:comment "Links an AI system to its deployer (Art. 3.4 EU AI Act). Uses airo:AIDeployer."@en,
+        "Vincula un sistema de IA con su desplegador (Art. 3.4 EU AI Act). Usa airo:AIDeployer."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIDeployer .
+
+# User - natural person interacting with the AI system
+ai:hasUser a owl:ObjectProperty ;
+    rdfs:label "has user"@en, "tiene usuario"@es ;
+    rdfs:comment "Links an AI system to its users. Uses airo:AIUser."@en,
+        "Vincula un sistema de IA con sus usuarios. Usa airo:AIUser."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIUser .
+
+# Subject (Art. 86) - person subject to AI system decisions
+ai:hasSubject a owl:ObjectProperty ;
+    rdfs:label "has subject"@en, "tiene sujeto"@es ;
+    rdfs:comment "Links an AI system to affected subjects (Art. 86 EU AI Act). Uses airo:AISubject."@en,
+        "Vincula un sistema de IA con los sujetos afectados (Art. 86 EU AI Act). Usa airo:AISubject."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AISubject .
+
+# Developer - organization that develops AI components
+ai:hasDeveloper a owl:ObjectProperty ;
+    rdfs:label "has developer"@en, "tiene desarrollador"@es ;
+    rdfs:comment "Links an AI system to its developer organization. Uses airo:AIDeveloper."@en,
+        "Vincula un sistema de IA con su organización desarrolladora. Usa airo:AIDeveloper."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:AIDeveloper .
+
+# Oversight Body - regulatory authority
+ai:hasOversightBody a owl:ObjectProperty ;
+    rdfs:label "has oversight body"@en, "tiene organismo de supervisión"@es ;
+    rdfs:comment "Links an AI system to its regulatory oversight body. Uses airo:Regulator."@en,
+        "Vincula un sistema de IA con su organismo de supervisión regulatorio. Usa airo:Regulator."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range airo:Regulator .
+
+# ===== AIRO Stakeholder Class Annotations =====
+# Add EU AI Act article references to AIRO classes when used in this context
+
+airo:AIProvider rdfs:comment "Provider per Art. 3.3 EU AI Act: natural/legal person that develops an AI system or GPAI model, or has an AI system or GPAI model developed, and places it on the market or puts it into service under their own name or trademark."@en,
+    "Proveedor según Art. 3.3 EU AI Act: persona física/jurídica que desarrolla un sistema de IA o modelo GPAI, o lo hace desarrollar, y lo comercializa o pone en servicio bajo su nombre o marca."@es .
+
+airo:AIDeployer rdfs:comment "Deployer per Art. 3.4 EU AI Act: natural/legal person using an AI system under their authority, except where the system is used in the course of a personal non-professional activity."@en,
+    "Desplegador según Art. 3.4 EU AI Act: persona física/jurídica que utiliza un sistema de IA bajo su autoridad, excepto cuando se utiliza en el curso de una actividad personal no profesional."@es .
+
+airo:AISubject rdfs:comment "Subject per Art. 86 EU AI Act: natural person subject to an AI system, who has the right to obtain clear and meaningful explanations of the role of the AI system in the decision-making procedure."@en,
+    "Sujeto según Art. 86 EU AI Act: persona física sujeta a un sistema de IA, que tiene derecho a obtener explicaciones claras y significativas del papel del sistema de IA en el procedimiento de toma de decisiones."@es .
+
+# ===== AFFECTED PERSON REASONING PROPERTIES (Art. 86, 27, 26, 5) =====
+
+# Explainability requirement for affected persons (Art. 86)
+ai:requiresExplainability a owl:DatatypeProperty ;
+    rdfs:label "requires explainability"@en, "requiere explicabilidad"@es ;
+    rdfs:comment "Indicates if the system requires explainability for affected persons per Art. 86 EU AI Act. Inferred when system is high-risk AND has affected persons."@en,
+        "Indica si el sistema requiere explicabilidad para personas afectadas según Art. 86 EU AI Act. Inferido cuando el sistema es de alto riesgo Y tiene personas afectadas."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:ExplainabilityRequirement a owl:Class ;
+    rdfs:label "Explainability Requirement"@en, "Requisito de Explicabilidad"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 86 requirement: affected persons have the right to obtain clear and meaningful explanations of AI system's role in decision-making."@en .
+
+# Fundamental Rights Impact Assessment (Art. 27)
+ai:requiresFundamentalRightsAssessment a owl:DatatypeProperty ;
+    rdfs:label "requires fundamental rights assessment"@en, "requiere evaluación de derechos fundamentales"@es ;
+    rdfs:comment "Indicates if FRIA is required per Art. 27 EU AI Act. Inferred when affected persons include vulnerable groups (minors, elderly, disabled, migrants)."@en,
+        "Indica si se requiere FRIA según Art. 27 EU AI Act. Inferido cuando las personas afectadas incluyen grupos vulnerables (menores, ancianos, discapacitados, migrantes)."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:FundamentalRightsImpactAssessment a owl:Class ;
+    rdfs:label "Fundamental Rights Impact Assessment"@en, "Evaluación de Impacto en Derechos Fundamentales"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 27 requirement: deployers of high-risk AI systems shall perform FRIA before putting system into use, particularly when vulnerable groups are affected."@en .
+
+# Worker/Affected Person Notification (Art. 26)
+ai:requiresAffectedPersonNotification a owl:DatatypeProperty ;
+    rdfs:label "requires affected person notification"@en, "requiere notificación a personas afectadas"@es ;
+    rdfs:comment "Indicates if affected persons must be notified per Art. 26 EU AI Act. Inferred when system is used for employment decisions."@en,
+        "Indica si las personas afectadas deben ser notificadas según Art. 26 EU AI Act. Inferido cuando el sistema se usa para decisiones de empleo."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:WorkerNotificationRequirement a owl:Class ;
+    rdfs:label "Worker Notification Requirement"@en, "Requisito de Notificación a Trabajadores"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 26(7) requirement: deployers using high-risk AI for employment decisions shall inform affected workers and their representatives."@en .
+
+# Prohibition Review for Biometric Systems (Art. 5)
+ai:requiresProhibitionReview a owl:DatatypeProperty ;
+    rdfs:label "requires prohibition review"@en, "requiere revisión de prohibiciones"@es ;
+    rdfs:comment "Indicates if Art. 5 prohibition review is required. Inferred for biometric identification systems in public spaces affecting persons."@en,
+        "Indica si se requiere revisión de prohibiciones Art. 5. Inferido para sistemas de identificación biométrica en espacios públicos que afectan a personas."@es ;
+    rdfs:domain ai:IntelligentSystem ;
+    rdfs:range xsd:boolean .
+
+ai:Article5ProhibitionReview a owl:Class ;
+    rdfs:label "Article 5 Prohibition Review"@en, "Revisión de Prohibiciones Artículo 5"@es ;
+    rdfs:subClassOf ai:ComplianceRequirement ;
+    rdfs:comment "Art. 5 review requirement: real-time remote biometric identification in public spaces is generally prohibited with narrow exceptions."@en .
+
+# Vulnerable Group Categories for FRIA triggering
+ai:VulnerableGroupCategory a owl:Class ;
+    rdfs:label "Vulnerable Group Category"@en, "Categoría de Grupo Vulnerable"@es ;
+    rdfs:comment "Categories of vulnerable groups that trigger enhanced protection requirements under EU AI Act."@en .
+
+ai:MinorCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Minor"@en, "Menor"@es ;
+    rdfs:comment "Persons under 18 years of age - enhanced protection per Recital 28."@en .
+
+ai:ElderlyCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Elderly"@en, "Persona Mayor"@es ;
+    rdfs:comment "Elderly persons - may be particularly vulnerable to AI system impacts."@en .
+
+ai:DisabledCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Disabled"@en, "Persona con Discapacidad"@es ;
+    rdfs:comment "Persons with disabilities - protected under accessibility requirements."@en .
+
+ai:MigrantCategory a ai:VulnerableGroupCategory ;
+    rdfs:label "Migrant"@en, "Migrante"@es ;
+    rdfs:comment "Migrants and asylum seekers - specific protections per Art. 6 Annex III."@en .
+
+# ===== AIRO MAPPING STATISTICS =====
+# Total mapped concepts: 30+
+# Equivalent classes (owl:equivalentClass): 10
+# SubClass relationships (rdfs:subClassOf): 8
+# Related concepts (rdfs:seeAlso): 15+
+# Object properties using AIRO range: 6 (hasProvider, hasDeployer, hasUser, hasSubject, hasDeveloper, hasOversightBody)
+# Affected Person reasoning properties: 4 (requiresExplainability, requiresFundamentalRightsAssessment, requiresAffectedPersonNotification, requiresProhibitionReview)
+# Affected Person compliance requirements: 4 (ExplainabilityRequirement, FundamentalRightsImpactAssessment, WorkerNotificationRequirement, Article5ProhibitionReview)
+# Coverage: ~70% of main AI Act concepts
+# AIRO Stakeholder classes used: airo:AIProvider, airo:AIDeployer, airo:AIUser, airo:AISubject, airo:AIDeveloper, airo:Regulator
+# Enables: Cross-ontology reasoning, semantic interoperability, SPARQL federation, affected person protection inference
+
+# ===== END OF UNIFIED ONTOLOGY v0.37.2 =====
+# All concepts consolidated under ai: namespace
+# AIRO interoperability mappings fully integrated
+# Affected Person reasoning rules integrated
+# Future modularization can occur in post-v0.37.2 versions

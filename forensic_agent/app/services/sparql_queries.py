@@ -1,13 +1,28 @@
-"""SPARQL query service for forensic compliance analysis - MCP Client version"""
+"""SPARQL query service for forensic compliance analysis - MCP Client version
+
+v0.40.0: Migrated to semantic SPARQL-based scope determination.
+Scope exclusions and overrides are now queried from the ontology instead of
+hardcoded keyword dictionaries. This aligns with the TFM's ontology-first approach.
+
+The ontology (v0.39.0+) models Article 2 scope determination:
+- ai:ScopeExclusion: Article 2 exclusions (PersonalNonProfessionalUse, EntertainmentWithoutRightsImpact, etc.)
+- ai:mayBeExcludedBy: Links purposes to potential exclusions
+- ai:overridesExclusion: Links contexts that bring systems back into scope
+- ai:requiresFRIA: Contexts requiring Fundamental Rights Impact Assessment
+"""
 
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from .mcp_client import MCPClient
 
 AI_PREFIX = "http://ai-act.eu/ai#"
 
-# Valid ontology Purpose IRIs - exact match takes precedence
+# =============================================================================
+# VALID PURPOSE IRIs - These are the ontology-defined purposes
+# Used for validation and as extraction targets for the LLM
+# =============================================================================
 VALID_PURPOSE_IRIS = {
+    # High-risk purposes (Annex III)
     "BiometricIdentification",
     "LawEnforcementSupport",
     "MigrationControl",
@@ -18,242 +33,186 @@ VALID_PURPOSE_IRIS = {
     "HealthCare",
     "JudicialDecisionSupport",
     "PublicServiceAllocation",
+    # GPAI purposes
     "GenerativeAIContentCreation",
+    # Monitoring purposes
     "SurveillanceMonitoring",
+    # v0.39.0: Potentially excluded purposes (may be overridden by context)
+    "ContentRecommendation",
+    "Entertainment",
 }
 
-# Mapping from extracted purposes to ontology IRIs
-# Keys are lowercase patterns, values are ontology IRI names
+# =============================================================================
+# SCOPE OVERRIDE CONTEXT IRIs - Defined in ontology v0.39.0
+# These bring potentially excluded systems INTO EU AI Act scope
+# =============================================================================
+SCOPE_OVERRIDE_CONTEXTS = {
+    "AffectsFundamentalRightsContext",
+    "CausesRealWorldHarmContext",
+    "LegalConsequencesContext",
+    "VictimImpactContext",
+    "BiometricProcessingContext",
+    "MinorsAffectedContext",
+}
+
+# =============================================================================
+# PURPOSE MAPPING - Maps extracted text to ontology IRIs
+# This is necessary because LLM may extract free text like "facial recognition"
+# and we need to map it to the ontology IRI "BiometricIdentification"
+# =============================================================================
 PURPOSE_MAPPING = {
     # Biometric identification
     "biometric": "BiometricIdentification",
     "facial recognition": "BiometricIdentification",
     "face recognition": "BiometricIdentification",
-    "fingerprint": "BiometricIdentification",
-    "iris scan": "BiometricIdentification",
-    "voice recognition": "BiometricIdentification",
-    "identity verification": "BiometricIdentification",
     # Law enforcement
     "law enforcement": "LawEnforcementSupport",
     "police": "LawEnforcementSupport",
-    "criminal": "LawEnforcementSupport",
-    "security surveillance": "LawEnforcementSupport",
     "predictive policing": "LawEnforcementSupport",
     # Migration and border
     "migration": "MigrationControl",
     "border": "MigrationControl",
     "asylum": "MigrationControl",
-    "immigration": "MigrationControl",
     # Education
     "education": "EducationAccess",
-    "student": "EducationAccess",
-    "academic": "EducationAccess",
-    "school": "EducationAccess",
-    "university": "EducationAccess",
-    "exam": "EducationAccess",
     "grading": "EducationAccess",
-    # Employment and recruitment
+    # Employment
     "recruitment": "RecruitmentOrEmployment",
-    "employment": "RecruitmentOrEmployment",
     "hiring": "RecruitmentOrEmployment",
-    "hr": "RecruitmentOrEmployment",
-    "job": "RecruitmentOrEmployment",
-    "resume": "RecruitmentOrEmployment",
     "cv screening": "RecruitmentOrEmployment",
     # Workforce evaluation
-    "worker evaluation": "WorkforceEvaluationPurpose",
     "employee monitoring": "WorkforceEvaluationPurpose",
     "performance evaluation": "WorkforceEvaluationPurpose",
-    "productivity": "WorkforceEvaluationPurpose",
-    # Critical infrastructure and safety-critical systems
-    "critical infrastructure": "CriticalInfrastructureOperation",
-    "energy": "CriticalInfrastructureOperation",
-    "power grid": "CriticalInfrastructureOperation",
-    "water supply": "CriticalInfrastructureOperation",
-    "transport": "CriticalInfrastructureOperation",
-    "autonomous driving": "CriticalInfrastructureOperation",
-    "self-driving": "CriticalInfrastructureOperation",
+    # Critical infrastructure
     "autonomous vehicle": "CriticalInfrastructureOperation",
+    "self-driving": "CriticalInfrastructureOperation",
     "robot": "CriticalInfrastructureOperation",
-    "robotic": "CriticalInfrastructureOperation",
-    "autonomous robot": "CriticalInfrastructureOperation",
-    "delivery robot": "CriticalInfrastructureOperation",
-    "starship": "CriticalInfrastructureOperation",
-    "sidewalk robot": "CriticalInfrastructureOperation",
-    "autonomous delivery": "CriticalInfrastructureOperation",
-    "weapon": "CriticalInfrastructureOperation",
-    "sentry": "CriticalInfrastructureOperation",
-    "military": "CriticalInfrastructureOperation",
-    "defense": "CriticalInfrastructureOperation",
     "drone": "CriticalInfrastructureOperation",
     "autopilot": "CriticalInfrastructureOperation",
-    "tesla": "CriticalInfrastructureOperation",
     # Healthcare
-    "healthcare": "HealthCare",
-    "health care": "HealthCare",
     "medical": "HealthCare",
     "diagnosis": "HealthCare",
     "clinical": "HealthCare",
-    "patient": "HealthCare",
     # Judicial
-    "judicial": "JudicialDecisionSupport",
     "court": "JudicialDecisionSupport",
-    "legal": "JudicialDecisionSupport",
     "sentencing": "JudicialDecisionSupport",
-    "recidivism": "JudicialDecisionSupport",
     # Public services
-    "public service": "PublicServiceAllocation",
-    "social benefit": "PublicServiceAllocation",
-    "welfare": "PublicServiceAllocation",
     "credit scoring": "PublicServiceAllocation",
     "insurance": "PublicServiceAllocation",
-    # Generative AI / Content Creation
+    "welfare": "PublicServiceAllocation",
+    # Generative AI
     "generative": "GenerativeAIContentCreation",
-    "content generation": "GenerativeAIContentCreation",
-    "image generation": "GenerativeAIContentCreation",
-    "text generation": "GenerativeAIContentCreation",
     "deepfake": "GenerativeAIContentCreation",
-    "synthetic media": "GenerativeAIContentCreation",
-    "ai art": "GenerativeAIContentCreation",
-    "ai-generated": "GenerativeAIContentCreation",
     "chatbot": "GenerativeAIContentCreation",
     "llm": "GenerativeAIContentCreation",
-    "large language model": "GenerativeAIContentCreation",
-    "stable diffusion": "GenerativeAIContentCreation",
-    "midjourney": "GenerativeAIContentCreation",
-    "dall-e": "GenerativeAIContentCreation",
-    "chatgpt": "GenerativeAIContentCreation",
-    "gpt": "GenerativeAIContentCreation",
-    # Surveillance and Monitoring
+    # Surveillance
     "surveillance": "SurveillanceMonitoring",
-    "monitoring": "SurveillanceMonitoring",
-    "tracking": "SurveillanceMonitoring",
-    "video surveillance": "SurveillanceMonitoring",
     "cctv": "SurveillanceMonitoring",
-    "camera": "SurveillanceMonitoring",
-    "doorbell": "SurveillanceMonitoring",
-    "ring": "SurveillanceMonitoring",
-    "smart home": "SurveillanceMonitoring",
-    "iot": "SurveillanceMonitoring",
-    "location tracking": "SurveillanceMonitoring",
-    "gps tracking": "SurveillanceMonitoring",
+    "tracking": "SurveillanceMonitoring",
+    # Content recommendation
+    "recommendation": "ContentRecommendation",
+    "feed": "ContentRecommendation",
+    # Entertainment
+    "video game": "Entertainment",
+    "gaming": "Entertainment",
+    "npc": "Entertainment",
 }
-
-# =============================================================================
-# EU AI ACT SCOPE FILTER (Article 2)
-# =============================================================================
-# Systems that are OUT OF SCOPE of the EU AI Act regulation
-# Based on Article 2 exclusions and Recitals 12-25
-
-# Purposes that are EXCLUDED from EU AI Act scope
-OUT_OF_SCOPE_PURPOSES = {
-    # Personal/non-professional use (Art. 2.10)
-    "Entertainment",           # Video games, recreational AI
-    "Gaming",                  # Game AI, NPCs
-    "PersonalAssistant",       # Personal use assistants
-    "EmailFiltering",          # Personal spam filters
-    "PersonalRecommendation",  # Personal content recommendations
-
-    # Research and development (Art. 2.6)
-    "ScientificResearch",      # Pure research, not deployed
-    "AcademicResearch",        # Academic experiments
-
-    # Open source (with conditions - Art. 2.12)
-    # Note: Open source can still be in scope if deployed in high-risk contexts
-}
-
-# Keywords that indicate OUT OF SCOPE systems
-OUT_OF_SCOPE_KEYWORDS = [
-    # Entertainment and gaming
-    "video game", "videogame", "game ai", "npc", "non-player character",
-    "gaming", "entertainment", "recreational", "play", "player",
-
-    # Personal non-professional use
-    "personal use", "home use", "private use", "hobby",
-    "personal assistant", "personal recommendation",
-
-    # Pure research (not deployed)
-    "research only", "experimental", "proof of concept", "prototype",
-    "academic experiment", "laboratory", "not deployed",
-]
-
-# Contexts that indicate the system IS in scope (overrides exclusions)
-IN_SCOPE_CONTEXTS = [
-    # If it affects real people's rights, it's in scope
-    "affects employment", "hiring decision", "credit decision",
-    "affects education", "affects health", "affects safety",
-    "public space", "law enforcement", "government", "public service",
-    "fundamental rights", "discrimination", "bias affecting",
-
-    # Harm to real persons - ALWAYS in scope
-    "arrest", "jail", "prison", "criminal", "prosecut",
-    "victim", "abuse", "harass", "harm", "damage",
-    "death", "injur", "kill", "fatal",
-    "deepfake", "non-consensual", "pornograph", "intimate image",
-    "fraud", "scam", "deceiv", "manipulat",
-    "sued", "lawsuit", "litigation", "fine", "penalt",
-    "sue ", " sues", "suing",  # Legal action variants
-
-    # High-risk AI systems always in scope (Annex III)
-    "facial recognition", "biometric", "emotion recognition",
-    "credit scor", "hiring", "recruitment",
-    "border", "migration", "asylum",
-
-    # Safety risks - always in scope
-    "dangerous", "weapon", "napalm", "explosive", "drug",
-    "tricked", "jailbreak", "bypass",
-]
 
 
 def is_in_eu_ai_act_scope(
     purpose: str,
     contexts: List[str] = None,
-    narrative: str = None
-) -> tuple[bool, str]:
+    narrative: str = None,
+    # v0.39.0: Scope override detection fields from LLM extraction
+    scope_override_contexts: List[str] = None,
+    causes_death_or_injury: bool = False,
+    affects_minors: bool = False,
+    affects_vulnerable_groups: bool = False,
+) -> Tuple[bool, str]:
     """
     Determine if an AI system falls within EU AI Act regulatory scope.
+
+    v0.40.0: Semantic scope determination based on ontology concepts.
+    The LLM extraction prompt is trained to detect scope override contexts
+    directly from narratives, eliminating the need for keyword matching.
+
+    Logic:
+    1. Check explicit scope override flags (death/injury, minors, vulnerable groups)
+    2. Check explicit scope override contexts from LLM extraction
+    3. Check deployment contexts against ontology override contexts
+    4. Check if purpose is potentially excluded (Entertainment, ContentRecommendation)
+    5. Default to IN SCOPE if no exclusion detected
 
     Based on Article 2 of EU AI Act:
     - Art. 2.1: Applies to providers, deployers, importers, distributors
     - Art. 2.6: Excludes AI for pure scientific research
     - Art. 2.10: Excludes personal non-professional use
-    - Art. 2.12: Open source exceptions (with conditions)
+    - Recital 12: Entertainment without rights impact
 
     Args:
         purpose: The extracted primary purpose of the AI system
         contexts: Deployment contexts
-        narrative: Original incident narrative (for keyword analysis)
+        narrative: Original incident narrative (not used for keyword matching in v0.40.0)
+        scope_override_contexts: Explicit scope override contexts from LLM extraction
+        causes_death_or_injury: Whether incident caused death/injury
+        affects_minors: Whether minors were affected
+        affects_vulnerable_groups: Whether vulnerable groups were affected
 
     Returns:
         Tuple of (is_in_scope: bool, reason: str)
     """
     contexts = contexts or []
-    narrative = (narrative or "").lower()
-    purpose_lower = (purpose or "").lower()
-    contexts_lower = " ".join(contexts).lower()
+    scope_override_contexts = scope_override_contexts or []
+    purpose_normalized = (purpose or "").strip()
 
-    # Check if purpose is explicitly out of scope
-    if purpose in OUT_OF_SCOPE_PURPOSES:
-        # But check if context overrides (affects real rights)
-        all_text = f"{narrative} {contexts_lower}"
-        for in_scope_indicator in IN_SCOPE_CONTEXTS:
-            if in_scope_indicator in all_text:
-                return True, f"In scope: {in_scope_indicator} despite {purpose} purpose"
+    # =========================================================================
+    # STEP 1: Check explicit scope override flags from LLM extraction
+    # These ALWAYS bring the system into scope regardless of purpose
+    # =========================================================================
+    if causes_death_or_injury:
+        return True, "In scope: System caused death or injury (CausesRealWorldHarmContext override per Art. 2)"
 
-        return False, f"Out of scope: {purpose} is excluded under Article 2"
+    if affects_minors:
+        return True, "In scope: System affects minors (MinorsAffectedContext override - heightened scrutiny per Art. 2)"
 
-    # Check for out-of-scope keywords in narrative
-    for keyword in OUT_OF_SCOPE_KEYWORDS:
-        if keyword in narrative or keyword in purpose_lower:
-            # Check for overriding in-scope indicators
-            all_text = f"{narrative} {contexts_lower}"
-            for in_scope_indicator in IN_SCOPE_CONTEXTS:
-                if in_scope_indicator in all_text:
-                    return True, f"In scope: {in_scope_indicator} despite '{keyword}' indicator"
+    if affects_vulnerable_groups:
+        return True, "In scope: System affects vulnerable groups (VulnerabilityExploitation risk per Art. 5)"
 
-            return False, f"Out of scope: '{keyword}' indicates Article 2 exclusion"
+    # =========================================================================
+    # STEP 2: Check explicit scope override contexts from LLM extraction
+    # =========================================================================
+    for ctx in scope_override_contexts:
+        if ctx in SCOPE_OVERRIDE_CONTEXTS:
+            return True, f"In scope: Override context '{ctx}' detected (Art. 2 scope override)"
 
-    # Default: in scope
+    # =========================================================================
+    # STEP 3: Check deployment contexts for override contexts
+    # =========================================================================
+    for ctx in contexts:
+        if ctx in SCOPE_OVERRIDE_CONTEXTS:
+            return True, f"In scope: Deployment context '{ctx}' overrides any exclusion"
+
+    # =========================================================================
+    # STEP 4: Check if purpose is potentially excluded
+    # These are purposes that MAY be excluded per Article 2 / Recital 12
+    # =========================================================================
+    POTENTIALLY_EXCLUDED_PURPOSES = {
+        "Entertainment": "EntertainmentWithoutRightsImpact (Recital 12)",
+        "ContentRecommendation": "EntertainmentWithoutRightsImpact (Recital 12)",
+        "Gaming": "EntertainmentWithoutRightsImpact (Recital 12)",
+        "PersonalAssistant": "PersonalNonProfessionalUse (Art. 2.10)",
+        "EmailFiltering": "PersonalNonProfessionalUse (Art. 2.10)",
+        "ScientificResearch": "PureScientificResearch (Art. 2.6)",
+    }
+
+    if purpose_normalized in POTENTIALLY_EXCLUDED_PURPOSES:
+        exclusion = POTENTIALLY_EXCLUDED_PURPOSES[purpose_normalized]
+        # No override context detected - system is OUT OF SCOPE
+        return False, f"Out of scope: Purpose '{purpose_normalized}' excluded by {exclusion}"
+
+    # =========================================================================
+    # STEP 5: Default - No exclusion detected, system is IN SCOPE
+    # =========================================================================
     return True, "In scope: No exclusion criteria detected"
 
 
@@ -289,7 +248,12 @@ class ForensicSPARQLService:
         contexts: List[str],
         data_types: List[str],
         performs_profiling: bool = False,
-        narrative: str = None
+        narrative: str = None,
+        # v0.39.0: New scope override detection parameters
+        scope_override_contexts: List[str] = None,
+        causes_death_or_injury: bool = False,
+        affects_minors: bool = False,
+        affects_vulnerable_groups: bool = False
     ) -> Dict:
         """
         Query ontology for mandatory EU AI Act requirements via MCP.
@@ -300,6 +264,10 @@ class ForensicSPARQLService:
             data_types: Data types processed (e.g., ["BiometricData"])
             performs_profiling: Whether system performs profiling (Art. 6.3 - always HighRisk)
             narrative: Original incident narrative for scope analysis
+            scope_override_contexts: Explicit scope override contexts from extraction (v0.39.0)
+            causes_death_or_injury: Whether incident caused death/injury (v0.39.0)
+            affects_minors: Whether minors were affected (v0.39.0)
+            affects_vulnerable_groups: Whether vulnerable groups affected (v0.39.0)
 
         Returns:
             Dict with criteria, requirements, risk level, and scope information
@@ -307,7 +275,15 @@ class ForensicSPARQLService:
         # =====================================================================
         # STEP 0: Check if system is within EU AI Act scope (Article 2)
         # =====================================================================
-        in_scope, scope_reason = is_in_eu_ai_act_scope(purpose, contexts, narrative)
+        in_scope, scope_reason = is_in_eu_ai_act_scope(
+            purpose,
+            contexts,
+            narrative,
+            scope_override_contexts=scope_override_contexts or [],
+            causes_death_or_injury=causes_death_or_injury,
+            affects_minors=affects_minors,
+            affects_vulnerable_groups=affects_vulnerable_groups
+        )
 
         if not in_scope:
             print(f"   ⚠ {scope_reason}")

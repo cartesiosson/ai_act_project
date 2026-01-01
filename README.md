@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
-  <img src="https://img.shields.io/badge/ontology-v0.37.5-purple.svg" alt="Ontology"/>
+  <img src="https://img.shields.io/badge/ontology-v0.40.0-purple.svg" alt="Ontology"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
   <img src="https://img.shields.io/badge/ELI-EUR--Lex-blue.svg" alt="ELI"/>
   <img src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg" alt="License"/>
@@ -59,10 +59,14 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 - [4. Módulos del Frontend](#4-módulos-del-frontend)
 - [5. Agente Forense](#5-agente-forense)
 - [6. Ontología](#6-ontología)
-  - [6.1 Integración AIRO](#61-integración-airo-ai-risk-ontology)
-  - [6.2 Integración DPV](#62-integración-dpv-data-privacy-vocabulary)
-  - [6.3 Razonamiento sobre Affected Persons](#63-razonamiento-sobre-affected-persons-art-86)
-  - [6.4 Mappings Multi-Framework](#64-mappings-multi-framework)
+  - [6.1 Article 2 Scope Determination](#61-article-2-scope-determination-v0380-0400)
+  - [6.2 Integración AIRO](#62-integración-airo-ai-risk-ontology)
+  - [6.3 Integración DPV](#63-integración-dpv-data-privacy-vocabulary)
+  - [6.4 Razonamiento sobre Affected Persons](#64-razonamiento-sobre-affected-persons-art-86)
+  - [6.5 Integración ELI](#65-integración-eli-european-legislation-identifier)
+  - [6.6 Integración ISO 42001](#66-integración-isoiec-420012023)
+  - [6.7 Integración NIST AI RMF](#67-integración-nist-ai-rmf-10)
+  - [6.8 Mappings Multi-Framework](#68-mappings-multi-framework-resumen)
 - [7. Mecanismos de Inferencia](#7-mecanismos-de-inferencia)
 - [8. Stack Tecnológico](#8-stack-tecnológico)
 - [9. Estructura del Proyecto](#9-estructura-del-proyecto)
@@ -74,7 +78,16 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 
 ## 1. Descripción
 
-SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.5) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
+SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.40.0) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
+
+### Enfoque Ontology-First (v0.40.0)
+
+A partir de la versión 0.40.0, SERAMIS implementa un **enfoque ontology-first** donde:
+1. El LLM extrae conceptos semánticos directamente (no keywords)
+2. El código Python valida contra clases definidas en la ontología
+3. Se eliminaron ~150 keywords hardcodeadas en favor de IRIs ontológicas
+
+Este enfoque garantiza que toda la lógica de clasificación está definida semánticamente en la ontología, haciendo el sistema más mantenible, auditable y extensible.
 
 ### Características Principales
 
@@ -368,30 +381,76 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ## 6. Ontología
 
-### 6.0 Versión: 0.37.5
+### 6.0 Versión: 0.40.0
 
 | Propiedad | Valor |
 |-----------|-------|
 | **Namespace** | `http://ai-act.eu/ai#` |
 | **Formato** | Turtle (.ttl) |
-| **Clases** | 60+ |
-| **Propiedades** | 50+ |
-| **Individuos** | 120+ |
-| **Tripletas** | ~2,000 |
+| **Clases** | 70+ |
+| **Propiedades** | 55+ |
+| **Individuos** | 130+ |
+| **Tripletas** | ~2,200 |
 
-### 6.0.1 Cobertura Regulatoria
+### 6.0.1 Historial de Versiones Recientes
+
+| Versión | Fecha | Cambios Principales |
+|---------|-------|---------------------|
+| **0.40.0** | 2025-12-31 | Migración arquitectónica: código usa IRIs ontológicas en lugar de ~150 keywords |
+| **0.39.0** | 2025-12-31 | Scope override detection, `MinorsAffectedContext`, `ContentRecommendation` |
+| **0.38.0** | 2025-12-30 | Article 2 scope exclusions: `ScopeExclusion`, `mayBeExcludedBy`, `overridesExclusion` |
+| **0.37.5** | 2025-12-23 | ELI integration con EUR-Lex URIs |
+| **0.37.4** | 2025-12-15 | Article 5 prohibited practices + OOPS! fixes |
+
+### 6.0.2 Cobertura Regulatoria
 
 - EU AI Act Anexo III (8/8 categorías de alto riesgo)
+- **Artículo 2** (Ámbito de aplicación - exclusiones y overrides)
 - **Artículo 5** (Prácticas Prohibidas - Riesgo Inaceptable)
 - Artículos 51-55 (requisitos GPAI)
 - Taxonomía de algoritmos (Anexo I)
 - Framework de gobernanza de datos
-- Shapes SHACL de validación
+- Shapes SHACL de validación (15 shapes)
 - Reglas de inferencia SWRL
 
-### 6.1 Integración AIRO (AI Risk Ontology)
+### 6.1 Article 2 Scope Determination (v0.38.0-0.40.0)
 
-La ontología SERAMIS v0.37.2 incorpora compatibilidad con **AIRO** para la gestión de stakeholders según el EU AI Act:
+La ontología modela semánticamente el **Artículo 2 (Ámbito de aplicación)** del EU AI Act, permitiendo determinar si un sistema está dentro del ámbito regulatorio mediante consultas SPARQL.
+
+#### 6.1.1 Clases de Exclusión (ScopeExclusion)
+
+| Clase | Artículo | Descripción |
+|-------|----------|-------------|
+| `ai:PersonalNonProfessionalUse` | Art. 2.10 | Uso personal no profesional |
+| `ai:PureScientificResearch` | Art. 2.6 | Investigación científica pura |
+| `ai:MilitaryDefenseUse` | Art. 2.3 | Uso militar/defensa nacional |
+| `ai:EntertainmentWithoutRightsImpact` | Recital 12 | Entretenimiento sin impacto en derechos |
+| `ai:ThirdCountryExclusion` | Art. 2.7 | Sistemas de terceros países |
+
+#### 6.1.2 Contextos de Override (traen sistemas de vuelta al scope)
+
+| Contexto | Efecto | Requisito Adicional |
+|----------|--------|---------------------|
+| `ai:CausesRealWorldHarmContext` | Anula exclusión de entretenimiento | FRIA (Art. 27) |
+| `ai:VictimImpactContext` | Activa protección de víctimas | FRIA + medidas de protección |
+| `ai:AffectsFundamentalRightsContext` | Activa Art. 27 | FRIA obligatoria |
+| `ai:LegalConsequencesContext` | Activa supervisión humana | Human oversight (Art. 14) |
+| `ai:MinorsAffectedContext` | Escrutinio reforzado | Protección de menores |
+| `ai:BiometricProcessingContext` | Posible Art. 5 | Revisión de prohibiciones |
+
+#### 6.1.3 Propiedades de Scope
+
+```turtle
+ai:mayBeExcludedBy      # Purpose → ScopeExclusion
+ai:overridesExclusion   # DeploymentContext → ScopeExclusion
+ai:hasScopeOverride     # IntelligentSystem → DeploymentContext
+ai:isInEUAIActScope     # IntelligentSystem → boolean
+ai:requiresFRIA         # Context → boolean (Art. 27)
+```
+
+### 6.2 Integración AIRO (AI Risk Ontology)
+
+La ontología SERAMIS incorpora compatibilidad con **AIRO** para la gestión de stakeholders según el EU AI Act:
 
 | Propiedad SERAMIS | Clase AIRO | Artículo EU AI Act |
 |-------------------|------------|-------------------|
@@ -408,9 +467,9 @@ Esta integración permite:
 - **Interoperabilidad**: Compatible con otras ontologías que usen AIRO
 - **Razonamiento sobre Affected Persons**: Inferencia automática de requisitos basados en personas afectadas
 
-### 6.2 Integración DPV (Data Privacy Vocabulary)
+### 6.3 Integración DPV (Data Privacy Vocabulary)
 
-SERAMIS v1.1.0 integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** para la generación de planes de evidencia de cumplimiento.
+SERAMIS integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** para la generación de planes de evidencia de cumplimiento.
 
 | Extensión DPV | Propósito | Uso en SERAMIS |
 |---------------|-----------|----------------|
@@ -419,7 +478,7 @@ SERAMIS v1.1.0 integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.
 | **dpv:risk** | Gestión de riesgos | Evaluación de gaps |
 | **dpv:legal/eu/aiact** | Conceptos específicos AI Act | Equivalencias semánticas |
 
-#### 6.2.1 Tipos de Evidencia Definidos
+#### 6.3.1 Tipos de Evidencia Definidos
 
 El módulo `dpv-integration.ttl` define 6 tipos de evidencia:
 
@@ -432,7 +491,7 @@ El módulo `dpv-integration.ttl` define 6 tipos de evidencia:
 | `AssessmentEvidence` | Evaluaciones de impacto | FRIA Report, DPIA |
 | `ContractualEvidence` | Contratos y acuerdos | Data Processing Agreement |
 
-#### 6.2.2 Mappings Requisito → Medida DPV
+#### 6.3.2 Mappings Requisito → Medida DPV
 
 ```turtle
 ai:HumanOversightRequirement
@@ -445,7 +504,7 @@ ai:FundamentalRightsAssessmentRequirement
     ai:requiresEvidence ai:FRIAReportEvidence .
 ```
 
-### 6.3 Razonamiento sobre Affected Persons (Art. 86)
+### 6.4 Razonamiento sobre Affected Persons (Art. 86)
 
 El reasoner implementa **4 reglas de inferencia** basadas en la identificación de "Affected Persons" (personas afectadas por decisiones del sistema de IA):
 
@@ -474,9 +533,9 @@ El reasoner implementa **4 reglas de inferencia** basadas en la identificación 
 - `ai:WorkerNotificationRequirement`
 - `ai:Article5ProhibitionReview`
 
-### 6.4 Integración ELI (European Legislation Identifier)
+### 6.5 Integración ELI (European Legislation Identifier)
 
-SERAMIS v0.37.5 integra el **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** para proporcionar referencias persistentes y desreferenciables a la legislación oficial en EUR-Lex.
+SERAMIS integra el **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** para proporcionar referencias persistentes y desreferenciables a la legislación oficial en EUR-Lex.
 
 | Propiedad | Descripción |
 |-----------|-------------|
@@ -496,7 +555,7 @@ Esta integración permite:
 - **Interoperabilidad**: Estándar EU para referencias legislativas
 - **Auditoría**: Referencias verificables para compliance
 
-### 6.5 Integración ISO/IEC 42001:2023
+### 6.6 Integración ISO/IEC 42001:2023
 
 La ontología incluye **15 mappings bidireccionales** con el estándar de gestión de IA [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html), candidato a estándar armonizado bajo el EU AI Act.
 
@@ -521,7 +580,7 @@ ai:HumanOversightRequirement
     ai:mappingConfidence "HIGH" .
 ```
 
-### 6.6 Integración NIST AI RMF 1.0
+### 6.7 Integración NIST AI RMF 1.0
 
 La ontología incluye **16 mappings** con el [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), cubriendo las 4 funciones principales:
 
@@ -540,7 +599,7 @@ ai:HumanOversightRequirement
     ai:nistApplicabilityContext "GLOBAL_INCIDENTS, COMPARATIVE_ANALYSIS" .
 ```
 
-### 6.7 Mappings Multi-Framework (Resumen)
+### 6.8 Mappings Multi-Framework (Resumen)
 
 | Framework | Tipo | Mappings | Confianza |
 |-----------|------|----------|-----------|
@@ -700,9 +759,15 @@ seramis/
 │       └── server.py
 ├── reasoner_service/          # Microservicio de razonamiento SWRL (8001)
 ├── ontologias/                # Archivos de ontología
-│   ├── versions/0.37.4/
-│   ├── rules/
-│   ├── shacl/
+│   ├── versions/
+│   │   ├── 0.40.0/            # Semantic scope determination
+│   │   ├── 0.39.0/            # Scope override contexts
+│   │   ├── 0.38.0/            # Article 2 exclusions
+│   │   └── ...
+│   ├── queries/               # Consultas SPARQL
+│   │   └── forensic-queries.sparql
+│   ├── rules/                 # Reglas SWRL
+│   ├── shacl/                 # 15 SHACL shapes
 │   └── mappings/
 │       ├── iso-42001-mappings.ttl
 │       ├── nist-ai-rmf-mappings.ttl
@@ -791,5 +856,5 @@ El código fuente está disponible bajo los términos definidos por UNIR para Tr
 </p>
 
 <p align="center">
-  <sub>Versión 1.1.0 | Diciembre 2025</sub>
+  <sub>Versión 1.2.0 | Enero 2026</sub>
 </p>
