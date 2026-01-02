@@ -50,8 +50,25 @@ class SystemProperties(BaseModel):
 
 
 class IncidentClassification(BaseModel):
-    """Incident type and severity"""
-    incident_type: str = Field(..., description="discrimination|bias|safety_failure|privacy_violation|etc.")
+    """Incident type and severity
+
+    Incident types aligned with AIAAIC Repository issues:
+    - discrimination: Unfair treatment based on protected characteristics
+    - bias: Systematic errors favoring/disfavoring groups (AIAAIC: Fairness)
+    - safety_failure: Physical harm, injury, death (AIAAIC: Safety)
+    - accuracy_failure: Incorrect predictions, misidentification (AIAAIC: Accuracy/reliability)
+    - privacy_violation: Unauthorized data collection/use (AIAAIC: Privacy/surveillance)
+    - transparency_failure: Lack of disclosure, explainability (AIAAIC: Transparency, Accountability)
+    - misinformation: Deepfakes, hallucinations, fake content (AIAAIC: Mis/disinformation)
+    - data_leakage: Unintended data exposure
+    - adversarial_attack: Malicious input manipulation (AIAAIC: Security)
+    - model_poisoning: Training data corruption (AIAAIC: Security)
+    - unauthorized_access: Unauthorized system access (AIAAIC: Security)
+    - appropriation: Using likeness/voice without consent
+    - copyright: IP infringement (AIAAIC: Copyright)
+    - other: Unclassified incidents
+    """
+    incident_type: str = Field(..., description="discrimination|bias|safety_failure|accuracy_failure|privacy_violation|transparency_failure|misinformation|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other")
     severity: str = Field(..., description="critical|high|medium|low")
     affected_populations: List[str] = Field(default_factory=list, description="List of affected groups")
     affected_count: Optional[int] = Field(None, description="Number of people affected if known")

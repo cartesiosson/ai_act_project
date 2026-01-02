@@ -117,7 +117,7 @@ Extract the following information in JSON format:
     "affects_vulnerable_groups": true/false "Were vulnerable groups affected? Keywords: elderly, disabled, disability, homeless, economically disadvantaged, mental health"
   }},
   "incident": {{
-    "incident_type": "discrimination|bias|safety_failure|privacy_violation|transparency_failure|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other",
+    "incident_type": "discrimination|bias|safety_failure|accuracy_failure|privacy_violation|transparency_failure|misinformation|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other",
     "severity": "critical|high|medium|low",
     "affected_populations": ["List of affected groups"],
     "affected_count": number or null,

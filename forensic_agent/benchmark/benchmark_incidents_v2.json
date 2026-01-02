@@ -1,0 +1,142 @@
+[
+  {
+    "id": "BENCH-0009",
+    "narrative": "TreatmentAI AI-powered medical device malfunctioned affecting 52214 patients in 2025. System provided incorrect dosage recommendations with 21% error rate. Used in airport security for fully automated processes. IBM removed feature and received cease and desist order.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 9,
+      "template_type": "safety_failure",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "IBM"
+    }
+  },
+  {
+    "id": "BENCH-0008",
+    "narrative": "NewsAI AI-generated content published without disclosure in 2022. 74614 articles distributed as human-written content. Readers unaware of AI involvement in educational institutions. HireVue disputed findings after external audit.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 8,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0004",
+    "narrative": "SkyDrone autonomous drone caused incident affecting 66701 people in 2021. Navigation system failed in low-light conditions near border control. Resulted in fatal damage and injuries. OpenAI provided no response and received cease and desist order.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 4,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "OpenAI"
+    }
+  },
+  {
+    "id": "BENCH-0005",
+    "narrative": "CreditAI credit scoring showed bias against people of color in 2022. Denied applications at 33% higher rate for equivalent profiles. System processed health records with fully automated processes. Clearview AI placed moratorium on system after academic research.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 5,
+      "template_type": "bias",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0001",
+    "narrative": "DialogueBot customer service AI failed to disclose its non-human nature in 2025. 48134 users interacted believing they were communicating with humans. Deployed in social media violating AI disclosure requirements. Apple provided no response and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 1,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "CustomerService",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "Apple"
+    }
+  },
+  {
+    "id": "BENCH-0002",
+    "narrative": "CrimePredict predictive policing system generated unreliable predictions in 2018. False positive rate of 37% led to over-policing of Hispanic users communities. System deployed in employment screening with minimal intervention. Tesla issued public apology after media investigation.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 2,
+      "template_type": "accuracy_failure",
+      "system_type": "tabular",
+      "purpose": "LawEnforcementSupport",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Tesla"
+    }
+  },
+  {
+    "id": "BENCH-0007",
+    "narrative": "LinguaAI translation system produced critical errors in airport security in 2020. Mistranslations affected 65850 users with 38% error rate. Errors particularly severe for people of color languages. Alibaba placed moratorium on system after media investigation.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 7,
+      "template_type": "accuracy_failure",
+      "system_type": "nlp",
+      "purpose": "Translation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Alibaba"
+    }
+  },
+  {
+    "id": "BENCH-0006",
+    "narrative": "ModelGen generative AI system failed to document training data sources in 2025. Model trained on undisclosed datasets potentially containing communication records. No transparency reports provided despite regulatory requirements. Palantir disputed findings after media investigation.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 6,
+      "template_type": "transparency_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "Palantir"
+    }
+  },
+  {
+    "id": "BENCH-0010",
+    "narrative": "AssistChat AI chatbot generated false information for 97332 users in 2021. System hallucinated facts about educational institutions with high confidence. Users relied on incorrect information for fully automated processes. Tesla updated algorithm after academic research.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 10,
+      "template_type": "misinformation",
+      "system_type": "nlp",
+      "purpose": "InformationRetrieval",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Tesla"
+    }
+  },
+  {
+    "id": "BENCH-0003",
+    "narrative": "BioCollect collected biometric data from 14292 individuals without consent in 2022. Facial images scraped from online forums and stored indefinitely. System used for automated decision-making in public transportation. Megvii removed feature and faced regulatory fines.",
+    "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 3,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Megvii"
+    }
+  }
+]
