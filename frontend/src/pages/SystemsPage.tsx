@@ -397,7 +397,8 @@ export default function SystemsPage() {
         fetch(`${apiBase}/vocab/prohibited_practices?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/legal_exceptions?lang=en`).then(r => r.json()).catch(() => []),
         // ARTICLE 2: SCOPE EXCLUSIONS AND OVERRIDES (v0.39.0)
-        fetch(`${apiBase}/vocab/scope_excluded_purposes?lang=en`).then(r => r.json()).catch(() => [
+        // Using static fallback data since these endpoints don't exist yet
+        Promise.resolve([
           { id: "ai:Entertainment", label: "Entertainment", exclusionType: "PersonalNonProfessionalUse", articleReference: "Art. 2(10) + Recital 12" },
           { id: "ai:PersonalAssistant", label: "Personal Assistant", exclusionType: "PersonalNonProfessionalUse", articleReference: "Art. 2(10)" },
           { id: "ai:EmailFiltering", label: "Email Filtering", exclusionType: "PersonalNonProfessionalUse", articleReference: "Art. 2(10)" },
@@ -405,12 +406,13 @@ export default function SystemsPage() {
           { id: "ai:ScientificResearch", label: "Scientific Research", exclusionType: "PureScientificResearch", articleReference: "Art. 2(6)" },
           { id: "ai:MilitaryDefense", label: "Military/Defense", exclusionType: "MilitaryDefenseUse", articleReference: "Art. 2(3)" },
         ]),
-        fetch(`${apiBase}/vocab/scope_override_contexts?lang=en`).then(r => r.json()).catch(() => [
+        Promise.resolve([
           { id: "ai:LegalConsequencesContext", label: "Legal Consequences", overrideReason: "System produces legal effects on natural persons", requiresFRIA: true },
           { id: "ai:VictimImpactContext", label: "Victim Impact", overrideReason: "System affects victims of crime, accidents, or disasters", requiresFRIA: true },
           { id: "ai:CausesRealWorldHarmContext", label: "Real World Harm", overrideReason: "System may cause death, injury, or physical harm", requiresFRIA: true },
           { id: "ai:AffectsFundamentalRightsContext", label: "Fundamental Rights Impact", overrideReason: "System affects fundamental rights of natural persons", requiresFRIA: true },
           { id: "ai:BiometricProcessingContext", label: "Biometric Processing", overrideReason: "System processes biometric data", requiresFRIA: true },
+          { id: "ai:MinorsAffectedContext", label: "Minors Affected", overrideReason: "System affects or targets minors", requiresFRIA: true },
         ]),
       ]);
       setPurposes(purposesData);
