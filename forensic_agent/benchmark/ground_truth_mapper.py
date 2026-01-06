@@ -186,6 +186,77 @@ HARM_RISK_INDICATORS: Dict[str, str] = {
 
 
 # =============================================================================
+# SERIOUS INCIDENT MAPPING: AIAAIC -> EU AI Act Article 3(49)
+# =============================================================================
+# Maps AIAAIC issues and harms to EU AI Act serious incident types
+# Reference: Article 3(49) - Definition of "serious incident"
+
+# Maps AIAAIC "External harms" to Article 3(49) serious incident types
+HARM_TO_SERIOUS_INCIDENT: Dict[str, List[str]] = {
+    # Art. 3(49)(a) - Death or serious damage to health
+    "Loss of life": ["DeathOrHealthHarm"],
+    "Bodily injury": ["DeathOrHealthHarm"],
+    "Physical harm": ["DeathOrHealthHarm"],
+    "Psychological/mental health harm": ["DeathOrHealthHarm"],
+    "Mental harm": ["DeathOrHealthHarm"],
+    "Suicide/self-harm": ["DeathOrHealthHarm"],
+
+    # Art. 3(49)(c) - Breach of fundamental rights
+    "Discrimination": ["FundamentalRightsInfringement"],
+    "Loss of rights/freedoms": ["FundamentalRightsInfringement"],
+    "Privacy loss": ["FundamentalRightsInfringement"],
+    "Wrongful arrest": ["FundamentalRightsInfringement"],
+    "Wrongful detention": ["FundamentalRightsInfringement"],
+    "Loss of livelihood": ["FundamentalRightsInfringement"],
+    "Loss of liberty": ["FundamentalRightsInfringement"],
+    "Harassment/abuse": ["FundamentalRightsInfringement"],
+
+    # Art. 3(49)(d) - Serious harm to property or environment
+    "Financial harm": ["PropertyOrEnvironmentHarm"],
+    "Property damage": ["PropertyOrEnvironmentHarm"],
+    "Environmental damage": ["PropertyOrEnvironmentHarm"],
+    "Infrastructure damage": ["PropertyOrEnvironmentHarm", "CriticalInfrastructureDisruption"],
+}
+
+# Maps AIAAIC "Issues" to Article 3(49) serious incident types
+# Note: Issues are causes, not outcomes - mapping is less direct
+ISSUE_TO_SERIOUS_INCIDENT: Dict[str, List[str]] = {
+    # Safety issues typically result in health/death harm
+    "Safety": ["DeathOrHealthHarm"],
+
+    # Privacy/surveillance typically affects fundamental rights
+    "Privacy/surveillance": ["FundamentalRightsInfringement"],
+
+    # Fairness issues affect fundamental rights (discrimination)
+    "Fairness": ["FundamentalRightsInfringement"],
+
+    # These may or may not result in serious incidents - context dependent
+    "Accuracy/reliability": [],  # Could lead to any type depending on context
+    "Transparency": [],  # Not directly a serious incident
+    "Accountability": [],  # Not directly a serious incident
+    "Mis/disinformation": [],  # Could lead to FundamentalRightsInfringement
+    "Copyright": [],  # Not typically a serious incident
+    "Security": [],  # Could lead to any type depending on attack outcome
+}
+
+# Maps AIAAIC "Sector" to potential serious incident types
+# Critical infrastructure sectors map to CriticalInfrastructureDisruption
+SECTOR_TO_SERIOUS_INCIDENT: Dict[str, List[str]] = {
+    # Critical infrastructure sectors (Art. 3(49)(b))
+    "Energy/utilities": ["CriticalInfrastructureDisruption"],
+    "Transport/logistics": ["CriticalInfrastructureDisruption"],
+    "Health": ["CriticalInfrastructureDisruption", "DeathOrHealthHarm"],
+    "Govt - security": ["CriticalInfrastructureDisruption"],
+
+    # High fundamental rights impact sectors
+    "Govt - police": ["FundamentalRightsInfringement"],
+    "Govt - justice": ["FundamentalRightsInfringement"],
+    "Govt - immigration": ["FundamentalRightsInfringement"],
+    "Banking/finance": ["PropertyOrEnvironmentHarm", "FundamentalRightsInfringement"],
+}
+
+
+# =============================================================================
 # MAIN MAPPING FUNCTIONS
 # =============================================================================
 
@@ -402,6 +473,105 @@ def map_harms_to_risk_indicators(individual_harms: str, societal_harms: str = ""
     return result
 
 
+def map_to_serious_incident_types(
+    issues_str: str,
+    sector_str: str,
+    individual_harms_str: str,
+    societal_harms_str: str = ""
+) -> Dict:
+    """
+    Maps AIAAIC data to EU AI Act Article 3(49) serious incident types.
+
+    Derives expected serious incident types from AIAAIC taxonomy for ground truth.
+
+    Args:
+        issues_str: Semicolon-separated AIAAIC issues
+        sector_str: Semicolon-separated AIAAIC sectors
+        individual_harms_str: Semicolon-separated individual harms
+        societal_harms_str: Semicolon-separated societal harms
+
+    Returns:
+        dict with:
+            - serious_incident_types: List of expected Art. 3(49) types
+            - primary_type: Most likely serious incident type (priority-based)
+            - sources: Dict showing which AIAAIC fields contributed each type
+            - is_serious_incident: bool - whether this qualifies as a serious incident
+    """
+    result = {
+        "serious_incident_types": [],
+        "primary_type": None,
+        "sources": {
+            "from_harms": [],
+            "from_issues": [],
+            "from_sector": []
+        },
+        "is_serious_incident": False
+    }
+
+    # Priority order for determining primary type
+    # DeathOrHealthHarm > CriticalInfrastructureDisruption > FundamentalRightsInfringement > PropertyOrEnvironmentHarm
+    type_priority = {
+        "DeathOrHealthHarm": 4,
+        "CriticalInfrastructureDisruption": 3,
+        "FundamentalRightsInfringement": 2,
+        "PropertyOrEnvironmentHarm": 1
+    }
+
+    all_types = set()
+    max_priority = 0
+
+    # 1. Map from harms (most direct indicator)
+    all_harms = []
+    if individual_harms_str:
+        all_harms.extend([h.strip() for h in individual_harms_str.split(';')])
+    if societal_harms_str:
+        all_harms.extend([h.strip() for h in societal_harms_str.split(';')])
+
+    for harm in all_harms:
+        if harm in HARM_TO_SERIOUS_INCIDENT:
+            types = HARM_TO_SERIOUS_INCIDENT[harm]
+            for t in types:
+                if t not in all_types:
+                    all_types.add(t)
+                    result["sources"]["from_harms"].append({"harm": harm, "type": t})
+                if type_priority.get(t, 0) > max_priority:
+                    max_priority = type_priority[t]
+                    result["primary_type"] = t
+
+    # 2. Map from issues (less direct, but useful)
+    if issues_str:
+        issues = [i.strip() for i in issues_str.split(';')]
+        for issue in issues:
+            if issue in ISSUE_TO_SERIOUS_INCIDENT:
+                types = ISSUE_TO_SERIOUS_INCIDENT[issue]
+                for t in types:
+                    if t not in all_types:
+                        all_types.add(t)
+                        result["sources"]["from_issues"].append({"issue": issue, "type": t})
+                    if type_priority.get(t, 0) > max_priority:
+                        max_priority = type_priority[t]
+                        result["primary_type"] = t
+
+    # 3. Map from sector (contextual indicator)
+    if sector_str:
+        sectors = [s.strip() for s in sector_str.split(';')]
+        for sector in sectors:
+            if sector in SECTOR_TO_SERIOUS_INCIDENT:
+                types = SECTOR_TO_SERIOUS_INCIDENT[sector]
+                for t in types:
+                    if t not in all_types:
+                        all_types.add(t)
+                        result["sources"]["from_sector"].append({"sector": sector, "type": t})
+                    if type_priority.get(t, 0) > max_priority:
+                        max_priority = type_priority[t]
+                        result["primary_type"] = t
+
+    result["serious_incident_types"] = sorted(list(all_types), key=lambda x: -type_priority.get(x, 0))
+    result["is_serious_incident"] = len(all_types) > 0
+
+    return result
+
+
 def create_full_ground_truth(row: Dict) -> Dict:
     """
     Creates complete ground truth from an AIAAIC CSV row.
@@ -431,6 +601,14 @@ def create_full_ground_truth(row: Dict) -> Dict:
             row.get("societal_harms", "")
         ),
 
+        # NEW: Serious incident type mapping (v0.41.0 - Art. 3(49))
+        "serious_incident": map_to_serious_incident_types(
+            row.get("issues", ""),
+            row.get("sector", ""),
+            row.get("individual_harms", ""),
+            row.get("societal_harms", "")
+        ),
+
         # Raw AIAAIC values for reference
         "raw": {
             "issues": row.get("issues", ""),
@@ -439,6 +617,8 @@ def create_full_ground_truth(row: Dict) -> Dict:
             "purpose": row.get("purpose", ""),
             "deployer": row.get("deployer", ""),
             "developer": row.get("developer", ""),
+            "individual_harms": row.get("individual_harms", ""),
+            "societal_harms": row.get("societal_harms", ""),
         }
     }
 
@@ -504,9 +684,14 @@ def evaluate_incident_type(predicted: str, ground_truth: Dict) -> Dict:
             - expected_primary: The primary expected value
             - expected_all: All expected values
     """
+    # Normalize to lowercase for case-insensitive comparison
+    predicted_lower = predicted.lower() if predicted else ""
+    primary_lower = ground_truth["primary_type"].lower() if ground_truth["primary_type"] else ""
+    types_lower = [t.lower() for t in ground_truth["incident_types"]]
+
     return {
-        "strict_match": predicted == ground_truth["primary_type"],
-        "flexible_match": predicted in ground_truth["incident_types"],
+        "strict_match": predicted_lower == primary_lower,
+        "flexible_match": predicted_lower in types_lower,
         "predicted": predicted,
         "expected_primary": ground_truth["primary_type"],
         "expected_all": ground_truth["incident_types"]
@@ -532,6 +717,108 @@ def evaluate_risk_level(predicted: str, ground_truth: Dict) -> Dict:
         "expected": expected,
         "context_risk": ground_truth["context"]["risk_indicator"],
         "has_death_injury": ground_truth["harms"]["causes_death_or_injury"]
+    }
+
+
+def evaluate_serious_incident_type(predicted: List[str], ground_truth: Dict) -> Dict:
+    """
+    Evaluates predicted serious incident types against ground truth.
+
+    Uses multi-label evaluation metrics:
+    - strict_match: Predicted set exactly equals expected set
+    - primary_match: Predicted primary type matches expected primary type
+    - any_match: At least one predicted type is in expected types
+    - precision: |predicted ∩ expected| / |predicted|
+    - recall: |predicted ∩ expected| / |expected|
+    - f1: Harmonic mean of precision and recall
+
+    Args:
+        predicted: List of serious incident types predicted by the agent
+        ground_truth: Full ground truth from create_full_ground_truth()
+
+    Returns:
+        dict with evaluation metrics
+    """
+    serious_gt = ground_truth.get("serious_incident", {})
+    expected = set(serious_gt.get("serious_incident_types", []))
+    expected_primary = serious_gt.get("primary_type")
+    is_serious = serious_gt.get("is_serious_incident", False)
+
+    # Normalize predicted to set
+    predicted_set = set(predicted) if predicted else set()
+
+    # Handle edge cases
+    if not expected and not predicted_set:
+        # Both empty - correct negative
+        return {
+            "strict_match": True,
+            "primary_match": True,
+            "any_match": True,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "predicted": list(predicted_set),
+            "expected": list(expected),
+            "expected_primary": expected_primary,
+            "is_serious_incident": is_serious,
+            "correct_negative": True
+        }
+
+    if not expected and predicted_set:
+        # False positive - predicted serious incident when none expected
+        return {
+            "strict_match": False,
+            "primary_match": False,
+            "any_match": False,
+            "precision": 0.0,
+            "recall": 1.0,  # Nothing to recall
+            "f1": 0.0,
+            "predicted": list(predicted_set),
+            "expected": list(expected),
+            "expected_primary": expected_primary,
+            "is_serious_incident": is_serious,
+            "false_positive": True
+        }
+
+    if expected and not predicted_set:
+        # False negative - missed serious incident
+        return {
+            "strict_match": False,
+            "primary_match": False,
+            "any_match": False,
+            "precision": 1.0,  # Nothing predicted incorrectly
+            "recall": 0.0,
+            "f1": 0.0,
+            "predicted": list(predicted_set),
+            "expected": list(expected),
+            "expected_primary": expected_primary,
+            "is_serious_incident": is_serious,
+            "false_negative": True
+        }
+
+    # Both have values - calculate metrics
+    intersection = predicted_set & expected
+    precision = len(intersection) / len(predicted_set) if predicted_set else 0.0
+    recall = len(intersection) / len(expected) if expected else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    # Primary match - check if any predicted matches the expected primary
+    primary_match = expected_primary in predicted_set if expected_primary else False
+
+    return {
+        "strict_match": predicted_set == expected,
+        "primary_match": primary_match,
+        "any_match": len(intersection) > 0,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "predicted": list(predicted_set),
+        "expected": list(expected),
+        "expected_primary": expected_primary,
+        "is_serious_incident": is_serious,
+        "intersection": list(intersection),
+        "missed": list(expected - predicted_set),
+        "extra": list(predicted_set - expected)
     }
 
 
@@ -573,3 +860,59 @@ if __name__ == "__main__":
     result = map_harms_to_risk_indicators(test_harms)
     print(f"Harms: {test_harms}")
     print(f"Result: {result}")
+    print()
+
+    # Test serious incident mapping (NEW v0.41.0)
+    print("=== Serious Incident Mapping Test (Art. 3(49)) ===\n")
+
+    test_serious = map_to_serious_incident_types(
+        issues_str="Safety; Privacy/surveillance",
+        sector_str="Health; Govt - police",
+        individual_harms_str="Loss of life; Discrimination",
+        societal_harms_str=""
+    )
+    print(f"Test case: Safety + Privacy issues, Health + Police sectors, Death + Discrimination harms")
+    print(f"  serious_incident_types: {test_serious['serious_incident_types']}")
+    print(f"  primary_type: {test_serious['primary_type']}")
+    print(f"  is_serious_incident: {test_serious['is_serious_incident']}")
+    print(f"  sources: {test_serious['sources']}")
+    print()
+
+    # Test evaluation
+    print("=== Serious Incident Evaluation Test ===\n")
+    mock_ground_truth = {
+        "serious_incident": test_serious
+    }
+
+    # Test 1: Perfect match
+    eval1 = evaluate_serious_incident_type(
+        ["DeathOrHealthHarm", "FundamentalRightsInfringement"],
+        mock_ground_truth
+    )
+    print(f"Test 1 - Predicted: ['DeathOrHealthHarm', 'FundamentalRightsInfringement']")
+    print(f"  strict_match: {eval1['strict_match']}")
+    print(f"  primary_match: {eval1['primary_match']}")
+    print(f"  f1: {eval1['f1']:.2f}")
+    print()
+
+    # Test 2: Partial match
+    eval2 = evaluate_serious_incident_type(
+        ["DeathOrHealthHarm"],
+        mock_ground_truth
+    )
+    print(f"Test 2 - Predicted: ['DeathOrHealthHarm']")
+    print(f"  strict_match: {eval2['strict_match']}")
+    print(f"  primary_match: {eval2['primary_match']}")
+    print(f"  precision: {eval2['precision']:.2f}")
+    print(f"  recall: {eval2['recall']:.2f}")
+    print(f"  f1: {eval2['f1']:.2f}")
+    print()
+
+    # Test 3: No match
+    eval3 = evaluate_serious_incident_type(
+        ["PropertyOrEnvironmentHarm"],
+        mock_ground_truth
+    )
+    print(f"Test 3 - Predicted: ['PropertyOrEnvironmentHarm']")
+    print(f"  any_match: {eval3['any_match']}")
+    print(f"  f1: {eval3['f1']:.2f}")

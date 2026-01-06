@@ -67,12 +67,33 @@ class IncidentClassification(BaseModel):
     - appropriation: Using likeness/voice without consent
     - copyright: IP infringement (AIAAIC: Copyright)
     - other: Unclassified incidents
+
+    Serious Incident Types per EU AI Act Article 3(49):
+    - DeathOrHealthHarm: Death or serious damage to health (Art. 3.49.a)
+    - CriticalInfrastructureDisruption: Serious infrastructure disruption (Art. 3.49.b)
+    - FundamentalRightsInfringement: Breach of fundamental rights (Art. 3.49.c)
+    - PropertyOrEnvironmentHarm: Serious property/environment harm (Art. 3.49.d)
     """
     incident_type: str = Field(..., description="discrimination|bias|safety_failure|accuracy_failure|privacy_violation|transparency_failure|misinformation|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other")
+    # EU AI Act Article 3(49) Serious Incident Classification (v0.41.0)
+    serious_incident_type: Optional[List[str]] = Field(
+        default_factory=list,
+        description="EU AI Act Art. 3(49) serious incident types: DeathOrHealthHarm, CriticalInfrastructureDisruption, FundamentalRightsInfringement, PropertyOrEnvironmentHarm. Multiple types may apply."
+    )
     severity: str = Field(..., description="critical|high|medium|low")
     affected_populations: List[str] = Field(default_factory=list, description="List of affected groups")
     affected_count: Optional[int] = Field(None, description="Number of people affected if known")
     public_disclosure: bool = Field(..., description="Whether incident was publicly disclosed")
+
+    @field_validator('serious_incident_type', mode='before')
+    @classmethod
+    def coerce_serious_incident_type(cls, v):
+        """Convert None to empty list, string to list for serious_incident_type"""
+        if v is None:
+            return []
+        if isinstance(v, str):
+            return [v]
+        return v
 
 
 class Timeline(BaseModel):

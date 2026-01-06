@@ -9,6 +9,15 @@ Key improvements over v1:
 - Risk level validation against expected values
 - Multi-label handling for AIAAIC Issue(s) field
 
+Version 2.1 improvements:
+- Incremental saving: results saved after each incident
+- Resume capability: can continue from where it left off
+- Checkpoint file tracks progress
+
+Version 2.2 improvements:
+- Batch processing with automatic Ollama restart every N cases
+- Prevents memory/timeout issues on long runs
+
 Data source: AIAAIC Repository (https://www.aiaaic.org/aiaaic-repository)
 License: CC BY-SA 4.0
 """
@@ -19,10 +28,78 @@ import requests
 import sys
 import csv
 import random
-from typing import Dict, List, Optional
+import hashlib
+import subprocess
+from typing import Dict, List, Optional, Set
 from datetime import datetime
 from pathlib import Path
 import statistics
+
+# Batch configuration
+BATCH_SIZE = 15  # Restart Ollama every N cases
+OLLAMA_RESTART_WAIT = 20  # Seconds to wait after restart
+MAX_HEALTH_RETRIES = 30  # Max retries waiting for service health
+
+
+def restart_ollama() -> bool:
+    """
+    Restart Ollama container using docker restart.
+    Uses the full container name for more reliable restart.
+    Returns True if restart was successful.
+    """
+    try:
+        print("\n" + "="*50)
+        print("🔄 Restarting Ollama (batch maintenance)...")
+        print("="*50)
+
+        # Use docker restart with full container name (more reliable than docker-compose)
+        result = subprocess.run(
+            ["docker", "restart", "ai_act_project-ollama-1"],
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+
+        if result.returncode == 0:
+            print(f"✓ Ollama container restarted")
+            return True
+        else:
+            print(f"✗ Failed to restart Ollama: {result.stderr}")
+            return False
+
+    except subprocess.TimeoutExpired:
+        print("✗ Ollama restart timed out")
+        return False
+    except Exception as e:
+        print(f"✗ Error restarting Ollama: {e}")
+        return False
+
+
+def wait_for_service_health(forensic_url: str, max_retries: int = MAX_HEALTH_RETRIES) -> bool:
+    """
+    Wait for forensic service to be healthy after Ollama restart.
+    Returns True if service is healthy.
+    """
+    print(f"⏳ Waiting for service to be ready...", end="", flush=True)
+
+    for i in range(max_retries):
+        try:
+            response = requests.get(f"{forensic_url}/health", timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                # Check if all services are operational
+                if data.get("status") == "healthy":
+                    print(f" ready! ({i+1}s)")
+                    return True
+        except:
+            pass
+
+        print(".", end="", flush=True)
+        time.sleep(1)
+
+    print(" timeout!")
+    return False
+
 
 # Import ground truth mapper
 from ground_truth_mapper import (
@@ -209,9 +286,21 @@ class AIAAICDataLoaderV2:
 class RealBenchmarkV2:
     """Benchmark runner for real AIAAIC incidents with ground truth evaluation"""
 
-    def __init__(self, forensic_url: str = "http://localhost:8002"):
+    def __init__(self, forensic_url: str = "http://localhost:8002", output_dir: Path = None):
         self.forensic_url = forensic_url
+        self.output_dir = output_dir or Path(__file__).parent / "results"
+        self.output_dir.mkdir(exist_ok=True)
+
+        # Session ID for this run
+        self.session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Checkpoint and results files
+        self.checkpoint_file = self.output_dir / f"checkpoint_{self.session_id}.json"
+        self.results_file = self.output_dir / f"real_benchmark_results_v2_{self.session_id}.json"
+        self.evaluations_file = self.output_dir / f"real_benchmark_evaluations_v2_{self.session_id}.json"
+
         self.results = []
+        self.processed_ids: Set[str] = set()
         self.metrics = {
             "total_incidents": 0,
             "successful": 0,
@@ -237,6 +326,126 @@ class RealBenchmarkV2:
         except Exception as e:
             print(f"Forensic agent not available: {e}")
             return False
+
+    def _save_checkpoint(self, selected_ids: List[str] = None):
+        """Save current progress to checkpoint file"""
+        checkpoint = {
+            "session_id": self.session_id,
+            "timestamp": datetime.now().isoformat(),
+            "processed_ids": list(self.processed_ids),
+            "metrics": {
+                k: v if not isinstance(v, list) else len(v)
+                for k, v in self.metrics.items()
+            }
+        }
+        # Save selected IDs for reproducibility on resume
+        if selected_ids:
+            checkpoint["selected_ids"] = selected_ids
+        elif hasattr(self, '_current_selected_ids'):
+            checkpoint["selected_ids"] = self._current_selected_ids
+
+        with open(self.checkpoint_file, 'w') as f:
+            json.dump(checkpoint, f, indent=2)
+
+    def _save_result_incremental(self, result: Dict, evaluation: Dict = None):
+        """Append a single result to the results file"""
+        # Append to results list
+        self.results.append(result)
+
+        # Write all results to file (overwrite for consistency)
+        with open(self.results_file, 'w') as f:
+            json.dump(self.results, f, indent=2)
+
+        # Save evaluation if present
+        if evaluation:
+            with open(self.evaluations_file, 'w') as f:
+                json.dump(self.metrics["evaluation_details"], f, indent=2)
+
+    def load_checkpoint(self, checkpoint_path: Path) -> bool:
+        """
+        Load a previous checkpoint to resume from.
+        Returns True if checkpoint was loaded successfully.
+        """
+        if not checkpoint_path.exists():
+            return False
+
+        try:
+            with open(checkpoint_path, 'r') as f:
+                checkpoint = json.load(f)
+
+            # Extract session ID from checkpoint
+            old_session_id = checkpoint.get("session_id", "")
+            self.processed_ids = set(checkpoint.get("processed_ids", []))
+
+            # Load selected_ids to maintain same sample
+            self.resume_selected_ids = checkpoint.get("selected_ids", None)
+
+            # Load existing results if available
+            old_results_file = self.output_dir / f"real_benchmark_results_v2_{old_session_id}.json"
+            if old_results_file.exists():
+                with open(old_results_file, 'r') as f:
+                    self.results = json.load(f)
+
+            # Load existing evaluations
+            old_evals_file = self.output_dir / f"real_benchmark_evaluations_v2_{old_session_id}.json"
+            if old_evals_file.exists():
+                with open(old_evals_file, 'r') as f:
+                    self.metrics["evaluation_details"] = json.load(f)
+
+            # Recalculate metrics from loaded results
+            self._recalculate_metrics_from_results()
+
+            # Use the old session ID to continue appending to same files
+            self.session_id = old_session_id
+            self.checkpoint_file = self.output_dir / f"checkpoint_{self.session_id}.json"
+            self.results_file = self.output_dir / f"real_benchmark_results_v2_{self.session_id}.json"
+            self.evaluations_file = self.output_dir / f"real_benchmark_evaluations_v2_{self.session_id}.json"
+
+            print(f"Resumed from checkpoint: {len(self.processed_ids)} incidents already processed")
+            return True
+
+        except Exception as e:
+            print(f"Failed to load checkpoint: {e}")
+            return False
+
+    def _recalculate_metrics_from_results(self):
+        """Recalculate metrics from loaded results"""
+        for result in self.results:
+            status = result.get("status", "UNKNOWN")
+            proc_time = result.get("processing_time", 0)
+
+            if status == "COMPLETED":
+                self.metrics["successful"] += 1
+                self.metrics["processing_times"].append(proc_time)
+
+                confidence = result.get("extraction", {}).get("confidence", {}).get("overall", 0)
+                self.metrics["confidence_scores"].append(confidence)
+
+                risk_level = result.get("eu_ai_act", {}).get("risk_level", "Unknown")
+                self.metrics["risk_levels"][risk_level] = self.metrics["risk_levels"].get(risk_level, 0) + 1
+
+                incident_type = result.get("extraction", {}).get("incident", {}).get("incident_type", "unknown")
+                self.metrics["incident_types"][incident_type] = self.metrics["incident_types"].get(incident_type, 0) + 1
+
+            elif status == "LOW_CONFIDENCE":
+                self.metrics["low_confidence"] += 1
+                self.metrics["processing_times"].append(proc_time)
+                confidence = result.get("extraction", {}).get("confidence", {}).get("overall", 0)
+                self.metrics["confidence_scores"].append(confidence)
+
+            elif status == "ERROR":
+                self.metrics["failed"] += 1
+                error = result.get("error", "Unknown")
+                self.metrics["errors"].append(f"{result.get('incident_id', '?')}: {error}")
+
+        # Recalculate evaluation metrics
+        for eval_detail in self.metrics["evaluation_details"]:
+            if eval_detail.get("incident_type", {}).get("strict_match"):
+                self.metrics["incident_type_strict_matches"] += 1
+            if eval_detail.get("incident_type", {}).get("flexible_match"):
+                self.metrics["incident_type_flexible_matches"] += 1
+            if eval_detail.get("risk_level", {}).get("match"):
+                self.metrics["risk_level_matches"] += 1
 
     def analyze_incident(self, incident: Dict) -> Dict:
         """Analyze a single incident"""
@@ -304,36 +513,98 @@ class RealBenchmarkV2:
             "risk_level": risk_level_eval
         }
 
-    def run_benchmark(self, incidents: List[Dict], num_cases: int = None, randomize: bool = True):
-        """Run benchmark on selected incidents with ground truth evaluation"""
+    def run_benchmark(self, incidents: List[Dict], num_cases: int = None, randomize: bool = True,
+                      batch_size: int = BATCH_SIZE):
+        """
+        Run benchmark on selected incidents with ground truth evaluation.
 
-        if num_cases and num_cases < len(incidents):
+        Args:
+            incidents: All available incidents
+            num_cases: Number of cases to analyze (None = all)
+            randomize: If True, randomly select incidents
+            batch_size: Number of cases between Ollama restarts
+        """
+
+        # Check if resuming with saved IDs
+        if hasattr(self, 'resume_selected_ids') and self.resume_selected_ids:
+            id_set = set(self.resume_selected_ids)
+            selected_incidents = [i for i in incidents if i['id'] in id_set]
+            # Maintain original order
+            id_order = {id: idx for idx, id in enumerate(self.resume_selected_ids)}
+            selected_incidents.sort(key=lambda x: id_order.get(x['id'], 999999))
+            self._current_selected_ids = self.resume_selected_ids
+        elif num_cases and num_cases < len(incidents):
             if randomize:
+                random.seed(42)  # Fixed seed for reproducibility
                 selected_incidents = random.sample(incidents, num_cases)
             else:
                 selected_incidents = incidents[:num_cases]
+            # Store selected IDs for checkpoint
+            self._current_selected_ids = [i['id'] for i in selected_incidents]
         else:
             selected_incidents = incidents
             num_cases = len(incidents)
+            self._current_selected_ids = [i['id'] for i in selected_incidents]
 
         self.metrics["total_incidents"] = len(selected_incidents)
 
+        # Count how many are already processed
+        already_processed = sum(1 for i in selected_incidents if i['id'] in self.processed_ids)
+        remaining = len(selected_incidents) - already_processed
+
+        # Calculate batches
+        num_batches = (remaining + batch_size - 1) // batch_size if remaining > 0 else 0
+
         print(f"\n{'='*70}")
-        print(f"FORENSIC AGENT REAL BENCHMARK V2 (AIAAIC + Ground Truth)")
+        print(f"FORENSIC AGENT REAL BENCHMARK V2.2 (Batch Processing)")
         print(f"{'='*70}")
-        print(f"Selected incidents: {len(selected_incidents)} out of {len(incidents)} available")
+        print(f"Session ID: {self.session_id}")
+        print(f"Total incidents: {len(selected_incidents)}")
+        print(f"Already processed: {already_processed}")
+        print(f"Remaining: {remaining}")
+        print(f"Batch size: {batch_size} (Ollama restart every {batch_size} cases)")
+        print(f"Estimated batches: {num_batches}")
+        print(f"Results file: {self.results_file.name}")
         print(f"Data source: AIAAIC Repository")
-        print(f"Ground truth: AIAAIC -> EU AI Act mapping enabled")
         print(f"Target: {self.forensic_url}")
         print(f"{'='*70}\n")
 
+        if remaining == 0:
+            print("All incidents already processed!")
+            return
+
+        processed_count = already_processed
+        batch_counter = 0  # Counter within current batch
+
         for idx, incident in enumerate(selected_incidents, 1):
             incident_id = incident['id']
+
+            # Skip already processed
+            if incident_id in self.processed_ids:
+                continue
+
+            # Check if we need to restart Ollama (every batch_size cases)
+            if batch_counter > 0 and batch_counter % batch_size == 0:
+                current_batch = (processed_count // batch_size) + 1
+                print(f"\n[Batch {current_batch} complete - {batch_counter} cases in this session]")
+
+                if restart_ollama():
+                    time.sleep(OLLAMA_RESTART_WAIT)
+                    if not wait_for_service_health(self.forensic_url):
+                        print("⚠ Service not responding after restart, continuing anyway...")
+                else:
+                    print("⚠ Ollama restart failed, continuing anyway...")
+
+                print()  # Empty line before continuing
+
+            processed_count += 1
+            batch_counter += 1
+
             title = incident['metadata'].get('aiaaic_title', incident_id)[:45]
-            print(f"[{idx}/{len(selected_incidents)}] {title}...", end=" ", flush=True)
+            print(f"[{processed_count}/{len(selected_incidents)}] {title}...", end=" ", flush=True)
 
             result = self.analyze_incident(incident)
-            self.results.append(result)
+            evaluation = None
 
             status = result.get("status", "UNKNOWN")
             proc_time = result.get("processing_time", 0)
@@ -384,7 +655,14 @@ class RealBenchmarkV2:
                 self.metrics["failed"] += 1
                 print(f"Unknown status: {status}")
 
+            # Mark as processed and save incrementally
+            self.processed_ids.add(incident_id)
+            self._save_result_incremental(result, evaluation)
+            self._save_checkpoint()
+
             time.sleep(0.5)
+
+        print(f"\n✓ Benchmark complete. Results saved to: {self.results_file}")
 
     def compute_statistics(self) -> Dict:
         """Compute benchmark statistics including ground truth accuracy"""
@@ -445,35 +723,30 @@ class RealBenchmarkV2:
 
         return stats
 
-    def save_results(self, output_dir: Path):
-        """Save benchmark results"""
+    def save_results(self):
+        """Save final benchmark results and statistics"""
 
-        output_dir.mkdir(exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        # Save full results
-        results_file = output_dir / f"real_benchmark_results_v2_{timestamp}.json"
-        with open(results_file, 'w') as f:
-            json.dump(self.results, f, indent=2)
-
-        print(f"\nFull results saved: {results_file}")
-
-        # Save statistics
+        # Results are already saved incrementally, just save final stats
         stats = self.compute_statistics()
-        stats_file = output_dir / f"real_benchmark_stats_v2_{timestamp}.json"
+        stats_file = self.output_dir / f"real_benchmark_stats_v2_{self.session_id}.json"
         with open(stats_file, 'w') as f:
             json.dump(stats, f, indent=2)
 
-        print(f"Statistics saved: {stats_file}")
+        print(f"\nFinal results: {self.results_file}")
+        print(f"Statistics: {stats_file}")
+        print(f"Evaluations: {self.evaluations_file}")
 
-        # Save evaluation details separately
-        eval_file = output_dir / f"real_benchmark_evaluations_v2_{timestamp}.json"
-        with open(eval_file, 'w') as f:
-            json.dump(self.metrics["evaluation_details"], f, indent=2)
+        # Clean up checkpoint file on successful completion
+        if self.checkpoint_file.exists():
+            # Keep checkpoint for reference but mark as complete
+            with open(self.checkpoint_file, 'r') as f:
+                checkpoint = json.load(f)
+            checkpoint["status"] = "COMPLETED"
+            checkpoint["completed_at"] = datetime.now().isoformat()
+            with open(self.checkpoint_file, 'w') as f:
+                json.dump(checkpoint, f, indent=2)
 
-        print(f"Evaluations saved: {eval_file}")
-
-        return results_file, stats_file, stats
+        return self.results_file, stats_file, stats
 
     def print_report(self, stats: Dict):
         """Print benchmark report with ground truth accuracy"""
@@ -558,13 +831,40 @@ class RealBenchmarkV2:
         print(f"{'='*70}\n")
 
 
+def find_latest_checkpoint(output_dir: Path) -> Optional[Path]:
+    """Find the most recent incomplete checkpoint file"""
+    checkpoints = list(output_dir.glob("checkpoint_*.json"))
+    if not checkpoints:
+        return None
+
+    # Sort by modification time, newest first
+    checkpoints.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+
+    for cp in checkpoints:
+        try:
+            with open(cp, 'r') as f:
+                data = json.load(f)
+            # Skip completed checkpoints
+            if data.get("status") == "COMPLETED":
+                continue
+            return cp
+        except:
+            continue
+
+    return None
+
+
 def main():
     """Main entry point"""
 
     print("="*70)
-    print("AIAAIC Real Incident Benchmark V2 (with Ground Truth)")
+    print("AIAAIC Real Incident Benchmark V2.2 (Batch Processing)")
     print("="*70)
+    print(f"Batch size: {BATCH_SIZE} cases (Ollama restart between batches)")
     print()
+
+    output_dir = Path(__file__).parent / "results"
+    output_dir.mkdir(exist_ok=True)
 
     # Load AIAAIC data with ground truth
     loader = AIAAICDataLoaderV2()
@@ -582,12 +882,36 @@ def main():
         sys.exit(1)
 
     print(f"\nTotal available incidents: {len(all_incidents)}")
+
+    # Check for resume option
+    resume_checkpoint = None
+    selected_ids = None
+
+    if len(sys.argv) > 1 and sys.argv[1].lower() == 'resume':
+        # Find latest checkpoint
+        resume_checkpoint = find_latest_checkpoint(output_dir)
+        if resume_checkpoint:
+            print(f"\nFound checkpoint: {resume_checkpoint.name}")
+            with open(resume_checkpoint, 'r') as f:
+                cp_data = json.load(f)
+            print(f"  Processed: {len(cp_data.get('processed_ids', []))} incidents")
+        else:
+            print("\nNo checkpoint found to resume from. Starting fresh.")
     print()
 
-    # Check for command line argument
+    # Parse command line arguments
     if len(sys.argv) > 1:
-        arg = sys.argv[1].strip()
-        if arg.lower() == 'all':
+        arg = sys.argv[1].strip().lower()
+        if arg == 'resume':
+            # Resume mode - use checkpoint's num_cases or ask
+            if resume_checkpoint:
+                with open(resume_checkpoint, 'r') as f:
+                    cp_data = json.load(f)
+                # Get original target from checkpoint metrics
+                num_cases = cp_data.get("metrics", {}).get("total_incidents", 385)
+            else:
+                num_cases = 385  # Default
+        elif arg == 'all':
             num_cases = len(all_incidents)
         else:
             try:
@@ -596,14 +920,27 @@ def main():
                     print(f"Error: Number must be between 1 and {len(all_incidents)}")
                     sys.exit(1)
             except ValueError:
-                print(f"Error: Invalid argument '{arg}'. Use a number or 'all'")
+                print(f"Usage: {sys.argv[0]} [NUM_CASES|all|resume]")
+                print(f"  NUM_CASES: Number of incidents to analyze (1-{len(all_incidents)})")
+                print(f"  all: Analyze all {len(all_incidents)} incidents")
+                print(f"  resume: Resume from last checkpoint")
                 sys.exit(1)
     else:
         while True:
             try:
-                user_input = input(f"Number of cases to analyze (1-{len(all_incidents)}, or 'all'): ").strip()
+                user_input = input(f"Number of cases (1-{len(all_incidents)}, 'all', or 'resume'): ").strip()
 
-                if user_input.lower() == 'all':
+                if user_input.lower() == 'resume':
+                    resume_checkpoint = find_latest_checkpoint(output_dir)
+                    if resume_checkpoint:
+                        with open(resume_checkpoint, 'r') as f:
+                            cp_data = json.load(f)
+                        num_cases = cp_data.get("metrics", {}).get("total_incidents", 385)
+                    else:
+                        print("No checkpoint found. Enter a number instead.")
+                        continue
+                    break
+                elif user_input.lower() == 'all':
                     num_cases = len(all_incidents)
                     break
                 else:
@@ -613,15 +950,19 @@ def main():
                     else:
                         print(f"Please enter a number between 1 and {len(all_incidents)}")
             except ValueError:
-                print("Invalid input. Enter a number or 'all'")
+                print("Invalid input. Enter a number, 'all', or 'resume'")
             except KeyboardInterrupt:
                 print("\nCancelled")
                 sys.exit(0)
 
-    print(f"\nSelected {num_cases} incidents for analysis")
+    print(f"\nTarget: {num_cases} incidents")
 
     # Create benchmark runner
-    benchmark = RealBenchmarkV2()
+    benchmark = RealBenchmarkV2(output_dir=output_dir)
+
+    # Load checkpoint if resuming
+    if resume_checkpoint:
+        benchmark.load_checkpoint(resume_checkpoint)
 
     # Check service health
     print("\nChecking forensic agent health...", end=" ")
@@ -631,11 +972,15 @@ def main():
     print("OK")
 
     # Run benchmark
-    benchmark.run_benchmark(all_incidents, num_cases=num_cases, randomize=True)
+    try:
+        benchmark.run_benchmark(all_incidents, num_cases=num_cases, randomize=True)
+    except KeyboardInterrupt:
+        print(f"\n\nInterrupted! Progress saved to: {benchmark.results_file}")
+        print(f"Resume with: python3 {sys.argv[0]} resume")
+        sys.exit(0)
 
     # Save and print results
-    output_dir = Path(__file__).parent / "results"
-    results_file, stats_file, stats = benchmark.save_results(output_dir)
+    results_file, stats_file, stats = benchmark.save_results()
     benchmark.print_report(stats)
 
     return results_file, stats_file
