@@ -1127,5 +1127,691 @@
       "context_risk": null,
       "has_death_injury": false
     }
+  },
+  {
+    "incident_id": "AIAAIC0249",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "accuracy_failure",
+      "expected_primary": null,
+      "expected_all": []
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0594",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "accuracy_failure",
+      "expected_all": [
+        "accuracy_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1044",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "safety_failure",
+      "expected_primary": "safety_failure",
+      "expected_all": [
+        "safety_failure",
+        "accuracy_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": true
+    }
+  },
+  {
+    "incident_id": "AIAAIC1250",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "misinformation",
+      "expected_primary": "transparency_failure",
+      "expected_all": [
+        "misinformation",
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0821",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "privacy_violation",
+      "expected_primary": "privacy_violation",
+      "expected_all": [
+        "privacy_violation",
+        "adversarial_attack"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": null,
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1924",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "privacy_violation",
+      "expected_all": [
+        "accuracy_failure",
+        "privacy_violation"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1211",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "transparency_failure",
+      "expected_primary": "adversarial_attack",
+      "expected_all": [
+        "adversarial_attack"
+      ]
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "HighRisk",
+      "expected": "LimitedRisk",
+      "context_risk": "LimitedRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC2022",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "appropriation",
+      "expected_primary": "safety_failure",
+      "expected_all": [
+        "misinformation",
+        "safety_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0857",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "misinformation",
+      "expected_primary": "misinformation",
+      "expected_all": [
+        "misinformation"
+      ]
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "MinimalRisk",
+      "expected": "LimitedRisk",
+      "context_risk": "LimitedRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0501",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "bias",
+      "expected_primary": "bias",
+      "expected_all": [
+        "transparency_failure",
+        "accuracy_failure",
+        "bias"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1053",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "bias",
+      "expected_primary": "bias",
+      "expected_all": [
+        "bias"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1882",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "transparency_failure",
+      "expected_primary": "bias",
+      "expected_all": [
+        "bias"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1285",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "transparency_failure",
+      "expected_primary": "transparency_failure",
+      "expected_all": [
+        "misinformation",
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "HighRisk",
+      "expected": "MinimalRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0861",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "bias",
+      "expected_all": [
+        "accuracy_failure",
+        "bias"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1279",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "accuracy_failure",
+      "expected_all": [
+        "accuracy_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC095",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "data_leakage",
+      "expected_primary": "privacy_violation",
+      "expected_all": [
+        "accuracy_failure",
+        "adversarial_attack",
+        "privacy_violation"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": null,
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0525",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "bias",
+      "expected_all": [
+        "accuracy_failure",
+        "bias"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0263",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "bias",
+      "expected_primary": null,
+      "expected_all": []
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1565",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "misinformation",
+      "expected_primary": "accuracy_failure",
+      "expected_all": [
+        "accuracy_failure",
+        "misinformation"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1065",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "privacy_violation",
+      "expected_primary": "privacy_violation",
+      "expected_all": [
+        "privacy_violation",
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1139",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "transparency_failure",
+      "expected_primary": "bias",
+      "expected_all": [
+        "bias",
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0509",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "transparency_failure",
+      "expected_primary": "privacy_violation",
+      "expected_all": [
+        "privacy_violation",
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "LimitedRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0666",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "accuracy_failure",
+      "expected_all": [
+        "transparency_failure",
+        "accuracy_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "LimitedRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1251",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "accuracy_failure",
+      "expected_all": [
+        "accuracy_failure",
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1584",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "transparency_failure",
+      "expected_primary": "transparency_failure",
+      "expected_all": [
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "HighRisk",
+      "expected": "LimitedRisk",
+      "context_risk": "LimitedRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC052",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "bias",
+      "expected_all": [
+        "transparency_failure",
+        "accuracy_failure",
+        "bias"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0119",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "accuracy_failure",
+      "expected_primary": "adversarial_attack",
+      "expected_all": [
+        "adversarial_attack"
+      ]
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "HighRisk",
+      "expected": "LimitedRisk",
+      "context_risk": null,
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1780",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "accuracy_failure",
+      "expected_all": [
+        "accuracy_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1703",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "misinformation",
+      "expected_primary": "misinformation",
+      "expected_all": [
+        "misinformation"
+      ]
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "HighRisk",
+      "expected": "MinimalRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1524",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "safety_failure",
+      "expected_primary": null,
+      "expected_all": []
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "HighRisk",
+      "expected": "LimitedRisk",
+      "context_risk": "LimitedRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1495",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "copyright",
+      "expected_primary": "transparency_failure",
+      "expected_all": [
+        "transparency_failure",
+        "copyright"
+      ]
+    },
+    "risk_level": {
+      "match": false,
+      "predicted": "HighRisk",
+      "expected": "MinimalRisk",
+      "context_risk": "MinimalRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0415",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "transparency_failure",
+      "expected_primary": "privacy_violation",
+      "expected_all": [
+        "accuracy_failure",
+        "bias",
+        "privacy_violation"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC1893",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": false,
+      "predicted": "transparency_failure",
+      "expected_primary": "safety_failure",
+      "expected_all": [
+        "safety_failure",
+        "adversarial_attack"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0572",
+    "incident_type": {
+      "strict_match": false,
+      "flexible_match": true,
+      "predicted": "transparency_failure",
+      "expected_primary": "bias",
+      "expected_all": [
+        "accuracy_failure",
+        "bias",
+        "transparency_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
+  },
+  {
+    "incident_id": "AIAAIC0585",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "safety_failure",
+      "expected_primary": "safety_failure",
+      "expected_all": [
+        "accuracy_failure",
+        "safety_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": "HighRisk",
+      "has_death_injury": false
+    }
   }
 ]

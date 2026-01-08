@@ -1,0 +1,70 @@
+{
+  "benchmark_type": "REAL",
+  "benchmark_version": "v2",
+  "data_source": {
+    "source": "AIAAIC Repository",
+    "url": "https://www.aiaaic.org/aiaaic-repository",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "version": "December 2025",
+    "terms": "https://www.aiaaic.org/terms",
+    "citation": "Data provided by AIAAIC (https://www.aiaaic.org/aiaaic-repository) under CC BY-SA 4.0 license."
+  },
+  "timestamp": "2026-01-08T12:56:49.123176",
+  "summary": {
+    "total_incidents": 100,
+    "successful": 92,
+    "low_confidence": 0,
+    "failed": 8,
+    "success_rate": 92.0
+  },
+  "performance": {
+    "mean_time": 73.35944293633752,
+    "median_time": 72.38567101955414,
+    "min_time": 63.41071176528931,
+    "max_time": 103.47151303291321,
+    "stdev_time": 7.01260097128768
+  },
+  "quality": {
+    "mean_confidence": 0.7922101449275363,
+    "median_confidence": 0.7966666666666667,
+    "min_confidence": 0.6066666666666668,
+    "max_confidence": 0.9166666666666666,
+    "stdev_confidence": 0.05771657662294933
+  },
+  "ground_truth_accuracy": {
+    "incident_type_strict_accuracy": 46.73913043478261,
+    "incident_type_flexible_accuracy": 78.26086956521739,
+    "risk_level_accuracy": 79.34782608695652,
+    "incident_type_strict_matches": 43,
+    "incident_type_flexible_matches": 72,
+    "risk_level_matches": 73,
+    "total_evaluated": 92
+  },
+  "risk_distribution": {
+    "HighRisk": 88,
+    "OutOfScope": 2,
+    "MinimalRisk": 2
+  },
+  "incident_distribution": {
+    "safety_failure": 10,
+    "appropriation": 2,
+    "misinformation": 17,
+    "transparency_failure": 21,
+    "bias": 8,
+    "accuracy_failure": 22,
+    "copyright": 4,
+    "privacy_violation": 7,
+    "data_leakage": 1
+  },
+  "errors": [
+    "AIAAIC1769: Unknown",
+    "AIAAIC1497: Unknown",
+    "AIAAIC1363: Unknown",
+    "AIAAIC1739: Unknown",
+    "AIAAIC0632: Unknown",
+    "AIAAIC1073: Unknown",
+    "AIAAIC0390: Unknown",
+    "AIAAIC1961: Unknown"
+  ]
+}

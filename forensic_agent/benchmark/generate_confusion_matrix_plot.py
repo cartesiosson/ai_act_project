@@ -12,7 +12,7 @@ from collections import defaultdict
 
 # Results file path
 RESULTS_DIR = "/Users/cartesio/workspace/ai_act_project/forensic_agent/benchmark/results"
-EVAL_FILE = f"{RESULTS_DIR}/real_benchmark_evaluations_v2_20260107_165124.json"
+EVAL_FILE = f"{RESULTS_DIR}/real_benchmark_evaluations_v2_20260108_105208.json"
 
 def load_evaluations():
     with open(EVAL_FILE, 'r') as f:
