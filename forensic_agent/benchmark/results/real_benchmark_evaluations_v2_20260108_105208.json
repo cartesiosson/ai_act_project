@@ -1108,5 +1108,24 @@
       "context_risk": "MinimalRisk",
       "has_death_injury": false
     }
+  },
+  {
+    "incident_id": "AIAAIC1481",
+    "incident_type": {
+      "strict_match": true,
+      "flexible_match": true,
+      "predicted": "accuracy_failure",
+      "expected_primary": "accuracy_failure",
+      "expected_all": [
+        "accuracy_failure"
+      ]
+    },
+    "risk_level": {
+      "match": true,
+      "predicted": "HighRisk",
+      "expected": "HighRisk",
+      "context_risk": null,
+      "has_death_injury": false
+    }
   }
 ]

@@ -1,6 +1,6 @@
 {
   "session_id": "20260108_105208",
-  "timestamp": "2026-01-08T12:10:02.929483",
+  "timestamp": "2026-01-08T12:11:29.038801",
   "processed_ids": [
     "AIAAIC1797",
     "AIAAIC1363",
@@ -49,6 +49,7 @@
     "AIAAIC0949",
     "AIAAIC1216",
     "AIAAIC0654",
+    "AIAAIC1481",
     "AIAAIC1196",
     "AIAAIC1579",
     "AIAAIC1497",
@@ -66,13 +67,13 @@
   ],
   "metrics": {
     "total_incidents": 100,
-    "successful": 56,
+    "successful": 57,
     "failed": 5,
     "low_confidence": 0,
-    "processing_times": 56,
-    "confidence_scores": 56,
+    "processing_times": 57,
+    "confidence_scores": 57,
     "risk_levels": {
-      "HighRisk": 53,
+      "HighRisk": 54,
       "OutOfScope": 2,
       "MinimalRisk": 1
     },
@@ -82,15 +83,15 @@
       "misinformation": 13,
       "transparency_failure": 12,
       "bias": 5,
-      "accuracy_failure": 10,
+      "accuracy_failure": 11,
       "copyright": 3,
       "privacy_violation": 5
     },
     "errors": 5,
-    "incident_type_strict_matches": 27,
-    "incident_type_flexible_matches": 46,
-    "risk_level_matches": 45,
-    "evaluation_details": 56
+    "incident_type_strict_matches": 28,
+    "incident_type_flexible_matches": 47,
+    "risk_level_matches": 46,
+    "evaluation_details": 57
   },
   "selected_ids": [
     "AIAAIC1695",
