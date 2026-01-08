@@ -12,8 +12,8 @@ import numpy as np
 
 # Results file path
 RESULTS_DIR = "/Users/cartesio/workspace/ai_act_project/forensic_agent/benchmark/results"
-EVAL_FILE = f"{RESULTS_DIR}/real_benchmark_evaluations_v2_20260105_125500.json"
-STATS_FILE = f"{RESULTS_DIR}/real_benchmark_stats_v2_20260105_125500.json"
+EVAL_FILE = f"{RESULTS_DIR}/real_benchmark_evaluations_v2_20260107_165124.json"
+STATS_FILE = f"{RESULTS_DIR}/real_benchmark_stats_v2_20260107_165124.json"
 
 def load_data():
     """Load evaluation and stats data."""

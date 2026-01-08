@@ -112,7 +112,7 @@ Extract the following information in JSON format:
     "has_judicial_authorization": true/false/null "Only relevant if real-time biometric ID with exceptions. Does the narrative mention judicial/court authorization?",
     "performs_profiling": true/false "Does the system perform profiling of natural persons? (Art. 6.3 EU AI Act - automatic risk escalation to HighRisk if true). Profiling = automated processing of personal data to evaluate, analyze or predict aspects concerning natural person's performance at work, economic situation, health, preferences, interests, reliability, behavior, location or movements.",
     "scope_override_contexts": ["CRITICAL FOR SCOPE DETERMINATION - List all that apply: CausesRealWorldHarmContext (if death, injury, suicide, physical harm occurred), VictimImpactContext (if identifiable victims were harmed), AffectsFundamentalRightsContext (if right to life, dignity, privacy, non-discrimination were violated), LegalConsequencesContext (if legal proceedings, arrests, lawsuits resulted), MinorsAffectedContext (if children/teenagers under 18 were affected)"],
-    "causes_death_or_injury": true/false "CRITICAL - Did this incident result in death, suicide, physical injury, or bodily harm? Keywords: death, died, killed, suicide, injury, injured, harm, hospitalized",
+    "causes_death_or_injury": true/false "STRICT Art. 3(49)(a) - Did this incident cause DEATH OF A PERSON or SERIOUS DAMAGE TO A PERSON'S HEALTH? Only TRUE for: death, suicide, physical injury to humans, hospitalization, bodily harm. FALSE for: financial loss, property damage, copyright infringement, reputational harm, emotional distress without physical manifestation, environmental damage.",
     "affects_minors": true/false "CRITICAL - Were minors (persons under 18 years old) affected? Keywords: child, children, minor, teenager, teen, student, 16 years old, young person, kid",
     "affects_vulnerable_groups": true/false "Were vulnerable groups affected? Keywords: elderly, disabled, disability, homeless, economically disadvantaged, mental health"
   }},
@@ -173,15 +173,18 @@ IMPORTANT EXTRACTION RULES:
     - ContentRecommendation: recommendation algorithms, social media feeds, TikTok For You, YouTube recommendations, news feeds, content personalization
     - Entertainment: video games, gaming AI, NPCs, game companions, recreational AI
   * Map the described purpose to the closest matching IRI above
-- For incident_type (AIAAIC descriptive classification):
-  * discrimination: unfair treatment of protected groups
-  * bias: algorithmic bias leading to unfair outcomes
-  * safety_failure: system caused physical harm or danger
-  * privacy_violation: unauthorized data collection/use
-  * transparency_failure: lack of disclosure about AI use
-  * data_leakage: sensitive data exposed
-  * appropriation: using data/content without authorization for AI training
-  * copyright: AI system infringes copyrights or produces infringing content
+- For incident_type (CLASSIFY BY PRIMARY PROBLEM):
+  * accuracy_failure: WRONG outputs - hallucinations, fabricated facts, incorrect predictions, misidentification
+  * safety_failure: PHYSICAL HARM - injury, death, accidents
+  * privacy_violation: UNAUTHORIZED data collection (NOT for wrong outputs)
+  * bias/discrimination: UNFAIR treatment by race, gender, age
+  * transparency_failure: HIDDEN AI use
+  * misinformation: INTENTIONAL deepfakes, political disinfo campaigns
+  * copyright: IP infringement
+  * data_leakage: Data breach/leak
+  * adversarial_attack: AI hacked/jailbroken
+  * appropriation: Training data without consent
+  RULE: LLM hallucinations/invented facts = accuracy_failure (not misinformation)
 - For serious_incident_type (EU AI Act Article 3(49) - OUTCOME-BASED classification):
   * IMPORTANT: This classifies the OUTCOME/CONSEQUENCE of the incident, not the cause
   * Multiple types can apply to a single incident - return as list
@@ -260,9 +263,13 @@ IMPORTANT EXTRACTION RULES:
   * MinorsAffectedContext: If children or teenagers (under 18) were affected
     - Keywords: child, children, minor, teenager, teen, student, young person, kid, adolescent, years old (with age under 18)
   * ALWAYS check the narrative for these contexts even if the purpose seems excluded (entertainment, gaming, etc.)
-- For causes_death_or_injury:
-  * CRITICAL: Set to TRUE if ANY mention of: death, suicide, killed, died, fatal, injury, injured, hospitalized, physical harm
-  * This is the most important field for scope override detection
+- For causes_death_or_injury (STRICT Art. 3(49)(a) interpretation):
+  * TRUE ONLY for: death of a person, suicide, physical injury requiring medical attention, hospitalization, bodily harm
+  * Keywords for TRUE: death, died, killed, suicide, fatal, injury, injured, hospitalized, bodily harm, physical harm to person
+  * FALSE for: financial loss, economic damage, property damage, copyright infringement, intellectual property theft,
+    reputational harm, deepfakes without physical harm, fraud, scams, privacy violation without physical harm,
+    emotional distress alone, environmental damage
+  * Ask yourself: "Did a human being die or suffer serious physical health damage?" If NO → FALSE
 - For affects_minors:
   * Set to TRUE if narrative mentions: children, minors, teenagers, students, or any age under 18
   * Example: "16 years old", "teenager", "high school student" → affects_minors = true

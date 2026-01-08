@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-01-05T21:36:13.710382",
+  "generated_at": "2026-01-07T19:13:23.400092",
   "version": "0.41.0",
   "incident_type_metrics": {
     "per_class": {
       "accuracy_failure": {
         "precision": 0.5,
-        "recall": 0.017241379310344827,
-        "f1": 0.03333333333333333,
-        "support": 58,
+        "recall": 0.047619047619047616,
+        "f1": 0.08695652173913042,
+        "support": 21,
         "tp": 1,
         "fp": 1,
-        "fn": 57
+        "fn": 20
       },
       "adversarial_attack": {
         "precision": 0,
         "recall": 0.0,
         "f1": 0,
-        "support": 4,
+        "support": 2,
         "tp": 0,
         "fp": 0,
-        "fn": 4
+        "fn": 2
       },
       "appropriation": {
         "precision": 0.0,
@@ -31,42 +31,24 @@
         "fn": 0
       },
       "bias": {
-        "precision": 0.8421052631578947,
-        "recall": 0.5614035087719298,
-        "f1": 0.6736842105263158,
-        "support": 57,
-        "tp": 32,
-        "fp": 6,
-        "fn": 25
+        "precision": 0.5833333333333334,
+        "recall": 0.4375,
+        "f1": 0.5,
+        "support": 16,
+        "tp": 7,
+        "fp": 5,
+        "fn": 9
       },
       "copyright": {
-        "precision": 0.35,
+        "precision": 0.5,
         "recall": 1.0,
-        "f1": 0.5185185185185185,
-        "support": 7,
-        "tp": 7,
-        "fp": 13,
+        "f1": 0.6666666666666666,
+        "support": 3,
+        "tp": 3,
+        "fp": 3,
         "fn": 0
       },
       "data_leakage": {
-        "precision": 0.0,
-        "recall": 0,
-        "f1": 0,
-        "support": 0,
-        "tp": 0,
-        "fp": 2,
-        "fn": 0
-      },
-      "discrimination": {
-        "precision": 0.0,
-        "recall": 0,
-        "f1": 0,
-        "support": 0,
-        "tp": 0,
-        "fp": 1,
-        "fn": 0
-      },
-      "entertainment": {
         "precision": 0.0,
         "recall": 0,
         "f1": 0,
@@ -76,141 +58,102 @@
         "fn": 0
       },
       "misinformation": {
-        "precision": 0.9090909090909091,
-        "recall": 0.47619047619047616,
-        "f1": 0.6249999999999999,
-        "support": 21,
-        "tp": 10,
+        "precision": 0.8,
+        "recall": 0.8,
+        "f1": 0.8000000000000002,
+        "support": 5,
+        "tp": 4,
         "fp": 1,
-        "fn": 11
+        "fn": 1
       },
       "privacy_violation": {
-        "precision": 0.4431137724550898,
-        "recall": 1.0,
-        "f1": 0.6141078838174274,
-        "support": 74,
-        "tp": 74,
-        "fp": 93,
-        "fn": 0
+        "precision": 0.35,
+        "recall": 0.9333333333333333,
+        "f1": 0.5090909090909091,
+        "support": 15,
+        "tp": 14,
+        "fp": 26,
+        "fn": 1
       },
       "safety_failure": {
-        "precision": 0.8333333333333334,
-        "recall": 0.5913978494623656,
-        "f1": 0.6918238993710693,
-        "support": 93,
-        "tp": 55,
-        "fp": 11,
-        "fn": 38
+        "precision": 0.8,
+        "recall": 0.631578947368421,
+        "f1": 0.7058823529411765,
+        "support": 19,
+        "tp": 12,
+        "fp": 3,
+        "fn": 7
       },
       "transparency_failure": {
-        "precision": 0.5,
-        "recall": 0.5434782608695652,
-        "f1": 0.5208333333333334,
-        "support": 46,
-        "tp": 25,
-        "fp": 25,
-        "fn": 21
-      },
-      "transphobic_comments": {
-        "precision": 0.0,
-        "recall": 0,
-        "f1": 0,
-        "support": 0,
-        "tp": 0,
-        "fp": 1,
-        "fn": 0
+        "precision": 0.5833333333333334,
+        "recall": 0.5384615384615384,
+        "f1": 0.5599999999999999,
+        "support": 13,
+        "tp": 7,
+        "fp": 5,
+        "fn": 6
       }
     },
     "macro_avg": {
-      "precision": 0.5472054097546535,
-      "recall": 0.5237139343255852,
-      "f1": 0.45966264736249973
+      "precision": 0.5145833333333334,
+      "recall": 0.5485616083477926,
+      "f1": 0.47857455630473533
     },
     "micro_avg": {
-      "precision": 0.5666666666666667,
-      "recall": 0.5666666666666667,
-      "f1": 0.5666666666666667
+      "precision": 0.5106382978723404,
+      "recall": 0.5106382978723404,
+      "f1": 0.5106382978723404
     },
     "weighted_avg": {
-      "precision": 0.6439759118127382,
-      "recall": 0.5666666666666667,
-      "f1": 0.530083062056376
+      "precision": 0.5677304964539008,
+      "recall": 0.5106382978723404,
+      "f1": 0.46972569466774183
     }
   },
   "misclassification_patterns": [
     {
       "expected": "accuracy_failure",
       "predicted": "privacy_violation",
-      "count": 31
+      "count": 11
     },
     {
       "expected": "safety_failure",
       "predicted": "privacy_violation",
-      "count": 28
-    },
-    {
-      "expected": "accuracy_failure",
-      "predicted": "transparency_failure",
-      "count": 16
+      "count": 5
     },
     {
       "expected": "bias",
       "predicted": "privacy_violation",
-      "count": 13
+      "count": 5
     },
     {
       "expected": "transparency_failure",
-      "predicted": "copyright",
-      "count": 10
-    },
-    {
-      "expected": "misinformation",
-      "predicted": "privacy_violation",
-      "count": 10
-    },
-    {
-      "expected": "transparency_failure",
-      "predicted": "privacy_violation",
-      "count": 7
-    },
-    {
-      "expected": "accuracy_failure",
-      "predicted": "bias",
-      "count": 4
-    },
-    {
-      "expected": "accuracy_failure",
-      "predicted": "safety_failure",
-      "count": 4
-    },
-    {
-      "expected": "safety_failure",
-      "predicted": "transparency_failure",
-      "count": 4
-    },
-    {
-      "expected": "bias",
-      "predicted": "transparency_failure",
-      "count": 4
-    },
-    {
-      "expected": "bias",
-      "predicted": "safety_failure",
-      "count": 4
-    },
-    {
-      "expected": "adversarial_attack",
-      "predicted": "privacy_violation",
-      "count": 4
-    },
-    {
-      "expected": "safety_failure",
       "predicted": "copyright",
       "count": 3
     },
     {
+      "expected": "accuracy_failure",
+      "predicted": "bias",
+      "count": 3
+    },
+    {
       "expected": "transparency_failure",
-      "predicted": "safety_failure",
+      "predicted": "privacy_violation",
+      "count": 2
+    },
+    {
+      "expected": "accuracy_failure",
+      "predicted": "transparency_failure",
+      "count": 2
+    },
+    {
+      "expected": "bias",
+      "predicted": "transparency_failure",
+      "count": 2
+    },
+    {
+      "expected": "adversarial_attack",
+      "predicted": "privacy_violation",
       "count": 2
     },
     {
@@ -219,8 +162,8 @@
       "count": 1
     },
     {
-      "expected": "transparency_failure",
-      "predicted": "bias",
+      "expected": "accuracy_failure",
+      "predicted": "safety failure",
       "count": 1
     },
     {
@@ -234,23 +177,51 @@
       "count": 1
     },
     {
+      "expected": "accuracy_failure",
+      "predicted": "safety_failure",
+      "count": 1
+    },
+    {
       "expected": "safety_failure",
       "predicted": "bias",
+      "count": 1
+    },
+    {
+      "expected": "safety_failure",
+      "predicted": "transparency_failure",
+      "count": 1
+    },
+    {
+      "expected": "safety_failure",
+      "predicted": "safety failure",
+      "count": 1
+    },
+    {
+      "expected": "bias",
+      "predicted": "accuracy_failure",
+      "count": 1
+    },
+    {
+      "expected": "bias",
+      "predicted": "safety_failure",
+      "count": 1
+    },
+    {
+      "expected": "misinformation",
+      "predicted": "privacy_violation",
       "count": 1
     }
   ],
   "risk_level_confusion": {
     "LimitedRisk": {
-      "HighRisk": 23,
-      "MinimalRisk": 2
+      "HighRisk": 7
     },
     "HighRisk": {
-      "HighRisk": 302,
-      "MinimalRisk": 16
+      "HighRisk": 79
     },
     "MinimalRisk": {
-      "HighRisk": 26,
-      "MinimalRisk": 3
+      "HighRisk": 12,
+      "OutOfScope": 1
     }
   }
 }

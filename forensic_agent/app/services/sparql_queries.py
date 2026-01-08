@@ -379,6 +379,25 @@ class ForensicSPARQLService:
                 print(f"   ⚠ Art. 6.3: Profiling detected → escalating from {risk_level} to HighRisk")
                 risk_level = "HighRisk"
 
+            # =====================================================================
+            # ARTICLE 3(49) / SERIOUS INCIDENT: Death or injury ALWAYS escalates to HighRisk
+            # A serious incident includes death, serious damage to health, or serious
+            # and irreversible disruption. Systems causing such harm are always high-risk.
+            # =====================================================================
+            if causes_death_or_injury and risk_level not in ["HighRisk", "Unacceptable"]:
+                print(f"   ⚠ Art. 3(49): Death/injury detected → escalating from {risk_level} to HighRisk")
+                risk_level = "HighRisk"
+
+            # Minors affected: heightened scrutiny per Recital 28 and Art. 5
+            if affects_minors and risk_level not in ["HighRisk", "Unacceptable"]:
+                print(f"   ⚠ Minors affected → escalating from {risk_level} to HighRisk")
+                risk_level = "HighRisk"
+
+            # Vulnerable groups: Art. 5 prohibits exploitation of vulnerabilities
+            if affects_vulnerable_groups and risk_level not in ["HighRisk", "Unacceptable"]:
+                print(f"   ⚠ Vulnerable groups affected → escalating from {risk_level} to HighRisk")
+                risk_level = "HighRisk"
+
             return {
                 "criteria": list(criteria),
                 "requirements": requirements,
