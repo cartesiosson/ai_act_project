@@ -7111,10 +7111,10 @@
   } ],
   "http://purl.org/dc/terms/title" : [ {
     "@language" : "en",
-    "@value" : "AI Act Unified Ontology (v0.40.0)"
+    "@value" : "AI Act Unified Ontology (v0.41.0)"
   }, {
     "@language" : "es",
-    "@value" : "Ontología Unificada del AI Act (v0.40.0)"
+    "@value" : "Ontología Unificada del AI Act (v0.41.0)"
   } ],
   "http://www.w3.org/2000/01/rdf-schema#comment" : [ {
     "@language" : "es",
@@ -7132,20 +7132,20 @@
   "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
     "@id" : "file:/Users/cartesio/workspace/ai_act_project/tools/shacl/"
   }, {
-    "@id" : "file:/Users/cartesio/workspace/ai_act_project/tools/tmp1768076423269/rules/"
+    "@id" : "file:/Users/cartesio/workspace/ai_act_project/tools/tmp1768086485729/rules/"
   } ],
   "http://www.w3.org/2002/07/owl#imports" : [ {
     "@id" : "https://w3id.org/airo"
   } ],
   "http://www.w3.org/2002/07/owl#versionIRI" : [ {
-    "@id" : "http://ai-act.eu/ai-act/0.40.0"
+    "@id" : "http://ai-act.eu/ai-act/0.41.0"
   } ],
   "http://www.w3.org/2002/07/owl#versionInfo" : [ {
     "@language" : "en",
-    "@value" : "Version 0.40.0 released on 2025-12-31. Architectural migration: code now uses ontology IRIs instead of ~150 hardcoded keywords for scope determination. Ontology-first approach where LLM extracts semantic concepts and Python validates against ontology classes."
+    "@value" : "Version 0.41.0 released on 2026-01-04. Added prohibited practices (Article 5) with UnacceptableRisk inference, Article 5.2 exceptions for real-time biometric identification, risk level hierarchy override rules, and forensic analysis improvements."
   }, {
     "@language" : "es",
-    "@value" : "Versión 0.40.0 publicada el 2025-12-31. Migración arquitectónica: el código ahora usa IRIs ontológicas en lugar de ~150 keywords hardcodeadas para determinación de ámbito. Enfoque ontology-first donde el LLM extrae conceptos semánticos y Python valida contra clases de la ontología."
+    "@value" : "Versión 0.41.0 publicada el 2026-01-04. Añadidas prácticas prohibidas (Artículo 5) con inferencia de UnacceptableRisk, excepciones del Artículo 5.2 para identificación biométrica remota en tiempo real, reglas de jerarquía de niveles de riesgo, y mejoras en análisis forense."
   } ]
 }, {
   "@id" : "http://data.europa.eu/eli/ontology#cites",

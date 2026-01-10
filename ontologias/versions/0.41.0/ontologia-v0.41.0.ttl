@@ -146,13 +146,13 @@
     dct:description "Unified ontology describing regulated AI systems according to the EU AI Act. All concepts consolidated under ai: namespace for simplicity. Includes GPAI (Articles 51-55), contextual criteria, and international standards mappings."@en,
         "Ontología unificada que describe los sistemas de IA regulados según el AI Act de la UE. Todos los conceptos consolidados bajo el namespace ai: para simplicidad. Incluye GPAI (Artículos 51-55), criterios contextuales y mapeos de estándares internacionales."@es ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-    dct:title "AI Act Unified Ontology (v0.40.0)"@en,
-        "Ontología Unificada del AI Act (v0.40.0)"@es ;
+    dct:title "AI Act Unified Ontology (v0.41.0)"@en,
+        "Ontología Unificada del AI Act (v0.41.0)"@es ;
     rdfs:comment "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, Article 2 scope exclusions with override detection, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Semantic scope determination via ontology IRIs instead of hardcoded keywords. Optimized for forensic compliance gap detection with ontology-first approach."@en,
         "Módulo ontológico ai: unificado integrando GPAI, criterios contextuales, ISO 42001, NIST AI RMF, AIRO, prácticas prohibidas del Artículo 5, exclusiones de ámbito del Artículo 2 con detección de anulación, e Identificador Europeo de Legislación (ELI). Cobertura completa de sistemas de IA con riesgo inaceptable con enlaces directos a EUR-Lex. Determinación semántica de ámbito vía IRIs ontológicas en lugar de keywords hardcodeadas. Optimizado para detección forense de brechas de cumplimiento con enfoque ontology-first."@es ;
-    owl:versionIRI <http://ai-act.eu/ai-act/0.40.0> ;
-    owl:versionInfo "Version 0.40.0 released on 2025-12-31. Architectural migration: code now uses ontology IRIs instead of ~150 hardcoded keywords for scope determination. Ontology-first approach where LLM extracts semantic concepts and Python validates against ontology classes."@en,
-        "Versión 0.40.0 publicada el 2025-12-31. Migración arquitectónica: el código ahora usa IRIs ontológicas en lugar de ~150 keywords hardcodeadas para determinación de ámbito. Enfoque ontology-first donde el LLM extrae conceptos semánticos y Python valida contra clases de la ontología."@es ;
+    owl:versionIRI <http://ai-act.eu/ai-act/0.41.0> ;
+    owl:versionInfo "Version 0.41.0 released on 2026-01-04. Added prohibited practices (Article 5) with UnacceptableRisk inference, Article 5.2 exceptions for real-time biometric identification, risk level hierarchy override rules, and forensic analysis improvements."@en,
+        "Versión 0.41.0 publicada el 2026-01-04. Añadidas prácticas prohibidas (Artículo 5) con inferencia de UnacceptableRisk, excepciones del Artículo 5.2 para identificación biométrica remota en tiempo real, reglas de jerarquía de niveles de riesgo, y mejoras en análisis forense."@es ;
     rdfs:seeAlso <rules/>, <../shacl/> ;
     rdfs:comment "SWRL rules are externalized in the rules/ directory for better maintainability and auditability"@en,
         "Las reglas SWRL están externalizadas en el directorio rules/ para mejor mantenibilidad y auditabilidad"@es .
