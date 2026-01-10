@@ -808,8 +808,9 @@ seramis/
 │   │       ├── evidence_planner.py   # Evidence Planner (DPV)
 │   │       ├── persistence.py
 │   │       └── mcp_client.py
-├── mcp-servers/               # Servidores MCP
+├── mcp-servers/               # Servidores MCP (ver README)
 │   └── forensic-sparql/
+│       ├── README.md          # Documentación servidor MCP SPARQL
 │       └── server.py
 ├── reasoner_service/          # Microservicio de razonamiento SWRL (8001)
 ├── ontologias/                # Archivos de ontología
