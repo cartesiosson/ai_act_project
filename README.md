@@ -821,7 +821,8 @@ seramis/
 │   │   └── forensic-queries.sparql
 │   ├── rules/                 # Reglas SWRL
 │   ├── shacl/                 # 15 SHACL shapes
-│   └── mappings/
+│   └── mappings/              # Mappings multi-framework (ver README)
+│       ├── README.md          # Documentación de 45 mappings
 │       ├── iso-42001-mappings.ttl
 │       ├── nist-ai-rmf-mappings.ttl
 │       └── dpv-integration.ttl      # DPV 2.2 integration
@@ -888,6 +889,7 @@ get_ontology_stats()            # Estadísticas de la ontología
 - **OWL 2 Web Ontology Language:** https://www.w3.org/TR/owl2-overview/
 - **SHACL:** https://www.w3.org/TR/shacl/
 - **Catálogo de Queries SPARQL Forenses:** [ontologias/queries/README.md](ontologias/queries/README.md)
+- **Mappings Multi-Framework (ISO/NIST/DPV):** [ontologias/mappings/README.md](ontologias/mappings/README.md)
 
 ---
 
