@@ -109,6 +109,9 @@
     "ai:hasScopeOverrideRationale": {
       "@type": "@id"
     },
+    "ai:hasSeriousIncidentType": {
+      "@type": "xsd:string"
+    },
     "ai:hasSubject": {
       "@type": "@id"
     },
@@ -127,11 +130,17 @@
     "ai:hasVersion": {
       "@type": "xsd:string"
     },
+    "ai:indicatorKeywords": {
+      "@type": "@id"
+    },
     "ai:isInEUAIActScope": {
       "@type": "xsd:string"
     },
     "ai:mandatoryCompliance": {
       "@type": "xsd:boolean"
+    },
+    "ai:mapsToAIAAICType": {
+      "@type": "xsd:string"
     },
     "ai:mapsToDPVConcept": {
       "@type": "@id"
@@ -198,6 +207,9 @@
     },
     "ai:responsibleRole": {
       "@type": "xsd:string"
+    },
+    "ai:triggersArticle": {
+      "@type": "@id"
     },
     "ai:triggersCriterion": {
       "@type": "@id"

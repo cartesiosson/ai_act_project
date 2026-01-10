@@ -354,6 +354,20 @@ def system_to_ttl(system: Dict[str, Any]) -> str:
                 risk_uri = f"ai:{risk_uri}"
             properties.append(f"{subject} ai:hasRiskLevel {risk_uri}")
 
+    # Prácticas prohibidas (Artículo 5 AI Act)
+    for practice in system.get("hasProhibitedPractice", []):
+        practice_uri = practice if practice.startswith("ai:") else f"ai:{practice}"
+        properties.append(f"{subject} ai:hasProhibitedPractice {practice_uri}")
+
+    # Excepciones legales (Artículo 5.2 AI Act)
+    for exception in system.get("hasLegalException", []):
+        exception_uri = exception if exception.startswith("ai:") else f"ai:{exception}"
+        properties.append(f"{subject} ai:hasLegalException {exception_uri}")
+
+    # Autorización judicial (requerida para excepciones Art. 5.2)
+    if system.get("hasJudicialAuthorization"):
+        properties.append(f"{subject} ai:hasJudicialAuthorization true")
+
     # Combinar prefijos y propiedades
     ttl_content = prefixes + "\n" + " .\n".join(properties) + " .\n"
     

@@ -12,7 +12,7 @@
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "SWRL rules are externalized in the rules/ directory for better maintainability and auditability"@en .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#comment> "Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, Article 2 scope exclusions with override detection, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Semantic scope determination via ontology IRIs instead of hardcoded keywords. Optimized for forensic compliance gap detection with ontology-first approach."@en .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/Users/cartesio/workspace/ai_act_project/tools/shacl/> .
-<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/Users/cartesio/workspace/ai_act_project/tools/tmp1767292071775/rules/> .
+<http://ai-act.eu/ai-act> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <file:/Users/cartesio/workspace/ai_act_project/tools/tmp1768076423269/rules/> .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Version 0.40.0 released on 2025-12-31. Architectural migration: code now uses ontology IRIs instead of ~150 hardcoded keywords for scope determination. Ontology-first approach where LLM extracts semantic concepts and Python validates against ontology classes."@en .
 <http://ai-act.eu/ai-act> <http://www.w3.org/2002/07/owl#versionInfo> "Versión 0.40.0 publicada el 2025-12-31. Migración arquitectónica: el código ahora usa IRIs ontológicas en lugar de ~150 keywords hardcodeadas para determinación de ámbito. Enfoque ontology-first donde el LLM extrae conceptos semánticos y Python valida contra clases de la ontología."@es .
 # 
@@ -263,6 +263,15 @@
 <http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#comment> "Vincula un IntelligentSystem al DeploymentContext que anula su posible exclusión de ámbito. Cuando está presente, el sistema está definitivamente DENTRO DEL ÁMBITO del EU AI Act independientemente de su estado de exclusión de propósito."@es .
 <http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#label> "has scope override"@en .
 <http://ai-act.eu/ai#hasScopeOverride> <http://www.w3.org/2000/01/rdf-schema#label> "tiene anulación de ámbito"@es .
+# 
+# http://ai-act.eu/ai#hasSeriousIncidentType
+<http://ai-act.eu/ai#hasSeriousIncidentType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://ai-act.eu/ai#hasSeriousIncidentType> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
+<http://ai-act.eu/ai#hasSeriousIncidentType> <http://www.w3.org/2000/01/rdf-schema#range> <http://ai-act.eu/ai#SeriousIncident> .
+<http://ai-act.eu/ai#hasSeriousIncidentType> <http://www.w3.org/2000/01/rdf-schema#comment> "Links an AI system involved in an incident to the type of serious incident per Article 3(49). Multiple types may apply to a single incident."@en .
+<http://ai-act.eu/ai#hasSeriousIncidentType> <http://www.w3.org/2000/01/rdf-schema#comment> "Vincula un sistema de IA involucrado en un incidente al tipo de incidente grave según el Artículo 3(49). Múltiples tipos pueden aplicar a un solo incidente."@es .
+<http://ai-act.eu/ai#hasSeriousIncidentType> <http://www.w3.org/2000/01/rdf-schema#label> "has serious incident type"@en .
+<http://ai-act.eu/ai#hasSeriousIncidentType> <http://www.w3.org/2000/01/rdf-schema#label> "tiene tipo de incidente grave"@es .
 # 
 # http://ai-act.eu/ai#hasSubRequirement
 <http://ai-act.eu/ai#hasSubRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
@@ -867,6 +876,15 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#comment> "Version identifier for an entity."@en .
 <http://ai-act.eu/ai#hasVersion> <http://www.w3.org/2000/01/rdf-schema#label> "has Version"@en .
 # 
+# http://ai-act.eu/ai#indicatorKeywords
+<http://ai-act.eu/ai#indicatorKeywords> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#indicatorKeywords> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#SeriousIncident> .
+<http://ai-act.eu/ai#indicatorKeywords> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#indicatorKeywords> <http://www.w3.org/2000/01/rdf-schema#comment> "Keywords that indicate this type of serious incident in narrative text. Used by LLM extractors to classify incidents. Multiple keywords separated by comma."@en .
+<http://ai-act.eu/ai#indicatorKeywords> <http://www.w3.org/2000/01/rdf-schema#comment> "Palabras clave que indican este tipo de incidente grave en texto narrativo. Usado por extractores LLM para clasificar incidentes. Múltiples palabras separadas por coma."@es .
+<http://ai-act.eu/ai#indicatorKeywords> <http://www.w3.org/2000/01/rdf-schema#label> "indicator keywords"@en .
+<http://ai-act.eu/ai#indicatorKeywords> <http://www.w3.org/2000/01/rdf-schema#label> "palabras clave indicadoras"@es .
+# 
 # http://ai-act.eu/ai#isInEUAIActScope
 <http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 <http://ai-act.eu/ai#isInEUAIActScope> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#IntelligentSystem> .
@@ -882,6 +900,15 @@ _:genid35 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#mandatoryCompliance> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
 <http://ai-act.eu/ai#mandatoryCompliance> <http://www.w3.org/2000/01/rdf-schema#comment> "Boolean indicating if compliance is mandatory."@en .
 <http://ai-act.eu/ai#mandatoryCompliance> <http://www.w3.org/2000/01/rdf-schema#label> "mandatory Compliance"@en .
+# 
+# http://ai-act.eu/ai#mapsToAIAAICType
+<http://ai-act.eu/ai#mapsToAIAAICType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#mapsToAIAAICType> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#SeriousIncident> .
+<http://ai-act.eu/ai#mapsToAIAAICType> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://ai-act.eu/ai#mapsToAIAAICType> <http://www.w3.org/2000/01/rdf-schema#comment> "Mapea este tipo de incidente grave del EU AI Act a valores correspondientes de incident_type de AIAAIC para comparación con ground truth del benchmark. Múltiples tipos AIAAIC separados por coma."@es .
+<http://ai-act.eu/ai#mapsToAIAAICType> <http://www.w3.org/2000/01/rdf-schema#comment> "Maps this EU AI Act serious incident type to corresponding AIAAIC incident_type values for benchmark ground truth comparison. Multiple AIAAIC types separated by comma."@en .
+<http://ai-act.eu/ai#mapsToAIAAICType> <http://www.w3.org/2000/01/rdf-schema#label> "mapea a tipo AIAAIC"@es .
+<http://ai-act.eu/ai#mapsToAIAAICType> <http://www.w3.org/2000/01/rdf-schema#label> "maps to AIAAIC type"@en .
 # 
 # http://ai-act.eu/ai#prohibitionScope
 <http://ai-act.eu/ai#prohibitionScope> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
@@ -944,6 +971,14 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#requiresProhibitionReview> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates if Art. 5 prohibition review is required. Inferred for biometric identification systems in public spaces affecting persons."@en .
 <http://ai-act.eu/ai#requiresProhibitionReview> <http://www.w3.org/2000/01/rdf-schema#label> "requiere revisión de prohibiciones"@es .
 <http://ai-act.eu/ai#requiresProhibitionReview> <http://www.w3.org/2000/01/rdf-schema#label> "requires prohibition review"@en .
+# 
+# http://ai-act.eu/ai#triggersArticle73
+<http://ai-act.eu/ai#triggersArticle73> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://ai-act.eu/ai#triggersArticle73> <http://www.w3.org/2000/01/rdf-schema#domain> <http://ai-act.eu/ai#SeriousIncident> .
+<http://ai-act.eu/ai#triggersArticle73> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#boolean> .
+<http://ai-act.eu/ai#triggersArticle73> <http://www.w3.org/2000/01/rdf-schema#comment> "Indicates whether this serious incident type triggers mandatory incident reporting per Article 73."@en .
+<http://ai-act.eu/ai#triggersArticle73> <http://www.w3.org/2000/01/rdf-schema#label> "activa Artículo 73"@es .
+<http://ai-act.eu/ai#triggersArticle73> <http://www.w3.org/2000/01/rdf-schema#label> "triggers Article 73"@en .
 # 
 # http://purl.org/dc/terms/date
 <http://purl.org/dc/terms/date> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
@@ -1022,9 +1057,17 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#Criterion> <http://www.w3.org/2000/01/rdf-schema#label> "Criterion"@en .
 <http://ai-act.eu/ai#Criterion> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://w3id.org/airo#EvaluationCriterion> .
 # 
+# http://ai-act.eu/ai#CriticalInfrastructureDisruption
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#SeriousIncident> .
+# 
 # http://ai-act.eu/ai#DataGovernanceRequirement
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#ComplianceRequirement> .
+# 
+# http://ai-act.eu/ai#DeathOrHealthHarm
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#SeriousIncident> .
 # 
 # http://ai-act.eu/ai#DeploymentContext
 <http://ai-act.eu/ai#DeploymentContext> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -1054,6 +1097,10 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#FundamentalRightsImpactAssessment> <http://www.w3.org/2000/01/rdf-schema#comment> "Art. 27 requirement: deployers of high-risk AI systems shall perform FRIA before putting system into use, particularly when vulnerable groups are affected."@en .
 <http://ai-act.eu/ai#FundamentalRightsImpactAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Evaluación de Impacto en Derechos Fundamentales"@es .
 <http://ai-act.eu/ai#FundamentalRightsImpactAssessment> <http://www.w3.org/2000/01/rdf-schema#label> "Fundamental Rights Impact Assessment"@en .
+# 
+# http://ai-act.eu/ai#FundamentalRightsInfringement
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#SeriousIncident> .
 # 
 # http://ai-act.eu/ai#GeneralPurposeAIModel
 <http://ai-act.eu/ai#GeneralPurposeAIModel> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -1129,6 +1176,10 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#ProhibitedPracticeCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Criterio de Práctica Prohibida"@es .
 <http://ai-act.eu/ai#ProhibitedPracticeCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Prohibited Practice Criterion"@en .
 # 
+# http://ai-act.eu/ai#PropertyOrEnvironmentHarm
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://ai-act.eu/ai#SeriousIncident> .
+# 
 # http://ai-act.eu/ai#Purpose
 <http://ai-act.eu/ai#Purpose> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://ai-act.eu/ai#Purpose> <http://www.w3.org/2002/07/owl#equivalentClass> <https://w3id.org/airo#Purpose> .
@@ -1169,6 +1220,14 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisito de ciberseguridad, protección de datos e integridad."@es .
 <http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Seguridad"@es .
 <http://ai-act.eu/ai#SecurityRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Security Requirement"@en .
+# 
+# http://ai-act.eu/ai#SeriousIncident
+<http://ai-act.eu/ai#SeriousIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://ai-act.eu/ai#SeriousIncident> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/oj> .
+<http://ai-act.eu/ai#SeriousIncident> <http://www.w3.org/2000/01/rdf-schema#comment> "An incident or malfunctioning of an AI system that directly or indirectly leads to any of the outcomes defined in Article 3(49): (a) death or serious health harm, (b) critical infrastructure disruption, (c) fundamental rights infringement, or (d) serious property/environment harm. Triggers mandatory reporting per Article 73."@en .
+<http://ai-act.eu/ai#SeriousIncident> <http://www.w3.org/2000/01/rdf-schema#comment> "Un incidente o mal funcionamiento de un sistema de IA que directa o indirectamente conduce a cualquiera de los resultados definidos en el Artículo 3(49): (a) muerte o daño grave a la salud, (b) interrupción de infraestructura crítica, (c) infracción de derechos fundamentales, o (d) daño grave a propiedad/medio ambiente. Activa reporte obligatorio según Artículo 73."@es .
+<http://ai-act.eu/ai#SeriousIncident> <http://www.w3.org/2000/01/rdf-schema#label> "Incidente Grave"@es .
+<http://ai-act.eu/ai#SeriousIncident> <http://www.w3.org/2000/01/rdf-schema#label> "Serious Incident"@en .
 # 
 # http://ai-act.eu/ai#SystemCapabilityCriterion
 <http://ai-act.eu/ai#SystemCapabilityCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
@@ -1809,6 +1868,17 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Criterio de Infraestructura Crítica"@es .
 <http://ai-act.eu/ai#CriticalInfrastructureCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Critical Infrastructure Criterion"@en .
 # 
+# http://ai-act.eu/ai#CriticalInfrastructureDisruption
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://ai-act.eu/ai#indicatorKeywords> "infrastructure, power grid, electricity, blackout, outage, transport, railway, aviation, water supply, healthcare system, hospital system, telecommunications, network failure, system failure, irreversible, cascade failure, emergency services" .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://ai-act.eu/ai#mapsToAIAAICType> "safety_failure, accuracy_failure" .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://ai-act.eu/ai#triggersArticle73> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# 
+# http://ai-act.eu/ai#CriticalInfrastructureDisruptionIncident
+<http://ai-act.eu/ai#CriticalInfrastructureDisruptionIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruptionIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#CriticalInfrastructureDisruption> .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruptionIncident> <http://www.w3.org/2000/01/rdf-schema#label> "Critical Infrastructure Disruption Incident"@en .
+# 
 # http://ai-act.eu/ai#CriticalInfrastructureInterdependencyRiskCriterion
 <http://ai-act.eu/ai#CriticalInfrastructureInterdependencyRiskCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#CriticalInfrastructureInterdependencyRiskCriterion> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ContextualCriterion> .
@@ -1888,6 +1958,17 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#DatasetDocumentationRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Systems must document their training and operational datasets."@en .
 <http://ai-act.eu/ai#DatasetDocumentationRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Dataset Documentation Requirement"@en .
 <http://ai-act.eu/ai#DatasetDocumentationRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Documentación de Conjunto de Datos"@es .
+# 
+# http://ai-act.eu/ai#DeathOrHealthHarm
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://ai-act.eu/ai#indicatorKeywords> "death, died, killed, fatal, suicide, self-harm, injury, injured, hospitalized, hospital, serious harm, health damage, physical harm, bodily harm, medical emergency, overdose, seizure, cardiac, stroke, trauma, casualties" .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://ai-act.eu/ai#mapsToAIAAICType> "safety_failure" .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://ai-act.eu/ai#triggersArticle73> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# 
+# http://ai-act.eu/ai#DeathOrHealthHarmIncident
+<http://ai-act.eu/ai#DeathOrHealthHarmIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#DeathOrHealthHarmIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#DeathOrHealthHarm> .
+<http://ai-act.eu/ai#DeathOrHealthHarmIncident> <http://www.w3.org/2000/01/rdf-schema#label> "Death or Health Harm Incident"@en .
 # 
 # http://ai-act.eu/ai#DecisionTree
 <http://ai-act.eu/ai#DecisionTree> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -2129,6 +2210,17 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#FundamentalRightsContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#comment> "Systems that may impact fundamental rights protected by the EU Charter."@en .
 <http://ai-act.eu/ai#FundamentalRightsContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Contexto de Derechos Fundamentales"@es .
 <http://ai-act.eu/ai#FundamentalRightsContextualCriterion> <http://www.w3.org/2000/01/rdf-schema#label> "Fundamental Rights Context"@en .
+# 
+# http://ai-act.eu/ai#FundamentalRightsInfringement
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://ai-act.eu/ai#indicatorKeywords> "discrimination, discriminatory, bias, biased, unfair, privacy violation, data breach, surveillance, wrongful arrest, false arrest, wrongful detention, due process, dignity, freedom of expression, censorship, profiling, racial, gender, age discrimination, disability discrimination, religious discrimination, ethnic, nationality, GDPR violation, data protection, personal data, unauthorized access, consent violation" .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://ai-act.eu/ai#mapsToAIAAICType> "discrimination, bias, privacy_violation, data_leakage, unauthorized_access" .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://ai-act.eu/ai#triggersArticle73> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# 
+# http://ai-act.eu/ai#FundamentalRightsInfringementIncident
+<http://ai-act.eu/ai#FundamentalRightsInfringementIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#FundamentalRightsInfringementIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#FundamentalRightsInfringement> .
+<http://ai-act.eu/ai#FundamentalRightsInfringementIncident> <http://www.w3.org/2000/01/rdf-schema#label> "Fundamental Rights Infringement Incident"@en .
 # 
 # http://ai-act.eu/ai#GPAIDataQualityRequirement
 <http://ai-act.eu/ai#GPAIDataQualityRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
@@ -2928,6 +3020,17 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#ProhibitionEnforcementRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Prohibition Enforcement Requirement (Art. 5)"@en .
 <http://ai-act.eu/ai#ProhibitionEnforcementRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Aplicación de Prohibición (Art. 5)"@es .
 # 
+# http://ai-act.eu/ai#PropertyOrEnvironmentHarm
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://ai-act.eu/ai#indicatorKeywords> "property damage, destruction, fire, explosion, collision, crash, environmental damage, pollution, contamination, ecological, wildlife, habitat, financial loss, economic damage, fraud, theft, material damage, infrastructure damage" .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://ai-act.eu/ai#mapsToAIAAICType> "safety_failure, accuracy_failure" .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://ai-act.eu/ai#triggersArticle73> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+# 
+# http://ai-act.eu/ai#PropertyOrEnvironmentHarmIncident
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarmIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarmIncident> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#PropertyOrEnvironmentHarm> .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarmIncident> <http://www.w3.org/2000/01/rdf-schema#label> "Property or Environment Harm Incident"@en .
+# 
 # http://ai-act.eu/ai#ProportionalityAssessmentRequirement
 <http://ai-act.eu/ai#ProportionalityAssessmentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#NamedIndividual> .
 <http://ai-act.eu/ai#ProportionalityAssessmentRequirement> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ai-act.eu/ai#ComplianceRequirement> .
@@ -3549,12 +3652,25 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # #################################################################
 # 
 # 
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_b/oj> .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 3(49)(b)] A serious incident where an AI system causes a serious and irreversible disruption of the management or operation of critical infrastructure. Critical infrastructure includes energy, transport, water, healthcare, digital infrastructure, and emergency services. The disruption must be both serious and irreversible to qualify."@en .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 3(49)(b)] Un incidente grave donde un sistema de IA causa una interrupción grave e irreversible de la gestión u operación de infraestructura crítica. La infraestructura crítica incluye energía, transporte, agua, sanidad, infraestructura digital y servicios de emergencia. La interrupción debe ser tanto grave como irreversible para calificar."@es .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://www.w3.org/2000/01/rdf-schema#label> "Critical Infrastructure Disruption"@en .
+<http://ai-act.eu/ai#CriticalInfrastructureDisruption> <http://www.w3.org/2000/01/rdf-schema#label> "Interrupción de Infraestructura Crítica"@es .
+# 
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Data governance requirements in both frameworks."@en .
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requirements related to data management, quality, provenance, and governance for training and operational data."@en .
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Requisitos relacionados con gestión de datos, calidad, procedencia y gobernanza de datos de entrenamiento y operacionales."@es .
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Data Governance Requirement"@en .
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Gobernanza de Datos"@es .
 <http://ai-act.eu/ai#DataGovernanceRequirement> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://w3id.org/airo#DataGovernance> .
+# 
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_a/oj> .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 3(49)(a)] A serious incident where an AI system directly or indirectly leads to the death of a person or serious damage to a person's health. This includes suicide, self-harm, physical injuries, and medical emergencies caused or contributed to by AI system behavior. Examples: autonomous vehicle fatality, AI-recommended medication overdose, content recommendation algorithm contributing to teen suicide."@en .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 3(49)(a)] Un incidente grave donde un sistema de IA directa o indirectamente conduce a la muerte de una persona o daño grave a la salud de una persona. Esto incluye suicidio, autolesiones, lesiones físicas y emergencias médicas causadas o contribuidas por el comportamiento del sistema de IA. Ejemplos: fatalidad de vehículo autónomo, sobredosis de medicación recomendada por IA, algoritmo de recomendación de contenido contribuyendo al suicidio de adolescente."@es .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/2000/01/rdf-schema#label> "Death or Serious Health Harm"@en .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/2000/01/rdf-schema#label> "Muerte o Daño Grave a la Salud"@es .
+<http://ai-act.eu/ai#DeathOrHealthHarm> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://w3id.org/dpv/risk#PhysicalHarm> .
 # 
 <http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#comment> "Deployer role aligned in frameworks."@en .
 <http://ai-act.eu/ai#Deployer> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://w3id.org/airo#Deployer> .
@@ -3573,6 +3689,13 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 <http://ai-act.eu/ai#ExplainabilityRequirement> <http://www.w3.org/2000/01/rdf-schema#comment> "Art. 86 requirement: affected persons have the right to obtain clear and meaningful explanations of AI system's role in decision-making."@en .
 <http://ai-act.eu/ai#ExplainabilityRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Explainability Requirement"@en .
 <http://ai-act.eu/ai#ExplainabilityRequirement> <http://www.w3.org/2000/01/rdf-schema#label> "Requisito de Explicabilidad"@es .
+# 
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_c/oj> .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 3(49)(c)] A serious incident where an AI system leads to infringements of obligations under Union law intended to protect fundamental rights. This includes violations of: right to human dignity, right to life, prohibition of torture, right to liberty, respect for private life, protection of personal data (GDPR), freedom of expression, non-discrimination, rights of the child, rights of persons with disabilities. Examples: discriminatory hiring algorithm, wrongful arrest due to facial recognition error, mass surveillance without consent."@en .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 3(49)(c)] Un incidente grave donde un sistema de IA conduce a infracciones de obligaciones bajo la ley de la Unión destinadas a proteger derechos fundamentales. Esto incluye violaciones de: derecho a la dignidad humana, derecho a la vida, prohibición de tortura, derecho a la libertad, respeto a la vida privada, protección de datos personales (RGPD), libertad de expresión, no discriminación, derechos del niño, derechos de personas con discapacidad. Ejemplos: algoritmo de contratación discriminatorio, arresto indebido por error de reconocimiento facial, vigilancia masiva sin consentimiento."@es .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/2000/01/rdf-schema#label> "Fundamental Rights Infringement"@en .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/2000/01/rdf-schema#label> "Infracción de Derechos Fundamentales"@es .
+<http://ai-act.eu/ai#FundamentalRightsInfringement> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://w3id.org/dpv/risk#RightsImpact> .
 # 
 <http://ai-act.eu/ai#HighRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "AI systems classified as high-risk according to the EU AI Act. Subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights."@en .
 <http://ai-act.eu/ai#HighRisk> <http://www.w3.org/2000/01/rdf-schema#comment> "High-risk AI systems require specific obligations and governance."@en .
@@ -3601,6 +3724,13 @@ _:genid38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2
 # 
 <http://ai-act.eu/ai#PrivacyProtection> <http://www.w3.org/2000/01/rdf-schema#comment> "Privacy requirements aligned in both frameworks."@en .
 <http://ai-act.eu/ai#PrivacyProtection> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://w3id.org/airo#Privacy> .
+# 
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://data.europa.eu/eli/ontology#cites> <http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_d/oj> .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/2000/01/rdf-schema#comment> "[Article 3(49)(d)] A serious incident where an AI system causes serious harm to property or the environment. This includes physical destruction, financial fraud at scale, environmental contamination, and ecological damage. The harm must be 'serious' - minor property damage does not qualify."@en .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/2000/01/rdf-schema#comment> "[Artículo 3(49)(d)] Un incidente grave donde un sistema de IA causa daño grave a la propiedad o al medio ambiente. Esto incluye destrucción física, fraude financiero a escala, contaminación ambiental y daño ecológico. El daño debe ser 'grave' - daño menor a la propiedad no califica."@es .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/2000/01/rdf-schema#label> "Daño Grave a Propiedad o Medio Ambiente"@es .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/2000/01/rdf-schema#label> "Serious Property or Environment Harm"@en .
+<http://ai-act.eu/ai#PropertyOrEnvironmentHarm> <http://www.w3.org/2004/02/skos/core#closeMatch> <https://w3id.org/dpv/risk#MaterialDamage> .
 # 
 <http://ai-act.eu/ai#ProtectionOfMinors> <http://www.w3.org/2000/01/rdf-schema#comment> "Special protection for children."@en .
 <http://ai-act.eu/ai#ProtectionOfMinors> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://w3id.org/airo#ChildProtection> .

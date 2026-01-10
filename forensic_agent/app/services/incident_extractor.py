@@ -4,7 +4,6 @@ import json
 import os
 from typing import Optional
 from datetime import datetime
-import anthropic
 import httpx
 
 from ..models.incident import (
@@ -23,32 +22,17 @@ class IncidentExtractorService:
     using LLM with structured output prompting
     """
 
-    def __init__(self, llm_provider: str = "anthropic", api_key: Optional[str] = None,
-                 ollama_endpoint: Optional[str] = None, ollama_model: Optional[str] = None):
+    def __init__(self, ollama_endpoint: Optional[str] = None, ollama_model: Optional[str] = None):
         """
-        Initialize with LLM provider
+        Initialize with Ollama LLM provider
 
         Args:
-            llm_provider: "anthropic" (Claude) or "ollama" (Llama)
-            api_key: API key for Anthropic (if None, reads from env)
             ollama_endpoint: Ollama endpoint URL (default: http://localhost:11434)
-            ollama_model: Ollama model name (default: llama3.2)
+            ollama_model: Ollama model name (default: llama3.2:3b)
         """
-        self.llm_provider = llm_provider
-
-        if llm_provider == "anthropic":
-            api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-            if not api_key:
-                raise ValueError("ANTHROPIC_API_KEY not found in environment")
-
-            self.client = anthropic.Anthropic(api_key=api_key)
-            self.model = "claude-sonnet-4-5-20250929"
-        elif llm_provider == "ollama":
-            self.ollama_endpoint = ollama_endpoint or os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434")
-            self.model = ollama_model or os.getenv("OLLAMA_MODEL", "llama3.2")
-            self.client = httpx.AsyncClient(timeout=120.0)
-        else:
-            raise ValueError(f"Unsupported LLM provider: {llm_provider}")
+        self.ollama_endpoint = ollama_endpoint or os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434")
+        self.model = ollama_model or os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+        self.client = httpx.AsyncClient(timeout=120.0)
 
     async def extract_incident(self, narrative: str) -> ExtractedIncident:
         """
@@ -280,35 +264,23 @@ Respond with ONLY valid JSON, no additional text or markdown formatting.
 """
 
     async def _call_llm(self, prompt: str) -> str:
-        """Call LLM API"""
-        if self.llm_provider == "anthropic":
-            message = self.client.messages.create(
-                model=self.model,
-                max_tokens=4096,
-                temperature=0.0,  # Deterministic for extraction
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return message.content[0].text
-        elif self.llm_provider == "ollama":
-            # Call Ollama API
-            url = f"{self.ollama_endpoint}/api/generate"
-            payload = {
-                "model": self.model,
-                "prompt": prompt,
-                "stream": False,
-                "options": {
-                    "temperature": 0.1,  # Low temperature for deterministic extraction
-                    "num_predict": 4096
-                }
+        """Call Ollama LLM API"""
+        url = f"{self.ollama_endpoint}/api/generate"
+        payload = {
+            "model": self.model,
+            "prompt": prompt,
+            "stream": False,
+            "options": {
+                "temperature": 0.1,  # Low temperature for deterministic extraction
+                "num_predict": 4096
             }
+        }
 
-            response = await self.client.post(url, json=payload)
-            response.raise_for_status()
+        response = await self.client.post(url, json=payload)
+        response.raise_for_status()
 
-            result = response.json()
-            return result.get("response", "")
-        else:
-            raise NotImplementedError(f"LLM provider {self.llm_provider} not supported")
+        result = response.json()
+        return result.get("response", "")
 
     def _normalize_to_list(self, value, field_name: str) -> list:
         """Normalize a value to a list (handles LLM returning strings instead of lists)"""

@@ -113,16 +113,108 @@ hasNormativeCriterion(system, EssentialServicesAccessCriterion) →
 ```
 **Justificación**: Servicios esenciales requieren supervisión humana, gobernanza de datos y evaluación de derechos fundamentales.
 
-### 4. **Reglas de Ámbito de Aplicación (Art. 2)**
+### 4. **Reglas de Prácticas Prohibidas (Art. 5)**
 
-#### 4.1 Regla de Exclusión de Scope
+#### 4.1 Regla de Práctica Prohibida → Criterio
+```swrl
+hasProhibitedPractice(system, ?practice) → hasCriteria(system, ?practice)
+```
+**Justificación**: Artículo 5 del EU AI Act - Las prácticas prohibidas se convierten en criterios activados para permitir la inferencia de nivel de riesgo.
+
+#### 4.2 Regla de Criterio → Nivel de Riesgo Inaceptable
+```swrl
+hasCriteria(system, ?criterion) ∧ assignsRiskLevel(?criterion, ?riskLevel) → hasRiskLevel(system, ?riskLevel)
+```
+**Justificación**: Si un criterio (incluyendo prácticas prohibidas) asigna un nivel de riesgo, el sistema hereda ese nivel. Las prácticas prohibidas del Art. 5 asignan `UnacceptableRisk`.
+
+#### 4.3 Regla de Override de Niveles de Riesgo (REGLA 5.5)
+```swrl
+hasRiskLevel(system, UnacceptableRisk) → ¬hasRiskLevel(system, HighRisk) ∧ ¬hasRiskLevel(system, LimitedRisk) ∧ ¬hasRiskLevel(system, MinimalRisk)
+```
+**Justificación**: Cuando un sistema tiene múltiples niveles de riesgo inferidos de diferentes criterios, el nivel más restrictivo prevalece. La jerarquía es:
+- **UnacceptableRisk** > HighRisk > LimitedRisk > MinimalRisk
+
+**Comportamiento**:
+- Si `UnacceptableRisk` está presente → elimina `HighRisk`, `LimitedRisk`, `MinimalRisk`
+- Si `HighRisk` está presente (sin Unacceptable) → elimina `LimitedRisk`, `MinimalRisk`
+- Si `LimitedRisk` está presente (sin High ni Unacceptable) → elimina `MinimalRisk`
+
+**Ejemplo**:
+Un sistema con `BiometricIdentification` (infiere `HighRisk`) y `PredictivePolicingProfilingCriterion` (infiere `UnacceptableRisk`) solo mostrará `UnacceptableRisk` como nivel de riesgo final.
+
+**Prácticas prohibidas definidas (Art. 5):**
+| Criterio | Artículo | Nivel de Riesgo |
+|----------|----------|-----------------|
+| `ai:SubliminalManipulationCriterion` | Art. 5(1)(a) | UnacceptableRisk |
+| `ai:VulnerabilityExploitationCriterion` | Art. 5(1)(b) | UnacceptableRisk |
+| `ai:SocialScoringCriterion` | Art. 5(1)(c) | UnacceptableRisk |
+| `ai:PredictivePolicingProfilingCriterion` | Art. 5(1)(d) | UnacceptableRisk |
+| `ai:RealTimeBiometricIdentificationCriterion` | Art. 5(1)(h) | UnacceptableRisk |
+
+**Implementación**:
+```python
+# En backend/swrl_rules.py
+ai:ProhibitedPracticeToCriteriaRule rdf:type swrl:Rule ;
+    swrl:body [ hasProhibitedPractice(?system, ?practice) ] ;
+    swrl:head [ hasCriteria(?system, ?practice) ] .
+
+# La regla CriterionRiskLevelRule existente infiere:
+ai:CriterionRiskLevelRule rdf:type swrl:Rule ;
+    swrl:body [ hasCriteria(?system, ?criterion) ∧ assignsRiskLevel(?criterion, ?riskLevel) ] ;
+    swrl:head [ hasRiskLevel(?system, ?riskLevel) ] .
+```
+
+#### 4.4 Regla de Excepciones Art. 5.2 (REGLA 5.5a)
+```swrl
+hasProhibitedPractice(system, RealTimeBiometricIdentificationCriterion) ∧
+hasLegalException(system, ?exception) ∧
+hasJudicialAuthorization(system, true) →
+    ¬hasRiskLevel(system, UnacceptableRisk) ∧
+    hasRiskLevel(system, HighRisk) ∧
+    hasArticle5Exception(system, true)
+```
+**Justificación**: Artículo 5(2) del EU AI Act permite excepciones **únicamente** para la identificación biométrica remota en tiempo real cuando se cumplen **todas** las condiciones:
+1. El sistema utiliza identificación biométrica remota en tiempo real (Art. 5.1.h)
+2. Existe una excepción legal válida del Art. 5.2
+3. Se ha obtenido autorización judicial previa
+
+**Excepciones válidas del Art. 5.2:**
+| Excepción | Artículo | Descripción |
+|-----------|----------|-------------|
+| `ai:VictimSearchException` | Art. 5.2(a) | Búsqueda de víctimas de secuestro, trata de personas, explotación sexual |
+| `ai:TerroristThreatException` | Art. 5.2(b) | Prevención de amenaza terrorista específica e inminente |
+| `ai:SeriousCrimeException` | Art. 5.2(c) | Localización/identificación de sospechoso de delito grave (Anexo II) |
+
+**Comportamiento**:
+- Si el sistema cumple las 3 condiciones → `UnacceptableRisk` se convierte en `HighRisk`
+- El sistema puede desplegarse, pero sigue siendo de **alto riesgo** con todas las obligaciones del Título III
+- Se añade `hasArticle5Exception: true` para indicar que opera bajo excepción
+
+**IMPORTANTE**: Las demás prácticas prohibidas (manipulación subliminal, explotación de vulnerabilidades, social scoring, predictive policing) **NO tienen excepciones** y siempre resultan en `UnacceptableRisk`.
+
+**Ejemplo**:
+```ttl
+<urn:uuid:system-biometric> a ai:IntelligentSystem ;
+    ai:hasName "Sistema Policial de Búsqueda" ;
+    ai:hasProhibitedPractice ai:RealTimeBiometricIdentificationCriterion ;
+    ai:hasLegalException ai:VictimSearchException ;
+    ai:hasJudicialAuthorization true .
+
+# Resultado del razonamiento:
+# hasRiskLevel: HighRisk (no UnacceptableRisk)
+# hasArticle5Exception: true
+```
+
+### 5. **Reglas de Ámbito de Aplicación (Art. 2)**
+
+#### 5.1 Regla de Exclusión de Scope
 ```swrl
 hasPurpose(system, ?purpose) ∧ mayBeExcludedBy(?purpose, ?exclusion) →
     hasPotentialScopeExclusion(system, ?exclusion)
 ```
 **Justificación**: Artículo 2 del EU AI Act - Ciertos propósitos pueden estar excluidos del ámbito de aplicación.
 
-#### 4.2 Regla de Override de Exclusión
+#### 5.2 Regla de Override de Exclusión
 ```swrl
 hasPotentialScopeExclusion(system, ?exclusion) ∧
 hasDeploymentContext(system, ?context) ∧
@@ -138,16 +230,16 @@ overridesExclusion(?context, ?exclusion) →
 - `ai:LegalConsequencesContext` - Consecuencias legales
 - `ai:MinorsAffectedContext` - Menores afectados
 
-### 5. **Reglas de Incidentes Graves (Art. 3(49))**
+### 6. **Reglas de Incidentes Graves (Art. 3(49))**
 
-#### 5.1 Regla de Clasificación de Incidente Grave
+#### 6.1 Regla de Clasificación de Incidente Grave
 ```swrl
 hasIncidentType(system, ?type) ∧ SeriousIncident(?type) →
     hasSeriousIncidentType(system, ?type)
 ```
 **Justificación**: Artículo 3(49) del EU AI Act - Clasificación de incidentes graves según taxonomía.
 
-#### 5.2 Regla de Notificación Obligatoria (Art. 73)
+#### 6.2 Regla de Notificación Obligatoria (Art. 73)
 ```swrl
 hasSeriousIncidentType(system, ?type) ∧ triggersArticle73(?type, true) →
     requiresIncidentNotification(system, true) ∧
@@ -163,16 +255,16 @@ hasSeriousIncidentType(system, ?type) ∧ triggersArticle73(?type, true) →
 | `ai:FundamentalRightsInfringement` | Art. 3(49)(c) | ✓ |
 | `ai:PropertyOrEnvironmentHarm` | Art. 3(49)(d) | ✓ |
 
-### 6. **Reglas de Affected Persons (Art. 86)**
+### 7. **Reglas de Affected Persons (Art. 86)**
 
-#### 6.1 Regla de Explicabilidad
+#### 7.1 Regla de Explicabilidad
 ```swrl
 hasSubject(system, ?person) ∧ hasRiskLevel(system, HighRisk) →
     requiresExplainability(system, true)
 ```
 **Justificación**: Artículo 86 del EU AI Act - Sistemas de alto riesgo con personas afectadas requieren explicabilidad.
 
-#### 6.2 Regla de FRIA para Grupos Vulnerables
+#### 7.2 Regla de FRIA para Grupos Vulnerables
 ```swrl
 hasSubject(system, ?person) ∧ VulnerableGroup(?person) →
     requiresFundamentalRightsAssessment(system, true)
@@ -262,10 +354,26 @@ POST http://localhost:8001/reason
 - `requiresIncidentNotification: true` (Art. 73)
 - `notificationDeadlineDays: 15` (Art. 73)
 
-### Caso 4: Sistema Excluido con Override (Art. 2)
+### Caso 4: Sistema con Práctica Prohibida (Art. 5)
 **Input**:
 ```ttl
 <urn:uuid:system4> a ai:IntelligentSystem ;
+    ai:hasName "Paco" ;
+    ai:hasPurpose ai:BiometricIdentification ;
+    ai:hasDeploymentContext ai:WorkplaceMonitoringContext ;
+    ai:hasProhibitedPractice ai:PredictivePolicingProfilingCriterion .
+```
+
+**Inferencias Esperadas**:
+- `hasCriteria: PredictivePolicingProfilingCriterion` (por regla ProhibitedPracticeToCriteriaRule)
+- `hasRiskLevel: UnacceptableRisk` (por regla CriterionRiskLevelRule, ya que PredictivePolicingProfilingCriterion tiene assignsRiskLevel UnacceptableRisk)
+
+**Nota**: Los sistemas con nivel de riesgo `UnacceptableRisk` no pueden desplegarse en la UE.
+
+### Caso 5: Sistema Excluido con Override (Art. 2)
+**Input**:
+```ttl
+<urn:uuid:system5> a ai:IntelligentSystem ;
     ai:hasPurpose ai:Entertainment ;
     ai:hasDeploymentContext ai:VictimImpactContext .
 ```
@@ -341,6 +449,29 @@ Para contribuir nuevas reglas SWRL:
 
 ---
 
-**Versión**: 1.0
+**Versión**: 1.3
 **Última Actualización**: Enero 2026
 **Compatibilidad**: EU AI Act Ontology v0.41.0
+
+---
+
+### Changelog
+
+#### v1.3 (Enero 2026)
+- Nueva regla 4.4 (REGLA 5.5a): Excepciones Art. 5.2 para identificación biométrica remota
+- Soporte para `hasLegalException` y `hasJudicialAuthorization` en TTL
+- Sistemas con excepción válida + autorización judicial pasan de UnacceptableRisk a HighRisk
+- Añadida propiedad `hasArticle5Exception` para indicar operación bajo excepción
+- Fix: Bug de cierre de conexión MongoDB en errores de duplicado
+
+#### v1.2 (Enero 2026)
+- Nueva regla 4.3 (REGLA 5.5): Override de niveles de riesgo - el más restrictivo prevalece
+- Jerarquía implementada: UnacceptableRisk > HighRisk > LimitedRisk > MinimalRisk
+- Fix: Sistemas con múltiples criterios de riesgo ahora muestran solo el nivel más alto
+
+#### v1.1 (Enero 2026)
+- Añadida sección 4: Reglas de Prácticas Prohibidas (Art. 5)
+- Nueva regla `ProhibitedPracticeToCriteriaRule`: convierte prácticas prohibidas en criterios
+- Soporte para inferencia automática de `UnacceptableRisk` desde prácticas prohibidas
+- Añadido Caso de Prueba 4: Sistema con práctica prohibida
+- Renumeración de secciones 5-7

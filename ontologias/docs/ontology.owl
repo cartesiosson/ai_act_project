@@ -27,7 +27,7 @@
         <rdfs:comment xml:lang="en">SWRL rules are externalized in the rules/ directory for better maintainability and auditability</rdfs:comment>
         <rdfs:comment xml:lang="en">Unified ai: ontology module integrating GPAI, contextual criteria, ISO 42001, NIST AI RMF, AIRO, Article 5 prohibited practices, Article 2 scope exclusions with override detection, and European Legislation Identifier (ELI). Complete coverage of unacceptable risk AI systems with direct EUR-Lex links. Semantic scope determination via ontology IRIs instead of hardcoded keywords. Optimized for forensic compliance gap detection with ontology-first approach.</rdfs:comment>
         <rdfs:seeAlso rdf:resource="file:/Users/cartesio/workspace/ai_act_project/tools/shacl/"/>
-        <rdfs:seeAlso rdf:resource="file:/Users/cartesio/workspace/ai_act_project/tools/tmp1767292071775/rules/"/>
+        <rdfs:seeAlso rdf:resource="file:/Users/cartesio/workspace/ai_act_project/tools/tmp1768076423269/rules/"/>
         <owl:versionInfo xml:lang="en">Version 0.40.0 released on 2025-12-31. Architectural migration: code now uses ontology IRIs instead of ~150 hardcoded keywords for scope determination. Ontology-first approach where LLM extracts semantic concepts and Python validates against ontology classes.</owl:versionInfo>
         <owl:versionInfo xml:lang="es">Versión 0.40.0 publicada el 2025-12-31. Migración arquitectónica: el código ahora usa IRIs ontológicas en lugar de ~150 keywords hardcodeadas para determinación de ámbito. Enfoque ontology-first donde el LLM extrae conceptos semánticos y Python valida contra clases de la ontología.</owl:versionInfo>
     </owl:Ontology>
@@ -459,6 +459,20 @@
         <rdfs:comment xml:lang="es">Vincula un IntelligentSystem al DeploymentContext que anula su posible exclusión de ámbito. Cuando está presente, el sistema está definitivamente DENTRO DEL ÁMBITO del EU AI Act independientemente de su estado de exclusión de propósito.</rdfs:comment>
         <rdfs:label xml:lang="en">has scope override</rdfs:label>
         <rdfs:label xml:lang="es">tiene anulación de ámbito</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#hasSeriousIncidentType -->
+
+
+    <owl:ObjectProperty rdf:about="http://ai-act.eu/ai#hasSeriousIncidentType">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#IntelligentSystem"/>
+        <rdfs:range rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
+        <rdfs:comment xml:lang="en">Links an AI system involved in an incident to the type of serious incident per Article 3(49). Multiple types may apply to a single incident.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Vincula un sistema de IA involucrado en un incidente al tipo de incidente grave según el Artículo 3(49). Múltiples tipos pueden aplicar a un solo incidente.</rdfs:comment>
+        <rdfs:label xml:lang="en">has serious incident type</rdfs:label>
+        <rdfs:label xml:lang="es">tiene tipo de incidente grave</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -1420,6 +1434,20 @@
     
 
 
+    <!-- http://ai-act.eu/ai#indicatorKeywords -->
+
+
+    <owl:DatatypeProperty rdf:about="http://ai-act.eu/ai#indicatorKeywords">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment xml:lang="en">Keywords that indicate this type of serious incident in narrative text. Used by LLM extractors to classify incidents. Multiple keywords separated by comma.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Palabras clave que indican este tipo de incidente grave en texto narrativo. Usado por extractores LLM para clasificar incidentes. Múltiples palabras separadas por coma.</rdfs:comment>
+        <rdfs:label xml:lang="en">indicator keywords</rdfs:label>
+        <rdfs:label xml:lang="es">palabras clave indicadoras</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://ai-act.eu/ai#isInEUAIActScope -->
 
 
@@ -1442,6 +1470,20 @@
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
         <rdfs:comment xml:lang="en">Boolean indicating if compliance is mandatory.</rdfs:comment>
         <rdfs:label xml:lang="en">mandatory Compliance</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#mapsToAIAAICType -->
+
+
+    <owl:DatatypeProperty rdf:about="http://ai-act.eu/ai#mapsToAIAAICType">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment xml:lang="es">Mapea este tipo de incidente grave del EU AI Act a valores correspondientes de incident_type de AIAAIC para comparación con ground truth del benchmark. Múltiples tipos AIAAIC separados por coma.</rdfs:comment>
+        <rdfs:comment xml:lang="en">Maps this EU AI Act serious incident type to corresponding AIAAIC incident_type values for benchmark ground truth comparison. Multiple AIAAIC types separated by comma.</rdfs:comment>
+        <rdfs:label xml:lang="es">mapea a tipo AIAAIC</rdfs:label>
+        <rdfs:label xml:lang="en">maps to AIAAIC type</rdfs:label>
     </owl:DatatypeProperty>
     
 
@@ -1533,6 +1575,19 @@
         <rdfs:comment xml:lang="en">Indicates if Art. 5 prohibition review is required. Inferred for biometric identification systems in public spaces affecting persons.</rdfs:comment>
         <rdfs:label xml:lang="es">requiere revisión de prohibiciones</rdfs:label>
         <rdfs:label xml:lang="en">requires prohibition review</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://ai-act.eu/ai#triggersArticle73 -->
+
+
+    <owl:DatatypeProperty rdf:about="http://ai-act.eu/ai#triggersArticle73">
+        <rdfs:domain rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <rdfs:comment xml:lang="en">Indicates whether this serious incident type triggers mandatory incident reporting per Article 73.</rdfs:comment>
+        <rdfs:label xml:lang="es">activa Artículo 73</rdfs:label>
+        <rdfs:label xml:lang="en">triggers Article 73</rdfs:label>
     </owl:DatatypeProperty>
     
 
@@ -1659,11 +1714,29 @@
     
 
 
+    <!-- http://ai-act.eu/ai#CriticalInfrastructureDisruption -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#CriticalInfrastructureDisruption">
+        <rdfs:subClassOf rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
+    </owl:Class>
+    
+
+
     <!-- http://ai-act.eu/ai#DataGovernanceRequirement -->
 
 
     <owl:Class rdf:about="http://ai-act.eu/ai#DataGovernanceRequirement">
         <rdfs:subClassOf rdf:resource="http://ai-act.eu/ai#ComplianceRequirement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ai-act.eu/ai#DeathOrHealthHarm -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#DeathOrHealthHarm">
+        <rdfs:subClassOf rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
     </owl:Class>
     
 
@@ -1712,6 +1785,15 @@
         <rdfs:comment xml:lang="en">Art. 27 requirement: deployers of high-risk AI systems shall perform FRIA before putting system into use, particularly when vulnerable groups are affected.</rdfs:comment>
         <rdfs:label xml:lang="es">Evaluación de Impacto en Derechos Fundamentales</rdfs:label>
         <rdfs:label xml:lang="en">Fundamental Rights Impact Assessment</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://ai-act.eu/ai#FundamentalRightsInfringement -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#FundamentalRightsInfringement">
+        <rdfs:subClassOf rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
     </owl:Class>
     
 
@@ -1843,6 +1925,15 @@
     
 
 
+    <!-- http://ai-act.eu/ai#PropertyOrEnvironmentHarm -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#PropertyOrEnvironmentHarm">
+        <rdfs:subClassOf rdf:resource="http://ai-act.eu/ai#SeriousIncident"/>
+    </owl:Class>
+    
+
+
     <!-- http://ai-act.eu/ai#Purpose -->
 
 
@@ -1904,6 +1995,19 @@
         <rdfs:comment xml:lang="es">Requisito de ciberseguridad, protección de datos e integridad.</rdfs:comment>
         <rdfs:label xml:lang="es">Requisito de Seguridad</rdfs:label>
         <rdfs:label xml:lang="en">Security Requirement</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://ai-act.eu/ai#SeriousIncident -->
+
+
+    <owl:Class rdf:about="http://ai-act.eu/ai#SeriousIncident">
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/oj"/>
+        <rdfs:comment xml:lang="en">An incident or malfunctioning of an AI system that directly or indirectly leads to any of the outcomes defined in Article 3(49): (a) death or serious health harm, (b) critical infrastructure disruption, (c) fundamental rights infringement, or (d) serious property/environment harm. Triggers mandatory reporting per Article 73.</rdfs:comment>
+        <rdfs:comment xml:lang="es">Un incidente o mal funcionamiento de un sistema de IA que directa o indirectamente conduce a cualquiera de los resultados definidos en el Artículo 3(49): (a) muerte o daño grave a la salud, (b) interrupción de infraestructura crítica, (c) infracción de derechos fundamentales, o (d) daño grave a propiedad/medio ambiente. Activa reporte obligatorio según Artículo 73.</rdfs:comment>
+        <rdfs:label xml:lang="es">Incidente Grave</rdfs:label>
+        <rdfs:label xml:lang="en">Serious Incident</rdfs:label>
     </owl:Class>
     
 
@@ -3006,6 +3110,27 @@
     
 
 
+    <!-- http://ai-act.eu/ai#CriticalInfrastructureDisruption -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#CriticalInfrastructureDisruption">
+        <ai:indicatorKeywords>infrastructure, power grid, electricity, blackout, outage, transport, railway, aviation, water supply, healthcare system, hospital system, telecommunications, network failure, system failure, irreversible, cascade failure, emergency services</ai:indicatorKeywords>
+        <ai:mapsToAIAAICType>safety_failure, accuracy_failure</ai:mapsToAIAAICType>
+        <ai:triggersArticle73 rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:triggersArticle73>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#CriticalInfrastructureDisruptionIncident -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#CriticalInfrastructureDisruptionIncident">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#CriticalInfrastructureDisruption"/>
+        <rdfs:label xml:lang="en">Critical Infrastructure Disruption Incident</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#CriticalInfrastructureInterdependencyRiskCriterion -->
 
 
@@ -3132,6 +3257,27 @@
         <rdfs:comment xml:lang="en">Systems must document their training and operational datasets.</rdfs:comment>
         <rdfs:label xml:lang="en">Dataset Documentation Requirement</rdfs:label>
         <rdfs:label xml:lang="es">Requisito de Documentación de Conjunto de Datos</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#DeathOrHealthHarm -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#DeathOrHealthHarm">
+        <ai:indicatorKeywords>death, died, killed, fatal, suicide, self-harm, injury, injured, hospitalized, hospital, serious harm, health damage, physical harm, bodily harm, medical emergency, overdose, seizure, cardiac, stroke, trauma, casualties</ai:indicatorKeywords>
+        <ai:mapsToAIAAICType>safety_failure</ai:mapsToAIAAICType>
+        <ai:triggersArticle73 rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:triggersArticle73>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#DeathOrHealthHarmIncident -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#DeathOrHealthHarmIncident">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#DeathOrHealthHarm"/>
+        <rdfs:label xml:lang="en">Death or Health Harm Incident</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -3497,6 +3643,27 @@
         <rdfs:comment xml:lang="en">Systems that may impact fundamental rights protected by the EU Charter.</rdfs:comment>
         <rdfs:label xml:lang="es">Contexto de Derechos Fundamentales</rdfs:label>
         <rdfs:label xml:lang="en">Fundamental Rights Context</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#FundamentalRightsInfringement -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#FundamentalRightsInfringement">
+        <ai:indicatorKeywords>discrimination, discriminatory, bias, biased, unfair, privacy violation, data breach, surveillance, wrongful arrest, false arrest, wrongful detention, due process, dignity, freedom of expression, censorship, profiling, racial, gender, age discrimination, disability discrimination, religious discrimination, ethnic, nationality, GDPR violation, data protection, personal data, unauthorized access, consent violation</ai:indicatorKeywords>
+        <ai:mapsToAIAAICType>discrimination, bias, privacy_violation, data_leakage, unauthorized_access</ai:mapsToAIAAICType>
+        <ai:triggersArticle73 rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:triggersArticle73>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#FundamentalRightsInfringementIncident -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#FundamentalRightsInfringementIncident">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#FundamentalRightsInfringement"/>
+        <rdfs:label xml:lang="en">Fundamental Rights Infringement Incident</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -4710,6 +4877,27 @@
     
 
 
+    <!-- http://ai-act.eu/ai#PropertyOrEnvironmentHarm -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#PropertyOrEnvironmentHarm">
+        <ai:indicatorKeywords>property damage, destruction, fire, explosion, collision, crash, environmental damage, pollution, contamination, ecological, wildlife, habitat, financial loss, economic damage, fraud, theft, material damage, infrastructure damage</ai:indicatorKeywords>
+        <ai:mapsToAIAAICType>safety_failure, accuracy_failure</ai:mapsToAIAAICType>
+        <ai:triggersArticle73 rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ai:triggersArticle73>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ai-act.eu/ai#PropertyOrEnvironmentHarmIncident -->
+
+
+    <owl:NamedIndividual rdf:about="http://ai-act.eu/ai#PropertyOrEnvironmentHarmIncident">
+        <rdf:type rdf:resource="http://ai-act.eu/ai#PropertyOrEnvironmentHarm"/>
+        <rdfs:label xml:lang="en">Property or Environment Harm Incident</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://ai-act.eu/ai#ProportionalityAssessmentRequirement -->
 
 
@@ -5636,6 +5824,13 @@
      -->
 
 
+    <rdf:Description rdf:about="http://ai-act.eu/ai#CriticalInfrastructureDisruption">
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_b/oj"/>
+        <rdfs:comment xml:lang="en">[Article 3(49)(b)] A serious incident where an AI system causes a serious and irreversible disruption of the management or operation of critical infrastructure. Critical infrastructure includes energy, transport, water, healthcare, digital infrastructure, and emergency services. The disruption must be both serious and irreversible to qualify.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 3(49)(b)] Un incidente grave donde un sistema de IA causa una interrupción grave e irreversible de la gestión u operación de infraestructura crítica. La infraestructura crítica incluye energía, transporte, agua, sanidad, infraestructura digital y servicios de emergencia. La interrupción debe ser tanto grave como irreversible para calificar.</rdfs:comment>
+        <rdfs:label xml:lang="en">Critical Infrastructure Disruption</rdfs:label>
+        <rdfs:label xml:lang="es">Interrupción de Infraestructura Crítica</rdfs:label>
+    </rdf:Description>
     <rdf:Description rdf:about="http://ai-act.eu/ai#DataGovernanceRequirement">
         <rdfs:comment xml:lang="en">Data governance requirements in both frameworks.</rdfs:comment>
         <rdfs:comment xml:lang="en">Requirements related to data management, quality, provenance, and governance for training and operational data.</rdfs:comment>
@@ -5643,6 +5838,14 @@
         <rdfs:label xml:lang="en">Data Governance Requirement</rdfs:label>
         <rdfs:label xml:lang="es">Requisito de Gobernanza de Datos</rdfs:label>
         <rdfs:seeAlso rdf:resource="https://w3id.org/airo#DataGovernance"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://ai-act.eu/ai#DeathOrHealthHarm">
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_a/oj"/>
+        <rdfs:comment xml:lang="en">[Article 3(49)(a)] A serious incident where an AI system directly or indirectly leads to the death of a person or serious damage to a person&apos;s health. This includes suicide, self-harm, physical injuries, and medical emergencies caused or contributed to by AI system behavior. Examples: autonomous vehicle fatality, AI-recommended medication overdose, content recommendation algorithm contributing to teen suicide.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 3(49)(a)] Un incidente grave donde un sistema de IA directa o indirectamente conduce a la muerte de una persona o daño grave a la salud de una persona. Esto incluye suicidio, autolesiones, lesiones físicas y emergencias médicas causadas o contribuidas por el comportamiento del sistema de IA. Ejemplos: fatalidad de vehículo autónomo, sobredosis de medicación recomendada por IA, algoritmo de recomendación de contenido contribuyendo al suicidio de adolescente.</rdfs:comment>
+        <rdfs:label xml:lang="en">Death or Serious Health Harm</rdfs:label>
+        <rdfs:label xml:lang="es">Muerte o Daño Grave a la Salud</rdfs:label>
+        <skos:closeMatch rdf:resource="https://w3id.org/dpv/risk#PhysicalHarm"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://ai-act.eu/ai#Deployer">
         <rdfs:comment xml:lang="en">Deployer role aligned in frameworks.</rdfs:comment>
@@ -5666,6 +5869,14 @@
         <rdfs:comment xml:lang="en">Art. 86 requirement: affected persons have the right to obtain clear and meaningful explanations of AI system&apos;s role in decision-making.</rdfs:comment>
         <rdfs:label xml:lang="en">Explainability Requirement</rdfs:label>
         <rdfs:label xml:lang="es">Requisito de Explicabilidad</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://ai-act.eu/ai#FundamentalRightsInfringement">
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_c/oj"/>
+        <rdfs:comment xml:lang="en">[Article 3(49)(c)] A serious incident where an AI system leads to infringements of obligations under Union law intended to protect fundamental rights. This includes violations of: right to human dignity, right to life, prohibition of torture, right to liberty, respect for private life, protection of personal data (GDPR), freedom of expression, non-discrimination, rights of the child, rights of persons with disabilities. Examples: discriminatory hiring algorithm, wrongful arrest due to facial recognition error, mass surveillance without consent.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 3(49)(c)] Un incidente grave donde un sistema de IA conduce a infracciones de obligaciones bajo la ley de la Unión destinadas a proteger derechos fundamentales. Esto incluye violaciones de: derecho a la dignidad humana, derecho a la vida, prohibición de tortura, derecho a la libertad, respeto a la vida privada, protección de datos personales (RGPD), libertad de expresión, no discriminación, derechos del niño, derechos de personas con discapacidad. Ejemplos: algoritmo de contratación discriminatorio, arresto indebido por error de reconocimiento facial, vigilancia masiva sin consentimiento.</rdfs:comment>
+        <rdfs:label xml:lang="en">Fundamental Rights Infringement</rdfs:label>
+        <rdfs:label xml:lang="es">Infracción de Derechos Fundamentales</rdfs:label>
+        <skos:closeMatch rdf:resource="https://w3id.org/dpv/risk#RightsImpact"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://ai-act.eu/ai#HighRisk">
         <rdfs:comment xml:lang="en">AI systems classified as high-risk according to the EU AI Act. Subject to strict regulatory requirements due to their potential impact on health, safety, or fundamental rights.</rdfs:comment>
@@ -5700,6 +5911,14 @@
     <rdf:Description rdf:about="http://ai-act.eu/ai#PrivacyProtection">
         <rdfs:comment xml:lang="en">Privacy requirements aligned in both frameworks.</rdfs:comment>
         <rdfs:seeAlso rdf:resource="https://w3id.org/airo#Privacy"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://ai-act.eu/ai#PropertyOrEnvironmentHarm">
+        <ontology:cites rdf:resource="http://data.europa.eu/eli/reg/2024/1689/art_3/par_49/pnt_d/oj"/>
+        <rdfs:comment xml:lang="en">[Article 3(49)(d)] A serious incident where an AI system causes serious harm to property or the environment. This includes physical destruction, financial fraud at scale, environmental contamination, and ecological damage. The harm must be &apos;serious&apos; - minor property damage does not qualify.</rdfs:comment>
+        <rdfs:comment xml:lang="es">[Artículo 3(49)(d)] Un incidente grave donde un sistema de IA causa daño grave a la propiedad o al medio ambiente. Esto incluye destrucción física, fraude financiero a escala, contaminación ambiental y daño ecológico. El daño debe ser &apos;grave&apos; - daño menor a la propiedad no califica.</rdfs:comment>
+        <rdfs:label xml:lang="es">Daño Grave a Propiedad o Medio Ambiente</rdfs:label>
+        <rdfs:label xml:lang="en">Serious Property or Environment Harm</rdfs:label>
+        <skos:closeMatch rdf:resource="https://w3id.org/dpv/risk#MaterialDamage"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://ai-act.eu/ai#ProtectionOfMinors">
         <rdfs:comment xml:lang="en">Special protection for children.</rdfs:comment>
