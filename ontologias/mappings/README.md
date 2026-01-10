@@ -25,7 +25,7 @@ This directory contains formal RDF/OWL mappings between:
 
 ---
 
-## ELI Integration (v0.37.5)
+## ELI Integration
 
 All requirements in this ontology now include **European Legislation Identifier (ELI)** URIs for direct links to EUR-Lex. This enables:
 
@@ -58,7 +58,7 @@ The following EU AI Act requirements are **intentionally not mapped** to ISO 420
 
 **Reason:** Article 5 prohibitions are **absolute legal bans** specific to EU law with no equivalent in ISO 42001 (management system standard) or NIST AI RMF (voluntary risk framework). These are regulatory red lines, not manageable risks.
 
-**Prohibited Practices (v0.37.4):**
+**Prohibited Practices:**
 1. **SubliminalManipulationCriterion** (Art. 5.1.a) - Subliminal manipulation
 2. **VulnerabilityExploitationCriterion** (Art. 5.1.b) - Exploitation of vulnerabilities
 3. **SocialScoringCriterion** (Art. 5.1.c) - Social scoring by public authorities
@@ -478,7 +478,7 @@ from rdflib import Graph
 
 # Load ontology + all mappings
 g = Graph()
-g.parse("ontologias/versions/0.37.2/ontologia-v0.37.2.ttl", format="turtle")
+g.parse("ontologias/versions/0.41.0/ontologia-v0.41.0.ttl", format="turtle")
 g.parse("ontologias/mappings/iso-42001-mappings.ttl", format="turtle")
 g.parse("ontologias/mappings/nist-ai-rmf-mappings.ttl", format="turtle")
 

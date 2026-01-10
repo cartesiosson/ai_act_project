@@ -230,7 +230,7 @@ docker-compose up -d --build reasoner
 - **EU AI Act**: Regulation (EU) 2024/1689
 - **SWRL Specification**: https://www.w3.org/Submission/SWRL/
 - **RDFLib Documentation**: https://rdflib.readthedocs.io/
-- **Ontología AI Act**: `/ontologias/ontologia-v0.36.0.ttl`
+- **Ontología AI Act**: `/ontologias/versions/0.41.0/ontologia-v0.41.0.ttl`
 
 ## 🤝 Contribución
 
@@ -243,6 +243,6 @@ Para contribuir nuevas reglas SWRL:
 
 ---
 
-**Versión**: 1.0  
-**Última Actualización**: Noviembre 2025  
-**Compatibilidad**: EU AI Act v0.36.0
+**Versión**: 1.0
+**Última Actualización**: Enero 2026
+**Compatibilidad**: EU AI Act Ontology v0.41.0

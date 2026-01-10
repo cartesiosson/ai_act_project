@@ -13,7 +13,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
-  <img src="https://img.shields.io/badge/ontology-v0.40.0-purple.svg" alt="Ontology"/>
+  <img src="https://img.shields.io/badge/ontology-v0.41.0-purple.svg" alt="Ontology"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
   <img src="https://img.shields.io/badge/ELI-EUR--Lex-blue.svg" alt="ELI"/>
   <img src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg" alt="License"/>
@@ -78,11 +78,11 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 
 ## 1. Descripción
 
-SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.40.0) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
+SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.41.0) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
 
-### Enfoque Ontology-First (v0.40.0)
+### Enfoque Ontology-First
 
-A partir de la versión 0.40.0, SERAMIS implementa un **enfoque ontology-first** donde:
+SERAMIS implementa un **enfoque ontology-first** donde:
 1. El LLM extrae conceptos semánticos directamente (no keywords)
 2. El código Python valida contra clases definidas en la ontología
 3. Se eliminaron ~150 keywords hardcodeadas en favor de IRIs ontológicas
@@ -381,7 +381,7 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ## 6. Ontología
 
-### 6.0 Versión: 0.40.0
+### 6.0 Versión: 0.41.0
 
 | Propiedad | Valor |
 |-----------|-------|
@@ -392,17 +392,7 @@ curl -X POST http://localhost:8002/forensic/analyze \
 | **Individuos** | 130+ |
 | **Tripletas** | ~2,200 |
 
-### 6.0.1 Historial de Versiones Recientes
-
-| Versión | Fecha | Cambios Principales |
-|---------|-------|---------------------|
-| **0.40.0** | 2025-12-31 | Migración arquitectónica: código usa IRIs ontológicas en lugar de ~150 keywords |
-| **0.39.0** | 2025-12-31 | Scope override detection, `MinorsAffectedContext`, `ContentRecommendation` |
-| **0.38.0** | 2025-12-30 | Article 2 scope exclusions: `ScopeExclusion`, `mayBeExcludedBy`, `overridesExclusion` |
-| **0.37.5** | 2025-12-23 | ELI integration con EUR-Lex URIs |
-| **0.37.4** | 2025-12-15 | Article 5 prohibited practices + OOPS! fixes |
-
-### 6.0.2 Cobertura Regulatoria
+### 6.0.1 Cobertura Regulatoria
 
 - EU AI Act Anexo III (8/8 categorías de alto riesgo)
 - **Artículo 2** (Ámbito de aplicación - exclusiones y overrides)
@@ -413,7 +403,7 @@ curl -X POST http://localhost:8002/forensic/analyze \
 - Shapes SHACL de validación (15 shapes)
 - Reglas de inferencia SWRL
 
-### 6.1 Article 2 Scope Determination (v0.38.0-0.40.0)
+### 6.1 Article 2 Scope Determination
 
 La ontología modela semánticamente el **Artículo 2 (Ámbito de aplicación)** del EU AI Act, permitiendo determinar si un sistema está dentro del ámbito regulatorio mediante consultas SPARQL.
 
@@ -760,9 +750,7 @@ seramis/
 ├── reasoner_service/          # Microservicio de razonamiento SWRL (8001)
 ├── ontologias/                # Archivos de ontología
 │   ├── versions/
-│   │   ├── 0.40.0/            # Semantic scope determination
-│   │   ├── 0.39.0/            # Scope override contexts
-│   │   ├── 0.38.0/            # Article 2 exclusions
+│   │   ├── 0.41.0/            # Versión actual con Art. 3(49) taxonomy
 │   │   └── ...
 │   ├── queries/               # Consultas SPARQL
 │   │   └── forensic-queries.sparql

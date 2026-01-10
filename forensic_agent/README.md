@@ -31,7 +31,7 @@
 El **Forensic Compliance Agent** realiza análisis automatizado post-incidente de sistemas de IA utilizando:
 
 - **Extracción estructurada con LLM** (Ollama + Llama 3.2)
-- **Razonamiento semántico** (SPARQL) sobre la ontología del EU AI Act v0.37.4
+- **Razonamiento semántico** (SPARQL) sobre la ontología del EU AI Act v0.41.0
 - **Análisis multi-framework** (EU AI Act + ISO 42001 + NIST AI RMF + DPV 2.2)
 - **Detección automática de gaps** de cumplimiento
 - **Evidence Planner** con integración W3C DPV para generación de planes de evidencia
@@ -549,7 +549,7 @@ MONGODB_URI=mongodb://mongodb:27017
 FUSEKI_ENDPOINT=http://fuseki:3030
 
 # Ontología
-ONTOLOGY_PATH=/ontologias/versions/0.37.2/ontologia-v0.37.2.ttl
+ONTOLOGY_PATH=/ontologias/versions/0.41.0/ontologia-v0.41.0.ttl
 MAPPINGS_PATH=/ontologias/mappings
 ```
 
@@ -700,7 +700,7 @@ pytest tests/ -v --cov=app --cov-report=html
 
 ## Recursos
 
-- **Ontología EU AI Act:** `/ontologias/versions/0.37.4/`
+- **Ontología EU AI Act:** `/ontologias/versions/0.41.0/`
 - **ISO 42001 Mappings:** `/ontologias/mappings/iso-42001-mappings.ttl`
 - **NIST AI RMF Mappings:** `/ontologias/mappings/nist-ai-rmf-mappings.ttl`
 - **DPV Integration:** `/ontologias/mappings/dpv-integration.ttl`
@@ -729,14 +729,15 @@ Licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
 
 ---
 
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Status:** Operacional
-**Last Updated:** Diciembre 2025
+**Last Updated:** Enero 2026
 
-### Changelog v1.1.0
+### Características de la Ontología v0.41.0
 
+- Taxonomía de incidentes graves Art. 3(49): DeathOrHealthHarm, CriticalInfrastructureDisruption, FundamentalRightsInfringement, PropertyOrEnvironmentHarm
+- Determinación semántica de ámbito de aplicación (Art. 2)
+- Clases `ai:ScopeExclusion` con propiedades `ai:mayBeExcludedBy` y `ai:overridesExclusion`
+- Propiedad `ai:triggersArticle73` para reporte obligatorio de incidentes
 - Integración W3C Data Privacy Vocabulary (DPV) 2.2
-- Nuevo servicio Evidence Planner con 14 requisitos y ~40 items de evidencia
-- Nuevos endpoints: `/forensic/evidence-plan`, `/forensic/analyze-with-evidence-plan`
-- Fix clasificación GPAI (GenerativeAI → HighRisk)
-- Actualizada ontología a v0.37.4
+- Evidence Planner con 14 requisitos y ~40 items de evidencia
