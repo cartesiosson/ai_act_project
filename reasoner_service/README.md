@@ -106,12 +106,84 @@ hasContextualCriterion(system, BiometricSecurity) → hasTechnicalRequirement(sy
 
 #### 3.4 Cadena de Servicios Esenciales
 ```swrl
-hasNormativeCriterion(system, EssentialServicesAccessCriterion) → 
+hasNormativeCriterion(system, EssentialServicesAccessCriterion) →
     hasRequirement(system, HumanOversightRequirement) ∧
     hasRequirement(system, DataGovernanceRequirement) ∧
     hasRequirement(system, FundamentalRightsAssessmentRequirement)
 ```
 **Justificación**: Servicios esenciales requieren supervisión humana, gobernanza de datos y evaluación de derechos fundamentales.
+
+### 4. **Reglas de Ámbito de Aplicación (Art. 2)**
+
+#### 4.1 Regla de Exclusión de Scope
+```swrl
+hasPurpose(system, ?purpose) ∧ mayBeExcludedBy(?purpose, ?exclusion) →
+    hasPotentialScopeExclusion(system, ?exclusion)
+```
+**Justificación**: Artículo 2 del EU AI Act - Ciertos propósitos pueden estar excluidos del ámbito de aplicación.
+
+#### 4.2 Regla de Override de Exclusión
+```swrl
+hasPotentialScopeExclusion(system, ?exclusion) ∧
+hasDeploymentContext(system, ?context) ∧
+overridesExclusion(?context, ?exclusion) →
+    isInEUAIActScope(system, true)
+```
+**Justificación**: Contextos con impacto real (víctimas, consecuencias legales, derechos fundamentales) anulan las exclusiones y traen el sistema de vuelta al ámbito del reglamento.
+
+**Contextos Override definidos:**
+- `ai:CausesRealWorldHarmContext` - Daño real a personas
+- `ai:VictimImpactContext` - Víctimas identificables
+- `ai:AffectsFundamentalRightsContext` - Afecta derechos fundamentales
+- `ai:LegalConsequencesContext` - Consecuencias legales
+- `ai:MinorsAffectedContext` - Menores afectados
+
+### 5. **Reglas de Incidentes Graves (Art. 3(49))**
+
+#### 5.1 Regla de Clasificación de Incidente Grave
+```swrl
+hasIncidentType(system, ?type) ∧ SeriousIncident(?type) →
+    hasSeriousIncidentType(system, ?type)
+```
+**Justificación**: Artículo 3(49) del EU AI Act - Clasificación de incidentes graves según taxonomía.
+
+#### 5.2 Regla de Notificación Obligatoria (Art. 73)
+```swrl
+hasSeriousIncidentType(system, ?type) ∧ triggersArticle73(?type, true) →
+    requiresIncidentNotification(system, true) ∧
+    notificationDeadlineDays(system, 15)
+```
+**Justificación**: Artículo 73 del EU AI Act - Incidentes graves requieren notificación a la autoridad competente en 15 días.
+
+**Tipos de incidente grave (Art. 3(49)):**
+| Tipo | Artículo | Trigger Art. 73 |
+|------|----------|-----------------|
+| `ai:DeathOrHealthHarm` | Art. 3(49)(a) | ✓ |
+| `ai:CriticalInfrastructureDisruption` | Art. 3(49)(b) | ✓ |
+| `ai:FundamentalRightsInfringement` | Art. 3(49)(c) | ✓ |
+| `ai:PropertyOrEnvironmentHarm` | Art. 3(49)(d) | ✓ |
+
+### 6. **Reglas de Affected Persons (Art. 86)**
+
+#### 6.1 Regla de Explicabilidad
+```swrl
+hasSubject(system, ?person) ∧ hasRiskLevel(system, HighRisk) →
+    requiresExplainability(system, true)
+```
+**Justificación**: Artículo 86 del EU AI Act - Sistemas de alto riesgo con personas afectadas requieren explicabilidad.
+
+#### 6.2 Regla de FRIA para Grupos Vulnerables
+```swrl
+hasSubject(system, ?person) ∧ VulnerableGroup(?person) →
+    requiresFundamentalRightsAssessment(system, true)
+```
+**Justificación**: Artículo 27 del EU AI Act - Sistemas que afectan a grupos vulnerables requieren evaluación de impacto en derechos fundamentales (FRIA).
+
+**Grupos vulnerables detectados:**
+- Menores (Minor/Child)
+- Personas mayores (Elderly)
+- Personas con discapacidad (Disabled)
+- Migrantes y solicitantes de asilo (Migrant/Asylum)
 
 ## 🔧 Modo de Evaluación
 
@@ -176,6 +248,32 @@ POST http://localhost:8001/reason
 - `hasTechnicalRequirement: DataEncryption` (regla en cadena)
 - `hasNormativeCriterion: EssentialServicesAccessCriterion` (por contexto)
 - `hasRequirement: HumanOversightRequirement, DataGovernanceRequirement, FundamentalRightsAssessmentRequirement` (regla en cadena)
+
+### Caso 3: Sistema con Incidente Grave (Art. 3(49))
+**Input**:
+```ttl
+<urn:uuid:system3> a ai:IntelligentSystem ;
+    ai:hasPurpose ai:LawEnforcementSupport ;
+    ai:hasIncidentType ai:FundamentalRightsInfringement .
+```
+
+**Inferencias Esperadas**:
+- `hasSeriousIncidentType: FundamentalRightsInfringement` (Art. 3(49)(c))
+- `requiresIncidentNotification: true` (Art. 73)
+- `notificationDeadlineDays: 15` (Art. 73)
+
+### Caso 4: Sistema Excluido con Override (Art. 2)
+**Input**:
+```ttl
+<urn:uuid:system4> a ai:IntelligentSystem ;
+    ai:hasPurpose ai:Entertainment ;
+    ai:hasDeploymentContext ai:VictimImpactContext .
+```
+
+**Inferencias Esperadas**:
+- `hasPotentialScopeExclusion: EntertainmentWithoutRightsImpact` (Art. 2)
+- `isInEUAIActScope: true` (override por VictimImpactContext)
+- `requiresFRIA: true` (Art. 27)
 
 ## 🔍 Debugging y Logs
 

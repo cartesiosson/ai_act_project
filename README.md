@@ -59,14 +59,15 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 - [4. Módulos del Frontend](#4-módulos-del-frontend)
 - [5. Agente Forense](#5-agente-forense)
 - [6. Ontología](#6-ontología)
-  - [6.1 Article 2 Scope Determination](#61-article-2-scope-determination-v0380-0400)
-  - [6.2 Integración AIRO](#62-integración-airo-ai-risk-ontology)
-  - [6.3 Integración DPV](#63-integración-dpv-data-privacy-vocabulary)
-  - [6.4 Razonamiento sobre Affected Persons](#64-razonamiento-sobre-affected-persons-art-86)
-  - [6.5 Integración ELI](#65-integración-eli-european-legislation-identifier)
-  - [6.6 Integración ISO 42001](#66-integración-isoiec-420012023)
-  - [6.7 Integración NIST AI RMF](#67-integración-nist-ai-rmf-10)
-  - [6.8 Mappings Multi-Framework](#68-mappings-multi-framework-resumen)
+  - [6.1 Article 2 Scope Determination](#61-article-2-scope-determination)
+  - [6.2 Taxonomía de Incidentes Graves (Art. 3(49))](#62-taxonomía-de-incidentes-graves-art-349)
+  - [6.3 Integración AIRO](#63-integración-airo-ai-risk-ontology)
+  - [6.4 Integración DPV](#64-integración-dpv-data-privacy-vocabulary)
+  - [6.5 Razonamiento sobre Affected Persons](#65-razonamiento-sobre-affected-persons-art-86)
+  - [6.6 Integración ELI](#66-integración-eli-european-legislation-identifier)
+  - [6.7 Integración ISO 42001](#67-integración-isoiec-420012023)
+  - [6.8 Integración NIST AI RMF](#68-integración-nist-ai-rmf-10)
+  - [6.9 Mappings Multi-Framework](#69-mappings-multi-framework-resumen)
 - [7. Mecanismos de Inferencia](#7-mecanismos-de-inferencia)
 - [8. Stack Tecnológico](#8-stack-tecnológico)
 - [9. Estructura del Proyecto](#9-estructura-del-proyecto)
@@ -297,6 +298,8 @@ El **Forensic AI Agent** (`/forensic`) proporciona análisis forense post-incide
   - Selección de proveedor LLM (Ollama/Anthropic)
 - **Resultados del análisis**:
   - Clasificación de riesgo EU AI Act
+  - Clasificación de incidente grave Art. 3(49) (si aplica)
+  - Indicador de obligación de notificación Art. 73
   - Requisitos aplicables
   - Gaps de cumplimiento
   - Mappings ISO 42001 y NIST AI RMF
@@ -358,6 +361,8 @@ El agente utiliza datos del **AI, Algorithmic, and Automation Incidents and Cont
 | **Extracción LLM** | Usa Ollama (llama3.2:3b) o Anthropic para extraer datos estructurados |
 | **Análisis Multi-Framework** | EU AI Act + ISO 42001 (15 mappings) + NIST AI RMF (18 mappings) + DPV 2.2 |
 | **Clasificación de Riesgo** | Categorización automática según 8 categorías del Anexo III + GPAI |
+| **Clasificación de Incidentes Graves** | Taxonomía Art. 3(49): muerte/salud, infraestructura crítica, derechos fundamentales, propiedad/medio ambiente |
+| **Detección Art. 73** | Identifica automáticamente si el incidente requiere notificación obligatoria (15 días) |
 | **Detección de Brechas** | Identifica requisitos faltantes y calcula ratio de cumplimiento |
 | **Evidence Planner** | Genera planes de evidencia con 14 requisitos y ~40 items de evidencia |
 | **Persistencia Dual** | Guarda en MongoDB + Fuseki RDF para consultas semánticas |
@@ -396,7 +401,9 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 - EU AI Act Anexo III (8/8 categorías de alto riesgo)
 - **Artículo 2** (Ámbito de aplicación - exclusiones y overrides)
+- **Artículo 3(49)** (Taxonomía de incidentes graves)
 - **Artículo 5** (Prácticas Prohibidas - Riesgo Inaceptable)
+- **Artículo 73** (Obligaciones de notificación de incidentes)
 - Artículos 51-55 (requisitos GPAI)
 - Taxonomía de algoritmos (Anexo I)
 - Framework de gobernanza de datos
@@ -438,7 +445,64 @@ ai:isInEUAIActScope     # IntelligentSystem → boolean
 ai:requiresFRIA         # Context → boolean (Art. 27)
 ```
 
-### 6.2 Integración AIRO (AI Risk Ontology)
+### 6.2 Taxonomía de Incidentes Graves (Art. 3(49))
+
+La ontología v0.41.0 modela la definición de **incidente grave** según el Artículo 3(49) del EU AI Act, permitiendo la clasificación automática de incidentes y la determinación de obligaciones de notificación según el Artículo 73.
+
+#### 6.2.1 Jerarquía de Clases de Incidente Grave
+
+```turtle
+ai:SeriousIncident (clase base)
+  ├── ai:DeathOrHealthHarm             [Art. 3(49)(a)]
+  ├── ai:CriticalInfrastructureDisruption [Art. 3(49)(b)]
+  ├── ai:FundamentalRightsInfringement   [Art. 3(49)(c)]
+  └── ai:PropertyOrEnvironmentHarm       [Art. 3(49)(d)]
+```
+
+#### 6.2.2 Tipos de Incidente Grave
+
+| Tipo | Artículo | Descripción | Keywords de Extracción |
+|------|----------|-------------|------------------------|
+| `ai:DeathOrHealthHarm` | Art. 3(49)(a) | Muerte de persona o daño grave a la salud | death, fatal, injury, hospitalized, casualties |
+| `ai:CriticalInfrastructureDisruption` | Art. 3(49)(b) | Interrupción grave de infraestructura crítica | blackout, power grid, transport disruption |
+| `ai:FundamentalRightsInfringement` | Art. 3(49)(c) | Violación de derechos fundamentales UE | discrimination, wrongful arrest, privacy breach |
+| `ai:PropertyOrEnvironmentHarm` | Art. 3(49)(d) | Daño grave a propiedad o medio ambiente | property damage, environmental damage |
+
+#### 6.2.3 Propiedades de Incidente
+
+```turtle
+ai:hasSeriousIncidentType    # IntelligentSystem → SeriousIncident
+ai:indicatorKeywords         # SeriousIncident → xsd:string
+ai:mapsToAIAAICType          # SeriousIncident → xsd:string (ground truth)
+ai:triggersArticle73         # SeriousIncident → xsd:boolean
+```
+
+#### 6.2.4 Integración con DPV-Risk
+
+La taxonomía de incidentes graves se integra con el vocabulario **DPV-Risk** mediante equivalencias semánticas:
+
+| Tipo de Incidente SERAMIS | Concepto DPV-Risk |
+|---------------------------|-------------------|
+| `ai:FundamentalRightsInfringement` | `dpv-risk:RightsImpact` |
+| `ai:DeathOrHealthHarm` | `dpv-risk:PhysicalHarm` |
+| `ai:PropertyOrEnvironmentHarm` | `dpv-risk:MaterialDamage` |
+
+#### 6.2.5 Artículo 73: Obligaciones de Notificación
+
+Todos los tipos de incidente grave activan la propiedad `ai:triggersArticle73 = true`, lo que implica:
+
+- **Plazo de notificación**: 15 días desde el conocimiento del incidente
+- **Destinatario**: Autoridad de vigilancia del mercado competente
+- **Contenido obligatorio**: Identificación del sistema, descripción del incidente, medidas adoptadas
+
+**Inferencia automática:**
+```
+SI sistema tiene hasSeriousIncidentType con triggersArticle73 = true
+   → Sistema requiere notificación obligatoria Art. 73
+   → Plazo: 15 días
+```
+
+### 6.3 Integración AIRO (AI Risk Ontology)
 
 La ontología SERAMIS incorpora compatibilidad con **AIRO** para la gestión de stakeholders según el EU AI Act:
 
@@ -457,7 +521,7 @@ Esta integración permite:
 - **Interoperabilidad**: Compatible con otras ontologías que usen AIRO
 - **Razonamiento sobre Affected Persons**: Inferencia automática de requisitos basados en personas afectadas
 
-### 6.3 Integración DPV (Data Privacy Vocabulary)
+### 6.4 Integración DPV (Data Privacy Vocabulary)
 
 SERAMIS integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** para la generación de planes de evidencia de cumplimiento.
 
@@ -494,7 +558,7 @@ ai:FundamentalRightsAssessmentRequirement
     ai:requiresEvidence ai:FRIAReportEvidence .
 ```
 
-### 6.4 Razonamiento sobre Affected Persons (Art. 86)
+### 6.5 Razonamiento sobre Affected Persons (Art. 86)
 
 El reasoner implementa **4 reglas de inferencia** basadas en la identificación de "Affected Persons" (personas afectadas por decisiones del sistema de IA):
 
@@ -523,7 +587,7 @@ El reasoner implementa **4 reglas de inferencia** basadas en la identificación 
 - `ai:WorkerNotificationRequirement`
 - `ai:Article5ProhibitionReview`
 
-### 6.5 Integración ELI (European Legislation Identifier)
+### 6.6 Integración ELI (European Legislation Identifier)
 
 SERAMIS integra el **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** para proporcionar referencias persistentes y desreferenciables a la legislación oficial en EUR-Lex.
 
@@ -545,7 +609,7 @@ Esta integración permite:
 - **Interoperabilidad**: Estándar EU para referencias legislativas
 - **Auditoría**: Referencias verificables para compliance
 
-### 6.6 Integración ISO/IEC 42001:2023
+### 6.7 Integración ISO/IEC 42001:2023
 
 La ontología incluye **15 mappings bidireccionales** con el estándar de gestión de IA [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html), candidato a estándar armonizado bajo el EU AI Act.
 
@@ -570,7 +634,7 @@ ai:HumanOversightRequirement
     ai:mappingConfidence "HIGH" .
 ```
 
-### 6.7 Integración NIST AI RMF 1.0
+### 6.8 Integración NIST AI RMF 1.0
 
 La ontología incluye **16 mappings** con el [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), cubriendo las 4 funciones principales:
 
@@ -589,7 +653,7 @@ ai:HumanOversightRequirement
     ai:nistApplicabilityContext "GLOBAL_INCIDENTS, COMPARATIVE_ANALYSIS" .
 ```
 
-### 6.8 Mappings Multi-Framework (Resumen)
+### 6.9 Mappings Multi-Framework (Resumen)
 
 | Framework | Tipo | Mappings | Confianza |
 |-----------|------|----------|-----------|
