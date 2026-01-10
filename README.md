@@ -291,7 +291,7 @@ El **Forensic AI Agent** (`/forensic`) proporciona análisis forense post-incide
 - **Selección múltiple**: Permite analizar varios incidentes en lote
 - **Modos de análisis**:
   - *Pipeline Mode*: Flujo determinista de 7 pasos
-  - *ReAct Agent Mode*: Agente autónomo con razonamiento iterativo
+  - *ReAct Agent Mode*: Agente autónomo con razonamiento iterativo (experimental)
 - **Streaming en tiempo real**: Visualización paso a paso del proceso de análisis
 - **Opciones de análisis**:
   - Con/sin plan de evidencias DPV
@@ -816,7 +816,8 @@ seramis/
 │   ├── versions/
 │   │   ├── 0.41.0/            # Versión actual con Art. 3(49) taxonomy
 │   │   └── ...
-│   ├── queries/               # Consultas SPARQL
+│   ├── queries/               # Consultas SPARQL (ver README)
+│   │   ├── README.md          # Catálogo de 15 queries forenses
 │   │   └── forensic-queries.sparql
 │   ├── rules/                 # Reglas SWRL
 │   ├── shacl/                 # 15 SHACL shapes
@@ -886,6 +887,7 @@ get_ontology_stats()            # Estadísticas de la ontología
 - **Apache Jena Fuseki:** https://jena.apache.org/documentation/fuseki2/
 - **OWL 2 Web Ontology Language:** https://www.w3.org/TR/owl2-overview/
 - **SHACL:** https://www.w3.org/TR/shacl/
+- **Catálogo de Queries SPARQL Forenses:** [ontologias/queries/README.md](ontologias/queries/README.md)
 
 ---
 
