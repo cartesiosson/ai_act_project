@@ -81,15 +81,6 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 
 SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.41.0) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
 
-### Enfoque Ontology-First
-
-SERAMIS implementa un **enfoque ontology-first** donde:
-1. El LLM extrae conceptos semánticos directamente (no keywords)
-2. El código Python valida contra clases definidas en la ontología
-3. Se eliminaron ~150 keywords hardcodeadas en favor de IRIs ontológicas
-
-Este enfoque garantiza que toda la lógica de clasificación está definida semánticamente en la ontología, haciendo el sistema más mantenible, auditable y extensible.
-
 ### Características Principales
 
 - **Razonamiento Semántico Híbrido** (SWRL + SHACL) para clasificación automática de riesgo
