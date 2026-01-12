@@ -16,11 +16,27 @@ Distribution based on AIAAIC Issue(s) field analysis:
 
 Note: Percentages sum >100% because incidents can have multiple issues.
 For benchmark, we normalize to 100% using primary issue assignment.
+
+v2.1 Changes (2026-01-11):
+- Added model_scale to templates (FoundationModel, Large, Medium, Small)
+- Added jurisdiction to templates (EU, US, Global)
+- Narratives now include explicit mentions of automated decision-making
+- Ground truth metadata includes all fields required by SystemProperties model
 """
 
 import json
 import random
 from typing import List, Dict
+
+# =============================================================================
+# NEW: Model scale and jurisdiction pools for complete extraction
+# =============================================================================
+
+MODEL_SCALES = ["FoundationModel", "Large", "Medium", "Small"]
+MODEL_SCALE_WEIGHTS = [0.15, 0.35, 0.35, 0.15]  # Weighted distribution
+
+JURISDICTIONS = ["EU", "US", "Global"]
+JURISDICTION_WEIGHTS = [0.4, 0.3, 0.3]  # Favor EU for AI Act relevance
 
 # =============================================================================
 # INCIDENT TEMPLATES - Organized by AIAAIC Issue Categories
@@ -38,9 +54,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "PublicServiceAllocation",
         "incident_type": "transparency_failure",
         "risk_level": "HighRisk",
-        "template": "{system} automated decision system operated without explanation capabilities in {year}. "
-                   "Affected {affected_count} individuals denied {services} with no rationale provided. "
-                   "System lacked audit trails and decision logging required by regulations. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale AI system, operated as a fully automated decision-making system without explanation capabilities in {year}. "
+                   "Deployed in {jurisdiction} jurisdiction, the system affected {affected_count} individuals denied {services} with no rationale provided. "
+                   "The automated system lacked audit trails and decision logging required by regulations. "
                    "{organization} {response_action} after {discovery_method}."
     },
     # 1. Hidden AI Disclosure Failure
@@ -50,9 +67,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "CustomerService",
         "incident_type": "transparency_failure",
         "risk_level": "HighRisk",
-        "template": "{system} customer service AI failed to disclose its non-human nature in {year}. "
-                   "{affected_count} users interacted believing they were communicating with humans. "
-                   "Deployed in {context} violating AI disclosure requirements. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale language model, failed to disclose its non-human nature in {year}. "
+                   "{affected_count} users in {jurisdiction} interacted believing they were communicating with humans. "
+                   "The automated AI system was deployed in {context} violating AI disclosure requirements. "
                    "{organization} {response_action} and {regulatory_response}."
     },
     # 2. Training Data Opacity
@@ -62,8 +80,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentGeneration",
         "incident_type": "transparency_failure",
         "risk_level": "HighRisk",
-        "template": "{system} generative AI system failed to document training data sources in {year}. "
-                   "Model trained on undisclosed datasets potentially containing {data_types}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale generative AI system operating in {jurisdiction}, failed to document training data sources in {year}. "
+                   "The automated model trained on undisclosed datasets potentially containing {data_types}. "
                    "No transparency reports provided despite regulatory requirements. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -74,9 +93,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "HealthcareDecision",
         "incident_type": "transparency_failure",
         "risk_level": "HighRisk",
-        "template": "{system} healthcare prioritization algorithm provided no explanations for decisions in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale healthcare AI deployed in {jurisdiction}, provided no explanations for its automated decisions in {year}. "
                    "Patients and doctors could not understand why {affected_count} cases were deprioritized. "
-                   "System operated as black box in {context}. "
+                   "The fully automated system operated as black box in {context}. "
                    "{organization} {response_action} after {discovery_method}."
     },
     # 4. Opaque Credit Decision
@@ -86,9 +106,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "CreditScoring",
         "incident_type": "transparency_failure",
         "risk_level": "HighRisk",
-        "template": "{system} credit scoring system denied {affected_count} applications without explanation in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale automated credit scoring system in {jurisdiction}, denied {affected_count} applications without explanation in {year}. "
                    "Applicants received no information about factors affecting their scores. "
-                   "System processed {data_types} with {decision_type}. "
+                   "The automated system processed {data_types} with {decision_type}. "
                    "{organization} {response_action} and {regulatory_response}."
     },
     # 5. Undisclosed AI Content
@@ -98,9 +119,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentGeneration",
         "incident_type": "transparency_failure",
         "risk_level": "HighRisk",
-        "template": "{system} AI-generated content published without disclosure in {year}. "
-                   "{affected_count} articles distributed as human-written content. "
-                   "Readers unaware of AI involvement in {context}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale language model, published AI-generated content without disclosure in {year}. "
+                   "{affected_count} articles distributed as human-written content in {jurisdiction}. "
+                   "Readers unaware of automated AI involvement in {context}. "
                    "{organization} {response_action} after {discovery_method}."
     },
 
@@ -115,8 +137,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "BiometricIdentification",
         "incident_type": "accuracy_failure",
         "risk_level": "HighRisk",
-        "template": "{system} facial recognition system misidentified {affected_count} individuals in {year}. "
-                   "False matches led to wrongful detentions in {context}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale biometric AI system deployed in {jurisdiction}, misidentified {affected_count} individuals in {year}. "
+                   "The automated facial recognition led to wrongful detentions in {context}. "
                    "System accuracy for {affected_group} was {error_rate}% lower than claimed. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -127,7 +150,8 @@ INCIDENT_TEMPLATES = [
         "purpose": "HealthcareDecision",
         "incident_type": "accuracy_failure",
         "risk_level": "HighRisk",
-        "template": "{system} medical diagnosis AI produced incorrect results for {affected_count} patients in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale medical AI operating in {jurisdiction}, produced incorrect automated diagnoses for {affected_count} patients in {year}. "
                    "Misdiagnosis rate was {error_rate}% higher than manufacturer claims. "
                    "Errors occurred primarily for {affected_group} in {context}. "
                    "{organization} {response_action} after {discovery_method}."
@@ -139,9 +163,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "LawEnforcementSupport",
         "incident_type": "accuracy_failure",
         "risk_level": "HighRisk",
-        "template": "{system} predictive policing system generated unreliable predictions in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale predictive policing AI in {jurisdiction}, generated unreliable automated predictions in {year}. "
                    "False positive rate of {error_rate}% led to over-policing of {affected_group} communities. "
-                   "System deployed in {context} with {oversight}. "
+                   "The automated system deployed in {context} with {oversight}. "
                    "{organization} {response_action} after {discovery_method}."
     },
     # 9. Autonomous Vehicle Perception Failure
@@ -151,8 +176,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "AutonomousVehicle",
         "incident_type": "accuracy_failure",
         "risk_level": "HighRisk",
-        "template": "{system} autonomous vehicle failed to correctly detect {hazard} in {year}. "
-                   "Perception system error rate increased {error_rate}% in {conditions}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale autonomous driving AI deployed in {jurisdiction}, failed to correctly detect {hazard} in {year}. "
+                   "The automated perception system error rate increased {error_rate}% in {conditions}. "
                    "Incident affected {affected_count} road users. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -163,7 +189,8 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentModeration",
         "incident_type": "accuracy_failure",
         "risk_level": "HighRisk",
-        "template": "{system} content moderation system incorrectly flagged {affected_count} legitimate posts in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale content moderation AI in {jurisdiction}, incorrectly flagged {affected_count} legitimate posts through automated decisions in {year}. "
                    "False positive rate for {affected_group} content was {error_rate}% higher. "
                    "Appeals process inadequate with {oversight}. "
                    "{organization} {response_action} after {discovery_method}."
@@ -175,7 +202,8 @@ INCIDENT_TEMPLATES = [
         "purpose": "Translation",
         "incident_type": "accuracy_failure",
         "risk_level": "HighRisk",
-        "template": "{system} translation system produced critical errors in {context} in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale translation AI deployed in {jurisdiction}, produced critical automated translation errors in {context} in {year}. "
                    "Mistranslations affected {affected_count} users with {error_rate}% error rate. "
                    "Errors particularly severe for {affected_group} languages. "
                    "{organization} {response_action} after {discovery_method}."
@@ -192,9 +220,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "SurveillanceMonitoring",
         "incident_type": "privacy_violation",
         "risk_level": "HighRisk",
-        "template": "{system} mass surveillance system collected data on {affected_count} individuals without consent in {year}. "
-                   "Facial recognition deployed in {context} capturing {data_types}. "
-                   "No legal basis established for data collection. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale surveillance AI deployed in {jurisdiction}, automatically collected data on {affected_count} individuals without consent in {year}. "
+                   "Automated facial recognition deployed in {context} capturing {data_types}. "
+                   "No legal basis established for automated data collection. "
                    "{organization} {response_action} and {regulatory_response}."
     },
     # 13. Voice Assistant Privacy
@@ -204,9 +233,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "PersonalAssistant",
         "incident_type": "privacy_violation",
         "risk_level": "HighRisk",
-        "template": "{system} voice assistant recorded private conversations of {affected_count} users in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale voice AI operating in {jurisdiction}, automatically recorded private conversations of {affected_count} users in {year}. "
                    "Audio data processed by contractors without user awareness. "
-                   "Recordings included {data_types} from private settings. "
+                   "The automated system captured recordings including {data_types} from private settings. "
                    "{organization} {response_action} after {discovery_method}."
     },
     # 14. Location Tracking
@@ -216,8 +246,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "SurveillanceMonitoring",
         "incident_type": "privacy_violation",
         "risk_level": "HighRisk",
-        "template": "{system} location tracking collected movement data from {affected_count} users without consent in {year}. "
-                   "System tracked users across {context} storing {data_types}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale tracking AI in {jurisdiction}, automatically collected movement data from {affected_count} users without consent in {year}. "
+                   "The automated system tracked users across {context} storing {data_types}. "
                    "Data shared with third parties without user knowledge. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -228,9 +259,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "BiometricIdentification",
         "incident_type": "privacy_violation",
         "risk_level": "HighRisk",
-        "template": "{system} collected biometric data from {affected_count} individuals without consent in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale biometric AI deployed in {jurisdiction}, automatically collected biometric data from {affected_count} individuals without consent in {year}. "
                    "Facial images scraped from {platform} and stored indefinitely. "
-                   "System used for {decision_type} in {context}. "
+                   "The automated system used for {decision_type} in {context}. "
                    "{organization} {response_action} and {regulatory_response}."
     },
     # 16. Employee Monitoring
@@ -240,8 +272,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "WorkforceMonitoring",
         "incident_type": "privacy_violation",
         "risk_level": "HighRisk",
-        "template": "{system} employee monitoring system tracked {affected_count} workers without proper notice in {year}. "
-                   "System captured {data_types} including keystrokes and screen activity. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale workplace AI in {jurisdiction}, automatically tracked {affected_count} workers without proper notice in {year}. "
+                   "The automated system captured {data_types} including keystrokes and screen activity. "
                    "Deployed in {context} with {oversight}. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -257,8 +290,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "AutonomousVehicle",
         "incident_type": "safety_failure",
         "risk_level": "HighRisk",
-        "template": "{system} autonomous vehicle caused {accident_type} in {year}. "
-                   "Algorithm failed to detect {hazard} in {conditions}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale autonomous driving AI deployed in {jurisdiction}, caused {accident_type} in {year}. "
+                   "The automated algorithm failed to detect {hazard} in {conditions}. "
                    "Resulted in {severity} injuries to {affected_count} people. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -269,8 +303,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "HealthcareDecision",
         "incident_type": "safety_failure",
         "risk_level": "HighRisk",
-        "template": "{system} AI-powered medical device malfunctioned affecting {affected_count} patients in {year}. "
-                   "System provided incorrect dosage recommendations with {error_rate}% error rate. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale medical AI operating in {jurisdiction}, malfunctioned affecting {affected_count} patients in {year}. "
+                   "The automated system provided incorrect dosage recommendations with {error_rate}% error rate. "
                    "Used in {context} for {decision_type}. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -281,8 +316,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "IndustrialAutomation",
         "incident_type": "safety_failure",
         "risk_level": "HighRisk",
-        "template": "{system} industrial robot caused workplace injury to {affected_count} workers in {year}. "
-                   "Safety system failed to detect human presence in {conditions}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale industrial AI deployed in {jurisdiction}, caused workplace injury to {affected_count} workers in {year}. "
+                   "The automated safety system failed to detect human presence in {conditions}. "
                    "Incident occurred in {context} with {oversight}. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -293,8 +329,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "AutonomousVehicle",
         "incident_type": "safety_failure",
         "risk_level": "HighRisk",
-        "template": "{system} autonomous drone caused incident affecting {affected_count} people in {year}. "
-                   "Navigation system failed in {conditions} near {context}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale autonomous drone AI in {jurisdiction}, caused incident affecting {affected_count} people in {year}. "
+                   "The automated navigation system failed in {conditions} near {context}. "
                    "Resulted in {severity} damage and injuries. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -305,8 +342,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "MentalHealthSupport",
         "incident_type": "safety_failure",
         "risk_level": "HighRisk",
-        "template": "{system} AI chatbot provided harmful advice to {affected_count} vulnerable users in {year}. "
-                   "System failed to recognize crisis situations in {context}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale mental health AI deployed in {jurisdiction}, provided harmful automated advice to {affected_count} vulnerable users in {year}. "
+                   "The automated system failed to recognize crisis situations in {context}. "
                    "Responses potentially endangered {affected_group}. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -322,8 +360,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "EmploymentDecision",
         "incident_type": "bias",
         "risk_level": "HighRisk",
-        "template": "{system} hiring algorithm discriminated against {affected_group} in {year}. "
-                   "System rejected qualified candidates at {error_rate}% higher rate. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale hiring AI deployed in {jurisdiction}, discriminated against {affected_group} through automated decisions in {year}. "
+                   "The automated system rejected qualified candidates at {error_rate}% higher rate. "
                    "Algorithm trained on biased historical data for {context}. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -334,8 +373,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "BiometricIdentification",
         "incident_type": "bias",
         "risk_level": "HighRisk",
-        "template": "{system} facial recognition exhibited racial bias in {year}. "
-                   "Misidentified {affected_group} at rates {error_rate}% higher than {baseline_group}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale biometric AI operating in {jurisdiction}, exhibited racial bias in automated identifications in {year}. "
+                   "The automated system misidentified {affected_group} at rates {error_rate}% higher than {baseline_group}. "
                    "Deployed in {context} with {decision_type}. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -346,8 +386,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "CreditScoring",
         "incident_type": "bias",
         "risk_level": "HighRisk",
-        "template": "{system} credit scoring showed bias against {affected_group} in {year}. "
-                   "Denied applications at {error_rate}% higher rate for equivalent profiles. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale credit AI in {jurisdiction}, showed bias against {affected_group} in automated credit decisions in {year}. "
+                   "The automated system denied applications at {error_rate}% higher rate for equivalent profiles. "
                    "System processed {data_types} with {decision_type}. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -358,8 +399,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "HealthcareDecision",
         "incident_type": "bias",
         "risk_level": "HighRisk",
-        "template": "{system} healthcare algorithm systematically disadvantaged {affected_group} in {year}. "
-                   "Risk scores for {affected_group} were {error_rate}% less accurate. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale healthcare AI deployed in {jurisdiction}, systematically disadvantaged {affected_group} through automated decisions in {year}. "
+                   "Automated risk scores for {affected_group} were {error_rate}% less accurate. "
                    "Led to delayed care for {affected_count} patients. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -375,8 +417,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentGeneration",
         "incident_type": "misinformation",
         "risk_level": "HighRisk",
-        "template": "{system} generated deepfake political content that spread to {affected_count} viewers in {year}. "
-                   "Synthetic media falsely depicted public figures in {context}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale generative AI system operating in {jurisdiction}, automatically generated deepfake political content that spread to {affected_count} viewers in {year}. "
+                   "The automated synthetic media falsely depicted public figures in {context}. "
                    "Content spread on {platform} before detection. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -387,8 +430,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentGeneration",
         "incident_type": "misinformation",
         "risk_level": "HighRisk",
-        "template": "{system} generated fake news articles viewed by {affected_count} people in {year}. "
-                   "AI-created content mimicked legitimate journalism in {context}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale language model deployed in {jurisdiction}, automatically generated fake news articles viewed by {affected_count} people in {year}. "
+                   "The automated AI-created content mimicked legitimate journalism in {context}. "
                    "Disinformation spread on {platform} affecting public discourse. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -399,9 +443,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "InformationRetrieval",
         "incident_type": "misinformation",
         "risk_level": "HighRisk",
-        "template": "{system} AI chatbot generated false information for {affected_count} users in {year}. "
-                   "System hallucinated facts about {context} with high confidence. "
-                   "Users relied on incorrect information for {decision_type}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale conversational AI operating in {jurisdiction}, automatically generated false information for {affected_count} users in {year}. "
+                   "The automated system hallucinated facts about {context} with high confidence. "
+                   "Users relied on incorrect automated information for {decision_type}. "
                    "{organization} {response_action} after {discovery_method}."
     },
     # 29. Synthetic Audio Scam
@@ -411,8 +456,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentGeneration",
         "incident_type": "misinformation",
         "risk_level": "HighRisk",
-        "template": "{system} voice cloning used to impersonate executives defrauding {affected_count} in {year}. "
-                   "Synthetic audio enabled fraudulent wire transfers in {context}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale voice synthesis AI deployed in {jurisdiction}, was used to automatically impersonate executives defrauding {affected_count} in {year}. "
+                   "The automated synthetic audio enabled fraudulent wire transfers in {context}. "
                    "Victims lost significant funds before detection. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -428,8 +474,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentGeneration",
         "incident_type": "copyright",
         "risk_level": "HighRisk",
-        "template": "{system} AI trained on copyrighted content from {affected_count} creators without authorization in {year}. "
-                   "Data harvested from {platform} included protected works. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale generative AI operating in {jurisdiction}, was trained on copyrighted content from {affected_count} creators without authorization in {year}. "
+                   "Automated data harvesting from {platform} included protected works. "
                    "Creators received no compensation or attribution. "
                    "{organization} {response_action} after {discovery_method}."
     },
@@ -440,8 +487,9 @@ INCIDENT_TEMPLATES = [
         "purpose": "ContentGeneration",
         "incident_type": "copyright",
         "risk_level": "HighRisk",
-        "template": "{system} generative AI reproduced copyrighted works affecting {affected_count} creators in {year}. "
-                   "Outputs substantially similar to protected content. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale generative AI deployed in {jurisdiction}, automatically reproduced copyrighted works affecting {affected_count} creators in {year}. "
+                   "Automated outputs substantially similar to protected content. "
                    "Distributed on {platform} causing economic harm. "
                    "{organization} {response_action} and {regulatory_response}."
     },
@@ -457,9 +505,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "EmailFiltering",
         "incident_type": "accuracy_failure",
         "risk_level": "MinimalRisk",
-        "template": "{system} spam filter incorrectly classified {affected_count} legitimate emails in {year}. "
+        "is_automated_decision": True,
+        "template": "{system}, a {model_scale}-scale email AI deployed in {jurisdiction}, incorrectly classified {affected_count} legitimate emails through automated filtering in {year}. "
                    "Users reported missing important communications. "
-                   "System lacked clear explanation for decisions. "
+                   "The automated system lacked clear explanation for decisions. "
                    "{organization} {response_action}."
     },
     # 33. Game AI
@@ -469,9 +518,10 @@ INCIDENT_TEMPLATES = [
         "purpose": "Entertainment",
         "incident_type": "bias",
         "risk_level": "MinimalRisk",
-        "template": "{system} video game AI exhibited unexpected behavior in {year}. "
+        "is_automated_decision": False,
+        "template": "{system}, a {model_scale}-scale game AI operating in {jurisdiction}, exhibited unexpected automated behavior in {year}. "
                    "NPC characters showed preference patterns affecting {affected_count} players. "
-                   "Gameplay experience impacted but no real-world harm. "
+                   "Gameplay experience impacted but no real-world harm from this entertainment system. "
                    "{organization} {response_action}."
     },
 ]
@@ -579,10 +629,17 @@ def generate_incident(incident_id: int, template_idx: int = None) -> Dict:
     organization = random.choice(ORGANIZATIONS)
     year = random.randint(2018, 2025)
 
+    # NEW: Generate model_scale and jurisdiction for complete extraction
+    model_scale = random.choices(MODEL_SCALES, weights=MODEL_SCALE_WEIGHTS)[0]
+    jurisdiction = random.choices(JURISDICTIONS, weights=JURISDICTION_WEIGHTS)[0]
+    is_automated_decision = template.get("is_automated_decision", True)
+
     narrative = template["template"].format(
         system=system_name,
         organization=organization,
         year=year,
+        model_scale=model_scale,
+        jurisdiction=jurisdiction,
         affected_group=random.choice(AFFECTED_GROUPS),
         baseline_group=random.choice(BASELINE_GROUPS),
         error_rate=random.randint(15, 45),
@@ -605,7 +662,7 @@ def generate_incident(incident_id: int, template_idx: int = None) -> Dict:
     return {
         "id": f"BENCH-{incident_id:04d}",
         "narrative": narrative,
-        "source": "Synthetic Benchmark v2 (AIAAIC-aligned)",
+        "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
         "metadata": {
             "benchmark_id": incident_id,
             "template_type": template["incident_type"],
@@ -613,7 +670,11 @@ def generate_incident(incident_id: int, template_idx: int = None) -> Dict:
             "purpose": template["purpose"],
             "expected_risk_level": template["risk_level"],
             "generated_year": year,
-            "organization": organization
+            "organization": organization,
+            # NEW: Complete ground truth for all required SystemProperties fields
+            "expected_model_scale": model_scale,
+            "expected_jurisdiction": jurisdiction,
+            "expected_is_automated_decision": is_automated_decision
         }
     }
 
@@ -677,7 +738,7 @@ def generate_benchmark_dataset(n_incidents: int = 50) -> List[Dict]:
 
 
 if __name__ == "__main__":
-    print("Generating 50 synthetic AI incidents (v2 - AIAAIC-aligned)...")
+    print("Generating 50 synthetic AI incidents (v2.1 - AIAAIC-aligned with complete ground truth)...")
     incidents = generate_benchmark_dataset(50)
 
     output_file = "benchmark_incidents_v2.json"
@@ -690,11 +751,17 @@ if __name__ == "__main__":
     # Print statistics
     template_counts = {}
     risk_counts = {}
+    model_scale_counts = {}
+    jurisdiction_counts = {}
     for incident in incidents:
         t = incident["metadata"]["template_type"]
         r = incident["metadata"]["expected_risk_level"]
+        m = incident["metadata"]["expected_model_scale"]
+        j = incident["metadata"]["expected_jurisdiction"]
         template_counts[t] = template_counts.get(t, 0) + 1
         risk_counts[r] = risk_counts.get(r, 0) + 1
+        model_scale_counts[m] = model_scale_counts.get(m, 0) + 1
+        jurisdiction_counts[j] = jurisdiction_counts.get(j, 0) + 1
 
     print("\nIncident type distribution:")
     for incident_type, count in sorted(template_counts.items(), key=lambda x: x[1], reverse=True):
@@ -705,3 +772,13 @@ if __name__ == "__main__":
     for risk_level, count in sorted(risk_counts.items()):
         pct = count / len(incidents) * 100
         print(f"  {risk_level}: {count} ({pct:.1f}%)")
+
+    print("\nModel scale distribution:")
+    for scale, count in sorted(model_scale_counts.items()):
+        pct = count / len(incidents) * 100
+        print(f"  {scale}: {count} ({pct:.1f}%)")
+
+    print("\nJurisdiction distribution:")
+    for jur, count in sorted(jurisdiction_counts.items()):
+        pct = count / len(incidents) * 100
+        print(f"  {jur}: {count} ({pct:.1f}%)")

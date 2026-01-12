@@ -1,0 +1,61 @@
+{
+  "benchmark_version": "v2",
+  "benchmark_type": "SYNTHETIC",
+  "distribution_source": "AIAAIC-aligned (normalized)",
+  "timestamp": "2026-01-11T01:52:59.030841",
+  "summary": {
+    "total_incidents": 50,
+    "successful": 36,
+    "low_confidence": 0,
+    "failed": 14,
+    "success_rate": 72.0
+  },
+  "performance": {
+    "mean_time": 65.8610942694876,
+    "median_time": 64.57018256187439,
+    "min_time": 60.91924691200256,
+    "max_time": 75.05227613449097,
+    "stdev_time": 3.6791372466646832
+  },
+  "quality": {
+    "mean_confidence": 0.8118518518518518,
+    "median_confidence": 0.7966666666666667,
+    "min_confidence": 0.7566666666666666,
+    "max_confidence": 0.9166666666666666,
+    "stdev_confidence": 0.042061515377334456
+  },
+  "risk_distribution": {
+    "OutOfScope": 2,
+    "HighRisk": 33,
+    "Unacceptable": 1
+  },
+  "expected_risk_distribution": {
+    "HighRisk": 48,
+    "MinimalRisk": 2
+  },
+  "incident_distribution": {
+    "accuracy_failure": 6,
+    "appropriation": 1,
+    "privacy_violation": 8,
+    "transparency_failure": 4,
+    "misinformation": 4,
+    "bias": 11,
+    "safety_failure": 2
+  },
+  "errors": [
+    "BENCH-0013: Unknown",
+    "BENCH-0028: Unknown",
+    "BENCH-0024: Unknown",
+    "BENCH-0003: Unknown",
+    "BENCH-0004: Unknown",
+    "BENCH-0026: Unknown",
+    "BENCH-0017: Unknown",
+    "BENCH-0050: Unknown",
+    "BENCH-0016: Unknown",
+    "BENCH-0015: Unknown",
+    "BENCH-0001: Unknown",
+    "BENCH-0046: Unknown",
+    "BENCH-0047: Unknown",
+    "BENCH-0040: Unknown"
+  ]
+}
