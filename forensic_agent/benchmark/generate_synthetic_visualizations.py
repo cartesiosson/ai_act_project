@@ -5,7 +5,6 @@ Synthetic Benchmark Visualization Generator
 Generates KPI charts and Confusion Matrices for synthetic benchmark evaluation.
 Includes both STRICT (exact match) and FLEXIBLE (semantic match) evaluations.
 
-Author: TFM EU AI Act Compliance
 Date: January 2026
 """
 

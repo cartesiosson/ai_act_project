@@ -2,7 +2,7 @@
 
 v0.40.0: Migrated to semantic SPARQL-based scope determination.
 Scope exclusions and overrides are now queried from the ontology instead of
-hardcoded keyword dictionaries. This aligns with the TFM's ontology-first approach.
+hardcoded keyword dictionaries. 
 
 The ontology (v0.39.0+) models Article 2 scope determination:
 - ai:ScopeExclusion: Article 2 exclusions (PersonalNonProfessionalUse, EntertainmentWithoutRightsImpact, etc.)

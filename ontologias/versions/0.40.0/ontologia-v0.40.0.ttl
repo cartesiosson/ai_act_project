@@ -22,7 +22,6 @@
 #     * ai:MinorsAffectedContext, ai:BiometricProcessingContext
 #   - BENEFIT: Ontology-first approach - code references ontology IRIs, not ad-hoc keywords
 #   - BENCHMARK: 100% success rate maintained after migration (5/5 cases)
-#   - TFM ALIGNMENT: Fulfills thesis objective of semantic compliance classification
 #   - NOTE: Ontology structure unchanged from v0.39.0; this version documents code migration
 #
 # v0.39.0 (2025-12-31) - SCOPE OVERRIDE DETECTION & CONTENT RECOMMENDATION:

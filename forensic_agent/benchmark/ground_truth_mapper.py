@@ -4,7 +4,6 @@ Ground Truth Mapper for AIAAIC to EU AI Act
 Maps AIAAIC Repository taxonomy to EU AI Act ontology categories,
 handling multi-label scenarios with priority-based primary type selection.
 
-Reference: TFM Section "El problema del ground-truth entre AIAAIC y EU AI Act"
 """
 
 from typing import Dict, List, Optional, Tuple

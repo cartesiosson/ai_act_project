@@ -24,7 +24,6 @@
 #   - PURPOSE: Enable forensic classification of incidents per EU AI Act taxonomy
 #   - BENEFIT: Ontology-driven incident classification, eliminates hardcoded incident_type list
 #   - INTEGRATION: Maps to DPV-Risk concepts (dpv-risk:PhysicalHarm, dpv-risk:RightsImpact)
-#   - TFM: Supports benchmark evaluation against AIAAIC ground truth
 #
 # v0.40.0 (2025-12-31) - SEMANTIC SCOPE DETERMINATION MIGRATION:
 #   - ARCHITECTURAL: Migrated sparql_queries.py from keyword-based to semantic scope determination
@@ -36,7 +35,6 @@
 #     * ai:MinorsAffectedContext, ai:BiometricProcessingContext
 #   - BENEFIT: Ontology-first approach - code references ontology IRIs, not ad-hoc keywords
 #   - BENCHMARK: 100% success rate maintained after migration (5/5 cases)
-#   - TFM ALIGNMENT: Fulfills thesis objective of semantic compliance classification
 #   - NOTE: Ontology structure unchanged from v0.39.0; this version documents code migration
 #
 # v0.39.0 (2025-12-31) - SCOPE OVERRIDE DETECTION & CONTENT RECOMMENDATION:

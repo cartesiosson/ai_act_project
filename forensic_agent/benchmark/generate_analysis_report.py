@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Benchmark Analysis Report Generator
-Generates confusion matrix, classification metrics, and detailed analysis for TFM.
+Generates confusion matrix, classification metrics, and detailed analysis.
 """
 
 import json
@@ -346,9 +346,8 @@ def main():
     # Save JSON report
     save_report_json(per_class_metrics, macro, micro, weighted, patterns, risk_confusion)
 
-    # Key findings for TFM
     print("\n" + "=" * 80)
-    print("KEY FINDINGS FOR TFM")
+    print("KEY FINDINGS")
     print("=" * 80)
     print()
     print("1. INCIDENT TYPE CLASSIFICATION:")
