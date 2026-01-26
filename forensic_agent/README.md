@@ -3,23 +3,23 @@
 > **Sistema de análisis forense post-incidente de sistemas de IA con múltiples frameworks regulatorios**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version"/>
-  <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
+  <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/EU%20AI%20Act-v0.41.0-green.svg" alt="EU AI Act"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
+  <img src="https://img.shields.io/badge/Llama-3.2:3B-purple.svg" alt="Llama"/>
 </p>
 
 ## Tabla de Contenidos
 
 - [Overview](#overview)
 - [Arquitectura](#arquitectura)
-- [Evidence Planner (Nuevo v1.1)](#evidence-planner-nuevo-v11)
+- [Evidence Planner](#evidence-planner)
 - [Flujo de Inferencia](#flujo-de-inferencia)
 - [Quick Start](#quick-start)
 - [Instalación](#instalación)
 - [Uso de la API](#uso-de-la-api)
 - [Configuración](#configuración)
 - [Features](#features)
-- [Testing](#testing)
 - [Performance](#performance)
 - [Troubleshooting](#troubleshooting)
 - [Desarrollo](#desarrollo)
@@ -30,24 +30,27 @@
 
 El **Forensic Compliance Agent** realiza análisis automatizado post-incidente de sistemas de IA utilizando:
 
-- **Extracción estructurada con LLM** (Ollama + Llama 3.2)
-- **Razonamiento semántico** (SPARQL) sobre la ontología del EU AI Act v0.37.4
+- **Extracción estructurada con LLM** (Llama 3.2:3B vía Ollama)
+- **Razonamiento semántico** (SPARQL vía MCP) sobre la ontología EU AI Act v0.41.0
 - **Análisis multi-framework** (EU AI Act + ISO 42001 + NIST AI RMF + DPV 2.2)
 - **Detección automática de gaps** de cumplimiento
 - **Evidence Planner** con integración W3C DPV para generación de planes de evidencia
+- **Streaming SSE** para análisis en tiempo real con visibilidad de cada paso
 - **Persistencia dual** (MongoDB + Apache Jena Fuseki)
 
 ### Capacidades Principales
 
 | Capacidad | Descripción |
 |-----------|-------------|
-| **Extracción LLM** | Extrae propiedades estructuradas de narrativas de incidentes |
+| **Extracción LLM** | Extrae propiedades estructuradas de narrativas con Llama 3.2:3B |
 | **Clasificación de Riesgo** | Determina nivel de riesgo según EU AI Act (HighRisk, LimitedRisk, MinimalRisk) |
+| **Incidentes Graves Art. 3(49)** | Clasifica incidentes según taxonomía: DeathOrHealthHarm, CriticalInfrastructureDisruption, FundamentalRightsInfringement, PropertyOrEnvironmentHarm |
 | **Requisitos Obligatorios** | Identifica requisitos basados en propósito, contexto y datos procesados |
 | **ISO 42001** | Mapea a 15 controles de certificación |
-| **NIST AI RMF** | Mapea a 18 funciones del framework |
-| **DPV 2.2** | Integración con W3C Data Privacy Vocabulary para medidas de compliance |
+| **NIST AI RMF** | Mapea a 16 funciones del framework |
+| **DPV 2.2** | Integración con W3C Data Privacy Vocabulary (14 mappings) |
 | **Evidence Planner** | Genera planes de evidencia con 14 requisitos y ~40 items de evidencia |
+| **Streaming SSE** | Visibilidad en tiempo real del proceso de análisis |
 | **Gap Detection** | Detecta gaps críticos de compliance |
 | **Reportes Forenses** | Genera reportes completos en markdown |
 | **Persistencia** | Guarda análisis en MongoDB y RDF en Fuseki |
@@ -63,26 +66,27 @@ flowchart TB
     end
 
     subgraph Agent["Forensic Agent :8002"]
-        IE[Incident Extractor<br/>LLM + Ollama]
-        AE[Analysis Engine<br/>Multi-Framework]
+        IE[Incident Extractor<br/>Llama 3.2:3B]
+        AE[Analysis Engine<br/>7-Step Pipeline]
         EP[Evidence Planner<br/>DPV Integration]
         MC[MCP Client<br/>SPARQL Tools]
         PS[Persistence Service<br/>MongoDB + Fuseki]
     end
 
     subgraph Data["Data Layer"]
-        MG[(MongoDB :27017<br/>Documents)]
+        MG[(MongoDB :27017<br/>forensic_db)]
         FK[(Fuseki :3030<br/>RDF/SPARQL)]
     end
 
     subgraph Services["External Services"]
-        OL[Ollama :11434<br/>Llama 3.2]
+        OL[Ollama :11434<br/>Llama 3.2:3B]
         MCP[MCP Server :8080<br/>FastMCP 2.0]
     end
 
-    FA -->|POST /forensic/analyze| IE
+    FA -->|POST /forensic/analyze-stream| AE
+    AE -->|SSE Events| FA
+    AE --> IE
     IE -->|Extract| OL
-    IE --> AE
     AE --> EP
     AE --> MC
     MC -->|MCP Protocol| MCP
@@ -101,17 +105,41 @@ flowchart TB
 
 | Componente | Puerto | Descripción |
 |------------|--------|-------------|
-| **Forensic Agent** | 8002 | API REST FastAPI |
+| **Forensic Agent** | 8002 | API REST FastAPI con streaming SSE |
 | **MCP Server** | 8080 | Model Context Protocol (SPARQL tools) |
-| **Ollama** | 11434 | Runtime LLM local |
-| **MongoDB** | 27017 | Persistencia de documentos |
+| **Ollama** | 11434 | Llama 3.2:3B para extracción LLM |
+| **MongoDB** | 27017 | Persistencia de documentos (forensic_db) |
 | **Fuseki** | 3030 | Almacenamiento RDF/SPARQL |
+
+### Servicios Internos
+
+```mermaid
+flowchart LR
+    subgraph Services["app/services/"]
+        IE[IncidentExtractorService<br/>incident_extractor.py]
+        AE[ForensicAnalysisEngine<br/>analysis_engine.py]
+        SQ[ForensicSPARQLService<br/>sparql_queries.py]
+        EP[EvidencePlannerService<br/>evidence_planner.py]
+        PS[PersistenceService<br/>persistence.py]
+    end
+
+    IE --> AE
+    SQ --> AE
+    AE --> EP
+    AE --> PS
+
+    style IE fill:#ef4444,color:#fff
+    style AE fill:#8b5cf6,color:#fff
+    style SQ fill:#3b82f6,color:#fff
+    style EP fill:#10b981,color:#fff
+    style PS fill:#f59e0b,color:#fff
+```
 
 ---
 
-## Evidence Planner (Nuevo v1.1)
+## Evidence Planner
 
-El **Evidence Planner** es un nuevo servicio que genera planes de evidencia para remediar gaps de compliance identificados durante el análisis forense. Utiliza mappings basados en el **W3C Data Privacy Vocabulary (DPV) 2.2**.
+El **Evidence Planner** genera planes de evidencia para remediar gaps de compliance identificados durante el análisis forense. Utiliza mappings basados en el **W3C Data Privacy Vocabulary (DPV) 2.2**.
 
 ### ¿Qué es DPV?
 
@@ -175,101 +203,92 @@ curl -X POST http://localhost:8002/forensic/evidence-plan \
   }'
 ```
 
-**Response:**
-```json
-{
-  "plan_id": "EP-20251214-abc123",
-  "system_name": "Facial Recognition System",
-  "summary": {
-    "total_requirements": 2,
-    "total_evidence_items": 7,
-    "by_priority": {"critical": 3, "high": 2, "medium": 2},
-    "by_evidence_type": {"PolicyEvidence": 2, "TechnicalEvidence": 3, "AuditEvidence": 2}
-  },
-  "requirement_plans": [
-    {
-      "requirement_uri": "http://ai-act.eu/ai#HumanOversightRequirement",
-      "requirement_label": "Human Oversight Requirement",
-      "article_reference": "Article 14",
-      "priority": "critical",
-      "dpv_measures": ["dpv:HumanInvolvement", "dpv:Review"],
-      "evidence_items": [...]
-    }
-  ],
-  "recommendations": [
-    "Prioritize critical evidence items for high-risk system",
-    "Establish document control procedures"
-  ]
-}
-```
-
-### Análisis Combinado
-
-Para obtener análisis forense + plan de evidencia en una sola llamada:
-
-```bash
-curl -X POST http://localhost:8002/forensic/analyze-with-evidence-plan \
-  -H "Content-Type: application/json" \
-  -d '{
-    "narrative": "Sistema de reconocimiento facial utilizado por la policía...",
-    "source": "AIAAIC"
-  }'
-```
-
 ---
 
 ## Flujo de Inferencia
 
-### Secuencia de Análisis Completo
+### Pipeline de 7 Pasos
+
+El análisis forense sigue un pipeline estructurado de 7 pasos:
+
+```mermaid
+flowchart TB
+    subgraph Pipeline["Analysis Pipeline"]
+        S1[1. Extracción LLM<br/>Llama 3.2:3B]
+        S2[2. EU AI Act<br/>Requisitos Obligatorios]
+        S3[3. ISO 42001<br/>Mappings]
+        S4[4. NIST AI RMF<br/>Mappings]
+        S5[5. Compliance Gaps<br/>Análisis]
+        S6[6. Inference Rules<br/>Reglas Aplicables]
+        S7[7. Forensic Report<br/>Generación]
+    end
+
+    S1 --> S2
+    S2 --> S3
+    S3 --> S4
+    S4 --> S5
+    S5 --> S6
+    S6 --> S7
+
+    style S1 fill:#ef4444,color:#fff
+    style S2 fill:#3b82f6,color:#fff
+    style S3 fill:#10b981,color:#fff
+    style S4 fill:#8b5cf6,color:#fff
+    style S5 fill:#f59e0b,color:#fff
+    style S6 fill:#ec4899,color:#fff
+    style S7 fill:#06b6d4,color:#fff
+```
+
+### Secuencia de Análisis con Streaming
 
 ```mermaid
 sequenceDiagram
     participant U as Frontend
     participant API as FastAPI :8002
     participant IE as IncidentExtractor
-    participant LLM as Ollama/Llama3.2
+    participant OL as Ollama Llama 3.2
     participant AE as AnalysisEngine
-    participant MCP as MCP Server :8080
+    participant MCP as MCP Client
     participant FK as Fuseki :3030
     participant PS as Persistence
     participant MG as MongoDB
 
-    U->>API: POST /forensic/analyze
-    Note over API: {narrative, source, metadata}
+    U->>API: POST /forensic/analyze-stream
+    Note over API: SSE Connection Established
 
     API->>IE: extract(narrative)
-    IE->>LLM: Prompt estructurado
-    LLM-->>IE: JSON con propiedades extraídas
-    IE-->>API: SystemExtraction + confidence
+    API-->>U: SSE: STEP_START (1/7)
+    API-->>U: SSE: LLM_PROMPT
+    IE->>OL: Ollama Generate API
+    Note over OL: model: llama3.2:3b<br/>temperature: 0.1
+    OL-->>IE: JSON estructurado
+    API-->>U: SSE: LLM_RESPONSE
+    IE-->>API: ExtractedIncident + confidence
+    API-->>U: SSE: STEP_COMPLETE (1/7)
 
     API->>AE: analyze(extraction)
 
-    par EU AI Act Analysis
-        AE->>MCP: call_tool(query_ontology)
-        MCP->>FK: SPARQL: criterios por propósito
-        FK-->>MCP: Criterios activados
-        MCP-->>AE: Results
-    and ISO 42001 Analysis
-        AE->>MCP: call_tool(query_iso_mappings)
-        MCP->>FK: SPARQL: mappings ISO 42001
-        FK-->>MCP: 15 controles mapeados
-        MCP-->>AE: Results
-    and NIST AI RMF Analysis
-        AE->>MCP: call_tool(query_nist_mappings)
-        MCP->>FK: SPARQL: mappings NIST
-        FK-->>MCP: 18 funciones mapeadas
-        MCP-->>AE: Results
+    loop Steps 2-6 (EU AI Act, ISO, NIST, Gaps, Rules)
+        API-->>U: SSE: STEP_START
+        AE->>MCP: call_tool(query_*)
+        API-->>U: SSE: SPARQL_QUERY
+        MCP->>FK: SPARQL Query
+        FK-->>MCP: Results
+        MCP-->>AE: Parsed Results
+        API-->>U: SSE: SPARQL_RESULT
+        API-->>U: SSE: STEP_COMPLETE
     end
 
-    AE->>AE: Calcular gaps de compliance
-    AE->>AE: Generar reporte forense
+    API-->>U: SSE: STEP_START (7/7)
+    AE->>AE: Generate Report
     AE-->>API: ForensicAnalysisResult
+    API-->>U: SSE: STEP_COMPLETE (7/7)
 
     API->>PS: persist(result)
-    PS->>MG: Guardar documento JSON
+    PS->>MG: Insert document
     PS->>FK: INSERT RDF triples
 
-    API-->>U: Response completa
+    API-->>U: SSE: ANALYSIS_COMPLETE
 ```
 
 ### Flujo de Extracción LLM
@@ -277,33 +296,35 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant IE as IncidentExtractor
-    participant PP as PromptBuilder
-    participant LLM as Ollama API
+    participant PB as PromptBuilder
+    participant OL as Ollama API
     participant VP as Validator
 
-    IE->>PP: build_prompt(narrative)
-    PP->>PP: Construir system prompt
-    PP->>PP: Añadir ontology context
-    PP->>PP: Definir JSON schema
-    PP-->>IE: Prompt completo
+    IE->>PB: _build_extraction_prompt(narrative)
+    PB->>PB: Construir system prompt
+    PB->>PB: Añadir ontology context (v0.41.0)
+    PB->>PB: Definir JSON schema
+    PB->>PB: Incluir Art. 3(49) taxonomy
+    PB->>PB: Incluir Art. 5 prohibited practices
+    PB-->>IE: Prompt completo
 
-    IE->>LLM: POST /api/generate
-    Note over LLM: model: llama3.2<br/>temperature: 0.1<br/>format: json
+    IE->>OL: POST /api/generate
+    Note over OL: model: llama3.2:3b<br/>temperature: 0.1<br/>num_predict: 4096
 
-    LLM-->>IE: Raw JSON response
+    OL-->>IE: Raw JSON response
 
-    IE->>VP: validate(response)
+    IE->>VP: _parse_llm_response(response)
+    VP->>VP: Clean markdown artifacts
     VP->>VP: Parse JSON
-    VP->>VP: Validar campos requeridos
-    VP->>VP: Normalizar valores ontología
-    VP->>VP: Calcular confidence scores
+    VP->>VP: Normalize list fields
+    VP->>VP: Validate incident_type
+    VP->>VP: Normalize serious_incident_type
+    VP-->>IE: ExtractedIncident
 
-    alt Validación exitosa
-        VP-->>IE: SystemExtraction válido
-    else Validación fallida
-        VP-->>IE: Error + retry hint
-        IE->>LLM: Retry con prompt mejorado
-    end
+    IE->>IE: _compute_confidence()
+    Note over IE: Ontology-weighted scoring:<br/>PURPOSE_WEIGHT = 2.0<br/>DEPLOYMENT_WEIGHT = 1.5<br/>DATA_TYPES_WEIGHT = 1.5
+
+    IE-->>IE: ExtractionConfidence
 ```
 
 ### Flujo de Clasificación de Riesgo
@@ -311,38 +332,35 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant AE as AnalysisEngine
-    participant MCP as MCP Server :8080
+    participant MCP as MCP Client
     participant FK as Fuseki :3030
-    participant CL as Classifier
+    participant CL as Risk Classifier
 
-    AE->>MCP: call_tool(determine_risk_level)
-    MCP->>FK: SPARQL: propósitos del sistema
-    FK-->>MCP: [BiometricIdentification, ...]
-    MCP-->>AE: purposes
+    AE->>MCP: query_mandatory_requirements()
+    Note over AE: purpose, contexts, data_types,<br/>performs_profiling, narrative,<br/>scope_override_contexts
 
-    AE->>MCP: call_tool(query_ontology)
-    MCP->>FK: SPARQL: contextos de despliegue
-    FK-->>MCP: [LawEnforcement, PublicSpaces, ...]
-    MCP-->>AE: contexts
+    MCP->>FK: SPARQL: Risk Level Query
+    Note over FK: SELECT ?riskLevel WHERE {<br/>  ?purpose ai:expectedRiskLevel ?riskLevel<br/>}
+    FK-->>MCP: [HighRisk, LimitedRisk, ...]
+    MCP-->>AE: risk_level
 
-    AE->>CL: classify(purposes, contexts, data_types)
+    MCP->>FK: SPARQL: Criteria by Purpose
+    FK-->>MCP: Activated criteria
+    MCP-->>AE: criteria[]
 
-    CL->>CL: Evaluar criterios Anexo III
-    Note over CL: 8 categorías de alto riesgo
+    AE->>CL: Evaluate Annex III Categories
+    Note over CL: 8 high-risk categories:<br/>Biometric, Critical Infrastructure,<br/>Education, Employment, etc.
 
-    CL->>CL: Unión de criterios activados
-
-    alt Criterios HighRisk activados
-        CL-->>AE: HighRisk + criterios[]
-    else Solo transparencia requerida
+    alt HighRisk criteria activated
+        CL-->>AE: HighRisk + criteria[]
+    else Transparency required only
         CL-->>AE: LimitedRisk
-    else Sin criterios especiales
+    else No special criteria
         CL-->>AE: MinimalRisk
     end
 
-    AE->>MCP: call_tool(get_requirements_for_system)
-    MCP->>FK: SPARQL: requisitos por nivel
-    FK-->>MCP: Requisitos obligatorios
+    AE->>MCP: SPARQL: Requirements by Risk Level
+    FK-->>MCP: Mandatory requirements
     MCP-->>AE: requirements[]
 ```
 
@@ -356,21 +374,22 @@ sequenceDiagram
     participant RDF as RDFBuilder
 
     PS->>MG: Insert forensic_systems
-    Note over MG: Documento completo JSON<br/>con análisis y metadatos
-    MG-->>PS: ObjectId confirmado
+    Note over MG: Collection: forensic_db.forensic_systems
+    MG-->>PS: ObjectId confirmed
 
     PS->>RDF: build_triples(analysis)
-    RDF->>RDF: Crear URN sistema
-    RDF->>RDF: Añadir propiedades
-    RDF->>RDF: Añadir clasificación
-    RDF->>RDF: Añadir requisitos
+    RDF->>RDF: Generate URN
+    RDF->>RDF: Add system properties
+    RDF->>RDF: Add risk classification
+    RDF->>RDF: Add requirements
+    RDF->>RDF: Add serious_incident_type
     RDF-->>PS: Turtle string
 
-    PS->>FK: POST /ai-act/data
-    Note over FK: INSERT DATA { triples }
-    FK-->>PS: Success
+    PS->>FK: POST /ds/data
+    Note over FK: INSERT DATA with RDF triples
+    FK-->>PS: 200 OK
 
-    PS-->>PS: Sync confirmado
+    PS-->>PS: Sync confirmed
 ```
 
 ---
@@ -380,28 +399,22 @@ sequenceDiagram
 ### Requisitos
 
 - Docker y Docker Compose
-- 8GB RAM disponible
-- ~2GB espacio en disco para el modelo LLM
+- 8GB RAM disponible (para Ollama + Llama 3.2:3B)
 
 ### Paso 1: Levantar servicios
 
 ```bash
-# Levantar Fuseki, Ollama y Forensic Agent
-docker-compose up -d fuseki ollama forensic_agent
+# Levantar Fuseki, MongoDB, Ollama y Forensic Agent
+docker-compose up -d fuseki mongo ollama forensic_agent
 
 # Ver logs
 docker-compose logs -f forensic_agent
 ```
 
-### Paso 2: Inicializar Ollama
-
-Espera ~30 segundos a que Ollama esté listo, luego descarga el modelo:
+### Paso 2: Inicializar modelo Llama
 
 ```bash
-# Hacer el script ejecutable (solo primera vez)
-chmod +x forensic_agent/init_ollama.sh
-
-# Descargar modelo Llama 3.2 (~2GB)
+# Descargar modelo Llama 3.2:3B (~2GB)
 bash forensic_agent/init_ollama.sh
 ```
 
@@ -415,10 +428,19 @@ curl http://localhost:8002/health
 ```json
 {
   "status": "healthy",
-  "llm_provider": "ollama",
-  "llm_model": "llama3.2",
-  "fuseki_connected": true,
-  "mongodb_connected": true
+  "services": {
+    "extractor": "operational",
+    "sparql": "operational",
+    "analysis_engine": "operational"
+  },
+  "llm": {
+    "provider": "ollama",
+    "model": "llama3.2:3b"
+  },
+  "mcp": {
+    "connected": true,
+    "stats": {...}
+  }
 }
 ```
 
@@ -442,9 +464,9 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ```bash
 # Build y run
-docker-compose up -d fuseki ollama forensic_agent
+docker-compose up -d fuseki mongo ollama forensic_agent
 
-# Inicializar modelo LLM
+# Inicializar modelo Llama
 bash forensic_agent/init_ollama.sh
 ```
 
@@ -456,7 +478,10 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# Asegúrate de tener Fuseki y Ollama corriendo
+# Asegurar que Ollama está corriendo con el modelo
+ollama pull llama3.2:3b
+
+# Ejecutar
 uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 ```
 
@@ -468,16 +493,21 @@ uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
+| GET | `/` | Info del servicio |
 | GET | `/health` | Estado del servicio |
-| POST | `/forensic/analyze` | Analizar incidente |
+| POST | `/forensic/analyze` | Analizar incidente (sync) |
+| POST | `/forensic/analyze-stream` | Analizar incidente (SSE streaming) |
 | POST | `/forensic/analyze-with-evidence-plan` | Analizar + generar plan de evidencias |
+| POST | `/forensic/analyze-stream-with-evidence-plan` | Analizar + plan (SSE streaming) |
 | POST | `/forensic/evidence-plan` | Generar plan de evidencias desde gaps |
 | GET | `/forensic/systems` | Listar sistemas analizados |
 | GET | `/forensic/systems/{urn}` | Obtener análisis específico |
 | DELETE | `/forensic/systems/{urn}` | Eliminar análisis |
 | GET | `/forensic/stats` | Estadísticas del servicio |
 
-### POST /forensic/analyze
+### POST /forensic/analyze-stream
+
+Endpoint recomendado con streaming SSE para visibilidad en tiempo real.
 
 **Request:**
 ```json
@@ -491,32 +521,52 @@ uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 }
 ```
 
+**SSE Events:**
+```
+data: {"event_type": "STEP_START", "step_number": 1, "step_name": "Extracting incident properties", ...}
+data: {"event_type": "LLM_PROMPT", "step_number": 1, "message": {...}, ...}
+data: {"event_type": "LLM_RESPONSE", "step_number": 1, "message": {...}, ...}
+data: {"event_type": "STEP_COMPLETE", "step_number": 1, "progress_percent": 14.3, ...}
+...
+data: {"event_type": "ANALYSIS_COMPLETE", "step_name": "Complete", "data": {...}, "progress_percent": 100.0}
+```
+
+### POST /forensic/analyze
+
 **Response:**
 ```json
 {
   "status": "COMPLETED",
-  "urn": "urn:forensic:uuid-here",
+  "analysis_timestamp": "2026-01-10T12:00:00Z",
   "extraction": {
-    "system_name": "Amazon Rekognition",
-    "system_type": "vision",
-    "primary_purpose": "BiometricIdentification",
-    "deployment_context": ["LawEnforcement"],
-    "processes_data_types": ["BiometricData"],
+    "system": {
+      "system_name": "Amazon Rekognition",
+      "system_type": "vision",
+      "primary_purpose": "BiometricIdentification",
+      "deployment_context": ["LawEnforcementContext"],
+      "processes_data_types": ["BiometricData"]
+    },
+    "incident": {
+      "incident_type": "bias",
+      "serious_incident_type": ["FundamentalRightsInfringement"],
+      "severity": "high"
+    },
     "confidence": {
       "overall": 0.87
     }
   },
   "eu_ai_act": {
     "risk_level": "HighRisk",
-    "criteria": ["BiometricIdentificationCriterion"],
-    "requirements": [...]
+    "criteria": ["BiometricIdentificationCriterion", "LawEnforcementCriterion"],
+    "requirements": [...],
+    "total_requirements": 7
   },
   "iso_42001": {
     "total_mapped": 15,
     "mappings": [...]
   },
   "nist_ai_rmf": {
-    "total_mapped": 18,
+    "total_mapped": 16,
     "mappings": [...]
   },
   "compliance_gaps": {
@@ -524,7 +574,12 @@ uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
     "implemented": 2,
     "missing": 5,
     "compliance_ratio": 0.29,
-    "severity": "CRITICAL"
+    "severity": "CRITICAL",
+    "critical_gaps": [...]
+  },
+  "persisted": {
+    "success": true,
+    "urn": "urn:forensic:uuid-here"
   }
 }
 ```
@@ -536,30 +591,28 @@ uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 ### Variables de Entorno
 
 ```bash
-# Puerto del servicio
-FORENSIC_PORT=8002
-
 # LLM Provider
 LLM_PROVIDER=ollama
 OLLAMA_ENDPOINT=http://ollama:11434
-OLLAMA_MODEL=llama3.2
+OLLAMA_MODEL=llama3.2:3b
+
+# MCP Server (SPARQL)
+MCP_SERVER_URL=http://mcp_sparql:8080
 
 # Persistencia
-MONGODB_URI=mongodb://mongodb:27017
+MONGODB_URI=mongodb://mongo:27017
 FUSEKI_ENDPOINT=http://fuseki:3030
 
 # Ontología
-ONTOLOGY_PATH=/ontologias/versions/0.37.2/ontologia-v0.37.2.ttl
+ONTOLOGY_PATH=/ontologias/versions/0.41.0/ontologia-v0.41.0.ttl
 MAPPINGS_PATH=/ontologias/mappings
 ```
 
-### Modelos Ollama Disponibles
+### Modelo LLM
 
-| Modelo | Parámetros | RAM | Velocidad | Calidad |
-|--------|------------|-----|-----------|---------|
-| **llama3.2** | 3B | 6-8GB | 15-25s | Recomendado |
-| llama3.2:1b | 1B | 4-6GB | 8-15s | Básica |
-| mistral | 7B | 10-12GB | 30-60s | Alta |
+| Proveedor | Modelo | Uso | Notas |
+|-----------|--------|-----|-------|
+| **Ollama** | llama3.2:3b | Extracción LLM | Local, sin costo API, ~2GB |
 
 ---
 
@@ -569,16 +622,20 @@ MAPPINGS_PATH=/ontologias/mappings
 
 - Propiedades del sistema (tipo, propósito, datos, contexto)
 - Clasificación del incidente (tipo, severidad, poblaciones afectadas)
+- **Incidentes Graves Art. 3(49):** DeathOrHealthHarm, CriticalInfrastructureDisruption, FundamentalRightsInfringement, PropertyOrEnvironmentHarm
+- **Prácticas Prohibidas Art. 5:** SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification
+- **Excepciones Legales Art. 5.2:** VictimSearchException, TerroristThreatException, SeriousCrimeException
 - Timeline (descubrimiento, impacto, resolución)
 - Respuesta organizacional (acciones, mejoras)
-- Confidence scoring en 6 dimensiones
+- Confidence scoring ontology-weighted (6 dimensiones)
 
 ### 2. Análisis EU AI Act
 
-- Clasificación de riesgo automática
+- Clasificación de riesgo automática (v0.41.0)
 - Identificación de criterios Anexo III
 - Requisitos obligatorios por nivel de riesgo
 - Detección de gaps de compliance
+- Análisis de stakeholders (AIRO-aligned)
 
 ### 3. Cross-Framework Analysis
 
@@ -586,7 +643,7 @@ MAPPINGS_PATH=/ontologias/mappings
 - Secciones 5.1, 8.1-8.7, 9.1-9.2, 10.1
 - Confidence levels: High, Medium, Partial
 
-**NIST AI RMF (18 mappings):**
+**NIST AI RMF (16 mappings):**
 - Funciones: GOVERN, MAP, MEASURE, MANAGE
 - Jurisdiction-aware (US/Global/EU)
 
@@ -603,9 +660,15 @@ MAPPINGS_PATH=/ontologias/mappings
 - Recomendaciones contextuales por nivel de riesgo
 - Output en JSON o Markdown
 
-### 5. Persistencia Dual
+### 5. Streaming SSE
 
-- **MongoDB:** Documentos JSON completos
+- Visibilidad en tiempo real de cada paso
+- Eventos: STEP_START, LLM_PROMPT, LLM_RESPONSE, SPARQL_QUERY, SPARQL_RESULT, STEP_COMPLETE, ANALYSIS_COMPLETE, ERROR
+- Progress tracking (0-100%)
+
+### 6. Persistencia Dual
+
+- **MongoDB:** Documentos JSON completos (forensic_db.forensic_systems)
 - **Fuseki:** Triples RDF para consultas SPARQL
 - Sincronización automática
 
@@ -619,13 +682,14 @@ MAPPINGS_PATH=/ontologias/mappings
 |---------|-------|
 | Tiempo de análisis | 15-30s |
 | Confidence extracción | 70-85% |
-| Throughput | 3-4 incidentes/min |
+| Throughput | 2-4 incidentes/min |
 | API Availability | >99% |
 
 ### Costos
 
-- **Ollama (local):** $0 por incidente
-- Único costo: Hardware (8GB RAM recomendado)
+| Proveedor | Costo por análisis |
+|-----------|-------------------|
+| **Ollama (local)** | $0 |
 
 ---
 
@@ -640,16 +704,24 @@ docker-compose logs ollama
 
 # Reiniciar
 docker-compose restart ollama
-```
 
-### Modelo no encontrado
-
-```bash
-# Listar modelos
+# Verificar modelo disponible
 curl http://localhost:11434/api/tags
 
-# Reinstalar
-bash forensic_agent/init_ollama.sh
+# Probar generación
+curl http://localhost:11434/api/generate \
+  -d '{"model": "llama3.2:3b", "prompt": "Hello", "stream": false}'
+```
+
+### MCP Server no conecta
+
+```bash
+# Verificar estado
+docker-compose ps mcp_sparql
+docker-compose logs mcp_sparql
+
+# Reiniciar
+docker-compose restart mcp_sparql
 ```
 
 ### Fuseki no responde
@@ -668,19 +740,26 @@ docker-compose logs fuseki
 ```
 forensic_agent/
 ├── app/
-│   ├── main.py                    # FastAPI application
+│   ├── __init__.py
+│   ├── main.py                    # FastAPI application + endpoints
 │   ├── models/
-│   │   ├── incident.py            # Modelos de extracción
-│   │   └── forensic_report.py     # Modelos de análisis
+│   │   ├── __init__.py
+│   │   ├── incident.py            # ExtractedIncident, SystemProperties
+│   │   └── forensic_report.py     # StreamEvent, ForensicAnalysisResult
 │   └── services/
-│       ├── __init__.py            # Exports de servicios
-│       ├── incident_extractor.py  # Extracción LLM
-│       ├── analysis_engine.py     # Análisis multi-framework
-│       ├── evidence_planner.py    # Evidence Planner (DPV) ← NUEVO
-│       ├── sparql_queries.py      # Consultas SPARQL via MCP
+│       ├── __init__.py            # Service exports
+│       ├── incident_extractor.py  # Llama LLM extraction
+│       ├── analysis_engine.py     # 7-step analysis pipeline
+│       ├── evidence_planner.py    # DPV evidence planning
+│       ├── sparql_queries.py      # MCP SPARQL client
 │       └── persistence.py         # MongoDB + Fuseki
+├── benchmark/                     # Benchmark scripts
 ├── tests/
-├── init_ollama.sh                 # Script inicialización
+│   ├── __init__.py
+│   ├── sample_incidents.py
+│   ├── test_extraction.py
+│   ├── test_analysis.py
+│   └── test_sparql.py
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
@@ -700,7 +779,7 @@ pytest tests/ -v --cov=app --cov-report=html
 
 ## Recursos
 
-- **Ontología EU AI Act:** `/ontologias/versions/0.37.4/`
+- **Ontología EU AI Act:** `/ontologias/versions/0.41.0/`
 - **ISO 42001 Mappings:** `/ontologias/mappings/iso-42001-mappings.ttl`
 - **NIST AI RMF Mappings:** `/ontologias/mappings/nist-ai-rmf-mappings.ttl`
 - **DPV Integration:** `/ontologias/mappings/dpv-integration.ttl`
@@ -718,7 +797,7 @@ Agradecemos a **Charlie Pownall** y al equipo de AIAAIC por su trabajo en la rec
 - **AIAAIC Repository:** https://www.aiaaic.org/aiaaic-repository
 - **GitHub:** https://github.com/AIAAIC/AIAAIC-Repository
 
-Este proyecto ha sido desarrollado con la asistencia de **Claude Sonnet** (Anthropic), utilizado como herramienta de desarrollo para la generación de código y documentación.
+Este proyecto ha sido desarrollado con la asistencia de **Claude** (Anthropic), utilizado como herramienta de desarrollo para la generación de código y documentación.
 
 ---
 
@@ -729,14 +808,10 @@ Licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
 
 ---
 
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Status:** Operacional
-**Last Updated:** Diciembre 2025
+**Last Updated:** Enero 2026
 
-### Changelog v1.1.0
+---
 
-- Integración W3C Data Privacy Vocabulary (DPV) 2.2
-- Nuevo servicio Evidence Planner con 14 requisitos y ~40 items de evidencia
-- Nuevos endpoints: `/forensic/evidence-plan`, `/forensic/analyze-with-evidence-plan`
-- Fix clasificación GPAI (GenerativeAI → HighRisk)
-- Actualizada ontología a v0.37.4
+*Authors: David Fernández González and Mariano Ortega de Mues* | *Directors: Xiomara Patricia Blanco Valencia and Sergio Castillo* | *Universidad Internacional de La Rioja (UNIR)*

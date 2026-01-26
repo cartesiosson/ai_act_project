@@ -4,7 +4,6 @@ import json
 import os
 from typing import Optional
 from datetime import datetime
-import anthropic
 import httpx
 
 from ..models.incident import (
@@ -23,32 +22,17 @@ class IncidentExtractorService:
     using LLM with structured output prompting
     """
 
-    def __init__(self, llm_provider: str = "anthropic", api_key: Optional[str] = None,
-                 ollama_endpoint: Optional[str] = None, ollama_model: Optional[str] = None):
+    def __init__(self, ollama_endpoint: Optional[str] = None, ollama_model: Optional[str] = None):
         """
-        Initialize with LLM provider
+        Initialize with Ollama LLM provider
 
         Args:
-            llm_provider: "anthropic" (Claude) or "ollama" (Llama)
-            api_key: API key for Anthropic (if None, reads from env)
             ollama_endpoint: Ollama endpoint URL (default: http://localhost:11434)
-            ollama_model: Ollama model name (default: llama3.2)
+            ollama_model: Ollama model name (default: llama3.2:3b)
         """
-        self.llm_provider = llm_provider
-
-        if llm_provider == "anthropic":
-            api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-            if not api_key:
-                raise ValueError("ANTHROPIC_API_KEY not found in environment")
-
-            self.client = anthropic.Anthropic(api_key=api_key)
-            self.model = "claude-sonnet-4-5-20250929"
-        elif llm_provider == "ollama":
-            self.ollama_endpoint = ollama_endpoint or os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434")
-            self.model = ollama_model or os.getenv("OLLAMA_MODEL", "llama3.2")
-            self.client = httpx.AsyncClient(timeout=120.0)
-        else:
-            raise ValueError(f"Unsupported LLM provider: {llm_provider}")
+        self.ollama_endpoint = ollama_endpoint or os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434")
+        self.model = ollama_model or os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+        self.client = httpx.AsyncClient(timeout=120.0)
 
     async def extract_incident(self, narrative: str) -> ExtractedIncident:
         """
@@ -95,7 +79,7 @@ Extract the following information in JSON format:
   "system": {{
     "system_name": "Name of the AI system",
     "system_type": "vision|nlp|tabular|multimodal|other",
-    "primary_purpose": "REQUIRED - Main purpose. MUST be one of these EU AI Act ontology values: BiometricIdentification, LawEnforcementSupport, MigrationControl, EducationAccess, RecruitmentOrEmployment, WorkforceEvaluationPurpose, CriticalInfrastructureOperation, HealthCare, JudicialDecisionSupport, PublicServiceAllocation, GenerativeAIContentCreation, SurveillanceMonitoring. Choose the closest match. Use CriticalInfrastructureOperation for autonomous vehicles, robots, drones, weapons, Tesla, autopilot. Use SurveillanceMonitoring for smart home devices, cameras, doorbells, tracking. Use GenerativeAIContentCreation for AI art, chatbots, LLMs, deepfakes.",
+    "primary_purpose": "REQUIRED - Main purpose. MUST be one of these EU AI Act ontology values: BiometricIdentification, LawEnforcementSupport, MigrationControl, EducationAccess, RecruitmentOrEmployment, WorkforceEvaluationPurpose, CriticalInfrastructureOperation, HealthCare, JudicialDecisionSupport, PublicServiceAllocation, GenerativeAIContentCreation, SurveillanceMonitoring, ContentRecommendation, Entertainment. Choose the closest match. Use CriticalInfrastructureOperation for autonomous vehicles, robots, drones, weapons, Tesla, autopilot. Use SurveillanceMonitoring for smart home devices, cameras, doorbells, tracking. Use GenerativeAIContentCreation for AI art, chatbots, LLMs, deepfakes. Use ContentRecommendation for recommendation algorithms, social media feeds, TikTok For You, YouTube recommendations, news feeds. Use Entertainment for video games, gaming AI, NPCs.",
     "processes_data_types": ["BiometricData", "PersonalData", "HealthData", "LocationData", "FinancialData", etc.],
     "deployment_context": ["PublicSpaces", "HighVolume", "RealTime", "CriticalInfrastructure", "EducationContext", "EmploymentContext", "LawEnforcementContext", "HealthcareContext", "MigrationContext", etc.],
     "is_automated_decision": true/false,
@@ -110,10 +94,15 @@ Extract the following information in JSON format:
     "prohibited_practices": ["List of Article 5 prohibited practices if detected: SubliminalManipulation, VulnerabilityExploitation, SocialScoring, PredictivePolicing, RealTimeBiometricIdentification. Leave empty if none detected."],
     "legal_exceptions": ["If RealTimeBiometricIdentification is detected, check for legal exceptions: VictimSearchException, TerroristThreatException, SeriousCrimeException. Otherwise empty."],
     "has_judicial_authorization": true/false/null "Only relevant if real-time biometric ID with exceptions. Does the narrative mention judicial/court authorization?",
-    "performs_profiling": true/false "Does the system perform profiling of natural persons? (Art. 6.3 EU AI Act - automatic risk escalation to HighRisk if true). Profiling = automated processing of personal data to evaluate, analyze or predict aspects concerning natural person's performance at work, economic situation, health, preferences, interests, reliability, behavior, location or movements."
+    "performs_profiling": true/false "Does the system perform profiling of natural persons? (Art. 6.3 EU AI Act - automatic risk escalation to HighRisk if true). Profiling = automated processing of personal data to evaluate, analyze or predict aspects concerning natural person's performance at work, economic situation, health, preferences, interests, reliability, behavior, location or movements.",
+    "scope_override_contexts": ["CRITICAL FOR SCOPE DETERMINATION - List all that apply: CausesRealWorldHarmContext (if death, injury, suicide, physical harm occurred), VictimImpactContext (if identifiable victims were harmed), AffectsFundamentalRightsContext (if right to life, dignity, privacy, non-discrimination were violated), LegalConsequencesContext (if legal proceedings, arrests, lawsuits resulted), MinorsAffectedContext (if children/teenagers under 18 were affected)"],
+    "causes_death_or_injury": true/false "STRICT Art. 3(49)(a) - Did this incident cause DEATH OF A PERSON or SERIOUS DAMAGE TO A PERSON'S HEALTH? Only TRUE for: death, suicide, physical injury to humans, hospitalization, bodily harm. FALSE for: financial loss, property damage, copyright infringement, reputational harm, emotional distress without physical manifestation, environmental damage.",
+    "affects_minors": true/false "CRITICAL - Were minors (persons under 18 years old) affected? Keywords: child, children, minor, teenager, teen, student, 16 years old, young person, kid",
+    "affects_vulnerable_groups": true/false "Were vulnerable groups affected? Keywords: elderly, disabled, disability, homeless, economically disadvantaged, mental health"
   }},
   "incident": {{
-    "incident_type": "discrimination|bias|safety_failure|privacy_violation|transparency_failure|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other",
+    "incident_type": "discrimination|bias|safety_failure|accuracy_failure|privacy_violation|transparency_failure|misinformation|data_leakage|adversarial_attack|model_poisoning|unauthorized_access|appropriation|copyright|other",
+    "serious_incident_type": ["List of EU AI Act Art. 3(49) serious incident types that apply: DeathOrHealthHarm, CriticalInfrastructureDisruption, FundamentalRightsInfringement, PropertyOrEnvironmentHarm. Multiple types can apply. Empty list if none apply."],
     "severity": "critical|high|medium|low",
     "affected_populations": ["List of affected groups"],
     "affected_count": number or null,
@@ -165,16 +154,54 @@ IMPORTANT EXTRACTION RULES:
     - PublicServiceAllocation: credit scoring, social benefits, insurance, welfare
     - GenerativeAIContentCreation: AI art, chatbots, LLMs, deepfakes, synthetic media, image/text generation
     - SurveillanceMonitoring: smart home devices, cameras, doorbells (Ring), CCTV, tracking, IoT security
+    - ContentRecommendation: recommendation algorithms, social media feeds, TikTok For You, YouTube recommendations, news feeds, content personalization
+    - Entertainment: video games, gaming AI, NPCs, game companions, recreational AI
   * Map the described purpose to the closest matching IRI above
-- For incident_type:
-  * discrimination: unfair treatment of protected groups
-  * bias: algorithmic bias leading to unfair outcomes
-  * safety_failure: system caused physical harm or danger
-  * privacy_violation: unauthorized data collection/use
-  * transparency_failure: lack of disclosure about AI use
-  * data_leakage: sensitive data exposed
-  * appropriation: using data/content without authorization for AI training
-  * copyright: AI system infringes copyrights or produces infringing content
+- For incident_type (CLASSIFY BY PRIMARY PROBLEM):
+  * accuracy_failure: WRONG outputs - hallucinations, fabricated facts, incorrect predictions, misidentification
+  * safety_failure: PHYSICAL HARM - injury, death, accidents
+  * privacy_violation: UNAUTHORIZED data collection (NOT for wrong outputs)
+  * bias/discrimination: UNFAIR treatment by race, gender, age
+  * transparency_failure: HIDDEN AI use
+  * misinformation: INTENTIONAL deepfakes, political disinfo campaigns
+  * copyright: IP infringement
+  * data_leakage: Data breach/leak
+  * adversarial_attack: AI hacked/jailbroken
+  * appropriation: Training data without consent
+  RULE: LLM hallucinations/invented facts = accuracy_failure (not misinformation)
+- For serious_incident_type (EU AI Act Article 3(49) - OUTCOME-BASED classification):
+  * IMPORTANT: This classifies the OUTCOME/CONSEQUENCE of the incident, not the cause
+  * Multiple types can apply to a single incident - return as list
+  * CRITICAL: You MUST actively check for EACH type - don't default to empty!
+
+  * DeathOrHealthHarm (Art. 3.49.a): Death or serious damage to health
+    - Keywords: death, died, killed, fatal, suicide, self-harm, injury, hospitalized, health damage, physical harm, overdose, seizure, trauma, mental health harm, psychological damage
+    - Examples: autonomous vehicle fatality, AI recommendation leading to suicide, medical AI causing patient harm
+    - ALWAYS include if incident_type is safety_failure with physical harm
+
+  * CriticalInfrastructureDisruption (Art. 3.49.b): Serious and irreversible disruption of critical infrastructure
+    - Keywords: infrastructure, power grid, blackout, transport failure, water supply, healthcare system failure, network failure, emergency services
+    - Examples: AI causing power grid failure, transport system disruption, hospital system crash
+    - Sectors: energy, transport, healthcare, water, communications
+
+  * FundamentalRightsInfringement (Art. 3.49.c): Breach of EU fundamental rights obligations
+    - CRITICAL: This is the MOST COMMON serious incident type - CHECK CAREFULLY!
+    - Keywords: discrimination, bias, unfair, racist, sexist, wrongful arrest, wrongful denial, surveillance, GDPR violation, privacy breach, dignity, profiling, targeting
+    - ALWAYS include if incident_type is: bias, discrimination, privacy_violation
+    - ALWAYS include if affected_populations mentions protected groups (race, gender, disability, age, etc.)
+    - ALWAYS include if there is wrongful treatment based on protected characteristics
+    - Examples:
+      * Hiring algorithm discriminating against women → FundamentalRightsInfringement
+      * Facial recognition wrongful arrest → FundamentalRightsInfringement
+      * Biased credit scoring denying loans to minorities → FundamentalRightsInfringement
+      * Mass surveillance without consent → FundamentalRightsInfringement
+      * AI profiling leading to unfair treatment → FundamentalRightsInfringement
+
+  * PropertyOrEnvironmentHarm (Art. 3.49.d): Serious harm to property or environment
+    - Keywords: property damage, destruction, fire, explosion, collision, crash, environmental damage, pollution, financial fraud, material damage, vehicle crash
+    - Examples: autonomous vehicle crash causing property damage, AI-enabled fraud, environmental contamination
+
+  * Return empty list [] ONLY if the incident is truly minor with no measurable harm
 - For severity:
   * critical: widespread harm, fundamental rights violated
   * high: significant harm to many people
@@ -207,40 +234,53 @@ IMPORTANT EXTRACTION RULES:
   * true: Narrative explicitly mentions court/judicial/magistrate authorization
   * false: Narrative explicitly states NO authorization
   * null: Authorization status unknown from narrative
+- For scope_override_contexts (CRITICAL FOR Article 2 SCOPE DETERMINATION - v0.39.0):
+  * These contexts bring systems that might otherwise be excluded (entertainment, personal use) INTO EU AI Act scope
+  * CausesRealWorldHarmContext: If the incident resulted in death, suicide, physical injury, harm, hospitalization
+    - Keywords: death, died, killed, suicide, injury, injured, harm, hospitalized, fatal, casualty
+  * VictimImpactContext: If there are identifiable victims who suffered harm
+    - Keywords: victim, victims, harmed, suffered, affected person, injured party
+  * AffectsFundamentalRightsContext: If fundamental rights were violated
+    - Keywords: right to life, dignity, privacy violated, discrimination, fundamental rights
+  * LegalConsequencesContext: If legal proceedings resulted from the incident
+    - Keywords: lawsuit, sued, legal action, court, prosecution, criminal charges, regulatory action
+  * MinorsAffectedContext: If children or teenagers (under 18) were affected
+    - Keywords: child, children, minor, teenager, teen, student, young person, kid, adolescent, years old (with age under 18)
+  * ALWAYS check the narrative for these contexts even if the purpose seems excluded (entertainment, gaming, etc.)
+- For causes_death_or_injury (STRICT Art. 3(49)(a) interpretation):
+  * TRUE ONLY for: death of a person, suicide, physical injury requiring medical attention, hospitalization, bodily harm
+  * Keywords for TRUE: death, died, killed, suicide, fatal, injury, injured, hospitalized, bodily harm, physical harm to person
+  * FALSE for: financial loss, economic damage, property damage, copyright infringement, intellectual property theft,
+    reputational harm, deepfakes without physical harm, fraud, scams, privacy violation without physical harm,
+    emotional distress alone, environmental damage
+  * Ask yourself: "Did a human being die or suffer serious physical health damage?" If NO → FALSE
+- For affects_minors:
+  * Set to TRUE if narrative mentions: children, minors, teenagers, students, or any age under 18
+  * Example: "16 years old", "teenager", "high school student" → affects_minors = true
+- For affects_vulnerable_groups:
+  * Set to TRUE if narrative mentions: elderly, disabled, homeless, economically disadvantaged, mental health patients
 
 Respond with ONLY valid JSON, no additional text or markdown formatting.
 """
 
     async def _call_llm(self, prompt: str) -> str:
-        """Call LLM API"""
-        if self.llm_provider == "anthropic":
-            message = self.client.messages.create(
-                model=self.model,
-                max_tokens=4096,
-                temperature=0.0,  # Deterministic for extraction
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return message.content[0].text
-        elif self.llm_provider == "ollama":
-            # Call Ollama API
-            url = f"{self.ollama_endpoint}/api/generate"
-            payload = {
-                "model": self.model,
-                "prompt": prompt,
-                "stream": False,
-                "options": {
-                    "temperature": 0.1,  # Low temperature for deterministic extraction
-                    "num_predict": 4096
-                }
+        """Call Ollama LLM API"""
+        url = f"{self.ollama_endpoint}/api/generate"
+        payload = {
+            "model": self.model,
+            "prompt": prompt,
+            "stream": False,
+            "options": {
+                "temperature": 0.1,  # Low temperature for deterministic extraction
+                "num_predict": 4096
             }
+        }
 
-            response = await self.client.post(url, json=payload)
-            response.raise_for_status()
+        response = await self.client.post(url, json=payload)
+        response.raise_for_status()
 
-            result = response.json()
-            return result.get("response", "")
-        else:
-            raise NotImplementedError(f"LLM provider {self.llm_provider} not supported")
+        result = response.json()
+        return result.get("response", "")
 
     def _normalize_to_list(self, value, field_name: str) -> list:
         """Normalize a value to a list (handles LLM returning strings instead of lists)"""
@@ -283,12 +323,57 @@ Respond with ONLY valid JSON, no additional text or markdown formatting.
         system_data["deployment_context"] = self._normalize_to_list(
             system_data.get("deployment_context"), "deployment_context"
         )
+        # v0.39.0: Normalize scope override contexts
+        system_data["scope_override_contexts"] = self._normalize_to_list(
+            system_data.get("scope_override_contexts"), "scope_override_contexts"
+        )
 
         # Normalize incident data
         incident_data = data.get("incident", {})
         incident_data["affected_populations"] = self._normalize_to_list(
             incident_data.get("affected_populations"), "affected_populations"
         )
+
+        # Normalize incident_type to lowercase and fix common variations
+        if incident_data.get("incident_type"):
+            incident_type = incident_data["incident_type"].lower()
+            # Map common LLM variations to canonical forms
+            incident_type_map = {
+                "safetyfailure": "safety_failure",
+                "privacyviolation": "privacy_violation",
+                "transparencyfailure": "transparency_failure",
+                "accuracyfailure": "accuracy_failure",
+                "dataleakage": "data_leakage",
+                "adversarialattack": "adversarial_attack",
+                "modelpoisoning": "model_poisoning",
+                "unauthorizedaccess": "unauthorized_access",
+                "fundamentalrightsinfringement": "bias",  # Map to AIAAIC taxonomy
+            }
+            incident_data["incident_type"] = incident_type_map.get(incident_type, incident_type)
+
+        # Normalize serious_incident_type - fix common LLM case variations
+        serious_incident_raw = self._normalize_to_list(
+            incident_data.get("serious_incident_type"), "serious_incident_type"
+        )
+        # Map common variations to canonical forms
+        serious_incident_normalized = []
+        canonical_map = {
+            "deathorhealthharm": "DeathOrHealthHarm",
+            "criticalinfrastructuredisruption": "CriticalInfrastructureDisruption",
+            "fundamentalrightsinfringement": "FundamentalRightsInfringement",
+            "propertyorenvironmentharm": "PropertyOrEnvironmentHarm",
+            # Common LLM errors
+            "safetyfailure": "DeathOrHealthHarm",  # Map safety errors to correct type
+            "safety_failure": "DeathOrHealthHarm",
+        }
+        for sit in serious_incident_raw:
+            normalized = canonical_map.get(sit.lower(), sit)
+            # Only keep valid canonical types
+            if normalized in ["DeathOrHealthHarm", "CriticalInfrastructureDisruption",
+                              "FundamentalRightsInfringement", "PropertyOrEnvironmentHarm"]:
+                if normalized not in serious_incident_normalized:
+                    serious_incident_normalized.append(normalized)
+        incident_data["serious_incident_type"] = serious_incident_normalized
 
         # Clean up response data - convert null to appropriate defaults for required boolean fields
         response_data = data.get("response", {})

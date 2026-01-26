@@ -641,5 +641,5 @@ For questions about specific versions:
 ---
 
 **Last Updated:** 2025-12-14
-**Maintained By:** Claude Code AI
+**Maintained By:** Mariano Ortega de Mues
 **Repository:** https://github.com/ai-act-project/

@@ -95,7 +95,12 @@ class ForensicAnalysisEngine:
                 contexts=incident.system.deployment_context,
                 data_types=incident.system.processes_data_types,
                 performs_profiling=getattr(incident.system, 'performs_profiling', False),
-                narrative=incident.raw_narrative
+                narrative=incident.raw_narrative,
+                # v0.39.0: Pass scope override detection fields
+                scope_override_contexts=getattr(incident.system, 'scope_override_contexts', []),
+                causes_death_or_injury=getattr(incident.system, 'causes_death_or_injury', False),
+                affects_minors=getattr(incident.system, 'affects_minors', False),
+                affects_vulnerable_groups=getattr(incident.system, 'affects_vulnerable_groups', False)
             )
 
             print(f"   ✓ Risk level: {eu_requirements['risk_level']}")
@@ -343,7 +348,12 @@ class ForensicAnalysisEngine:
                 contexts=incident.system.deployment_context,
                 data_types=incident.system.processes_data_types,
                 performs_profiling=getattr(incident.system, 'performs_profiling', False),
-                narrative=incident.raw_narrative
+                narrative=incident.raw_narrative,
+                # v0.39.0: Pass scope override detection fields
+                scope_override_contexts=getattr(incident.system, 'scope_override_contexts', []),
+                causes_death_or_injury=getattr(incident.system, 'causes_death_or_injury', False),
+                affects_minors=getattr(incident.system, 'affects_minors', False),
+                affects_vulnerable_groups=getattr(incident.system, 'affects_vulnerable_groups', False)
             )
 
             yield StreamEvent(

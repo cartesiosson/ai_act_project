@@ -98,6 +98,9 @@ export default function SystemsPage() {
   // ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
   const [prohibitedPractices, setProhibitedPractices] = useState<{ id: string; label: string; articleReference: string; prohibitionScope: string }[]>([]);
   const [legalExceptions, setLegalExceptions] = useState<{ id: string; label: string; articleReference: string }[]>([]);
+  // ARTICLE 2: SCOPE EXCLUSIONS AND OVERRIDES (v0.39.0)
+  const [scopeExcludedPurposes, setScopeExcludedPurposes] = useState<{ id: string; label: string; exclusionType: string; articleReference: string }[]>([]);
+  const [scopeOverrideContexts, setScopeOverrideContexts] = useState<{ id: string; label: string; overrideReason: string; requiresFRIA: boolean }[]>([]);
 
   const [form, setForm] = useState({
     hasName: "",
@@ -351,7 +354,10 @@ export default function SystemsPage() {
         dataGovernanceRequirementsData,
         transparencyLevelsData,
         prohibitedPracticesData,
-        legalExceptionsData
+        legalExceptionsData,
+        // ARTICLE 2: SCOPE v0.39.0
+        scopeExcludedPurposesData,
+        scopeOverrideContextsData
       ] = await Promise.all([
         fetchVocabulary("purposes"),
         fetchVocabulary("risks"),
@@ -390,6 +396,24 @@ export default function SystemsPage() {
         // ARTICLE 5: PROHIBITED PRACTICES (v0.37.4)
         fetch(`${apiBase}/vocab/prohibited_practices?lang=en`).then(r => r.json()).catch(() => []),
         fetch(`${apiBase}/vocab/legal_exceptions?lang=en`).then(r => r.json()).catch(() => []),
+        // ARTICLE 2: SCOPE EXCLUSIONS AND OVERRIDES (v0.39.0)
+        // Using static fallback data since these endpoints don't exist yet
+        Promise.resolve([
+          { id: "ai:Entertainment", label: "Entertainment", exclusionType: "PersonalNonProfessionalUse", articleReference: "Art. 2(10) + Recital 12" },
+          { id: "ai:PersonalAssistant", label: "Personal Assistant", exclusionType: "PersonalNonProfessionalUse", articleReference: "Art. 2(10)" },
+          { id: "ai:EmailFiltering", label: "Email Filtering", exclusionType: "PersonalNonProfessionalUse", articleReference: "Art. 2(10)" },
+          { id: "ai:Gaming", label: "Gaming/Video Games", exclusionType: "EntertainmentWithoutRightsImpact", articleReference: "Recital 12" },
+          { id: "ai:ScientificResearch", label: "Scientific Research", exclusionType: "PureScientificResearch", articleReference: "Art. 2(6)" },
+          { id: "ai:MilitaryDefense", label: "Military/Defense", exclusionType: "MilitaryDefenseUse", articleReference: "Art. 2(3)" },
+        ]),
+        Promise.resolve([
+          { id: "ai:LegalConsequencesContext", label: "Legal Consequences", overrideReason: "System produces legal effects on natural persons", requiresFRIA: true },
+          { id: "ai:VictimImpactContext", label: "Victim Impact", overrideReason: "System affects victims of crime, accidents, or disasters", requiresFRIA: true },
+          { id: "ai:CausesRealWorldHarmContext", label: "Real World Harm", overrideReason: "System may cause death, injury, or physical harm", requiresFRIA: true },
+          { id: "ai:AffectsFundamentalRightsContext", label: "Fundamental Rights Impact", overrideReason: "System affects fundamental rights of natural persons", requiresFRIA: true },
+          { id: "ai:BiometricProcessingContext", label: "Biometric Processing", overrideReason: "System processes biometric data", requiresFRIA: true },
+          { id: "ai:MinorsAffectedContext", label: "Minors Affected", overrideReason: "System affects or targets minors", requiresFRIA: true },
+        ]),
       ]);
       setPurposes(purposesData);
       setRisks(risksData);
@@ -411,6 +435,9 @@ export default function SystemsPage() {
       setTransparencyLevels(transparencyLevelsData);
       setProhibitedPractices(prohibitedPracticesData);
       setLegalExceptions(legalExceptionsData);
+      // ARTICLE 2: SCOPE v0.39.0
+      setScopeExcludedPurposes(scopeExcludedPurposesData);
+      setScopeOverrideContexts(scopeOverrideContextsData);
     };
     load();
   }, []); // Only on mount, not on offset/filters
@@ -546,6 +573,68 @@ export default function SystemsPage() {
               ))}
             </select>
           </div>
+
+          {/* ARTICLE 2: SCOPE OVERRIDE ALERT (v0.39.0) */}
+          {(() => {
+            // Check if any selected purpose is potentially excluded
+            const excludedPurposeIds = scopeExcludedPurposes.map(p => p.id);
+            const selectedExcludedPurposes = form.hasPurpose.filter(p => excludedPurposeIds.includes(p));
+
+            // Check if any selected context is an override context
+            const overrideContextIds = scopeOverrideContexts.map(c => c.id);
+            const selectedOverrideContexts = form.hasDeploymentContext.filter(c => overrideContextIds.includes(c));
+
+            // Scope override occurs when: excluded purpose + override context
+            const hasScopeOverride = selectedExcludedPurposes.length > 0 && selectedOverrideContexts.length > 0;
+
+            // Check if FRIA is required
+            const friaRequired = selectedOverrideContexts.some(c => {
+              const ctx = scopeOverrideContexts.find(oc => oc.id === c);
+              return ctx?.requiresFRIA;
+            });
+
+            if (hasScopeOverride) {
+              return (
+                <div className="mt-4 p-4 bg-amber-100 dark:bg-amber-900 border-2 border-amber-500 rounded-lg">
+                  <div className="flex items-center mb-2">
+                    <span className="text-2xl mr-2">⚠️</span>
+                    <h3 className="font-bold text-amber-900 dark:text-amber-100">SCOPE OVERRIDE DETECTED (Article 2)</h3>
+                  </div>
+                  <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
+                    This system has a <strong>potentially excluded purpose</strong> but is brought <strong>INTO SCOPE</strong> of the EU AI Act due to the selected deployment context.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div className="bg-white dark:bg-gray-800 p-2 rounded">
+                      <p className="font-semibold text-amber-900 dark:text-amber-100 mb-1">Excluded Purpose(s):</p>
+                      <ul className="list-disc list-inside text-amber-800 dark:text-amber-200">
+                        {selectedExcludedPurposes.map(p => {
+                          const purpose = scopeExcludedPurposes.find(ep => ep.id === p);
+                          return <li key={p}>{purpose?.label} ({purpose?.articleReference})</li>;
+                        })}
+                      </ul>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 p-2 rounded">
+                      <p className="font-semibold text-amber-900 dark:text-amber-100 mb-1">Override Context(s):</p>
+                      <ul className="list-disc list-inside text-amber-800 dark:text-amber-200">
+                        {selectedOverrideContexts.map(c => {
+                          const ctx = scopeOverrideContexts.find(oc => oc.id === c);
+                          return <li key={c}>{ctx?.label}: {ctx?.overrideReason}</li>;
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                  {friaRequired && (
+                    <div className="mt-3 p-2 bg-red-100 dark:bg-red-900 border border-red-400 rounded">
+                      <p className="text-sm font-bold text-red-900 dark:text-red-100">
+                        📋 FRIA REQUIRED: Fundamental Rights Impact Assessment mandatory per Article 27
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            return null;
+          })()}
         </div>
 
         {/* SECTION 3: Technical Factors */}

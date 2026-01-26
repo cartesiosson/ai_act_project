@@ -1,0 +1,546 @@
+# Forensic Compliance Queries
+# Use these SPARQL queries to identify violated requirements after a security incident
+
+PREFIX ai: <http://ai-act.eu/ai#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# ============================================================
+# QUERY 1: Reconstruct proper classification for a system
+# ============================================================
+# Given a system's purpose and context, what criteria should it have?
+# Usage: Identify if system was misclassified at time of incident
+
+QUERY: PROPER_CLASSIFICATION
+SELECT ?system ?purpose ?context ?activatedCriterion ?criterionLabel
+WHERE {
+  # Find the system
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context ;
+          rdfs:label ?systemLabel .
+
+  # What criteria should this purpose activate?
+  ?purpose ai:activatesCriterion ?activatedCriterion .
+  ?activatedCriterion rdfs:label ?criterionLabel .
+}
+ORDER BY ?system ?criterionLabel
+---
+
+
+# ============================================================
+# QUERY 2: Identify ALL mandatory requirements for a system
+# ============================================================
+# Given proper classification, what are ALL compliance requirements?
+# Usage: Identify what controls SHOULD have been implemented
+
+QUERY: MANDATORY_REQUIREMENTS
+SELECT DISTINCT ?system ?criterion ?requirement ?requirementLabel ?requirementType
+WHERE {
+  # Start with the system
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  # Get all criteria that should activate
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  # Get all requirements activated by these criteria
+  ?criterion ai:activatesRequirement ?requirement .
+  ?requirement rdfs:label ?requirementLabel ;
+               rdf:type ?requirementType .
+}
+ORDER BY ?system ?requirementLabel
+---
+
+
+# ============================================================
+# QUERY 3: Find compliance gaps (requirements not implemented)
+# ============================================================
+# Which mandatory requirements are MISSING from the actual implementation?
+# Usage: Identify specific violations and their impact
+
+QUERY: COMPLIANCE_GAPS
+SELECT ?system ?missingRequirement ?requirementLabel ?requirementType
+WHERE {
+  # System with its proper classification
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  # All criteria that SHOULD activate
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  # All requirements activated by these criteria
+  ?criterion ai:activatesRequirement ?requirement .
+  ?requirement rdfs:label ?requirementLabel ;
+               rdf:type ?requirementType .
+
+  # BUT this requirement is NOT actually implemented
+  MINUS {
+    ?system ai:hasComplianceRequirement ?requirement .
+  }
+
+  BIND(?requirement AS ?missingRequirement)
+}
+ORDER BY ?system ?requirementLabel
+---
+
+
+# ============================================================
+# QUERY 4: Security-specific compliance gaps
+# ============================================================
+# Which SECURITY requirements were not implemented?
+# Usage: Focus on controls that could have prevented the incident
+
+QUERY: MISSING_SECURITY_REQUIREMENTS
+SELECT ?system ?missingRequirement ?label
+WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  # Get SECURITY requirements specifically
+  ?criterion ai:activatesRequirement ?requirement .
+  ?requirement rdf:type ai:SecurityRequirement ;
+               rdfs:label ?label .
+
+  # Missing from implementation
+  MINUS {
+    ?system ai:hasComplianceRequirement ?requirement .
+  }
+
+  BIND(?requirement AS ?missingRequirement)
+}
+ORDER BY ?system
+---
+
+
+# ============================================================
+# QUERY 5: Article 6(3) hidden requirements
+# ============================================================
+# What extra requirements are activated ONLY by Article 6(3) criteria?
+# These are the "residual risk" requirements missed by Annex III
+
+QUERY: ARTICLE_6_3_HIDDEN_REQUIREMENTS
+SELECT ?system ?manualCriterion ?manualCriterionLabel ?hiddenRequirement ?hiddenLabel
+WHERE {
+  # System with manual criteria (Article 6(3))
+  ?system a ai:IntelligentSystem ;
+          ai:hasManuallyIdentifiedCriterion ?manualCriterion .
+
+  ?manualCriterion rdfs:label ?manualCriterionLabel ;
+                   ai:activatesRequirement ?hiddenRequirement .
+
+  ?hiddenRequirement rdfs:label ?hiddenLabel .
+
+  # Check: would Annex III have activated this?
+  # If NOT, then it's a "hidden" requirement
+  MINUS {
+    ?system ai:hasActivatedCriterion ?annex3Criterion .
+    ?annex3Criterion ai:activatesRequirement ?hiddenRequirement .
+  }
+}
+ORDER BY ?system ?manualCriterionLabel
+---
+
+
+# ============================================================
+# QUERY 6: Data handling violation detection
+# ============================================================
+# Systems processing personal data but missing data governance requirements
+
+QUERY: DATA_HANDLING_VIOLATIONS
+SELECT ?system ?dataType ?requiredRequirement ?label
+WHERE {
+  # Systems processing personal or sensitive data
+  ?system a ai:IntelligentSystem ;
+          ai:processesDataType ?dataType .
+
+  # Data types that require strict governance
+  FILTER (?dataType IN (ai:PersonalData, ai:SensitivePersonalData, ai:BiometricData))
+
+  # Data governance requirements that apply
+  ?criterion ai:activatesRequirement ?requiredRequirement .
+  ?requiredRequirement rdf:type ai:DataGovernanceRequirement ;
+                       rdfs:label ?label .
+
+  # System is MISSING this requirement
+  MINUS {
+    ?system ai:hasComplianceRequirement ?requiredRequirement .
+  }
+}
+ORDER BY ?system ?label
+---
+
+
+# ============================================================
+# QUERY 7: Human oversight violations
+# ============================================================
+# High-risk systems that should have human oversight but don't
+
+QUERY: HUMAN_OVERSIGHT_VIOLATIONS
+SELECT ?system ?riskLevel ?requiredOversight
+WHERE {
+  # High-risk systems
+  ?system a ai:IntelligentSystem ;
+          ai:hasRiskLevel ai:HighRisk ;
+          ai:hasPurpose ?purpose .
+
+  # What human oversight is required?
+  ?purpose ai:activatesCriterion ?criterion .
+  ?criterion ai:activatesRequirement ai:HumanOversightRequirement .
+
+  # Is it actually implemented?
+  MINUS {
+    ?system ai:hasComplianceRequirement ai:HumanOversightRequirement .
+  }
+
+  BIND("HumanOversightRequirement" AS ?requiredOversight)
+  BIND(ai:HighRisk AS ?riskLevel)
+}
+ORDER BY ?system
+---
+
+
+# ============================================================
+# QUERY 8: Timeline reconstruction
+# ============================================================
+# What compliance state should system have been in at incident date?
+# (Requires temporal data: ai:effectiveDate, ai:modificationDate)
+
+QUERY: HISTORICAL_COMPLIANCE_STATE
+SELECT ?system ?requirement ?shouldHaveBeenImplementedBy ?wasImplemented
+WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context ;
+          ai:effectiveDate ?deployDate .
+
+  # Required requirements
+  { ?purpose ai:activatesCriterion ?criterion }
+  UNION
+  { ?context ai:triggersCriterion ?criterion }
+
+  ?criterion ai:activatesRequirement ?requirement .
+
+  # Grace period for compliance (assume 6 months)
+  BIND(CONCAT(SUBSTR(STR(?deployDate), 1, 7), "-06") AS ?complianceDeadline)
+
+  # Was it actually implemented by incident date?
+  OPTIONAL {
+    ?system ai:hasComplianceRequirement ?requirement ;
+            ai:requirementImplementedDate ?implDate .
+    FILTER (?implDate <= ?complianceDeadline)
+    BIND(true AS ?wasImplemented)
+  }
+
+  BIND(COALESCE(?wasImplemented, false) AS ?implemented)
+}
+ORDER BY ?system ?requirement
+---
+
+
+# ============================================================
+# QUERY 9: Cross-system vulnerability pattern detection
+# ============================================================
+# Identify other systems with same compliance gap that caused this incident
+# Usage: Proactive remediation across similar systems
+
+QUERY: SIMILAR_VULNERABILITY_PATTERNS
+SELECT ?otherSystem ?commonGap ?systemCount
+WHERE {
+  # First, identify the violation pattern from this incident
+  # Example: missing biometric security requirement
+  ?incidentSystem a ai:IntelligentSystem ;
+                  ai:hasPurpose ai:BiometricIdentification ;
+                  ai:hasDeploymentContext ?context .
+
+  # The missing requirement that caused the incident
+  # (Would be: ai:BiometricSecurityRequirement, ai:EncryptionRequirement, etc.)
+
+  # Now find OTHER systems with same gap
+  ?otherSystem a ai:IntelligentSystem ;
+               ai:hasDeploymentContext ?context ;
+               ai:hasPurpose ?purpose .
+
+  FILTER (?otherSystem != ?incidentSystem)
+
+  # Check if they have the same missing requirement
+  # Same purpose/context = same criteria = same required requirements
+  ?purpose ai:activatesCriterion ?criterion .
+  ?criterion ai:activatesRequirement ?commonGap .
+
+  MINUS {
+    ?otherSystem ai:hasComplianceRequirement ?commonGap .
+  }
+}
+GROUP BY ?commonGap
+ORDER BY DESC(?systemCount)
+---
+
+
+# ============================================================
+# QUERY 10: Enforcement severity assessment
+# ============================================================
+# Determine severity level based on compliance gaps
+
+QUERY: ENFORCEMENT_SEVERITY
+SELECT ?system ?violationCount ?riskLevel ?estimatedFineCategory
+WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasRiskLevel ?riskLevel .
+
+  # Count how many requirements are missing
+  {
+    SELECT ?system (COUNT(?missingReq) AS ?violationCount)
+    WHERE {
+      ?system a ai:IntelligentSystem ;
+              ai:hasPurpose ?purpose ;
+              ai:hasDeploymentContext ?context .
+
+      { ?purpose ai:activatesCriterion ?criterion }
+      UNION
+      { ?context ai:triggersCriterion ?criterion }
+
+      ?criterion ai:activatesRequirement ?missingReq .
+
+      MINUS {
+        ?system ai:hasComplianceRequirement ?missingReq .
+      }
+    }
+    GROUP BY ?system
+  }
+
+  # Map violation count to fine category
+  BIND(
+    IF(?violationCount >= 10 AND ?riskLevel = ai:HighRisk,
+      "Category A (€10M+)",
+      IF(?violationCount >= 5,
+        "Category B (€5M-10M)",
+        "Category C (<€5M)"
+      )
+    ) AS ?estimatedFineCategory
+  )
+}
+ORDER BY DESC(?violationCount)
+---
+
+
+# ============================================================
+# USAGE EXAMPLES FOR SML INTEGRATION
+# ============================================================
+
+# Example 1: Complete forensic analysis workflow
+# 1. PROPER_CLASSIFICATION → Identify what system SHOULD be
+# 2. MANDATORY_REQUIREMENTS → Get complete requirement list
+# 3. COMPLIANCE_GAPS → Find violations
+# 4. MISSING_SECURITY_REQUIREMENTS → Focus on security
+# 5. ENFORCEMENT_SEVERITY → Determine fine amount
+
+# Example 2: Proactive vulnerability detection
+# 1. SIMILAR_VULNERABILITY_PATTERNS → Find at-risk systems
+# 2. MISSING_SECURITY_REQUIREMENTS → Prioritize highest risk
+# 3. HUMAN_OVERSIGHT_VIOLATIONS → Manual remediation needed
+
+# Example 3: Historical compliance reconstruction
+# 1. HISTORICAL_COMPLIANCE_STATE → What SHOULD have been done
+# 2. ARTICLE_6_3_HIDDEN_REQUIREMENTS → What WAS overlooked
+# 3. ENFORCEMENT_SEVERITY → Determine if willful negligence
+
+
+# ============================================================
+# QUERY 11: DETERMINE SCOPE (Article 2) - v0.38.0
+# ============================================================
+# Determine if an AI system falls within the scope of the EU AI Act
+# Based on Article 2 exclusions and contexts that override those exclusions
+# Usage: First step in forensic analysis - is this system even regulated?
+
+QUERY: DETERMINE_SCOPE
+SELECT ?system ?purpose ?purposeLabel ?exclusion ?exclusionLabel ?context ?contextLabel ?overridesExclusion ?inScope ?scopeReason
+WHERE {
+  # Find the system with its purpose and context
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  ?purpose rdfs:label ?purposeLabel .
+  ?context rdfs:label ?contextLabel .
+
+  # Check if the purpose has a potential exclusion
+  OPTIONAL {
+    ?purpose ai:mayBeExcludedBy ?exclusion .
+    ?exclusion rdfs:label ?exclusionLabel .
+  }
+
+  # Check if any context overrides the exclusion
+  OPTIONAL {
+    ?context ai:overridesExclusion ?overriddenExclusion .
+    FILTER (?overriddenExclusion = ?exclusion)
+    BIND(true AS ?overridesExclusion)
+  }
+
+  # Determine if system is IN SCOPE:
+  # 1. IN SCOPE if NO exclusion applies (most purposes)
+  # 2. IN SCOPE if exclusion IS overridden by context
+  # 3. OUT OF SCOPE only if exclusion applies AND is NOT overridden
+  BIND(
+    IF(!BOUND(?exclusion),
+      true,
+      IF(BOUND(?overridesExclusion) && ?overridesExclusion = true,
+        true,
+        false
+      )
+    ) AS ?inScope
+  )
+
+  # Generate human-readable scope reason
+  BIND(
+    IF(!BOUND(?exclusion),
+      CONCAT("IN SCOPE: Purpose '", ?purposeLabel, "' has no exclusion criteria - full EU AI Act applies"),
+      IF(BOUND(?overridesExclusion) && ?overridesExclusion = true,
+        CONCAT("IN SCOPE: Exclusion '", ?exclusionLabel, "' is OVERRIDDEN by context '", ?contextLabel, "' - system brought back into EU AI Act scope"),
+        CONCAT("OUT OF SCOPE: Purpose '", ?purposeLabel, "' excluded by '", ?exclusionLabel, "' and no overriding context detected")
+      )
+    ) AS ?scopeReason
+  )
+}
+ORDER BY ?system ?purpose
+---
+
+
+# ============================================================
+# QUERY 12: SCOPE EXCLUSION CHECK (Simplified ASK version)
+# ============================================================
+# Quick check: Is this specific purpose/context combination IN SCOPE?
+# Returns true if system IS regulated, false if excluded
+
+QUERY: IS_IN_SCOPE_ASK
+ASK WHERE {
+  ?system a ai:IntelligentSystem ;
+          ai:hasPurpose ?purpose ;
+          ai:hasDeploymentContext ?context .
+
+  # Check if purpose has exclusion
+  OPTIONAL {
+    ?purpose ai:mayBeExcludedBy ?exclusion .
+  }
+
+  # Check if context overrides exclusion
+  OPTIONAL {
+    ?context ai:overridesExclusion ?exclusion .
+    BIND(true AS ?overridden)
+  }
+
+  # System is IN SCOPE if:
+  # 1. No exclusion exists, OR
+  # 2. Exclusion is overridden by context
+  FILTER (
+    !BOUND(?exclusion) ||
+    BOUND(?overridden)
+  )
+}
+---
+
+
+# ============================================================
+# QUERY 13: LIST SCOPE EXCLUSIONS
+# ============================================================
+# Get all defined scope exclusions and their legal references
+
+QUERY: LIST_SCOPE_EXCLUSIONS
+SELECT ?exclusion ?label ?articleReference ?comment
+WHERE {
+  ?exclusion a ai:ScopeExclusion ;
+             rdfs:label ?label .
+
+  OPTIONAL { ?exclusion ai:articleReference ?articleReference }
+  OPTIONAL { ?exclusion rdfs:comment ?comment }
+
+  FILTER (lang(?label) = "en")
+  FILTER (!BOUND(?comment) || lang(?comment) = "en")
+}
+ORDER BY ?exclusion
+---
+
+
+# ============================================================
+# QUERY 14: LIST EXCLUSION-OVERRIDING CONTEXTS
+# ============================================================
+# Get all contexts that can override scope exclusions
+
+QUERY: LIST_OVERRIDE_CONTEXTS
+SELECT ?context ?label ?overridesExclusion ?exclusionLabel ?comment
+WHERE {
+  ?context a ai:DeploymentContext ;
+           ai:overridesExclusion ?overridesExclusion ;
+           rdfs:label ?label .
+
+  ?overridesExclusion rdfs:label ?exclusionLabel .
+
+  OPTIONAL { ?context rdfs:comment ?comment }
+
+  FILTER (lang(?label) = "en")
+  FILTER (lang(?exclusionLabel) = "en")
+  FILTER (!BOUND(?comment) || lang(?comment) = "en")
+}
+ORDER BY ?context ?overridesExclusion
+---
+
+
+# ============================================================
+# QUERY 15: PURPOSES WITH POTENTIAL EXCLUSIONS
+# ============================================================
+# List all purposes that may be excluded from EU AI Act scope
+
+QUERY: POTENTIALLY_EXCLUDED_PURPOSES
+SELECT ?purpose ?label ?exclusion ?exclusionLabel ?exclusionArticle
+WHERE {
+  ?purpose a ai:Purpose ;
+           ai:mayBeExcludedBy ?exclusion ;
+           rdfs:label ?label .
+
+  ?exclusion rdfs:label ?exclusionLabel .
+  OPTIONAL { ?exclusion ai:articleReference ?exclusionArticle }
+
+  FILTER (lang(?label) = "en")
+  FILTER (lang(?exclusionLabel) = "en")
+}
+ORDER BY ?purpose
+---
+
+
+# ============================================================
+# USAGE: SEMANTIC SCOPE DETERMINATION WORKFLOW
+# ============================================================
+#
+# For forensic analysis, follow this workflow:
+#
+# Step 1: DETERMINE_SCOPE
+#   - First determine if the incident's AI system is even regulated
+#   - If OUT OF SCOPE (e.g., pure video game NPC), no further EU AI Act analysis
+#   - If IN SCOPE, proceed with compliance gap analysis
+#
+# Step 2: Check if scope was INITIALLY excluded but brought back:
+#   - If exclusion was overridden by context (e.g., entertainment → caused harm)
+#   - This indicates the system's real-world impact exceeded its stated purpose
+#   - Important for enforcement: potentially higher liability
+#
+# Step 3: If IN SCOPE, proceed with existing queries:
+#   - PROPER_CLASSIFICATION → Identify correct risk level
+#   - MANDATORY_REQUIREMENTS → Get compliance requirements
+#   - COMPLIANCE_GAPS → Find violations
+#
+# Example workflow for Case 15 (Deepfake pornography creator):
+# 1. DETERMINE_SCOPE: Purpose=Entertainment, Context=VictimImpactContext
+#    → Result: IN SCOPE (VictimImpactContext overrides EntertainmentWithoutRightsImpact)
+# 2. Scope reason: "Exclusion overridden - real victims identified"
+# 3. Proceed with full compliance analysis under HighRisk category

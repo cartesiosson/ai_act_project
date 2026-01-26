@@ -5,7 +5,6 @@ Classification Evaluation Module
 Evaluates incident type classification using AIAAIC ground truth
 with semantic mapping based on ontology alignment.
 
-Author: TFM EU AI Act Compliance
 Date: December 2025
 """
 

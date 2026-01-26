@@ -1,0 +1,654 @@
+======================================================================
+AIAAIC Real Incident Benchmark V2.2 (Batch Processing)
+======================================================================
+Batch size: 15 cases (Ollama restart between batches)
+
+Loading AIAAIC incidents from: /Users/cartesio/workspace/ai_act_project/forensic_agent/benchmark/data/AIAAIC Repository - Incidents.csv
+Loaded 2139 real incidents from AIAAIC
+
+Total available incidents: 2139
+
+
+Target: 350 incidents
+
+Checking forensic agent health... OK
+
+======================================================================
+FORENSIC AGENT REAL BENCHMARK V2.2 (Batch Processing)
+======================================================================
+Session ID: 20260109_103144
+Total incidents: 350
+Already processed: 0
+Remaining: 350
+Batch size: 15 (Ollama restart every 15 cases)
+Estimated batches: 24
+Results file: real_benchmark_results_v2_20260109_103144.json
+Data source: AIAAIC Repository
+Target: http://localhost:8002
+======================================================================
+
+[1/350] Microsoft Mekaguda data centre allegedly dump... OK 71.2s | safety_failure ! ? | HighRisk
+[2/350] YouTuber accused of cloning voice of Game Mak... OK 81.5s | appropriation ! transparency_failure | HighRisk
+[3/350] ChatGPT invented case citations in Avianca co... OK 76.1s | misinformation = accuracy_failure | HighRisk
+[4/350] ElevenLabs voice generator makes celebrity vo... OK 70.0s | misinformation = safety_failure | HighRisk
+[5/350] Bavaria tests police AI analytics software us... OK 66.7s | transparency_failure = privacy_violation | HighRisk
+[6/350] Allegheny child neglect screening tool may ha... ERROR: Unknown
+[7/350] Amazon Alexa favours Kamala Harris... OK 86.6s | bias = bias | HighRisk
+[8/350] Pro-Trumper creates fake AI photo of Kamala H... ERROR: Unknown
+[9/350] Lincolnshire police AI behaviour recognition ... OK 80.7s | accuracy_failure = privacy_violation | HighRisk
+[10/350] Retired chef dies trying to meet flirty AI ch... OK 76.1s | safety_failure = safety_failure | HighRisk
+[11/350] Autonomous AI coding agent deletes company da... ERROR: Unknown
+[12/350] TikTok AI filter turns lesbian psychologist i... ERROR: Unknown
+[13/350] Whistleblower reveals Tesla phantom braking c... OK 71.8s | safety_failure = safety_failure | HighRisk
+[14/350] Gannett pauses 'abysmal' AI-generated high sc... OK 69.2s | accuracy_failure = accuracy_failure | HighRisk
+[15/350] Tesla Model S crashes into road-sweeper, kill... OK 73.8s | safety_failure = safety_failure | HighRisk
+
+[Batch 2 complete - 15 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[16/350] Sora 2 accused of violating Disney, Nintendo ... OK 77.0s | copyright = transparency_failure | HighRisk
+[17/350] IBM sells Greg Marston voice for commercial c... OK 77.3s | transparency_failure ! bias | HighRisk
+[18/350] Met Police FaceR2VM research project... OK 70.9s | privacy_violation = privacy_violation | HighRisk
+[19/350] Bing Chat threatens German student Marvin von... OK 81.8s | accuracy_failure = safety_failure | HighRisk
+[20/350] Meituan, Eleme food delivery algorithms... OK 77.9s | transparency_failure ! safety_failure | HighRisk
+[21/350] Mobile World Congress venue access facial rec... OK 86.6s | privacy_violation = privacy_violation | HighRisk
+[22/350] AI-powered toys tell kids how to start fires... OK 86.0s | misinformation ! safety_failure | MinimalRisk
+[23/350] Voice Actors sue AI start-up for “voice theft... ERROR: Unknown
+[24/350] Alibaba Uyghur facial recognition... OK 90.8s | privacy_violation = privacy_violation | HighRisk
+[25/350] Uber Real-Time ID Check... OK 86.8s | accuracy_failure = accuracy_failure | HighRisk
+[26/350] Frasers Group criticised for live facial reco... OK 73.8s | privacy_violation = privacy_violation | HighRisk
+[27/350] Klarna halves marketing team by using AI... OK 66.5s | bias = bias | HighRisk
+[28/350] ChatGPT makes up research claiming guns are n... OK 72.9s | misinformation = accuracy_failure | HighRisk
+[29/350] Taiwanese arrested, jailed for creating and s... OK 75.4s | misinformation = transparency_failure | OutOfScope
+[30/350] Music producer accused of using AI songs to s... OK 74.4s | copyright = transparency_failure | HighRisk
+
+[Batch 3 complete - 30 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[31/350] Character.AI used to create "disturbing" Jenn... OK 73.1s | transparency_failure ! privacy_violation | HighRisk
+[32/350] Tesla Model S kills truck driver standing on ... OK 74.9s | safety_failure = safety_failure | HighRisk
+[33/350] Udemy threatens instructors who opt-out of AI... ERROR: Unknown
+[34/350] Ocado robots collide, causing fire and evacua... OK 79.3s | safety_failure = safety_failure | HighRisk
+[35/350] Facebook data leak exposes Balkan troll farm ... OK 69.7s | misinformation = accuracy_failure | HighRisk
+[36/350] AI converts Asian-American student into Cauca... ERROR: Unknown
+[37/350] Grok chatbot undresses, sexualises women... OK 76.8s | misinformation ! safety_failure | HighRisk
+[38/350] South Wales Police facial recognition trial... OK 78.5s | accuracy_failure = accuracy_failure | HighRisk
+[39/350] VioGén underestimates risk of women being sub... OK 82.8s | transparency_failure = bias | HighRisk
+[40/350] UK govt Spotlight fund application assessment... ERROR: Unknown
+[41/350] Netflix blasted for "disrespectful" Arcane AI... OK 86.8s | transparency_failure = accuracy_failure | HighRisk
+[42/350] Study: AI fails to diagnose COVID-19 from cou... OK 95.4s | accuracy_failure = accuracy_failure | HighRisk
+[43/350] Reddit replaces opaque shadowbanning system w... OK 86.2s | transparency_failure = safety_failure | HighRisk
+[44/350] AI is used to dupe families into Willy Wonka ... OK 76.1s | transparency_failure = transparency_failure | OutOfScope
+[45/350] Matthew Livelsberger used ChatGPT to plan Tru... OK 119.9s | safety_failure = safety_failure | HighRisk
+
+[Batch 4 complete - 45 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[46/350] AI depictions of Malaysian national flag spar... OK 84.8s | misinformation = accuracy_failure | HighRisk
+[47/350] Disney AI Thanksgiving image sparks controver... OK 78.5s | transparency_failure = transparency_failure | OutOfScope
+[48/350] Tesla Model S strikes curb, kills three passe... OK 82.7s | safety_failure = safety_failure | HighRisk
+[49/350] Fake AI David Attenborough delivers news repo... OK 75.5s | misinformation = transparency_failure | HighRisk
+[50/350] Poland investigates ChatGPT for alleged priva... ERROR: Unknown
+[51/350] Deepfake AI video shows Al-Aqsa mosque burnin... ERROR: Unknown
+[52/350] Facebook sued for tagging users' faces withou... OK 78.6s | transparency_failure = privacy_violation | HighRisk
+[53/350] Study: Google Images under-represents female ... OK 73.9s | bias = bias | HighRisk
+[54/350] Sidewalk Labs Toronto Quayside smart city dev... OK 78.7s | safety_failure ! ? | HighRisk
+[55/350] ID.me unemployment benefit facial recognition... OK 75.0s | accuracy_failure = accuracy_failure | HighRisk
+[56/350] Google SGE suggests user drinks urine to pass... OK 87.8s | transparency_failure = safety_failure | HighRisk
+[57/350] Manipulation of Cambodia torture victims' pho... ERROR: Unknown
+[58/350] Amazon Alexa voice data used to target ads... OK 83.7s | privacy_violation = privacy_violation | HighRisk
+[59/350] AI generates visuals for Wizards of the Coast... OK 70.9s | transparency_failure = transparency_failure | HighRisk
+[60/350] Martin Lewis impersonated in deepfake scam ad... OK 70.3s | misinformation = misinformation | HighRisk
+
+[Batch 5 complete - 60 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[61/350] Apple AI alert falsely claims Luke Littler ha... ERROR: Unknown
+[62/350] MEP files lawsuit to release iBorderCtrl lie ... ERROR: Unknown
+[63/350] Video game voice actors attacked using their ... OK 115.9s | misinformation ! safety_failure | OutOfScope
+[64/350] Thai auntie unable to buy food after Poor Car... OK 73.3s | accuracy_failure = accuracy_failure | HighRisk
+[65/350] Medical robot tells man he is dying... OK 67.5s | accuracy_failure ! ? | HighRisk
+[66/350] BDD100K driving video dataset... OK 88.2s | accuracy_failure = accuracy_failure | HighRisk
+[67/350] Tesla Model X strikes two Chinese policemen, ... OK 108.6s | safety_failure = safety_failure | HighRisk
+[68/350] Beijing AI influence campaign weaponises Gaza... OK 99.1s | misinformation = transparency_failure | HighRisk
+[69/350] Crisis Text Line shares users' mental health ... OK 117.1s | privacy_violation = privacy_violation | HighRisk
+[70/350] ChatGPT falsely tells man he killed his child... OK 91.8s | accuracy_failure = privacy_violation | HighRisk
+[71/350] Study: ChatGPT generates plausible phishing e... OK 91.9s | accuracy_failure ! adversarial_attack | HighRisk
+[72/350] Meta creates flirty chatbots of Taylor Swift,... OK 82.8s | appropriation ! safety_failure | HighRisk
+[73/350] Facebook downranking system failure leads to ... OK 86.3s | misinformation = misinformation | MinimalRisk
+[74/350] Racist' Uber Eats facial ID check gets Pa Edr... OK 88.7s | bias = bias | HighRisk
+[75/350] Stable Diffusion generates job type gender, r... OK 95.5s | bias = bias | HighRisk
+
+[Batch 6 complete - 75 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[76/350] The Brutalist AI voice cloning sparks controv... OK 84.2s | transparency_failure ! bias | HighRisk
+[77/350] Deepfake Tom Hanks dental ad insurance promot... ERROR: Unknown
+[78/350] Malaysia AI court sentencing systemaccused of... OK 105.5s | accuracy_failure = bias | HighRisk
+[79/350] Michael Cohen supplies fake AI legal citation... OK 112.9s | accuracy_failure = accuracy_failure | HighRisk
+[80/350] Apple Face ID hacked with 3D mask... OK 102.4s | data_leakage ! privacy_violation | HighRisk
+[81/350] Wisconsin Dropout Early Warning System found ... OK 98.7s | accuracy_failure = bias | HighRisk
+[82/350] Virginia Non-violent Risk Assessment... OK 102.5s | bias ! ? | HighRisk
+[83/350] ChatGPT, Copilot repeat false claim about US ... OK 111.7s | misinformation = accuracy_failure | HighRisk
+[84/350] Ryanair customer facial recognition slammed a... OK 100.6s | privacy_violation = privacy_violation | HighRisk
+[85/350] Target covertly predicts teen girl pregnancy... OK 96.1s | transparency_failure = privacy_violation | HighRisk
+[86/350] Proctorio fails to recognise Vrije Universite... OK 102.5s | transparency_failure = bias | HighRisk
+[87/350] Prosecraft fiction analytics... OK 103.1s | copyright = copyright | HighRisk
+[88/350] Deepfake Belgium PM links COVID-19 with clima... ERROR: Unknown
+[89/350] Teleperformance AI employee monitoring scheme... OK 104.9s | transparency_failure = privacy_violation | HighRisk
+[90/350] Automated pricing glitch on Amazon UK causes ... OK 98.9s | accuracy_failure = accuracy_failure | HighRisk
+
+[Batch 7 complete - 90 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[91/350] Humana sued for using AI to deny health insur... OK 84.6s | accuracy_failure = accuracy_failure | HighRisk
+[92/350] UK, Amazon settle anti-trust investigation... OK 86.9s | transparency_failure = transparency_failure | MinimalRisk
+[93/350] Library Genesis shadow library... OK 84.6s | copyright = copyright | HighRisk
+[94/350] Facebook translates 'Good morning' as 'Attack... OK 85.3s | accuracy_failure = bias | MinimalRisk
+[95/350] Police arrest 45 in 12 billion won deepfake r... OK 78.6s | misinformation = adversarial_attack | HighRisk
+[96/350] Leonid Volkov' deepfake video calls target Eu... OK 83.0s | misinformation = misinformation | HighRisk
+[97/350] Delta smart pricing accused of psychological ... OK 83.0s | transparency_failure = privacy_violation | HighRisk
+[98/350] COVID-19 misinfo tweet bots... OK 84.2s | misinformation = misinformation | HighRisk
+[99/350] Sora AI video generator accused of perpetuati... OK 99.3s | bias = bias | HighRisk
+[100/350] UK welfare fraud AI system criticised as bias... OK 90.0s | transparency_failure = bias | HighRisk
+[101/350] Instagram fails to protect women from 90 perc... OK 103.0s | safety_failure = safety_failure | HighRisk
+[102/350] Grok called out for mistaking sensitive medic... OK 86.1s | accuracy_failure = privacy_violation | HighRisk
+[103/350] Portland scuppers 'Smart City' mobility analy... OK 90.7s | privacy_violation = privacy_violation | HighRisk
+[104/350] Starbucks automated shift scheduling system r... OK 91.6s | bias = bias | HighRisk
+[105/350] Study: Google Translate accused of being "sex... OK 101.2s | bias = bias | HighRisk
+
+[Batch 8 complete - 105 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[106/350] Automatic soap dispenser fails to recognise B... OK 100.4s | bias = bias | HighRisk
+[107/350] Automated equity order routing glitch disrupt... OK 94.8s | transparency_failure = transparency_failure | HighRisk
+[108/350] UK car insurance found to be higher in ethnic... OK 105.2s | bias = bias | HighRisk
+[109/350] Microsoft, OpenAI data centre drains Goodyear... OK 96.3s | transparency_failure = transparency_failure | HighRisk
+[110/350] NVIDIA Eye Contact deemed 'creepy', 'terrifyi... OK 97.3s | accuracy_failure ! ? | HighRisk
+[111/350] Study: ChatGPT exhibits 'systemic' left-wing ... OK 89.1s | bias = bias | HighRisk
+[112/350] Study: Robotic surgery "responsible for" 144 ... OK 97.8s | safety_failure = safety_failure | HighRisk
+[113/350] Dream Machine AI video generator... OK 85.4s | transparency_failure ! safety_failure | HighRisk
+[114/350] Indian journalist Rana Ayyub attacked with de... OK 89.3s | misinformation = safety_failure | HighRisk
+[115/350] Twitter 'censors' Kurdish businessman, journa... OK 91.0s | transparency_failure = transparency_failure | HighRisk
+[116/350] Manoj Tiwari attacks political adversary with... ERROR: Unknown
+[117/350] ZAO face swapping app raises privacy, fraud c... OK 88.2s | misinformation = privacy_violation | HighRisk
+[118/350] Grok chatbot denies use of gas chambers at Au... OK 85.1s | transparency_failure = accuracy_failure | HighRisk
+[119/350] Google DeepMind, Royal Free London rapped for... OK 90.6s | transparency_failure = privacy_violation | HighRisk
+[120/350] Userviz video game cheating system is shut do... OK 85.1s | misinformation ! bias | HighRisk
+
+[Batch 9 complete - 120 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[121/350] Walmart product liability lawsuit cites fake ... ERROR: Unknown
+[122/350] Amazon Flex algorithm forces delivery drivers... OK 96.0s | safety_failure = safety_failure | HighRisk
+[123/350] Facebook fails to label 42 percent of debunke... OK 86.8s | accuracy_failure = accuracy_failure | OutOfScope
+[124/350] Adobe Firefly image generator... OK 83.5s | transparency_failure ! ? | HighRisk
+[125/350] IRCC immigration & visa applications AI scree... OK 100.1s | bias ! privacy_violation | HighRisk
+[126/350] Chelmer Valley High School illegally used fac... OK 99.3s | transparency_failure = privacy_violation | HighRisk
+[127/350] Proctorio uses 'racist' algorithms to detect ... OK 101.9s | bias = bias | HighRisk
+[128/350] Ethiopia Bayraktar TB2 drone Tigray school at... OK 70.1s | safety_failure = safety_failure | HighRisk
+[129/350] Film studio use of AI to promote Civil War ba... ERROR: Unknown
+[130/350] Apple AI transcription service calls grandmot... OK 70.3s | accuracy_failure = safety_failure | HighRisk
+[131/350] ChatGPT invents 'Holocaust by drowning'... OK 75.6s | misinformation = misinformation | HighRisk
+[132/350] ChatGPT invents Guardian newspaper articles, ... OK 83.7s | misinformation = accuracy_failure | HighRisk
+[133/350] AI companies appropriate 139,000 TV, film scr... OK 82.3s | appropriation ! transparency_failure | HighRisk
+[134/350] Sports Illustrated publishes AI articles by f... OK 81.1s | transparency_failure = transparency_failure | HighRisk
+[135/350] Waymo sued after cyclist is doored by robotax... OK 82.0s | safety_failure = safety_failure | HighRisk
+
+[Batch 10 complete - 135 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[136/350] Tesla Model X fatal semi-automated car crash... OK 104.2s | safety_failure = safety_failure | HighRisk
+[137/350] Github Copilot code generator... OK 87.2s | copyright = copyright | HighRisk
+[138/350] Coronavirus Mask Image dataset... OK 86.7s | privacy_violation = privacy_violation | HighRisk
+[139/350] Black teenager misidentified, barred by Livon... OK 89.9s | accuracy_failure = bias | HighRisk
+[140/350] Deepfake France 24 journalist calls Seine wat... ERROR: Unknown
+[141/350] Alec Baldwin Donald Trump deepfake sparks dis... ERROR: Unknown
+[142/350] Buzzfeed AI-generated Barbies reinforce racis... OK 95.1s | bias = bias | HighRisk
+[143/350] Amazon Buy Box... ERROR: Unknown
+[144/350] Pensioner loses NZD 224,000 to deepfake Bitco... OK 88.0s | misinformation = adversarial_attack | HighRisk
+[145/350] Tesla kills New York man changing tyre on exp... OK 104.8s | safety_failure = safety_failure | HighRisk
+[146/350] Lockport City School District rapped for faci... OK 91.8s | privacy_violation = privacy_violation | HighRisk
+[147/350] Fake AI videos amplify Myanmar earthquake dis... OK 76.8s | misinformation = misinformation | HighRisk
+[148/350] Cloud image recognition gender bias... OK 77.1s | bias = bias | HighRisk
+[149/350] Google Assistive Writing feature is accused o... OK 70.9s | transparency_failure ! privacy_violation | HighRisk
+[150/350] Dream Machine AI video generator makes porn... OK 69.2s | misinformation ! safety_failure | HighRisk
+
+[Batch 11 complete - 150 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[151/350] Michael Oliver facial recognition wrongful ar... OK 72.3s | accuracy_failure = bias | HighRisk
+[152/350] Restaurant owner dies after Coupang Eats star... OK 83.3s | transparency_failure = safety_failure | HighRisk
+[153/350] Amazon robot accident hospitalises 24 workers... OK 82.0s | safety_failure = safety_failure | HighRisk
+[154/350] Midjourney image generator... OK 78.1s | copyright = safety_failure | HighRisk
+[155/350] Starship robot knocks over Arizona State Univ... OK 72.0s | safety_failure = safety_failure | HighRisk
+[156/350] Phone case design bot goes rogue... OK 74.7s | accuracy_failure = accuracy_failure | HighRisk
+[157/350] Trento council fined for AI citizen surveilla... OK 72.1s | privacy_violation = privacy_violation | HighRisk
+[158/350] PredPol perpetuates racial, ethnic, income bi... OK 76.0s | bias = bias | HighRisk
+[159/350] Fukuoka campaign invents AI-generated tourist... ERROR: Unknown
+[160/350] Betfair algorithm misses gambling addict red ... OK 71.5s | accuracy_failure = safety_failure | MinimalRisk
+[161/350] Henn-na Hotel robot "revolution" fails as hal... OK 69.6s | transparency_failure = transparency_failure | HighRisk
+[162/350] Zhengzhou authorities turn bank protestors' h... OK 67.3s | privacy_violation = privacy_violation | HighRisk
+[163/350] Aadhaar glitches result in villagers' starvat... OK 67.3s | accuracy_failure = accuracy_failure | HighRisk
+[164/350] Tesla accused of rigging driving range algori... OK 76.1s | transparency_failure = transparency_failure | HighRisk
+[165/350] Google, Delphi self-driving cars in 'near mis... OK 66.2s | accuracy_failure = safety_failure | HighRisk
+
+[Batch 12 complete - 165 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[166/350] ChatGPT encourages violent stalker to harrass... OK 66.1s | misinformation ! safety_failure | HighRisk
+[167/350] Historical Figures AI-powered chat rapped for... OK 71.4s | misinformation = safety_failure | HighRisk
+[168/350] Stack Overflow users rebel against OpenAI LLM... OK 67.1s | transparency_failure = transparency_failure | HighRisk
+[169/350] Mike Huckabee books used to train language mo... OK 70.0s | appropriation ! transparency_failure | HighRisk
+[170/350] Investigation: X algorithm amplifies right-wi... OK 65.8s | transparency_failure = transparency_failure | HighRisk
+[171/350] Michigan MiDAS unemployment insurance fraud d... OK 68.2s | accuracy_failure = bias | HighRisk
+[172/350] Adidas/Arsenal #DaretoCreate campaign... OK 67.4s | transparency_failure ! safety_failure | HighRisk
+[173/350] Hong Kong privacy watchdog probes Worldcoin... OK 66.0s | privacy_violation = privacy_violation | HighRisk
+[174/350] These Nudes Do Not Exist deepfake porn sales... ERROR: Unknown
+[175/350] Suzhou algorithmic social 'civility score' wi... OK 72.5s | privacy_violation = privacy_violation | HighRisk
+[176/350] Allstate car insurance 'suckers list' overcha... OK 66.8s | bias = bias | HighRisk
+[177/350] Shanghai triples facial urveillance in Xuhui ... OK 70.1s | privacy_violation = privacy_violation | HighRisk
+[178/350] Mary Nightingale likeness used in deepfake sc... OK 62.1s | misinformation = transparency_failure | HighRisk
+[179/350] North Korean hackers use ChatGPT to make deep... OK 64.2s | misinformation ! adversarial_attack | HighRisk
+[180/350] Starship robot delivering groceries veers int... OK 64.2s | safety_failure = safety_failure | HighRisk
+
+[Batch 13 complete - 180 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[181/350] Hanvon facial recognition enables mask wearer... OK 65.2s | accuracy_failure = privacy_violation | HighRisk
+[182/350] Tesla Model Y rear-ends Yamaha motorcycle, ki... OK 64.3s | safety_failure = safety_failure | HighRisk
+[183/350] Amazon retains Alexa recordings, transcripts ... OK 64.2s | transparency_failure = privacy_violation | HighRisk
+[184/350] AI is used to create Chicago Sun-Times summer... ERROR: Unknown
+[185/350] Grok posts unsolicited "white genocide" respo... OK 63.1s | misinformation = safety_failure | HighRisk
+[186/350] CaliBurger Flippy robot fired after one day... OK 62.7s | accuracy_failure ! safety_failure | MinimalRisk
+[187/350] Study: Dark web predators develop AI images o... OK 64.2s | misinformation = safety_failure | HighRisk
+[188/350] UBC academic, students accuse Proctorio of pr... OK 66.0s | privacy_violation = privacy_violation | HighRisk
+[189/350] ChatGPT persuades California teenager to hang... OK 69.6s | safety failure ! safety_failure | HighRisk
+[190/350] Tesla Model X kills pedestrian outside Tokyo... OK 64.9s | safety_failure = safety_failure | HighRisk
+[191/350] Kerala man loses INR 40,000 to deepfake work ... OK 61.0s | misinformation = privacy_violation | HighRisk
+[192/350] iFlyTek generates essay criticising Chairman ... OK 64.8s | transparency_failure ! safety_failure | HighRisk
+[193/350] Study: DeepSeek fails to block 100 percent of... OK 66.5s | misinformation = safety_failure | HighRisk
+[194/350] DeepSeek AI database exposes user data, chat ... OK 67.2s | data_leakage ! privacy_violation | HighRisk
+[195/350] Zillow Offers automated house flipping system... OK 65.5s | accuracy_failure = accuracy_failure | MinimalRisk
+
+[Batch 14 complete - 195 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[196/350] Study: Personalising ChatGPT makes it more of... OK 67.2s | transparency_failure ! safety_failure | HighRisk
+[197/350] Wells Fargo software error leads to hundreds ... OK 66.6s | accuracy_failure = bias | HighRisk
+[198/350] NEDA eating disorder chatbot sparks employee ... OK 67.6s | transparency_failure = accuracy_failure | HighRisk
+[199/350] ChatGPT fails to debunk US election misinform... OK 65.8s | misinformation = accuracy_failure | HighRisk
+[200/350] French national police accused of illegally u... OK 66.2s | transparency_failure = privacy_violation | HighRisk
+[201/350] Porcha Rudruff facial recognition wrongful ar... OK 65.4s | accuracy_failure = accuracy_failure | HighRisk
+[202/350] TikTok face filter bubbles accused of reinfor... OK 65.4s | bias = bias | HighRisk
+[203/350] Apple Cycle Tracking fertility predictions... OK 64.9s | privacy_violation = privacy_violation | HighRisk
+[204/350] Investing.com discovered to be plagiarising o... ERROR: Unknown
+[205/350] YouTube crime page discovered to be entirely ... OK 64.9s | misinformation = misinformation | HighRisk
+[206/350] iBorderCtrl smart lie detection system... OK 69.3s | accuracy_failure = accuracy_failure | HighRisk
+[207/350] Study: US mortgage algorithms perpetuate raci... OK 66.5s | bias = bias | MinimalRisk
+[208/350] Indian government censors COVID-19 Twitter po... OK 72.5s | transparency_failure ! ? | HighRisk
+[209/350] Chicago predictive policing Heat List/SSL... OK 68.5s | accuracy_failure = bias | HighRisk
+[210/350] Ray-Ban Meta Smart Glasses... OK 69.7s | privacy_violation = privacy_violation | HighRisk
+
+[Batch 15 complete - 210 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[211/350] Spinvox uses humans to transcribe most "AI" v... OK 66.2s | transparency_failure = privacy_violation | HighRisk
+[212/350] Apple Watch heart rate variability data found... OK 72.3s | accuracy_failure = accuracy_failure | HighRisk
+[213/350] MSN AI article falsely accuses Irish DJ of se... OK 67.2s | transparency_failure = accuracy_failure | HighRisk
+[214/350] Lawsuit claims Amazon Buy Box algorithm overc... OK 67.4s | transparency_failure = transparency_failure | HighRisk
+[215/350] NHGSFP collection of Nigerian students' finge... OK 68.5s | transparency_failure = privacy_violation | HighRisk
+[216/350] Houthis attack Abu Dhabi oil deport, airport ... OK 62.0s | safety_failure = safety_failure | HighRisk
+[217/350] Italy Interior ministry’s facial recognition ... OK 64.3s | transparency_failure = privacy_violation | HighRisk
+[218/350] Investigation: nH Predict used to deny Medica... OK 63.7s | accuracy_failure = accuracy_failure | HighRisk
+[219/350] Uber accused of "racist" passenger star ratin... OK 64.8s | bias = bias | HighRisk
+[220/350] Google Autocomplete amplifies Texas massacre ... OK 61.8s | misinformation = accuracy_failure | OutOfScope
+[221/350] Study: ChatGPT can be used to identify indivi... ERROR: Unknown
+[222/350] Murdered Spanish woman Lobna Hehmid wrongly a... OK 64.4s | safety_failure = safety_failure | HighRisk
+[223/350] Home Office secretly uses algorithms to proce... OK 63.5s | transparency_failure = bias | HighRisk
+[224/350] South Korea plan for AI textbooks receives ba... OK 63.4s | transparency_failure ! privacy_violation | HighRisk
+[225/350] Yandex's Alice chatbot supports wife-beating,... OK 63.1s | misinformation ! safety_failure | HighRisk
+
+[Batch 16 complete - 225 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[226/350] Netflix documentary uses AI to manipulate tru... OK 66.2s | transparency_failure = transparency_failure | MinimalRisk
+[227/350] ChatGPT fails to intervene in Joe Ceccanti su... OK 63.9s | safety_failure = safety_failure | HighRisk
+[228/350] Nothing, Forever Jerry Seinfeld clone makes t... OK 65.2s | transphobic comments ! safety_failure | HighRisk
+[229/350] Election deepfake falsely links Kemal Kilicda... OK 62.3s | misinformation = misinformation | HighRisk
+[230/350] Deep Cam Live AI impersonator prompts misuse ... OK 64.2s | privacy_violation = safety_failure | HighRisk
+[231/350] Pro-China deepfake 'spamouflage' campaign... OK 64.3s | misinformation = misinformation | HighRisk
+[232/350] Donald Trump uses AI to fake Taylor Swift end... OK 64.3s | misinformation = transparency_failure | HighRisk
+[233/350] Waymo robotaxi fails to stop for school bus... OK 61.8s | safety_failure = safety_failure | HighRisk
+[234/350] Paranoid man kills himself and his mother aft... OK 64.1s | safety_failure = safety_failure | HighRisk
+[235/350] Deepsukebe non-consensual porn nudifier... ERROR: Unknown
+[236/350] YouTube slammed for amplifying Las Vegas shoo... OK 64.3s | misinformation = safety_failure | HighRisk
+[237/350] Hundreds of thousands of Grok chats exposed i... OK 63.6s | transparency_failure = safety_failure | HighRisk
+[238/350] Kroger under fire for AI-powered dynamic pric... OK 65.7s | privacy_violation = privacy_violation | HighRisk
+[239/350] Tesla on Autopilot crashes into parked fire t... OK 64.2s | safety_failure = safety_failure | HighRisk
+[240/350] Generated Photos 'infinite diversity' face co... ERROR: Unknown
+
+[Batch 17 complete - 240 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[241/350] Microsoft Querétaro AI data centre linked to ... OK 62.7s | transparency_failure = transparency_failure | HighRisk
+[242/350] Fake security analyst peddles Hunter Biden in... OK 64.1s | misinformation = misinformation | HighRisk
+[243/350] Deepfake John Swinney thanks Nicola Sturgeon ... ERROR: Unknown
+[244/350] Barcelona robot brothel triggers local backla... OK 79.4s | transparency_failure ! bias | MinimalRisk
+[245/350] UK automated flood warning system issues late... OK 69.9s | accuracy_failure = safety_failure | HighRisk
+[246/350] New York City finds ShotSpotter identifies 13... OK 72.0s | transparency_failure = accuracy_failure | HighRisk
+[247/350] RT bot farm spreads disinformation via 968 X ... OK 76.5s | misinformation = transparency_failure | HighRisk
+[248/350] Gorillas 'Project Ace' rider work schedule au... OK 69.6s | accuracy_failure = bias | MinimalRisk
+[249/350] Microsoft Start automated poll damages Guardi... OK 65.7s | transparency_failure = transparency_failure | HighRisk
+[250/350] Turnitin AI writing detection tool found to b... OK 64.6s | accuracy_failure = accuracy_failure | HighRisk
+[251/350] DeepNude nudification app provokes ethics, pr... ERROR: Unknown
+[252/350] Study: Devin "AI software engineer" fails at ... OK 71.2s | accuracy_failure = accuracy_failure | HighRisk
+[253/350] Pokemon Go accused of 'redlining' coloured, p... OK 72.7s | bias = bias | HighRisk
+[254/350] Facebook actively promotes holocaust denial... OK 71.7s | misinformation = misinformation | OutOfScope
+[255/350] GPT-4 large language model... ERROR: Unknown
+
+[Batch 18 complete - 255 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[256/350] FaceMega sexualised face swap ads violate pla... OK 76.8s | misinformation = privacy_violation | HighRisk
+[257/350] Replika AI companions sexually harass their u... OK 70.8s | privacy_violation ! safety_failure | HighRisk
+[258/350] Starship robot 'attacks' Milton Keynes reside... OK 86.5s | safety_failure = safety_failure | HighRisk
+[259/350] Amazon, Waterstones algorithms promote vaccin... OK 74.1s | misinformation = misinformation | HighRisk
+[260/350] Knightscope security robot ignores woman repo... OK 105.8s | accuracy_failure = accuracy_failure | HighRisk
+[261/350] Pedestrian following Google Maps hit by motor... OK 90.0s | accuracy_failure = safety_failure | HighRisk
+[262/350] Workers assist Cruise 'autonomous' robotaxis ... OK 94.3s | transparency_failure = transparency_failure | HighRisk
+[263/350] Snap accused of failing to act on sextortion ... OK 97.3s | transparency_failure = safety_failure | HighRisk
+[264/350] Scammers impersonate Indonesia president usin... ERROR: Unknown
+[265/350] ChatGPT criticised for addressing users by th... OK 93.9s | transparency_failure = privacy_violation | HighRisk
+[266/350] Henan detects and tracks foreign journalists,... OK 91.9s | privacy_violation = privacy_violation | HighRisk
+[267/350] Kenyan workers paid under USD 2 an hour to de... OK 91.4s | accuracy_failure ! bias | HighRisk
+[268/350] Al video depicts Indonesian presidential hope... ERROR: Unknown
+[269/350] AI invents NewsBreak Christmas Day murder... ERROR: Unknown
+[270/350] Palworld accused of plagiarising Pokemon desi... OK 88.3s | copyright = transparency_failure | HighRisk
+
+[Batch 19 complete - 270 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[271/350] Perth doctors warned for using ChatGPT to wri... OK 87.8s | privacy_violation = privacy_violation | HighRisk
+[272/350] Macy's accused of using Clearview AI to stren... OK 86.0s | privacy_violation = privacy_violation | HighRisk
+[273/350] Tesla China recalls cars over Autopilot Cruis... OK 81.3s | accuracy_failure = safety_failure | HighRisk
+[274/350] OpenAI accused of using Netflix shows to trai... OK 102.2s | transparency_failure = transparency_failure | HighRisk
+[275/350] Moscow Metro Face Pay facial recognition... OK 93.2s | privacy_violation = privacy_violation | HighRisk
+[276/350] Tesla Model 3 crash injures one, injures twen... OK 90.9s | safety_failure = safety_failure | HighRisk
+[277/350] UK DWP sued for 'unfair' disability benefits ... OK 90.1s | bias = bias | HighRisk
+[278/350] 18 percent of daily uploads to Deezer are ful... ERROR: Unknown
+[279/350] Roadzen stock price drops after AI-generated ... OK 90.1s | misinformation = accuracy_failure | HighRisk
+[280/350] Amazon France fined for excessive automated m... OK 84.5s | transparency_failure = privacy_violation | MinimalRisk
+[281/350] Epic Systems sepsis prediction model... OK 83.1s | accuracy_failure = safety_failure | HighRisk
+[282/350] WHO chatbot provides inaccurate health inform... OK 85.2s | accuracy_failure = safety_failure | HighRisk
+[283/350] Chinese motorist fined for scratching his fac... OK 88.0s | transparency_failure = privacy_violation | HighRisk
+[284/350] Climate change denialism tweet bots... OK 87.1s | misinformation = misinformation | HighRisk
+[285/350] Unreleased Sora model leaked online in protes... OK 86.8s | transparency_failure = transparency_failure | HighRisk
+
+[Batch 20 complete - 285 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[286/350] Study: Utah online dispute resolution system ... OK 87.5s | transparency_failure ! bias | HighRisk
+[287/350] Harvard students add facial recognition to Me... ERROR: Unknown
+[288/350] GPT-3 bot posts Reddit comments unnoticed... OK 88.3s | misinformation = misinformation | HighRisk
+[289/350] Malta ditches 'Safe City' video surveillance ... OK 95.1s | transparency_failure = privacy_violation | HighRisk
+[290/350] ChatGPT training emits 502 metric tons of car... OK 88.7s | transparency_failure ! ? | HighRisk
+[291/350] Apple to pay USD 95m to settle Siri eavedropp... OK 88.5s | safety_failure ! privacy_violation | HighRisk
+[292/350] IBM's Oncology Expert Advisor fails to delive... ERROR: Unknown
+[293/350] Experts question opaque Cybercheck AI crime f... OK 91.1s | accuracy_failure = accuracy_failure | HighRisk
+[294/350] Beijing Subway "passenger credit system" slam... OK 90.2s | transparency_failure ! privacy_violation | HighRisk
+[295/350] Australian researchers use ChatGPT to assess ... OK 85.7s | transparency_failure = transparency_failure | HighRisk
+[296/350] Robot crushes and kills VW contractor... OK 82.2s | safety_failure = safety_failure | HighRisk
+[297/350] Republican congressmen Twitter shadowban... OK 84.6s | transparency_failure ! accuracy_failure | HighRisk
+[298/350] Indonesia suspends Worldcoin over data privac... OK 87.2s | privacy_violation ! transparency_failure | HighRisk
+[299/350] Prisma Labs sued for collecting facial biomet... OK 90.4s | privacy_violation = privacy_violation | HighRisk
+[300/350] Teenager freezes to death after Google Maps p... OK 89.4s | accuracy_failure = safety_failure | HighRisk
+
+[Batch 21 complete - 300 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[301/350] King's Cross quietly uses live facial recogni... OK 89.9s | privacy_violation = privacy_violation | HighRisk
+[302/350] Deepfake Donald Trump calls for climate agree... ERROR: Unknown
+[303/350] ChatGPT falsely claims to write student essay... OK 93.4s | misinformation = accuracy_failure | HighRisk
+[304/350] Italian League party uses AI images of immigr... OK 92.2s | misinformation ! bias | HighRisk
+[305/350] Deloitte Australia fined for AI error-strewn ... OK 89.9s | transparency_failure = accuracy_failure | HighRisk
+[306/350] Investigation: BJP app manipulates opinion, h... ERROR: Unknown
+[307/350] Tesla with FSD reportedly activated drives in... OK 84.2s | safety_failure = safety_failure | HighRisk
+[308/350] NYPD use facial recognition to identify BLM a... ERROR: Unknown
+[309/350] Fans revolt over 2026 FIFA World Cup dynamic ... OK 86.1s | transparency_failure = bias | MinimalRisk
+[310/350] Brazilian AI-powered welfare app accused of u... OK 88.6s | transparency_failure = bias | HighRisk
+[311/350] NDIS independent assessments ditched by Austr... ERROR: Unknown
+[312/350] Stanford hospital COVID-19 vaccine allocation... ERROR: Unknown
+[313/350] SoundThinking accused of modifying alerts at ... OK 88.2s | accuracy_failure = bias | HighRisk
+[314/350] Student violates 50 Lancaster Country School ... OK 93.4s | misinformation = privacy_violation | HighRisk
+[315/350] Nine News uses AI to 'sexualise' image of pol... OK 90.5s | transparency_failure = transparency_failure | HighRisk
+
+[Batch 22 complete - 315 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[316/350] FBI/ICE drivers photo facial recognition... OK 88.4s | data_leakage ! privacy_violation | HighRisk
+[317/350] Taylor Swift speaks in Mandarin deepfake... OK 86.1s | misinformation = privacy_violation | HighRisk
+[318/350] Researchers: AI writing detection tools "don'... OK 84.8s | accuracy_failure = accuracy_failure | HighRisk
+[319/350] Amazon serious injuries rise with warehouse r... OK 92.1s | safety_failure = safety_failure | MinimalRisk
+[320/350] SEC charges American Bitcoin Academy with 'AI... OK 85.1s | safety_failure ! transparency_failure | HighRisk
+[321/350] Builder.ai automated app development exposed ... OK 83.8s | transparency_failure = transparency_failure | HighRisk
+[322/350] Gemini chatbot tells student "Please die"... OK 90.2s | accuracy_failure = safety_failure | HighRisk
+[323/350] Engineer warns Microsoft Copilot Designer cre... OK 94.7s | transparency_failure = safety_failure | HighRisk
+[324/350] Amazon data centre linked to rare cancers in ... OK 91.7s | transparency_failure = transparency_failure | HighRisk
+[325/350] AI-generated fake ID passes crypto exchange v... OK 89.7s | misinformation ! transparency_failure | HighRisk
+[326/350] Paris Olympics AI scans fuel surveillance fea... ERROR: Unknown
+[327/350] Amazon automated workplace analytics criticis... OK 87.0s | privacy_violation = privacy_violation | HighRisk
+[328/350] Deepfake 'Amazon FC Ambassadors' sow confusio... ERROR: Unknown
+[329/350] Brazilian judge publishes 'error-strewn' AI-g... OK 106.6s | accuracy_failure = accuracy_failure | HighRisk
+[330/350] ChatGPT misdirects US voters in key battlegro... OK 111.8s | misinformation = accuracy_failure | HighRisk
+
+[Batch 23 complete - 330 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[331/350] Amazon accused of promoting anti-vaccine prop... OK 96.9s | misinformation = misinformation | HighRisk
+[332/350] Lumidolls robot brothel... ERROR: Unknown
+[333/350] NYPD Domain Awareness System... OK 101.0s | privacy_violation ! ? | HighRisk
+[334/350] State Farm automated fraud detection discrimi... ERROR: Unknown
+[335/350] Arkansas ARChoices Medicaid resource allocati... OK 115.8s | transparency_failure = accuracy_failure | HighRisk
+[336/350] Report: Israel use of facial recognition to m... ERROR: Unknown
+[337/350] Ocado robot charger malfunctions, 370 jobs el... OK 87.1s | safety_failure = safety_failure | HighRisk
+[338/350] LLaMA model used to create Allie sexbot... OK 88.5s | misinformation ! safety_failure | HighRisk
+[339/350] HR team fired after applicant tracking system... OK 103.0s | bias = bias | HighRisk
+[340/350] AI companion app Muah hack reveals users tryi... OK 90.0s | data_leakage ! safety_failure | HighRisk
+[341/350] Study: Top chatbots spread Russian misinforma... ERROR: Unknown
+[342/350] Uber raises prices 400 percent during Sydney ... OK 94.7s | transparency_failure = bias | HighRisk
+[343/350] Grok falsely suggests police misrepresented L... OK 83.8s | misinformation = accuracy_failure | OutOfScope
+[344/350] Tesla Model Y crash kills two, injures three... OK 89.6s | safety_failure = safety_failure | HighRisk
+[345/350] Microsoft accused of censoring Tiananmen Squa... OK 88.0s | transparency_failure = accuracy_failure | HighRisk
+
+[Batch 24 complete - 345 cases in this session]
+
+==================================================
+🔄 Restarting Ollama (batch maintenance)...
+==================================================
+✓ Ollama container restarted
+⏳ Waiting for service to be ready... ready! (1s)
+
+[346/350] Tesla Model 3 strikes over-turned truck, kill... OK 89.4s | safety_failure = safety_failure | HighRisk
+[347/350] Jordan Peterson fake voice generator makes of... OK 84.0s | misinformation = privacy_violation | HighRisk
+[348/350] Walgreens fails to gain customer facial recog... OK 82.0s | privacy_violation = privacy_violation | HighRisk
+[349/350] Adobe called out for selling AI-generated 'An... OK 80.9s | copyright = copyright | HighRisk
+[350/350] Woman wrongly accused of shoplifting toilet r... OK 89.8s | accuracy_failure = accuracy_failure | HighRisk
+
+✓ Benchmark complete. Results saved to: /Users/cartesio/workspace/ai_act_project/forensic_agent/benchmark/results/real_benchmark_results_v2_20260109_103144.json
+
+Final results: /Users/cartesio/workspace/ai_act_project/forensic_agent/benchmark/results/real_benchmark_results_v2_20260109_103144.json
+Statistics: /Users/cartesio/workspace/ai_act_project/forensic_agent/benchmark/results/real_benchmark_stats_v2_20260109_103144.json
+Evaluations: /Users/cartesio/workspace/ai_act_project/forensic_agent/benchmark/results/real_benchmark_evaluations_v2_20260109_103144.json
+
+======================================================================
+REAL BENCHMARK REPORT V2 (AIAAIC + Ground Truth)
+======================================================================
+
+Summary:
+  Total real incidents: 350
+  Successful: 302 (86.3%)
+  Low confidence: 0
+  Failed: 48
+
+Ground Truth Accuracy:
+  Incident Type (Strict):   49.7% (150/302)
+  Incident Type (Flexible): 82.8% (250/302)
+  Risk Level:               81.1% (245/302)
+
+  Note: Strict = matches primary type only
+        Flexible = matches any of the ground truth types
+
+Performance:
+  Mean time: 81.39s
+  Median time: 82.78s
+  Min time: 61.01s
+  Max time: 119.90s
+
+Extraction Quality:
+  Mean confidence: 0.796
+  Median confidence: 0.797
+  Min confidence: 0.607
+  Max confidence: 0.917
+
+EU AI Act Risk Level Distribution:
+  HighRisk: 280 (92.7%)
+  MinimalRisk: 14 (4.6%)
+  OutOfScope: 8 (2.6%)
+
+Incident Type Distribution (Top 10):
+  transparency_failure: 77 (25.5%)
+  misinformation: 59 (19.5%)
+  accuracy_failure: 55 (18.2%)
+  safety_failure: 38 (12.6%)
+  privacy_violation: 31 (10.3%)
+  bias: 24 (7.9%)
+  copyright: 8 (2.6%)
+  appropriation: 4 (1.3%)
+  data_leakage: 4 (1.3%)
+  safety failure: 1 (0.3%)
+
+Errors (48):
+  AIAAIC1579: Unknown
+  AIAAIC1797: Unknown
+  AIAAIC2030: Unknown
+  AIAAIC1769: Unknown
+  AIAAIC1497: Unknown
+  ... and 43 more
+
+Data Attribution:
+  Data provided by AIAAIC (https://www.aiaaic.org/aiaaic-repository) under CC BY-SA 4.0 license.
+  License: CC BY-SA 4.0
+
+======================================================================
+

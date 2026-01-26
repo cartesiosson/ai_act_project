@@ -5,7 +5,6 @@ Synthetic Benchmark Classification Evaluation
 Evaluates incident type and risk level classification using ground truth
 from synthetic benchmark templates.
 
-Author: TFM EU AI Act Compliance
 Date: December 2025
 """
 

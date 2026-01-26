@@ -764,6 +764,202 @@ EVIDENCE_CATALOG = {
             ),
         ]
     },
+
+    # ============================================================================
+    # SCOPE OVERRIDE ASSESSMENT (v0.39.0) - Article 2 Applicability
+    # ============================================================================
+    "ScopeOverrideAssessment": {
+        "article": "Article 2",
+        "eli_uri": f"{ELI_BASE}/art_2/oj",
+        "dpv_measures": ["dpv:ImpactAssessment", "dpv:RightsImpactAssessment"],
+        "deadline": "Before deployment",
+        "responsible": [ResponsibleRole.LEGAL, ResponsibleRole.COMPLIANCE, ResponsibleRole.DPO],
+        "evidence": [
+            EvidenceItem(
+                id="SO-ASS-001",
+                name="Scope Applicability Assessment",
+                description="Assessment documenting why a system with potentially excluded purpose falls within EU AI Act scope due to override contexts (fundamental rights impact, legal consequences, victim harm, etc.)",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ONCE,
+                responsible_role=ResponsibleRole.LEGAL,
+                dpv_measure="dpv:ImpactAssessment",
+                templates=["scope_override_assessment.docx"],
+                guidance="Must document: (1) The excluded purpose category (Art. 2 exclusion), (2) The override context triggering applicability, (3) Specific impacts on natural persons, (4) Legal basis for scope inclusion"
+            ),
+            EvidenceItem(
+                id="SO-ASS-002",
+                name="Fundamental Rights Impact Documentation",
+                description="Documentation of how the system affects fundamental rights of natural persons, triggering AI Act applicability despite potentially excluded purpose",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.DPO,
+                dpv_measure="dpv:RightsImpactAssessment",
+                guidance="Required when system purpose falls under Art. 2 exclusion but deployment context affects fundamental rights"
+            ),
+            EvidenceItem(
+                id="SO-POL-001",
+                name="Scope Determination Policy",
+                description="Policy for determining EU AI Act applicability for systems with mixed-use purposes or edge-case deployment contexts",
+                evidence_type=EvidenceType.POLICY,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.COMPLIANCE,
+                templates=["scope_determination_policy.docx"]
+            ),
+        ]
+    },
+
+    # ============================================================================
+    # FRIA REQUIREMENT (v0.39.0) - Article 27 Fundamental Rights Impact Assessment
+    # ============================================================================
+    "FRIARequirement": {
+        "article": "Article 27",
+        "eli_uri": f"{ELI_BASE}/art_27/oj",
+        "dpv_measures": ["dpv:FRIA", "dpv:ImpactAssessment", "dpv:RightsImpactAssessment"],
+        "deadline": "Before deployment",
+        "responsible": [ResponsibleRole.DEPLOYER, ResponsibleRole.DPO, ResponsibleRole.LEGAL],
+        "evidence": [
+            EvidenceItem(
+                id="FRIA-REQ-001",
+                name="FRIA Trigger Assessment",
+                description="Assessment documenting the trigger conditions that require a Fundamental Rights Impact Assessment per Article 27",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ONCE,
+                responsible_role=ResponsibleRole.LEGAL,
+                dpv_measure="dpv:ImpactAssessment",
+                templates=["fria_trigger_assessment.docx"],
+                guidance="Document which override context triggered FRIA requirement: LegalConsequencesContext, VictimImpactContext, AffectsFundamentalRightsContext, BiometricProcessingContext"
+            ),
+            EvidenceItem(
+                id="FRIA-REQ-002",
+                name="Complete FRIA Report per Art. 27",
+                description="Full Fundamental Rights Impact Assessment following Art. 27 structure: affected persons, specific risks, frequency of use, human oversight, mitigation measures",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.DPO,
+                dpv_measure="dpv:FRIA",
+                templates=["fria_full_report.docx", "fria_annex_template.xlsx"],
+                guidance="Art. 27(1) requires: (a) deployer's processes, (b) period/frequency of use, (c) categories of affected persons, (d) specific risks per category, (e) human oversight measures, (f) measures for identified risks. Per Art. 27(2), consult workers' representatives where applicable."
+            ),
+            EvidenceItem(
+                id="FRIA-REQ-003",
+                name="FRIA Notification to Authority",
+                description="Evidence of notification to relevant market surveillance authority per Art. 27(4) requirements",
+                evidence_type=EvidenceType.AUDIT,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ONCE,
+                responsible_role=ResponsibleRole.COMPLIANCE,
+                guidance="Art. 27(4): Deployers must notify market surveillance authority of FRIA results. Retain notification acknowledgment."
+            ),
+            EvidenceItem(
+                id="FRIA-REQ-004",
+                name="FRIA Mitigation Plan",
+                description="Documented measures to mitigate identified fundamental rights risks from the FRIA",
+                evidence_type=EvidenceType.POLICY,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.COMPLIANCE,
+                templates=["fria_mitigation_plan.docx"],
+                guidance="Link each identified risk to specific mitigation measure with timeline and responsible party"
+            ),
+        ]
+    },
+
+    # ============================================================================
+    # VICTIM IMPACT ASSESSMENT (v0.39.0) - For systems affecting victims
+    # ============================================================================
+    "VictimImpactAssessment": {
+        "article": "Article 2 + Article 27",
+        "eli_uri": f"{ELI_BASE}/art_27/oj",
+        "dpv_measures": ["dpv:ImpactAssessment", "dpv:VulnerableDataSubject"],
+        "deadline": "Before deployment",
+        "responsible": [ResponsibleRole.DPO, ResponsibleRole.LEGAL],
+        "evidence": [
+            EvidenceItem(
+                id="VI-ASS-001",
+                name="Victim Category Identification",
+                description="Documentation identifying categories of victims potentially affected by the AI system and specific vulnerabilities",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.DPO,
+                dpv_measure="dpv:VulnerableDataSubject",
+                templates=["victim_category_assessment.docx"],
+                guidance="Cover: crime victims, accident victims, disaster victims, domestic violence survivors, trafficking victims. Reference DPV VulnerableDataSubject taxonomy."
+            ),
+            EvidenceItem(
+                id="VI-ASS-002",
+                name="Secondary Harm Prevention Assessment",
+                description="Assessment of potential secondary harms to victims from AI system use and prevention measures",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.DPO,
+                guidance="Assess: re-traumatization, privacy violations, dignity impacts, access barriers for vulnerable persons"
+            ),
+            EvidenceItem(
+                id="VI-POL-001",
+                name="Victim Protection Policy",
+                description="Policy ensuring protection of victim rights and dignity in AI system deployment",
+                evidence_type=EvidenceType.POLICY,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.COMPLIANCE,
+                templates=["victim_protection_policy.docx"]
+            ),
+        ]
+    },
+
+    # ============================================================================
+    # LEGAL CONSEQUENCES ASSESSMENT (v0.39.0) - For systems producing legal effects
+    # ============================================================================
+    "LegalConsequencesAssessment": {
+        "article": "Article 2 + Article 6 Annex III",
+        "eli_uri": f"{ELI_BASE}/art_6/oj",
+        "dpv_measures": ["dpv:LegalEffect", "dpv:AutomatedDecisionMaking"],
+        "deadline": "Before deployment",
+        "responsible": [ResponsibleRole.LEGAL, ResponsibleRole.COMPLIANCE],
+        "evidence": [
+            EvidenceItem(
+                id="LC-ASS-001",
+                name="Legal Effects Mapping",
+                description="Comprehensive mapping of legal effects produced by the AI system on natural persons",
+                evidence_type=EvidenceType.ASSESSMENT,
+                priority=EvidencePriority.CRITICAL,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.LEGAL,
+                dpv_measure="dpv:LegalEffect",
+                templates=["legal_effects_mapping.docx"],
+                guidance="Document all legal consequences: arrest decisions, court proceedings, benefit denials, contract terminations, rights restrictions"
+            ),
+            EvidenceItem(
+                id="LC-TEC-001",
+                name="Automated Decision Documentation",
+                description="Technical documentation of automated decision-making processes with legal consequences",
+                evidence_type=EvidenceType.TECHNICAL,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ANNUALLY,
+                responsible_role=ResponsibleRole.TECHNICAL,
+                dpv_measure="dpv:AutomatedDecisionMaking",
+                guidance="Include decision logic, thresholds, factors considered, and explainability mechanisms"
+            ),
+            EvidenceItem(
+                id="LC-POL-001",
+                name="Legal Challenge Process",
+                description="Documented process for affected persons to challenge AI-assisted legal decisions",
+                evidence_type=EvidenceType.POLICY,
+                priority=EvidencePriority.HIGH,
+                frequency=EvidenceFrequency.ONCE,
+                responsible_role=ResponsibleRole.LEGAL,
+                templates=["legal_challenge_process.docx"],
+                guidance="Must include: appeal mechanisms, human review rights, timeline for decisions"
+            ),
+        ]
+    },
 }
 
 
@@ -928,10 +1124,20 @@ class EvidencePlannerService:
         self,
         risk_level: str,
         requirement_plans: List[RequirementEvidencePlan],
-        critical_gaps: List[Dict]
+        critical_gaps: List[Dict],
+        scope_override_detected: bool = False,
+        override_context: Optional[str] = None
     ) -> List[str]:
         """Generate actionable recommendations"""
         recommendations = []
+
+        # Scope override warning (v0.39.0)
+        if scope_override_detected:
+            context_label = override_context or "deployment context"
+            recommendations.append(
+                f"SCOPE ALERT: System with potentially excluded purpose is IN SCOPE due to {context_label}. "
+                "Complete Scope Override Assessment per Art. 2."
+            )
 
         # Critical gaps first
         critical_count = sum(
@@ -942,16 +1148,19 @@ class EvidencePlannerService:
                 f"URGENT: Address {critical_count} critical requirement gaps before deployment"
             )
 
-        # FRIA recommendation for high-risk
-        if risk_level == "HighRisk":
-            has_fria = any(
-                "FundamentalRights" in rp.requirement_uri
-                for rp in requirement_plans
+        # FRIA recommendation for high-risk OR scope override contexts (v0.39.0)
+        has_fria_trigger = any(
+            "FundamentalRights" in rp.requirement_uri or
+            "FRIA" in rp.requirement_uri or
+            "VictimImpact" in rp.requirement_uri or
+            "LegalConsequences" in rp.requirement_uri
+            for rp in requirement_plans
+        )
+        if risk_level == "HighRisk" or has_fria_trigger or scope_override_detected:
+            recommendations.append(
+                "Conduct Fundamental Rights Impact Assessment (FRIA) per Art. 27 - "
+                "mandatory for high-risk deployers and systems affecting fundamental rights"
             )
-            if has_fria:
-                recommendations.append(
-                    "Conduct Fundamental Rights Impact Assessment (FRIA) per Art. 27 - mandatory for high-risk deployers"
-                )
 
         # Human oversight for automated decisions
         has_oversight_gap = any(
@@ -981,6 +1190,34 @@ class EvidencePlannerService:
         if has_bias_gap:
             recommendations.append(
                 "Conduct independent bias audit across protected characteristics per Art. 10(2)(f)"
+            )
+
+        # Scope-specific recommendations (v0.39.0)
+        has_scope_assessment = any(
+            "ScopeOverride" in rp.requirement_uri
+            for rp in requirement_plans
+        )
+        if has_scope_assessment:
+            recommendations.append(
+                "Document scope applicability rationale with legal basis per Art. 2 exemptions and overrides"
+            )
+
+        has_victim_impact = any(
+            "VictimImpact" in rp.requirement_uri
+            for rp in requirement_plans
+        )
+        if has_victim_impact:
+            recommendations.append(
+                "Conduct specialized victim impact assessment - heightened duty of care for vulnerable persons"
+            )
+
+        has_legal_consequences = any(
+            "LegalConsequences" in rp.requirement_uri
+            for rp in requirement_plans
+        )
+        if has_legal_consequences:
+            recommendations.append(
+                "Document all legal effects on natural persons and establish appeal/challenge mechanisms"
             )
 
         # General recommendation

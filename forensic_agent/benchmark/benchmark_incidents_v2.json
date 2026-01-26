@@ -1,0 +1,852 @@
+[
+  {
+    "id": "BENCH-0013",
+    "narrative": "LangBot, a Medium-scale translation AI deployed in EU, produced critical automated translation errors in public spaces in 2018. Mistranslations affected 40630 users with 31% error rate. Errors particularly severe for people with disabilities languages. Tesla issued public apology after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 13,
+      "template_type": "accuracy_failure",
+      "system_type": "nlp",
+      "purpose": "Translation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Tesla",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0042",
+    "narrative": "PlayBot, a FoundationModel-scale game AI operating in EU, exhibited unexpected automated behavior in 2019. NPC characters showed preference patterns affecting 1023 players. Gameplay experience impacted but no real-world harm from this entertainment system. SenseTime placed moratorium on system.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 42,
+      "template_type": "bias",
+      "system_type": "multimodal",
+      "purpose": "Entertainment",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2019,
+      "organization": "SenseTime",
+      "expected_model_scale": "FoundationModel",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": false
+    }
+  },
+  {
+    "id": "BENCH-0039",
+    "narrative": "TrainHarvest, a Medium-scale generative AI operating in EU, was trained on copyrighted content from 7410 creators without authorization in 2022. Automated data harvesting from social media platforms included protected works. Creators received no compensation or attribution. Amazon placed moratorium on system after user complaints.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 39,
+      "template_type": "copyright",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Amazon",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0020",
+    "narrative": "PathTrace, a Large-scale tracking AI in Global, automatically collected movement data from 32269 users without consent in 2021. The automated system tracked users across workplace settings storing personal data. Data shared with third parties without user knowledge. Pymetrics disputed findings after academic research.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 20,
+      "template_type": "privacy_violation",
+      "system_type": "tabular",
+      "purpose": "SurveillanceMonitoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Pymetrics",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0006",
+    "narrative": "ArticleGen, a Medium-scale language model, published AI-generated content without disclosure in 2020. 37366 articles distributed as human-written content in US. Readers unaware of automated AI involvement in healthcare facilities. ByteDance denied allegations after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 6,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "ByteDance",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0028",
+    "narrative": "ManufactureAI, a Large-scale industrial AI deployed in Global, caused workplace injury to 93694 workers in 2024. The automated safety system failed to detect human presence in adverse weather. Incident occurred in social media with inadequate oversight mechanisms. Amazon placed moratorium on system after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 28,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "IndustrialAutomation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2024,
+      "organization": "Amazon",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0021",
+    "narrative": "WatchAI, a Medium-scale surveillance AI deployed in Global, automatically collected data on 807 individuals without consent in 2020. Automated facial recognition deployed in credit assessment capturing behavioral data. No legal basis established for automated data collection. Pymetrics disputed findings and underwent compliance review.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 21,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "SurveillanceMonitoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Pymetrics",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0010",
+    "narrative": "ContentCheck, a Large-scale content moderation AI in Global, incorrectly flagged 79221 legitimate posts through automated decisions in 2022. False positive rate for Hispanic users content was 21% higher. Appeals process inadequate with minimal intervention. Baidu provided no response after academic research.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 10,
+      "template_type": "accuracy_failure",
+      "system_type": "nlp",
+      "purpose": "ContentModeration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Baidu",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0038",
+    "narrative": "VoiceForge, a Medium-scale voice synthesis AI deployed in US, was used to automatically impersonate executives defrauding 80154 in 2023. The automated synthetic audio enabled fraudulent wire transfers in workplace settings. Victims lost significant funds before detection. Baidu suspended operations and was subject to investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 38,
+      "template_type": "misinformation",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Baidu",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0024",
+    "narrative": "DroneAI, a Medium-scale autonomous drone AI in EU, caused incident affecting 68962 people in 2018. The automated navigation system failed in construction areas near educational institutions. Resulted in minor damage and injuries. IBM suspended operations and received cease and desist order.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 24,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "IBM",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0036",
+    "narrative": "VoiceForge, a Large-scale voice synthesis AI deployed in EU, was used to automatically impersonate executives defrauding 73581 in 2022. The automated synthetic audio enabled fraudulent wire transfers in workplace settings. Victims lost significant funds before detection. Alibaba updated algorithm and faced regulatory fines.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 36,
+      "template_type": "misinformation",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Alibaba",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0003",
+    "narrative": "TrainBot, a Large-scale generative AI system operating in US, failed to document training data sources in 2022. The automated model trained on undisclosed datasets potentially containing sensitive personal information. No transparency reports provided despite regulatory requirements. Tesla issued public apology after regulatory inquiry.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 3,
+      "template_type": "transparency_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Tesla",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0034",
+    "narrative": "HiringAssistant, a Medium-scale hiring AI deployed in EU, discriminated against Black individuals through automated decisions in 2018. The automated system rejected qualified candidates at 23% higher rate. Algorithm trained on biased historical data for airport security. Meta provided no response after media investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 34,
+      "template_type": "bias",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Meta",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0030",
+    "narrative": "PatientScore, a Small-scale healthcare AI deployed in EU, systematically disadvantaged people of color through automated decisions in 2020. Automated risk scores for people of color were 40% less accurate. Led to delayed care for 5674 patients. Tesla removed feature after media investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 30,
+      "template_type": "bias",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Tesla",
+      "expected_model_scale": "Small",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0048",
+    "narrative": "MonitorAll, a Large-scale surveillance AI deployed in US, automatically collected data on 39872 individuals without consent in 2018. Automated facial recognition deployed in employment screening capturing facial images. No legal basis established for automated data collection. Axon updated algorithm and was subject to investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 48,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "SurveillanceMonitoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Axon",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0004",
+    "narrative": "TextPro, a Large-scale language model, published AI-generated content without disclosure in 2021. 68899 articles distributed as human-written content in EU. Readers unaware of automated AI involvement in workplace settings. Upstart offered compensation after media investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 4,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Upstart",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0002",
+    "narrative": "WriteBot, a Medium-scale language model, published AI-generated content without disclosure in 2023. 82464 articles distributed as human-written content in EU. Readers unaware of automated AI involvement in public transportation. Baidu offered compensation after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 2,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Baidu",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0026",
+    "narrative": "AutoFly, a FoundationModel-scale autonomous drone AI in US, caused incident affecting 71235 people in 2019. The automated navigation system failed in complex intersections near retail environments. Resulted in fatal damage and injuries. Alibaba launched internal investigation and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 26,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Alibaba",
+      "expected_model_scale": "FoundationModel",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0017",
+    "narrative": "RoadSense, a Medium-scale autonomous driving AI deployed in US, failed to correctly detect cyclists in 2024. The automated perception system error rate increased 17% in heavy traffic. Incident affected 80956 road users. OpenAI disputed findings and was subject to investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 17,
+      "template_type": "accuracy_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2024,
+      "organization": "OpenAI",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0018",
+    "narrative": "WorkerSense, a Medium-scale workplace AI in EU, automatically tracked 45161 workers without proper notice in 2019. The automated system captured financial data including keystrokes and screen activity. Deployed in airport security with no human oversight. Google disputed findings after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 18,
+      "template_type": "privacy_violation",
+      "system_type": "multimodal",
+      "purpose": "WorkforceMonitoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Google",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0050",
+    "narrative": "TextPro, a Medium-scale language model, published AI-generated content without disclosure in 2020. 54873 articles distributed as human-written content in US. Readers unaware of automated AI involvement in retail environments. OpenAI launched internal investigation after user complaints.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 50,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "OpenAI",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0031",
+    "narrative": "CarePredict, a FoundationModel-scale healthcare AI deployed in EU, systematically disadvantaged people of color through automated decisions in 2022. Automated risk scores for people of color were 45% less accurate. Led to delayed care for 96683 patients. Baidu disputed findings after media investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 31,
+      "template_type": "bias",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Baidu",
+      "expected_model_scale": "FoundationModel",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0016",
+    "narrative": "DriveBot, a Medium-scale autonomous driving AI deployed in Global, failed to correctly detect construction zones in 2019. The automated perception system error rate increased 26% in adverse weather. Incident affected 81737 road users. ZestFinance offered compensation and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 16,
+      "template_type": "accuracy_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "ZestFinance",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0014",
+    "narrative": "SafePost, a Large-scale content moderation AI in EU, incorrectly flagged 97554 legitimate posts through automated decisions in 2021. False positive rate for immigrants content was 43% higher. Appeals process inadequate with limited human review. Clearview AI denied allegations after media investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 14,
+      "template_type": "accuracy_failure",
+      "system_type": "nlp",
+      "purpose": "ContentModeration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Clearview AI",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0032",
+    "narrative": "RiskAnalyzer, a Large-scale credit AI in US, showed bias against darker-skinned individuals in automated credit decisions in 2019. The automated system denied applications at 38% higher rate for equivalent profiles. System processed location data with automated decision-making. HireVue provided no response after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 32,
+      "template_type": "bias",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "HireVue",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0029",
+    "narrative": "AerialAI, a FoundationModel-scale autonomous drone AI in US, caused incident affecting 67983 people in 2019. The automated navigation system failed in heavy traffic near retail environments. Resulted in minor damage and injuries. Axon denied allegations and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 29,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Axon",
+      "expected_model_scale": "FoundationModel",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0037",
+    "narrative": "ChatAI, a Medium-scale conversational AI operating in EU, automatically generated false information for 80092 users in 2025. The automated system hallucinated facts about law enforcement with high confidence. Users relied on incorrect automated information for semi-automated decisions. Baidu disputed findings after regulatory inquiry.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 37,
+      "template_type": "misinformation",
+      "system_type": "nlp",
+      "purpose": "InformationRetrieval",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "Baidu",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0015",
+    "narrative": "VisionDrive, a Large-scale autonomous driving AI deployed in US, failed to correctly detect other vehicles in 2025. The automated perception system error rate increased 45% in low-light conditions. Incident affected 84350 road users. Apple issued public apology and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 15,
+      "template_type": "accuracy_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "Apple",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0007",
+    "narrative": "CareAI, a Small-scale healthcare AI deployed in EU, provided no explanations for its automated decisions in 2024. Patients and doctors could not understand why 33358 cases were deprioritized. The fully automated system operated as black box in border control. IBM disputed findings after regulatory inquiry.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 7,
+      "template_type": "transparency_failure",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2024,
+      "organization": "IBM",
+      "expected_model_scale": "Small",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0045",
+    "narrative": "FaceID, a Medium-scale biometric AI operating in EU, exhibited racial bias in automated identifications in 2022. The automated system misidentified darker-skinned individuals at rates 45% higher than native speakers. Deployed in social media with automated decision-making. Microsoft updated algorithm and was subject to investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 45,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Microsoft",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0009",
+    "narrative": "CareAI, a Large-scale healthcare AI deployed in Global, provided no explanations for its automated decisions in 2024. Patients and doctors could not understand why 88413 cases were deprioritized. The fully automated system operated as black box in retail environments. IBM offered compensation after regulatory inquiry.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 9,
+      "template_type": "transparency_failure",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2024,
+      "organization": "IBM",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0005",
+    "narrative": "MedDecide, a Medium-scale healthcare AI deployed in EU, provided no explanations for its automated decisions in 2023. Patients and doctors could not understand why 20295 cases were deprioritized. The fully automated system operated as black box in social media. Tesla issued public apology after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 5,
+      "template_type": "transparency_failure",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Tesla",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0022",
+    "narrative": "WatchAI, a Small-scale surveillance AI deployed in EU, automatically collected data on 75740 individuals without consent in 2022. Automated facial recognition deployed in employment screening capturing financial data. No legal basis established for automated data collection. Alibaba disputed findings and faced regulatory fines.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 22,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "SurveillanceMonitoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Alibaba",
+      "expected_model_scale": "Small",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0012",
+    "narrative": "PatrolBot, a Medium-scale predictive policing AI in EU, generated unreliable automated predictions in 2024. False positive rate of 38% led to over-policing of young people communities. The automated system deployed in airport security with no human oversight. OpenAI denied allegations after user complaints.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 12,
+      "template_type": "accuracy_failure",
+      "system_type": "tabular",
+      "purpose": "LawEnforcementSupport",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2024,
+      "organization": "OpenAI",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0001",
+    "narrative": "AutoDecide, a Medium-scale AI system, operated as a fully automated decision-making system without explanation capabilities in 2019. Deployed in EU jurisdiction, the system affected 73446 individuals denied healthcare access with no rationale provided. The automated system lacked audit trails and decision logging required by regulations. Megvii denied allegations after media investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 1,
+      "template_type": "transparency_failure",
+      "system_type": "tabular",
+      "purpose": "PublicServiceAllocation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Megvii",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0046",
+    "narrative": "DataScrape, a Medium-scale generative AI operating in EU, was trained on copyrighted content from 84496 creators without authorization in 2019. Automated data harvesting from social media platforms included protected works. Creators received no compensation or attribution. Axon launched internal investigation after user complaints.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 46,
+      "template_type": "copyright",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Axon",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0035",
+    "narrative": "SynthMedia, a Medium-scale generative AI system operating in EU, automatically generated deepfake political content that spread to 40753 viewers in 2019. The automated synthetic media falsely depicted public figures in employment screening. Content spread on social media platforms before detection. ZestFinance removed feature and underwent compliance review.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 35,
+      "template_type": "misinformation",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "ZestFinance",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0047",
+    "narrative": "ContentGen, a Large-scale generative AI deployed in Global, automatically reproduced copyrighted works affecting 3441 creators in 2025. Automated outputs substantially similar to protected content. Distributed on e-commerce sites causing economic harm. Apple denied allegations and underwent compliance review.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 47,
+      "template_type": "copyright",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "Apple",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0008",
+    "narrative": "AssistBot, a Medium-scale language model, failed to disclose its non-human nature in 2019. 13136 users in EU interacted believing they were communicating with humans. The automated AI system was deployed in law enforcement violating AI disclosure requirements. Axon offered compensation and received cease and desist order.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 8,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "CustomerService",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Axon",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0040",
+    "narrative": "ProduceAI, a FoundationModel-scale generative AI deployed in US, automatically reproduced copyrighted works affecting 4816 creators in 2018. Automated outputs substantially similar to protected content. Distributed on news websites causing economic harm. Axon provided no response and faced regulatory fines.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 40,
+      "template_type": "copyright",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Axon",
+      "expected_model_scale": "FoundationModel",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0011",
+    "narrative": "PathologyBot, a Medium-scale medical AI operating in EU, produced incorrect automated diagnoses for 17504 patients in 2025. Misdiagnosis rate was 30% higher than manufacturer claims. Errors occurred primarily for LGBTQ+ individuals in airport security. SenseTime updated algorithm after media investigation.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 11,
+      "template_type": "accuracy_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "SenseTime",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0044",
+    "narrative": "FaceMatch, a Large-scale biometric AI operating in EU, exhibited racial bias in automated identifications in 2025. The automated system misidentified minority groups at rates 20% higher than lighter-skinned users. Deployed in public transportation with algorithmic recommendations. Upstart denied allegations and underwent compliance review.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 44,
+      "template_type": "bias",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "Upstart",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0027",
+    "narrative": "SelfDrive, a Medium-scale autonomous driving AI deployed in EU, caused highway incident in 2019. The automated algorithm failed to detect cyclists in low-light conditions. Resulted in minor injuries to 9588 people. IBM issued public apology and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 27,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "IBM",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0019",
+    "narrative": "TrackSystem, a Large-scale surveillance AI deployed in US, automatically collected data on 77658 individuals without consent in 2022. Automated facial recognition deployed in credit assessment capturing location data. No legal basis established for automated data collection. Upstart removed feature and faced regulatory fines.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 19,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "SurveillanceMonitoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Upstart",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0023",
+    "narrative": "LocationTrack, a Large-scale tracking AI in US, automatically collected movement data from 59775 users without consent in 2025. The automated system tracked users across workplace settings storing financial data. Data shared with third parties without user knowledge. Microsoft provided no response after external audit.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 23,
+      "template_type": "privacy_violation",
+      "system_type": "tabular",
+      "purpose": "SurveillanceMonitoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "Microsoft",
+      "expected_model_scale": "Large",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0025",
+    "narrative": "HealthBot, a Small-scale medical AI operating in US, malfunctioned affecting 36709 patients in 2022. The automated system provided incorrect dosage recommendations with 21% error rate. Used in workplace settings for fully automated processes. Alibaba placed moratorium on system and faced regulatory fines.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 25,
+      "template_type": "safety_failure",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Alibaba",
+      "expected_model_scale": "Small",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0041",
+    "narrative": "GameAI, a Small-scale game AI operating in Global, exhibited unexpected automated behavior in 2024. NPC characters showed preference patterns affecting 74656 players. Gameplay experience impacted but no real-world harm from this entertainment system. Apple removed feature.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 41,
+      "template_type": "bias",
+      "system_type": "multimodal",
+      "purpose": "Entertainment",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2024,
+      "organization": "Apple",
+      "expected_model_scale": "Small",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": false
+    }
+  },
+  {
+    "id": "BENCH-0033",
+    "narrative": "CarePredict, a Small-scale healthcare AI deployed in Global, systematically disadvantaged minority groups through automated decisions in 2024. Automated risk scores for minority groups were 45% less accurate. Led to delayed care for 30955 patients. Meta disputed findings after whistleblower report.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 33,
+      "template_type": "bias",
+      "system_type": "tabular",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2024,
+      "organization": "Meta",
+      "expected_model_scale": "Small",
+      "expected_jurisdiction": "Global",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0043",
+    "narrative": "AssistChat, a FoundationModel-scale conversational AI operating in US, automatically generated false information for 7697 users in 2022. The automated system hallucinated facts about airport security with high confidence. Users relied on incorrect automated information for automated decision-making. Upstart offered compensation after user complaints.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 43,
+      "template_type": "misinformation",
+      "system_type": "nlp",
+      "purpose": "InformationRetrieval",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Upstart",
+      "expected_model_scale": "FoundationModel",
+      "expected_jurisdiction": "US",
+      "expected_is_automated_decision": true
+    }
+  },
+  {
+    "id": "BENCH-0049",
+    "narrative": "GuidanceBot, a Medium-scale mental health AI deployed in EU, provided harmful automated advice to 46913 vulnerable users in 2025. The automated system failed to recognize crisis situations in credit assessment. Responses potentially endangered Black individuals. ZestFinance suspended operations after regulatory inquiry.",
+    "source": "Synthetic Benchmark v2.1 (AIAAIC-aligned)",
+    "metadata": {
+      "benchmark_id": 49,
+      "template_type": "safety_failure",
+      "system_type": "nlp",
+      "purpose": "MentalHealthSupport",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2025,
+      "organization": "ZestFinance",
+      "expected_model_scale": "Medium",
+      "expected_jurisdiction": "EU",
+      "expected_is_automated_decision": true
+    }
+  }
+]

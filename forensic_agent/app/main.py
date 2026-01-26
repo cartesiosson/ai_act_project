@@ -14,8 +14,7 @@ from .services import (
     ForensicSPARQLService,
     ForensicAnalysisEngine,
     PersistenceService,
-    EvidencePlannerService,
-    ForensicReActAgent
+    EvidencePlannerService
 )
 from .models.forensic_report import StreamEvent, StreamEventType
 
@@ -41,25 +40,25 @@ sparql_service: Optional[ForensicSPARQLService] = None
 analysis_engine: Optional[ForensicAnalysisEngine] = None
 persistence_service: Optional[PersistenceService] = None
 evidence_planner: Optional[EvidencePlannerService] = None
-react_agent: Optional[ForensicReActAgent] = None
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup"""
-    global extractor_service, sparql_service, analysis_engine, persistence_service, evidence_planner, react_agent
+    global extractor_service, sparql_service, analysis_engine, persistence_service, evidence_planner
 
     print("=" * 80)
     print("FORENSIC COMPLIANCE AGENT - STARTING UP")
     print("=" * 80)
 
     # Get configuration from environment
-    llm_provider = os.getenv("LLM_PROVIDER", "anthropic")
-    anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+    ollama_endpoint = os.getenv("OLLAMA_ENDPOINT", "http://ollama:11434")
+    ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
     mcp_server_url = os.getenv("MCP_SERVER_URL", "http://mcp_sparql:8080")
 
     print(f"\nConfiguration:")
-    print(f"  LLM Provider: {llm_provider}")
+    print(f"  Ollama Endpoint: {ollama_endpoint}")
+    print(f"  Ollama Model: {ollama_model}")
     print(f"  MCP Server URL: {mcp_server_url}")
     print()
 
@@ -67,8 +66,8 @@ async def startup_event():
     try:
         print("Initializing Incident Extractor...")
         extractor_service = IncidentExtractorService(
-            llm_provider=llm_provider,
-            api_key=anthropic_api_key
+            ollama_endpoint=ollama_endpoint,
+            ollama_model=ollama_model
         )
         print("✓ Incident Extractor initialized")
 
@@ -100,29 +99,6 @@ async def startup_event():
         print("\nInitializing Evidence Planner Service...")
         evidence_planner = EvidencePlannerService()
         print("✓ Evidence Planner Service initialized (DPV mappings)")
-
-        # Initialize ReAct Agent (optional - only if Ollama is available)
-        ollama_endpoint = os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434")
-        ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2")
-        react_enabled = os.getenv("REACT_AGENT_ENABLED", "false").lower() == "true"
-
-        if react_enabled:
-            print(f"\nInitializing ReAct Agent (LangGraph + Ollama)...")
-            print(f"  Ollama Endpoint: {ollama_endpoint}")
-            print(f"  Model: {ollama_model}")
-            try:
-                react_agent = ForensicReActAgent(
-                    sparql_service=sparql_service,
-                    extractor_service=extractor_service,
-                    ollama_base_url=ollama_endpoint,
-                    model_name=ollama_model
-                )
-                print("✓ ReAct Agent initialized")
-            except Exception as e:
-                print(f"⚠ ReAct Agent initialization failed (optional): {e}")
-                react_agent = None
-        else:
-            print("\nReAct Agent: Disabled (set REACT_AGENT_ENABLED=true to enable)")
 
         print("\n" + "=" * 80)
         print("FORENSIC COMPLIANCE AGENT - READY")
@@ -179,29 +155,19 @@ async def health_check():
 
     # Get LLM info
     llm_info = {
-        "provider": extractor_service.llm_provider if extractor_service else "unknown",
-        "model": extractor_service.model if extractor_service else "unknown"
+        "provider": "ollama",
+        "model": extractor_service.model if extractor_service else "unknown",
+        "endpoint": extractor_service.ollama_endpoint if extractor_service else "unknown"
     }
-
-    # ReAct agent info
-    react_info = None
-    if react_agent:
-        react_info = {
-            "enabled": True,
-            "model": react_agent.model_name,
-            "ollama_url": react_agent.ollama_base_url
-        }
 
     return {
         "status": "healthy",
         "services": {
             "extractor": "operational",
             "sparql": "operational",
-            "analysis_engine": "operational",
-            "react_agent": "operational" if react_agent else "disabled"
+            "analysis_engine": "operational"
         },
         "llm": llm_info,
-        "react_agent": react_info,
         "mcp": {
             "connected": sparql_service._connected,
             "stats": stats
@@ -451,73 +417,6 @@ async def analyze_stream_with_evidence_plan(request: IncidentAnalysisRequest):
             error_event = StreamEvent(
                 event_type=StreamEventType.ERROR,
                 step_name="Error",
-                data={"error": str(e)}
-            )
-            yield f"data: {json.dumps(error_event.model_dump())}\n\n"
-
-    return StreamingResponse(
-        event_generator(),
-        media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "X-Accel-Buffering": "no"
-        }
-    )
-
-
-@app.post("/forensic/analyze-react")
-async def analyze_incident_react(request: IncidentAnalysisRequest):
-    """
-    Analyze an AI incident using the ReAct (Reasoning + Acting) agent.
-
-    This endpoint uses LangGraph with Ollama (Llama 3.2) to dynamically
-    decide which regulatory frameworks to query based on the incident.
-
-    The agent uses a Thought -> Action -> Observation loop to:
-    - Extract incident properties
-    - Decide which frameworks apply (EU AI Act, NIST, ISO)
-    - Query only relevant regulations
-    - Generate a forensic report
-
-    Requires: REACT_AGENT_ENABLED=true and Ollama running with llama3.2
-    """
-    if not react_agent:
-        raise HTTPException(
-            status_code=503,
-            detail="ReAct agent not initialized. Set REACT_AGENT_ENABLED=true and ensure Ollama is running."
-        )
-
-    if not request.narrative or len(request.narrative.strip()) < 50:
-        raise HTTPException(
-            status_code=400,
-            detail="Narrative too short. Provide at least 50 characters."
-        )
-
-    async def event_generator() -> AsyncGenerator[str, None]:
-        """Generate SSE events during ReAct agent analysis"""
-        try:
-            async for event in react_agent.analyze_incident_streaming(request.narrative):
-                event_data = event.model_dump() if hasattr(event, 'model_dump') else event.dict()
-                yield f"data: {json.dumps(event_data)}\n\n"
-
-            # Send final completion event
-            final_event = StreamEvent(
-                event_type=StreamEventType.ANALYSIS_COMPLETE,
-                step_name="ReAct Analysis Complete",
-                data={
-                    "status": "COMPLETED",
-                    "agent_type": "react",
-                    "model": react_agent.model_name
-                },
-                progress_percent=100.0
-            )
-            yield f"data: {json.dumps(final_event.model_dump())}\n\n"
-
-        except Exception as e:
-            error_event = StreamEvent(
-                event_type=StreamEventType.ERROR,
-                step_name="ReAct Agent Error",
                 data={"error": str(e)}
             )
             yield f"data: {json.dumps(error_event.model_dump())}\n\n"

@@ -223,15 +223,109 @@ async def reason(
                         inferences_count += 1
 
                 # =============================================================
+                # REGLA 4.5: hasProhibitedPractice → hasCriteria (Art. 5 AI Act)
+                # Si un sistema tiene una práctica prohibida, esa práctica se convierte
+                # en criterio activado para permitir inferencia de UnacceptableRisk
+                # IMPORTANTE: Debe ejecutarse ANTES de REGLA 5 para que las prácticas
+                # prohibidas puedan inferir su nivel de riesgo
+                # =============================================================
+                for practice in combined_graph.objects(system, AI.hasProhibitedPractice):
+                    combined_graph.add((system, AI.hasCriteria, practice))
+                    print(f"DEBUG: ✅ REGLA 4.5 aplicada: {system} hasCriteria {practice} (vía hasProhibitedPractice - Art. 5)")
+                    inferences_count += 1
+
+                # =============================================================
                 # REGLA 5: Criterion → assignsRiskLevel → hasRiskLevel
                 # Si un sistema tiene un criterio, y ese criterio asigna un nivel de riesgo,
                 # entonces el sistema tiene ese nivel de riesgo
+                # NOTA: Usamos list() para crear una copia de los criterios actuales,
+                # incluyendo los añadidos por REGLA 4.5 (prácticas prohibidas)
                 # =============================================================
-                for criterion in combined_graph.objects(system, AI.hasCriteria):
+                all_criteria = list(combined_graph.objects(system, AI.hasCriteria))
+                for criterion in all_criteria:
                     for risk_level in combined_graph.objects(criterion, AI.assignsRiskLevel):
                         combined_graph.add((system, AI.hasRiskLevel, risk_level))
                         print(f"DEBUG: ✅ REGLA 5 aplicada: {system} hasRiskLevel {risk_level} (vía hasCriteria → assignsRiskLevel)")
                         inferences_count += 1
+
+                # =============================================================
+                # REGLA 5.5a: Excepciones Art. 5.2 para Identificación Biométrica Remota
+                # Si el sistema tiene:
+                # 1. Una práctica prohibida de identificación biométrica (RealTimeBiometricIdentificationCriterion)
+                # 2. Una excepción legal válida (Art. 5.2)
+                # 3. Autorización judicial previa
+                # Entonces: El sistema pasa de UnacceptableRisk a HighRisk (puede desplegarse con restricciones)
+                # =============================================================
+                prohibited_practices = list(combined_graph.objects(system, AI.hasProhibitedPractice))
+                legal_exceptions = list(combined_graph.objects(system, AI.hasLegalException))
+                has_judicial_auth = any(combined_graph.objects(system, AI.hasJudicialAuthorization))
+
+                # Verificar si tiene identificación biométrica remota en tiempo real
+                has_biometric_prohibition = any(
+                    "RealTimeBiometricIdentification" in str(p) or "BiometricIdentification" in str(p)
+                    for p in prohibited_practices
+                )
+
+                # Excepciones válidas del Art. 5.2
+                valid_exceptions = [
+                    "VictimSearchException",      # Art. 5.2(a) - Búsqueda de víctimas
+                    "TerroristThreatException",   # Art. 5.2(b) - Amenaza terrorista
+                    "SeriousCrimeException"       # Art. 5.2(c) - Delito grave
+                ]
+                has_valid_exception = any(
+                    any(exc in str(le) for exc in valid_exceptions)
+                    for le in legal_exceptions
+                )
+
+                if has_biometric_prohibition and has_valid_exception and has_judicial_auth:
+                    # Tiene excepción válida con autorización judicial
+                    # Cambiar de UnacceptableRisk a HighRisk
+                    for risk_level in list(combined_graph.objects(system, AI.hasRiskLevel)):
+                        if "UnacceptableRisk" in str(risk_level):
+                            combined_graph.remove((system, AI.hasRiskLevel, risk_level))
+                            combined_graph.add((system, AI.hasRiskLevel, AI.HighRisk))
+                            combined_graph.add((system, AI.hasArticle5Exception, Literal(True)))
+                            print(f"DEBUG: ✅ REGLA 5.5a aplicada: {system} UnacceptableRisk → HighRisk (Art. 5.2 excepción con autorización judicial)")
+                            inferences_count += 2
+
+                # =============================================================
+                # REGLA 5.5: Override de Niveles de Riesgo - El más restrictivo prevalece
+                # Jerarquía: UnacceptableRisk > HighRisk > LimitedRisk > MinimalRisk
+                # Si UnacceptableRisk está presente, eliminar todos los demás niveles
+                # Si HighRisk está presente (sin Unacceptable), eliminar Limited y Minimal
+                # =============================================================
+                current_risk_levels = list(combined_graph.objects(system, AI.hasRiskLevel))
+                risk_level_strs = [str(r) for r in current_risk_levels]
+
+                has_unacceptable = any("UnacceptableRisk" in r for r in risk_level_strs)
+                has_high = any("HighRisk" in r for r in risk_level_strs)
+                has_limited = any("LimitedRisk" in r for r in risk_level_strs)
+                has_minimal = any("MinimalRisk" in r for r in risk_level_strs)
+
+                if has_unacceptable:
+                    # UnacceptableRisk es el más restrictivo - eliminar todos los demás
+                    for risk_level in current_risk_levels:
+                        risk_str = str(risk_level)
+                        if "HighRisk" in risk_str or "LimitedRisk" in risk_str or "MinimalRisk" in risk_str:
+                            combined_graph.remove((system, AI.hasRiskLevel, risk_level))
+                            print(f"DEBUG: ✅ REGLA 5.5 aplicada: ELIMINADO {risk_level} (override por UnacceptableRisk)")
+                            inferences_count += 1
+                elif has_high:
+                    # HighRisk prevalece sobre Limited y Minimal
+                    for risk_level in current_risk_levels:
+                        risk_str = str(risk_level)
+                        if "LimitedRisk" in risk_str or "MinimalRisk" in risk_str:
+                            combined_graph.remove((system, AI.hasRiskLevel, risk_level))
+                            print(f"DEBUG: ✅ REGLA 5.5 aplicada: ELIMINADO {risk_level} (override por HighRisk)")
+                            inferences_count += 1
+                elif has_limited:
+                    # LimitedRisk prevalece sobre Minimal
+                    for risk_level in current_risk_levels:
+                        risk_str = str(risk_level)
+                        if "MinimalRisk" in risk_str:
+                            combined_graph.remove((system, AI.hasRiskLevel, risk_level))
+                            print(f"DEBUG: ✅ REGLA 5.5 aplicada: ELIMINADO {risk_level} (override por LimitedRisk)")
+                            inferences_count += 1
 
                 # =============================================================
                 # REGLA 6: FoundationModelScale → GPAI Classification

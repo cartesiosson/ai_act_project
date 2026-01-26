@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
-  <img src="https://img.shields.io/badge/ontology-v0.37.5-purple.svg" alt="Ontology"/>
+  <img src="https://img.shields.io/badge/ontology-v0.41.0-purple.svg" alt="Ontology"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
   <img src="https://img.shields.io/badge/ELI-EUR--Lex-blue.svg" alt="ELI"/>
   <img src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg" alt="License"/>
@@ -59,10 +59,15 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 - [4. Módulos del Frontend](#4-módulos-del-frontend)
 - [5. Agente Forense](#5-agente-forense)
 - [6. Ontología](#6-ontología)
-  - [6.1 Integración AIRO](#61-integración-airo-ai-risk-ontology)
-  - [6.2 Integración DPV](#62-integración-dpv-data-privacy-vocabulary)
-  - [6.3 Razonamiento sobre Affected Persons](#63-razonamiento-sobre-affected-persons-art-86)
-  - [6.4 Mappings Multi-Framework](#64-mappings-multi-framework)
+  - [6.1 Article 2 Scope Determination](#61-article-2-scope-determination)
+  - [6.2 Taxonomía de Incidentes Graves (Art. 3(49))](#62-taxonomía-de-incidentes-graves-art-349)
+  - [6.3 Integración AIRO](#63-integración-airo-ai-risk-ontology)
+  - [6.4 Integración DPV](#64-integración-dpv-data-privacy-vocabulary)
+  - [6.5 Razonamiento sobre Affected Persons](#65-razonamiento-sobre-affected-persons-art-86)
+  - [6.6 Integración ELI](#66-integración-eli-european-legislation-identifier)
+  - [6.7 Integración ISO 42001](#67-integración-isoiec-420012023)
+  - [6.8 Integración NIST AI RMF](#68-integración-nist-ai-rmf-10)
+  - [6.9 Mappings Multi-Framework](#69-mappings-multi-framework-resumen)
 - [7. Mecanismos de Inferencia](#7-mecanismos-de-inferencia)
 - [8. Stack Tecnológico](#8-stack-tecnológico)
 - [9. Estructura del Proyecto](#9-estructura-del-proyecto)
@@ -74,7 +79,7 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 
 ## 1. Descripción
 
-SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.37.5) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
+SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.41.0) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
 
 ### Características Principales
 
@@ -277,13 +282,15 @@ El **Forensic AI Agent** (`/forensic`) proporciona análisis forense post-incide
 - **Selección múltiple**: Permite analizar varios incidentes en lote
 - **Modos de análisis**:
   - *Pipeline Mode*: Flujo determinista de 7 pasos
-  - *ReAct Agent Mode*: Agente autónomo con razonamiento iterativo
+  - *ReAct Agent Mode*: Agente autónomo con razonamiento iterativo (experimental)
 - **Streaming en tiempo real**: Visualización paso a paso del proceso de análisis
 - **Opciones de análisis**:
   - Con/sin plan de evidencias DPV
   - Selección de proveedor LLM (Ollama/Anthropic)
 - **Resultados del análisis**:
   - Clasificación de riesgo EU AI Act
+  - Clasificación de incidente grave Art. 3(49) (si aplica)
+  - Indicador de obligación de notificación Art. 73
   - Requisitos aplicables
   - Gaps de cumplimiento
   - Mappings ISO 42001 y NIST AI RMF
@@ -345,6 +352,8 @@ El agente utiliza datos del **AI, Algorithmic, and Automation Incidents and Cont
 | **Extracción LLM** | Usa Ollama (llama3.2:3b) o Anthropic para extraer datos estructurados |
 | **Análisis Multi-Framework** | EU AI Act + ISO 42001 (15 mappings) + NIST AI RMF (18 mappings) + DPV 2.2 |
 | **Clasificación de Riesgo** | Categorización automática según 8 categorías del Anexo III + GPAI |
+| **Clasificación de Incidentes Graves** | Taxonomía Art. 3(49): muerte/salud, infraestructura crítica, derechos fundamentales, propiedad/medio ambiente |
+| **Detección Art. 73** | Identifica automáticamente si el incidente requiere notificación obligatoria (15 días) |
 | **Detección de Brechas** | Identifica requisitos faltantes y calcula ratio de cumplimiento |
 | **Evidence Planner** | Genera planes de evidencia con 14 requisitos y ~40 items de evidencia |
 | **Persistencia Dual** | Guarda en MongoDB + Fuseki RDF para consultas semánticas |
@@ -368,30 +377,125 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ## 6. Ontología
 
-### 6.0 Versión: 0.37.5
+### 6.0 Versión: 0.41.0
 
 | Propiedad | Valor |
 |-----------|-------|
 | **Namespace** | `http://ai-act.eu/ai#` |
 | **Formato** | Turtle (.ttl) |
-| **Clases** | 60+ |
-| **Propiedades** | 50+ |
-| **Individuos** | 120+ |
-| **Tripletas** | ~2,000 |
+| **Clases** | 70+ |
+| **Propiedades** | 55+ |
+| **Individuos** | 130+ |
+| **Tripletas** | ~2,200 |
 
 ### 6.0.1 Cobertura Regulatoria
 
 - EU AI Act Anexo III (8/8 categorías de alto riesgo)
+- **Artículo 2** (Ámbito de aplicación - exclusiones y overrides)
+- **Artículo 3(49)** (Taxonomía de incidentes graves)
 - **Artículo 5** (Prácticas Prohibidas - Riesgo Inaceptable)
+- **Artículo 73** (Obligaciones de notificación de incidentes)
 - Artículos 51-55 (requisitos GPAI)
 - Taxonomía de algoritmos (Anexo I)
 - Framework de gobernanza de datos
-- Shapes SHACL de validación
+- Shapes SHACL de validación (15 shapes)
 - Reglas de inferencia SWRL
 
-### 6.1 Integración AIRO (AI Risk Ontology)
+### 6.1 Article 2 Scope Determination
 
-La ontología SERAMIS v0.37.2 incorpora compatibilidad con **AIRO** para la gestión de stakeholders según el EU AI Act:
+La ontología modela semánticamente el **Artículo 2 (Ámbito de aplicación)** del EU AI Act, permitiendo determinar si un sistema está dentro del ámbito regulatorio mediante consultas SPARQL.
+
+#### 6.1.1 Clases de Exclusión (ScopeExclusion)
+
+| Clase | Artículo | Descripción |
+|-------|----------|-------------|
+| `ai:PersonalNonProfessionalUse` | Art. 2.10 | Uso personal no profesional |
+| `ai:PureScientificResearch` | Art. 2.6 | Investigación científica pura |
+| `ai:MilitaryDefenseUse` | Art. 2.3 | Uso militar/defensa nacional |
+| `ai:EntertainmentWithoutRightsImpact` | Recital 12 | Entretenimiento sin impacto en derechos |
+| `ai:ThirdCountryExclusion` | Art. 2.7 | Sistemas de terceros países |
+
+#### 6.1.2 Contextos de Override (traen sistemas de vuelta al scope)
+
+| Contexto | Efecto | Requisito Adicional |
+|----------|--------|---------------------|
+| `ai:CausesRealWorldHarmContext` | Anula exclusión de entretenimiento | FRIA (Art. 27) |
+| `ai:VictimImpactContext` | Activa protección de víctimas | FRIA + medidas de protección |
+| `ai:AffectsFundamentalRightsContext` | Activa Art. 27 | FRIA obligatoria |
+| `ai:LegalConsequencesContext` | Activa supervisión humana | Human oversight (Art. 14) |
+| `ai:MinorsAffectedContext` | Escrutinio reforzado | Protección de menores |
+| `ai:BiometricProcessingContext` | Posible Art. 5 | Revisión de prohibiciones |
+
+#### 6.1.3 Propiedades de Scope
+
+```turtle
+ai:mayBeExcludedBy      # Purpose → ScopeExclusion
+ai:overridesExclusion   # DeploymentContext → ScopeExclusion
+ai:hasScopeOverride     # IntelligentSystem → DeploymentContext
+ai:isInEUAIActScope     # IntelligentSystem → boolean
+ai:requiresFRIA         # Context → boolean (Art. 27)
+```
+
+### 6.2 Taxonomía de Incidentes Graves (Art. 3(49))
+
+La ontología v0.41.0 modela la definición de **incidente grave** según el Artículo 3(49) del EU AI Act, permitiendo la clasificación automática de incidentes y la determinación de obligaciones de notificación según el Artículo 73.
+
+#### 6.2.1 Jerarquía de Clases de Incidente Grave
+
+```turtle
+ai:SeriousIncident (clase base)
+  ├── ai:DeathOrHealthHarm             [Art. 3(49)(a)]
+  ├── ai:CriticalInfrastructureDisruption [Art. 3(49)(b)]
+  ├── ai:FundamentalRightsInfringement   [Art. 3(49)(c)]
+  └── ai:PropertyOrEnvironmentHarm       [Art. 3(49)(d)]
+```
+
+#### 6.2.2 Tipos de Incidente Grave
+
+| Tipo | Artículo | Descripción | Keywords de Extracción |
+|------|----------|-------------|------------------------|
+| `ai:DeathOrHealthHarm` | Art. 3(49)(a) | Muerte de persona o daño grave a la salud | death, fatal, injury, hospitalized, casualties |
+| `ai:CriticalInfrastructureDisruption` | Art. 3(49)(b) | Interrupción grave de infraestructura crítica | blackout, power grid, transport disruption |
+| `ai:FundamentalRightsInfringement` | Art. 3(49)(c) | Violación de derechos fundamentales UE | discrimination, wrongful arrest, privacy breach |
+| `ai:PropertyOrEnvironmentHarm` | Art. 3(49)(d) | Daño grave a propiedad o medio ambiente | property damage, environmental damage |
+
+#### 6.2.3 Propiedades de Incidente
+
+```turtle
+ai:hasSeriousIncidentType    # IntelligentSystem → SeriousIncident
+ai:indicatorKeywords         # SeriousIncident → xsd:string
+ai:mapsToAIAAICType          # SeriousIncident → xsd:string (ground truth)
+ai:triggersArticle73         # SeriousIncident → xsd:boolean
+```
+
+#### 6.2.4 Integración con DPV-Risk
+
+La taxonomía de incidentes graves se integra con el vocabulario **DPV-Risk** mediante equivalencias semánticas:
+
+| Tipo de Incidente SERAMIS | Concepto DPV-Risk |
+|---------------------------|-------------------|
+| `ai:FundamentalRightsInfringement` | `dpv-risk:RightsImpact` |
+| `ai:DeathOrHealthHarm` | `dpv-risk:PhysicalHarm` |
+| `ai:PropertyOrEnvironmentHarm` | `dpv-risk:MaterialDamage` |
+
+#### 6.2.5 Artículo 73: Obligaciones de Notificación
+
+Todos los tipos de incidente grave activan la propiedad `ai:triggersArticle73 = true`, lo que implica:
+
+- **Plazo de notificación**: 15 días desde el conocimiento del incidente
+- **Destinatario**: Autoridad de vigilancia del mercado competente
+- **Contenido obligatorio**: Identificación del sistema, descripción del incidente, medidas adoptadas
+
+**Inferencia automática:**
+```
+SI sistema tiene hasSeriousIncidentType con triggersArticle73 = true
+   → Sistema requiere notificación obligatoria Art. 73
+   → Plazo: 15 días
+```
+
+### 6.3 Integración AIRO (AI Risk Ontology)
+
+La ontología SERAMIS incorpora compatibilidad con **AIRO** para la gestión de stakeholders según el EU AI Act:
 
 | Propiedad SERAMIS | Clase AIRO | Artículo EU AI Act |
 |-------------------|------------|-------------------|
@@ -408,9 +512,9 @@ Esta integración permite:
 - **Interoperabilidad**: Compatible con otras ontologías que usen AIRO
 - **Razonamiento sobre Affected Persons**: Inferencia automática de requisitos basados en personas afectadas
 
-### 6.2 Integración DPV (Data Privacy Vocabulary)
+### 6.4 Integración DPV (Data Privacy Vocabulary)
 
-SERAMIS v1.1.0 integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** para la generación de planes de evidencia de cumplimiento.
+SERAMIS integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.github.io/dpv/)** para la generación de planes de evidencia de cumplimiento.
 
 | Extensión DPV | Propósito | Uso en SERAMIS |
 |---------------|-----------|----------------|
@@ -419,7 +523,7 @@ SERAMIS v1.1.0 integra el **[W3C Data Privacy Vocabulary (DPV) 2.2](https://w3c.
 | **dpv:risk** | Gestión de riesgos | Evaluación de gaps |
 | **dpv:legal/eu/aiact** | Conceptos específicos AI Act | Equivalencias semánticas |
 
-#### 6.2.1 Tipos de Evidencia Definidos
+#### 6.3.1 Tipos de Evidencia Definidos
 
 El módulo `dpv-integration.ttl` define 6 tipos de evidencia:
 
@@ -432,7 +536,7 @@ El módulo `dpv-integration.ttl` define 6 tipos de evidencia:
 | `AssessmentEvidence` | Evaluaciones de impacto | FRIA Report, DPIA |
 | `ContractualEvidence` | Contratos y acuerdos | Data Processing Agreement |
 
-#### 6.2.2 Mappings Requisito → Medida DPV
+#### 6.3.2 Mappings Requisito → Medida DPV
 
 ```turtle
 ai:HumanOversightRequirement
@@ -445,7 +549,7 @@ ai:FundamentalRightsAssessmentRequirement
     ai:requiresEvidence ai:FRIAReportEvidence .
 ```
 
-### 6.3 Razonamiento sobre Affected Persons (Art. 86)
+### 6.5 Razonamiento sobre Affected Persons (Art. 86)
 
 El reasoner implementa **4 reglas de inferencia** basadas en la identificación de "Affected Persons" (personas afectadas por decisiones del sistema de IA):
 
@@ -474,9 +578,9 @@ El reasoner implementa **4 reglas de inferencia** basadas en la identificación 
 - `ai:WorkerNotificationRequirement`
 - `ai:Article5ProhibitionReview`
 
-### 6.4 Integración ELI (European Legislation Identifier)
+### 6.6 Integración ELI (European Legislation Identifier)
 
-SERAMIS v0.37.5 integra el **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** para proporcionar referencias persistentes y desreferenciables a la legislación oficial en EUR-Lex.
+SERAMIS integra el **[European Legislation Identifier (ELI)](https://eur-lex.europa.eu/eli-register/about.html)** para proporcionar referencias persistentes y desreferenciables a la legislación oficial en EUR-Lex.
 
 | Propiedad | Descripción |
 |-----------|-------------|
@@ -496,7 +600,7 @@ Esta integración permite:
 - **Interoperabilidad**: Estándar EU para referencias legislativas
 - **Auditoría**: Referencias verificables para compliance
 
-### 6.5 Integración ISO/IEC 42001:2023
+### 6.7 Integración ISO/IEC 42001:2023
 
 La ontología incluye **15 mappings bidireccionales** con el estándar de gestión de IA [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html), candidato a estándar armonizado bajo el EU AI Act.
 
@@ -521,7 +625,7 @@ ai:HumanOversightRequirement
     ai:mappingConfidence "HIGH" .
 ```
 
-### 6.6 Integración NIST AI RMF 1.0
+### 6.8 Integración NIST AI RMF 1.0
 
 La ontología incluye **16 mappings** con el [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), cubriendo las 4 funciones principales:
 
@@ -540,7 +644,7 @@ ai:HumanOversightRequirement
     ai:nistApplicabilityContext "GLOBAL_INCIDENTS, COMPARATIVE_ANALYSIS" .
 ```
 
-### 6.7 Mappings Multi-Framework (Resumen)
+### 6.9 Mappings Multi-Framework (Resumen)
 
 | Framework | Tipo | Mappings | Confianza |
 |-----------|------|----------|-----------|
@@ -695,15 +799,22 @@ seramis/
 │   │       ├── evidence_planner.py   # Evidence Planner (DPV)
 │   │       ├── persistence.py
 │   │       └── mcp_client.py
-├── mcp-servers/               # Servidores MCP
+├── mcp-servers/               # Servidores MCP (ver README)
 │   └── forensic-sparql/
+│       ├── README.md          # Documentación servidor MCP SPARQL
 │       └── server.py
 ├── reasoner_service/          # Microservicio de razonamiento SWRL (8001)
 ├── ontologias/                # Archivos de ontología
-│   ├── versions/0.37.4/
-│   ├── rules/
-│   ├── shacl/
-│   └── mappings/
+│   ├── versions/
+│   │   ├── 0.41.0/            # Versión actual con Art. 3(49) taxonomy
+│   │   └── ...
+│   ├── queries/               # Consultas SPARQL (ver README)
+│   │   ├── README.md          # Catálogo de 15 queries forenses
+│   │   └── forensic-queries.sparql
+│   ├── rules/                 # Reglas SWRL
+│   ├── shacl/                 # 15 SHACL shapes
+│   └── mappings/              # Mappings multi-framework (ver README)
+│       ├── README.md          # Documentación de 45 mappings
 │       ├── iso-42001-mappings.ttl
 │       ├── nist-ai-rmf-mappings.ttl
 │       └── dpv-integration.ttl      # DPV 2.2 integration
@@ -769,6 +880,8 @@ get_ontology_stats()            # Estadísticas de la ontología
 - **Apache Jena Fuseki:** https://jena.apache.org/documentation/fuseki2/
 - **OWL 2 Web Ontology Language:** https://www.w3.org/TR/owl2-overview/
 - **SHACL:** https://www.w3.org/TR/shacl/
+- **Catálogo de Queries SPARQL Forenses:** [ontologias/queries/README.md](ontologias/queries/README.md)
+- **Mappings Multi-Framework (ISO/NIST/DPV):** [ontologias/mappings/README.md](ontologias/mappings/README.md)
 
 ---
 
@@ -791,5 +904,5 @@ El código fuente está disponible bajo los términos definidos por UNIR para Tr
 </p>
 
 <p align="center">
-  <sub>Versión 1.1.0 | Diciembre 2025</sub>
+  <sub>Versión 1.2.0 | Enero 2026</sub>
 </p>

@@ -37,6 +37,15 @@
     "ai:expectedRiskLevel": {
       "@type": "@id"
     },
+    "ai:friaArticle": {
+      "@type": "@id"
+    },
+    "ai:friaCategory": {
+      "@type": "@id"
+    },
+    "ai:friaUrgency": {
+      "@type": "@id"
+    },
     "ai:hasActivatedCriterion": {
       "@type": "@id"
     },
@@ -82,6 +91,9 @@
     "ai:hasOversightBody": {
       "@type": "@id"
     },
+    "ai:hasPotentialExclusion": {
+      "@type": "@id"
+    },
     "ai:hasProhibitedPractice": {
       "@type": "@id"
     },
@@ -90,6 +102,15 @@
     },
     "ai:hasPurpose": {
       "@type": "@id"
+    },
+    "ai:hasScopeOverride": {
+      "@type": "@id"
+    },
+    "ai:hasScopeOverrideRationale": {
+      "@type": "@id"
+    },
+    "ai:hasSeriousIncidentType": {
+      "@type": "xsd:string"
     },
     "ai:hasSubject": {
       "@type": "@id"
@@ -109,10 +130,49 @@
     "ai:hasVersion": {
       "@type": "xsd:string"
     },
+    "ai:indicatorKeywords": {
+      "@type": "@id"
+    },
+    "ai:isInEUAIActScope": {
+      "@type": "xsd:string"
+    },
     "ai:mandatoryCompliance": {
       "@type": "xsd:boolean"
     },
+    "ai:mapsToAIAAICType": {
+      "@type": "xsd:string"
+    },
+    "ai:mapsToDPVConcept": {
+      "@type": "@id"
+    },
+    "ai:mapsToDPVData": {
+      "@type": "@id"
+    },
+    "ai:mapsToDPVDataSubject": {
+      "@type": "@id"
+    },
+    "ai:mapsToDPVLegalBasis": {
+      "@type": "@id"
+    },
     "ai:mapsToDPVMeasure": {
+      "@type": "@id"
+    },
+    "ai:mapsToDPVProcessing": {
+      "@type": "@id"
+    },
+    "ai:mapsToDPVProcessingContext": {
+      "@type": "@id"
+    },
+    "ai:mapsToDPVPurpose": {
+      "@type": "@id"
+    },
+    "ai:mapsToDPVRisk": {
+      "@type": "@id"
+    },
+    "ai:mayBeExcludedBy": {
+      "@type": "@id"
+    },
+    "ai:overridesExclusion": {
       "@type": "@id"
     },
     "ai:planDeadline": {
@@ -136,6 +196,9 @@
     "ai:requiresExplainability": {
       "@type": "xsd:boolean"
     },
+    "ai:requiresFRIA": {
+      "@type": "@id"
+    },
     "ai:requiresFundamentalRightsAssessment": {
       "@type": "xsd:boolean"
     },
@@ -145,7 +208,13 @@
     "ai:responsibleRole": {
       "@type": "xsd:string"
     },
+    "ai:triggersArticle": {
+      "@type": "@id"
+    },
     "ai:triggersCriterion": {
+      "@type": "@id"
+    },
+    "ai:triggersDPVObligation": {
       "@type": "@id"
     }
   }

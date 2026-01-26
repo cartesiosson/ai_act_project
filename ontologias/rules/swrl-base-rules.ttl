@@ -501,12 +501,182 @@ ai:RealTimeBiometricDetectionRule a swrl:Imp ;
     ) .
 
 # =============================================================
+# SECCIÓN 6: ARTICLE 2 - SCOPE DETERMINATION (v0.39.0)
+# =============================================================
+# These rules determine whether a system falls within EU AI Act scope
+# Based on Article 2 exclusions and override contexts that bring systems back into scope
+
+# REGLA SCOPE-1: Personal/Non-Professional Use Exclusion (Article 2.10)
+ai:PersonalNonProfessionalExclusionRule a swrl:Imp ;
+    rdfs:label "Personal non-professional use may be excluded" ;
+    rdfs:comment "Systems with personal assistant/entertainment purposes may be excluded from scope per Art. 2(10) unless overridden by context" ;
+    ai:ruleId "rule_scope_personal_exclusion" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ?purpose ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:mayBeExcludedBy ; swrl:argument1 ?purpose ; swrl:argument2 ai:PersonalNonProfessionalUse ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ai:PersonalNonProfessionalUse ]
+    ) .
+
+# REGLA SCOPE-2: Entertainment Exclusion (Recital 12)
+ai:EntertainmentExclusionRule a swrl:Imp ;
+    rdfs:label "Entertainment without rights impact may be excluded" ;
+    rdfs:comment "Pure entertainment systems may be excluded from scope per Recital 12 unless they impact fundamental rights" ;
+    ai:ruleId "rule_scope_entertainment_exclusion" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ?purpose ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:mayBeExcludedBy ; swrl:argument1 ?purpose ; swrl:argument2 ai:EntertainmentWithoutRightsImpact ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ai:EntertainmentWithoutRightsImpact ]
+    ) .
+
+# REGLA SCOPE-3: Scientific Research Exclusion (Article 2.6)
+ai:ScientificResearchExclusionRule a swrl:Imp ;
+    rdfs:label "Pure scientific research may be excluded" ;
+    rdfs:comment "Systems used exclusively for scientific research may be excluded per Art. 2(6)" ;
+    ai:ruleId "rule_scope_research_exclusion" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ?purpose ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:mayBeExcludedBy ; swrl:argument1 ?purpose ; swrl:argument2 ai:PureScientificResearch ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ai:PureScientificResearch ]
+    ) .
+
+# REGLA SCOPE-4: Military/Defense Exclusion (Article 2.3)
+ai:MilitaryDefenseExclusionRule a swrl:Imp ;
+    rdfs:label "Military defense may be excluded" ;
+    rdfs:comment "Systems developed for military and national defense may be excluded per Art. 2(3)" ;
+    ai:ruleId "rule_scope_military_exclusion" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ?purpose ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:mayBeExcludedBy ; swrl:argument1 ?purpose ; swrl:argument2 ai:MilitaryDefenseUse ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ai:MilitaryDefenseUse ]
+    ) .
+
+# REGLA SCOPE-5: Legal Consequences Override - Brings system INTO SCOPE
+ai:LegalConsequencesOverrideRule a swrl:Imp ;
+    rdfs:label "Legal consequences override exclusion" ;
+    rdfs:comment "Systems producing legal effects on natural persons are brought into scope regardless of purpose exclusion" ;
+    ai:ruleId "rule_scope_legal_override" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ?exclusion ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:LegalConsequencesContext ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasScopeOverride ; swrl:argument1 ?system ; swrl:argument2 ai:LegalConsequencesContext ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:isInEUAIActScope ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:requiresFRIA ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+    ) .
+
+# REGLA SCOPE-6: Victim Impact Override - Brings system INTO SCOPE
+ai:VictimImpactOverrideRule a swrl:Imp ;
+    rdfs:label "Victim impact override exclusion" ;
+    rdfs:comment "Systems affecting victims are brought into scope regardless of purpose exclusion" ;
+    ai:ruleId "rule_scope_victim_override" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ?exclusion ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:VictimImpactContext ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasScopeOverride ; swrl:argument1 ?system ; swrl:argument2 ai:VictimImpactContext ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:isInEUAIActScope ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:requiresFRIA ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+    ) .
+
+# REGLA SCOPE-7: Real World Harm Override - Brings system INTO SCOPE
+ai:RealWorldHarmOverrideRule a swrl:Imp ;
+    rdfs:label "Real world harm override exclusion" ;
+    rdfs:comment "Systems causing death, injury or harm are brought into scope regardless of purpose exclusion" ;
+    ai:ruleId "rule_scope_harm_override" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ?exclusion ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:CausesRealWorldHarmContext ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasScopeOverride ; swrl:argument1 ?system ; swrl:argument2 ai:CausesRealWorldHarmContext ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:isInEUAIActScope ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:requiresFRIA ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+    ) .
+
+# REGLA SCOPE-8: Fundamental Rights Override - Brings system INTO SCOPE
+ai:FundamentalRightsOverrideRule a swrl:Imp ;
+    rdfs:label "Fundamental rights impact override exclusion" ;
+    rdfs:comment "Systems affecting fundamental rights are brought into scope regardless of purpose exclusion" ;
+    ai:ruleId "rule_scope_rights_override" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ?exclusion ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:AffectsFundamentalRightsContext ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasScopeOverride ; swrl:argument1 ?system ; swrl:argument2 ai:AffectsFundamentalRightsContext ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:isInEUAIActScope ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:requiresFRIA ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+    ) .
+
+# REGLA SCOPE-9: Biometric Processing Override - Brings system INTO SCOPE
+ai:BiometricProcessingOverrideRule a swrl:Imp ;
+    rdfs:label "Biometric processing override exclusion" ;
+    rdfs:comment "Systems processing biometric data are brought into scope regardless of purpose exclusion" ;
+    ai:ruleId "rule_scope_biometric_override" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPotentialExclusion ; swrl:argument1 ?system ; swrl:argument2 ?exclusion ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasDeploymentContext ; swrl:argument1 ?system ; swrl:argument2 ai:BiometricProcessingContext ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasScopeOverride ; swrl:argument1 ?system ; swrl:argument2 ai:BiometricProcessingContext ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:isInEUAIActScope ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:requiresFRIA ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+    ) .
+
+# REGLA SCOPE-10: No Exclusion -> In Scope by Default
+ai:DefaultInScopeRule a swrl:Imp ;
+    rdfs:label "Systems without exclusion are in scope by default" ;
+    rdfs:comment "Systems that do not have a potential exclusion are automatically in EU AI Act scope" ;
+    ai:ruleId "rule_scope_default_in_scope" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasPurpose ; swrl:argument1 ?system ; swrl:argument2 ?purpose ]
+        # Note: This rule needs SPARQL-based NOT EXISTS which SWRL doesn't support directly
+        # In practice, this is handled by the classifier logic
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:isInEUAIActScope ; swrl:argument1 ?system ; swrl:argument2 "true"^^xsd:boolean ]
+    ) .
+
+# REGLA SCOPE-11: Scope Override Triggers FRIA Requirement (Article 27)
+ai:ScopeOverrideFRIARule a swrl:Imp ;
+    rdfs:label "Scope override triggers FRIA requirement" ;
+    rdfs:comment "When a system is brought into scope via override context, FRIA is required per Article 27" ;
+    ai:ruleId "rule_scope_override_fria" ;
+    swrl:body (
+        [ a swrl:ClassAtom ; swrl:classPredicate ai:IntelligentSystem ; swrl:argument1 ?system ]
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasScopeOverride ; swrl:argument1 ?system ; swrl:argument2 ?override ]
+    ) ;
+    swrl:head (
+        [ a swrl:IndividualPropertyAtom ; swrl:propertyPredicate ai:hasComplianceRequirement ; swrl:argument1 ?system ; swrl:argument2 ai:FundamentalRightsAssessmentRequirement ]
+    ) .
+
+# =============================================================
 # METADATA
 # =============================================================
 
 ai:SwrlRulesMetadata a owl:NamedIndividual ;
     rdfs:label "SWRL Rules Metadata" ;
-    ai:version "1.1.0-article5" ;
-    ai:totalRules "30"^^xsd:integer ;
-    ai:categories "model_scale, navigation, base_contextual, technical_gpai, prohibited_practices" ;
-    rdfs:comment "Unified SWRL rules synchronized with ontologias/rules/*.py" .
+    ai:version "1.2.0-scope" ;
+    ai:totalRules "41"^^xsd:integer ;
+    ai:categories "model_scale, navigation, base_contextual, technical_gpai, prohibited_practices, scope_determination" ;
+    rdfs:comment "Unified SWRL rules synchronized with ontologias/rules/*.py - includes Article 2 scope rules (v0.39.0)" .

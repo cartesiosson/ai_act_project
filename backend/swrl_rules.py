@@ -206,7 +206,26 @@ ai:CriterionRiskLevelRule rdf:type swrl:Rule ;
                           swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "riskLevel" ] ] ;
                 rdf:rest rdf:nil ] .
 
-# REGLA 6: FoundationModelScale → GPAI Classification
+# REGLA 6: hasProhibitedPractice → hasCriteria (para inferir UnacceptableRisk)
+# Si un sistema tiene una práctica prohibida (Artículo 5 AI Act),
+# esa práctica se convierte en criterio activado, permitiendo que
+# CriterionRiskLevelRule infiera UnacceptableRisk
+ai:ProhibitedPracticeToCriteriaRule rdf:type swrl:Rule ;
+    swrl:body [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasProhibitedPractice ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "practice" ] ] ;
+                rdf:rest rdf:nil
+    ] ;
+    swrl:head [ rdf:type swrl:AtomList ;
+                rdf:first [ rdf:type swrl:IndividualPropertyAtom ;
+                          swrl:propertyPredicate ai:hasCriteria ;
+                          swrl:argument1 [ rdf:type swrl:Variable ; rdfs:label "system" ] ;
+                          swrl:argument2 [ rdf:type swrl:Variable ; rdfs:label "practice" ] ] ;
+                rdf:rest rdf:nil ] .
+
+# REGLA 7: FoundationModelScale → GPAI Classification
 # Si un sistema tiene FoundationModelScale, es un GPAI
 ai:GPAIClassificationRule rdf:type swrl:Rule ;
     swrl:body [ rdf:type swrl:AtomList ;

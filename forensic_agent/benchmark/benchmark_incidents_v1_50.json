@@ -1,0 +1,702 @@
+[
+  {
+    "id": "BENCH-0019",
+    "narrative": "TrainBot generative AI system failed to document training data sources in 2019. Model trained on undisclosed datasets potentially containing behavioral data. No transparency reports provided despite regulatory requirements. Clearview removed feature after academic research.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 19,
+      "template_type": "transparency_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0036",
+    "narrative": "MediaSynth deepfake generation system misused to create non-consensual content in 2017. Generated synthetic media of Hispanic users without consent. Content spread on video sharing sites affecting 46315 individuals. LendingClub launched internal investigation.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 36,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2017,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0001",
+    "narrative": "DataCollect exposed biometric and personal data of 77861 users in 2023. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. Meta suspended operations temporarily and was subject to investigation.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 1,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0010",
+    "narrative": "UserTrack exposed behavioral data of 43345 users in 2022. Security vulnerability allowed unauthorized access to conversation histories. System processed sensitive personal data without adequate safeguards. Google placed moratorium on system and received cease and desist order.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 10,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Google"
+    }
+  },
+  {
+    "id": "BENCH-0004",
+    "narrative": "SpeakAI voice assistant recorded and stored private conversations of 49405 users in 2023. Audio data processed by human contractors without user awareness. Recordings included behavioral data shared in private settings. Amazon launched internal investigation after whistleblower report.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 4,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0027",
+    "narrative": "FinanceScore credit scoring algorithm discriminated against people with disabilities in 2020. System denied loans at 44% higher rate for minority applicants. Processed biometric and personal data with automated decision-making. HireVue issued public apology.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 27,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0012",
+    "narrative": "AffectAnalyze emotion recognition system deployed without consent in social media platforms in 2015. Monitored darker-skinned women processing sensitive personal information. Used for semi-automated decisions with minimal human intervention. Apple provided no response after whistleblower report.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 12,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2015,
+      "organization": "Apple"
+    }
+  },
+  {
+    "id": "BENCH-0002",
+    "narrative": "FaceLog collected biometric data from 40606 individuals without informed consent in 2022. Facial images scraped from online forums and stored indefinitely. System used for fully automated processes in social media platforms. Palantir suspended operations temporarily and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 2,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Palantir"
+    }
+  },
+  {
+    "id": "BENCH-0044",
+    "narrative": "CreateBot generative AI produced content infringing copyrights of 82625 creators in 2016. System reproduced substantial portions of copyrighted works without license. Outputs distributed on online forums causing economic harm to original creators. IBM denied allegations and faced regulatory fines.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 44,
+      "template_type": "copyright",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2016,
+      "organization": "IBM"
+    }
+  },
+  {
+    "id": "BENCH-0005",
+    "narrative": "AudioLog voice assistant recorded and stored private conversations of 9718 users in 2018. Audio data processed by human contractors without user awareness. Recordings included location data shared in private settings. Pymetrics suspended operations temporarily after regulatory inquiry.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 5,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Pymetrics"
+    }
+  },
+  {
+    "id": "BENCH-0031",
+    "narrative": "HealthPredict diagnostic system made critical errors affecting 12494 patients in 2023. Algorithm misdiagnosed non-native speakers due to training data bias. Used in employment decisions for fully automated processes. Amazon removed feature.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 31,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0037",
+    "narrative": "AutoPilot autonomous vehicle system caused intersection accident in 2020. Algorithm failed to detect pedestrians in heavy traffic. Resulted in moderate injuries to 8359 people. Google updated algorithm and underwent compliance review.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 37,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Google"
+    }
+  },
+  {
+    "id": "BENCH-0006",
+    "narrative": "MoodDetect emotion recognition system deployed without consent in credit assessments in 2018. Monitored non-native speakers processing sensitive personal information. Used for algorithmic recommendations with no human oversight. Amazon provided no response after academic research.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 6,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0030",
+    "narrative": "RiskAnalyzer credit scoring algorithm discriminated against young people in 2017. System denied loans at 35% higher rate for minority applicants. Processed personal data with automated decision-making. PredPol Inc launched internal investigation.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 30,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2017,
+      "organization": "PredPol Inc"
+    }
+  },
+  {
+    "id": "BENCH-0016",
+    "narrative": "LearnSystem generative AI system failed to document training data sources in 2021. Model trained on undisclosed datasets potentially containing behavioral data. No transparency reports provided despite regulatory requirements. Verkada updated algorithm after academic research.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 16,
+      "template_type": "transparency_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0021",
+    "narrative": "FinderAI search algorithm showed systematic bias against people of color content in 2021. Results for people of color were 19% less likely to appear in top positions. Affected 74538 content creators and users. Clearview placed moratorium on system after media investigation.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 21,
+      "template_type": "bias",
+      "system_type": "nlp",
+      "purpose": "ContentRecommendation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0017",
+    "narrative": "SpeakAI customer service AI failed to disclose its non-human nature in 2021. 79666 users interacted believing they were communicating with humans. Deployed in credit assessments violating AI disclosure requirements. Clearview updated algorithm and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 17,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "CustomerService",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0003",
+    "narrative": "AudioLog voice assistant recorded and stored private conversations of 30180 users in 2018. Audio data processed by human contractors without user awareness. Recordings included behavioral data shared in private settings. LendingClub provided no response after regulatory inquiry.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 3,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0023",
+    "narrative": "DiscoverAI search algorithm showed systematic bias against women content in 2022. Results for women were 45% less likely to appear in top positions. Affected 95937 content creators and users. Meta suspended operations temporarily after whistleblower report.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 23,
+      "template_type": "bias",
+      "system_type": "nlp",
+      "purpose": "ContentRecommendation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0025",
+    "narrative": "ResultsEngine search algorithm showed systematic bias against minority groups content in 2016. Results for minority groups were 18% less likely to appear in top positions. Affected 8217 content creators and users. Meta suspended operations temporarily after user complaints.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 25,
+      "template_type": "bias",
+      "system_type": "nlp",
+      "purpose": "ContentRecommendation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2016,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0013",
+    "narrative": "ConvoAI customer service AI failed to disclose its non-human nature in 2020. 72925 users interacted believing they were communicating with humans. Deployed in credit assessments violating AI disclosure requirements. HireVue suspended operations temporarily and faced regulatory fines.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 13,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "CustomerService",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0039",
+    "narrative": "WebCrawlAI AI training system scraped content from 53619 creators without authorization in 2020. Data harvested from video sharing sites included copyrighted works and personal content. Creators received no compensation or attribution. Microsoft issued public apology after academic research.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 39,
+      "template_type": "appropriation",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0046",
+    "narrative": "MailSort email spam filter incorrectly classified 99521 legitimate emails as spam in 2024. Users reported missing important communications due to overly aggressive filtering. System lacked clear explanation for classification decisions. Clearview AI offered compensation to affected users.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 46,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "EmailFiltering",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2024,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0022",
+    "narrative": "DiscoverAI search algorithm showed systematic bias against people of color content in 2018. Results for people of color were 45% less likely to appear in top positions. Affected 54660 content creators and users. Verkada suspended operations temporarily after regulatory inquiry.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 22,
+      "template_type": "bias",
+      "system_type": "nlp",
+      "purpose": "ContentRecommendation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0008",
+    "narrative": "EmotionAI emotion recognition system deployed without consent in credit assessments in 2021. Monitored people of color processing sensitive personal information. Used for automated decision-making with no human oversight. Palantir launched internal investigation after external audit.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 8,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Palantir"
+    }
+  },
+  {
+    "id": "BENCH-0032",
+    "narrative": "MediaSynth deepfake generation system misused to create non-consensual content in 2017. Generated synthetic media of women without consent. Content spread on messaging apps affecting 66944 individuals. Tesla removed feature.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 32,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2017,
+      "organization": "Tesla"
+    }
+  },
+  {
+    "id": "BENCH-0040",
+    "narrative": "ContentMine AI training system scraped content from 2807 creators without authorization in 2017. Data harvested from video sharing sites included copyrighted works and personal content. Creators received no compensation or attribution. Clearview provided no response after media investigation.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 40,
+      "template_type": "appropriation",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2017,
+      "organization": "Clearview"
+    }
+  },
+  {
+    "id": "BENCH-0028",
+    "narrative": "CreditAI credit scoring algorithm discriminated against non-native speakers in 2022. System denied loans at 42% higher rate for minority applicants. Processed biometric data with fully automated processes. Amazon provided no response.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 28,
+      "template_type": "discrimination",
+      "system_type": "tabular",
+      "purpose": "CreditScoring",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Amazon"
+    }
+  },
+  {
+    "id": "BENCH-0014",
+    "narrative": "TrainBot generative AI system failed to document training data sources in 2020. Model trained on undisclosed datasets potentially containing biometric and personal data. No transparency reports provided despite regulatory requirements. Microsoft placed moratorium on system after whistleblower report.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 14,
+      "template_type": "transparency_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0042",
+    "narrative": "CreateBot generative AI produced content infringing copyrights of 6440 creators in 2022. System reproduced substantial portions of copyrighted works without license. Outputs distributed on online forums causing economic harm to original creators. OpenAI denied allegations and received cease and desist order.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 42,
+      "template_type": "copyright",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "OpenAI"
+    }
+  },
+  {
+    "id": "BENCH-0033",
+    "narrative": "AutoDrive autonomous vehicle system caused intersection accident in 2020. Algorithm failed to detect cyclists in complex intersections. Resulted in fatal injuries to 32835 people. Upstart launched internal investigation and received cease and desist order.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 33,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Upstart"
+    }
+  },
+  {
+    "id": "BENCH-0038",
+    "narrative": "AutoPilot autonomous vehicle system caused pedestrian injury in 2018. Algorithm failed to detect cyclists in heavy traffic. Resulted in serious injuries to 26297 people. Clearview AI denied allegations and received cease and desist order.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 38,
+      "template_type": "safety_failure",
+      "system_type": "vision",
+      "purpose": "AutonomousVehicle",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2018,
+      "organization": "Clearview AI"
+    }
+  },
+  {
+    "id": "BENCH-0029",
+    "narrative": "HireBot automated hiring system discriminated against darker-skinned women in 2023. Algorithm trained on historical data showing bias. Used for healthcare facilities with fully automated processes. Tesla issued public apology after regulatory inquiry.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 29,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Tesla"
+    }
+  },
+  {
+    "id": "BENCH-0043",
+    "narrative": "CreateBot generative AI produced content infringing copyrights of 57744 creators in 2021. System reproduced substantial portions of copyrighted works without license. Outputs distributed on content sharing websites causing economic harm to original creators. Google updated algorithm and underwent compliance review.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 43,
+      "template_type": "copyright",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2021,
+      "organization": "Google"
+    }
+  },
+  {
+    "id": "BENCH-0049",
+    "narrative": "GameEngine video game AI exhibited unexpected behavior patterns in 2023. NPC characters showed 17% preference for certain player demographics. Affected gameplay experience for 77150 players. Microsoft suspended operations temporarily.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 49,
+      "template_type": "bias",
+      "system_type": "multimodal",
+      "purpose": "Entertainment",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2023,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0011",
+    "narrative": "EmotionAI emotion recognition system deployed without consent in retail environments in 2023. Monitored people of color processing financial data. Used for algorithmic recommendations with minimal human intervention. LendingClub provided no response after academic research.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 11,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "EmotionRecognition",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "LendingClub"
+    }
+  },
+  {
+    "id": "BENCH-0041",
+    "narrative": "HarvestBot AI training system scraped content from 57614 creators without authorization in 2022. Data harvested from social media platforms included copyrighted works and personal content. Creators received no compensation or attribution. Upstart launched internal investigation after media investigation.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 41,
+      "template_type": "appropriation",
+      "system_type": "nlp",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Upstart"
+    }
+  },
+  {
+    "id": "BENCH-0034",
+    "narrative": "HealthPredict diagnostic system made critical errors affecting 68572 patients in 2020. Algorithm misdiagnosed elderly users due to training data bias. Used in law enforcement contexts for semi-automated decisions. OpenAI offered compensation to affected users.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 34,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "HealthcareDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "OpenAI"
+    }
+  },
+  {
+    "id": "BENCH-0048",
+    "narrative": "FilterBot email spam filter incorrectly classified 54681 legitimate emails as spam in 2019. Users reported missing important communications due to overly aggressive filtering. System lacked clear explanation for classification decisions. HireVue offered compensation to affected users.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 48,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "EmailFiltering",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2019,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0035",
+    "narrative": "VideoGen deepfake generation system misused to create non-consensual content in 2015. Generated synthetic media of elderly users without consent. Content spread on online forums affecting 30565 individuals. HireVue provided no response.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 35,
+      "template_type": "safety_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2015,
+      "organization": "HireVue"
+    }
+  },
+  {
+    "id": "BENCH-0020",
+    "narrative": "DialogueBot customer service AI failed to disclose its non-human nature in 2015. 56827 users interacted believing they were communicating with humans. Deployed in border controls violating AI disclosure requirements. Cognism updated algorithm and faced regulatory fines.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 20,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "CustomerService",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2015,
+      "organization": "Cognism"
+    }
+  },
+  {
+    "id": "BENCH-0015",
+    "narrative": "AIDecider automated decision system operated without explanation capabilities in 2023. Affected 87599 individuals denied educational programs with no rationale provided. System lacked audit trails and decision logging required by regulations. Microsoft launched internal investigation after user complaints.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 15,
+      "template_type": "transparency_failure",
+      "system_type": "tabular",
+      "purpose": "PublicServiceAllocation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "Microsoft"
+    }
+  },
+  {
+    "id": "BENCH-0009",
+    "narrative": "ListenBot voice assistant recorded and stored private conversations of 40449 users in 2020. Audio data processed by human contractors without user awareness. Recordings included communication records shared in private settings. Verkada provided no response after user complaints.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 9,
+      "template_type": "privacy_violation",
+      "system_type": "nlp",
+      "purpose": "PersonalAssistant",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2020,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0026",
+    "narrative": "HireBot automated hiring system discriminated against minority groups in 2022. Algorithm trained on historical data showing bias. Used for healthcare facilities with fully automated processes. Verkada removed feature after external audit.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 26,
+      "template_type": "discrimination",
+      "system_type": "nlp",
+      "purpose": "EmploymentDecision",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2022,
+      "organization": "Verkada"
+    }
+  },
+  {
+    "id": "BENCH-0047",
+    "narrative": "MailSort email spam filter incorrectly classified 57473 legitimate emails as spam in 2019. Users reported missing important communications due to overly aggressive filtering. System lacked clear explanation for classification decisions. IBM removed feature.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 47,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "EmailFiltering",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2019,
+      "organization": "IBM"
+    }
+  },
+  {
+    "id": "BENCH-0045",
+    "narrative": "MailSort email spam filter incorrectly classified 19633 legitimate emails as spam in 2015. Users reported missing important communications due to overly aggressive filtering. System lacked clear explanation for classification decisions. Meta offered compensation to affected users.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 45,
+      "template_type": "transparency_failure",
+      "system_type": "nlp",
+      "purpose": "EmailFiltering",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2015,
+      "organization": "Meta"
+    }
+  },
+  {
+    "id": "BENCH-0007",
+    "narrative": "FacePrint collected biometric data from 48809 individuals without informed consent in 2019. Facial images scraped from content sharing websites and stored indefinitely. System used for fully automated processes in border controls. Apple removed feature and settled class action lawsuit.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 7,
+      "template_type": "privacy_violation",
+      "system_type": "vision",
+      "purpose": "BiometricIdentification",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2019,
+      "organization": "Apple"
+    }
+  },
+  {
+    "id": "BENCH-0024",
+    "narrative": "DiscoverAI search algorithm showed systematic bias against Black individuals content in 2023. Results for Black individuals were 17% less likely to appear in top positions. Affected 23549 content creators and users. OpenAI issued public apology after media investigation.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 24,
+      "template_type": "bias",
+      "system_type": "nlp",
+      "purpose": "ContentRecommendation",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2023,
+      "organization": "OpenAI"
+    }
+  },
+  {
+    "id": "BENCH-0050",
+    "narrative": "GameAI video game AI exhibited unexpected behavior patterns in 2015. NPC characters showed 23% preference for certain player demographics. Affected gameplay experience for 21610 players. ZestFinance suspended operations temporarily.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 50,
+      "template_type": "bias",
+      "system_type": "multimodal",
+      "purpose": "Entertainment",
+      "expected_risk_level": "MinimalRisk",
+      "generated_year": 2015,
+      "organization": "ZestFinance"
+    }
+  },
+  {
+    "id": "BENCH-0018",
+    "narrative": "ModelGen generative AI system failed to document training data sources in 2024. Model trained on undisclosed datasets potentially containing biometric and personal data. No transparency reports provided despite regulatory requirements. Palantir issued public apology after user complaints.",
+    "source": "Synthetic Benchmark v1",
+    "metadata": {
+      "benchmark_id": 18,
+      "template_type": "transparency_failure",
+      "system_type": "multimodal",
+      "purpose": "ContentGeneration",
+      "expected_risk_level": "HighRisk",
+      "generated_year": 2024,
+      "organization": "Palantir"
+    }
+  }
+]
