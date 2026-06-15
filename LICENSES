@@ -8,9 +8,10 @@ This document lists the open source licenses for all third-party dependencies us
 
 **SERAMIS** (Semantic Reasoning and AI Management Intelligent System) ha sido desarrollado como Trabajo Fin de Máster en el programa de **Máster en Inteligencia Artificial** de la **Universidad Internacional de La Rioja (UNIR)**.
 
-La ontología y los recursos semánticos están licenciados bajo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+SERAMIS se publica bajo un esquema de **licencia dual**:
 
-El código fuente está disponible bajo los términos definidos por UNIR para Trabajos Fin de Máster, cumpliendo con la normativa de propiedad intelectual de la universidad.
+- **El código fuente** está licenciado bajo la **MIT License** (ver el archivo `LICENSE`).
+- **La ontología y los recursos semánticos** (directorio `ontologias/`) están licenciados bajo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
 
 ---
 
