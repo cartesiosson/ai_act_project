@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version"/>
   <img src="https://img.shields.io/badge/EU%20AI%20Act-Compliant-green.svg" alt="EU AI Act"/>
-  <img src="https://img.shields.io/badge/ontology-v0.41.0-purple.svg" alt="Ontology"/>
+  <img src="https://img.shields.io/badge/ontology-v1.0.0-purple.svg" alt="Ontology"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
   <img src="https://img.shields.io/badge/ELI-EUR--Lex-blue.svg" alt="ELI"/>
   <img src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg" alt="License"/>
@@ -72,14 +72,15 @@ Este software fue parcialmente desarrollado empleando **Claude Sonnet** (Anthrop
 - [8. Stack Tecnológico](#8-stack-tecnológico)
 - [9. Estructura del Proyecto](#9-estructura-del-proyecto)
 - [10. API Reference](#10-api-reference)
-- [11. Referencias](#11-referencias)
-- [12. Licencia](#12-licencia)
+- [11. Limitaciones Conocidas y Métricas](#11-limitaciones-conocidas-y-métricas)
+- [12. Referencias](#12-referencias)
+- [13. Licencia](#13-licencia)
 
 ---
 
 ## 1. Descripción
 
-SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v0.41.0) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
+SERAMIS implementa un **sistema de evaluación semántica automatizada** para sistemas de IA regulados por el EU AI Act. Combina una ontología formal OWL (v1.0.0) con reglas de inferencia SWRL para derivar automáticamente requisitos de cumplimiento, evaluaciones de riesgo y obligaciones regulatorias.
 
 ### Características Principales
 
@@ -286,7 +287,7 @@ El **Forensic AI Agent** (`/forensic`) proporciona análisis forense post-incide
 - **Streaming en tiempo real**: Visualización paso a paso del proceso de análisis
 - **Opciones de análisis**:
   - Con/sin plan de evidencias DPV
-  - Selección de proveedor LLM (Ollama/Anthropic)
+  - Proveedor LLM: Ollama (llama3.2:3b) local. La integración con Anthropic Claude está prevista en el roadmap, pero aún no está implementada.
 - **Resultados del análisis**:
   - Clasificación de riesgo EU AI Act
   - Clasificación de incidente grave Art. 3(49) (si aplica)
@@ -349,7 +350,7 @@ El agente utiliza datos del **AI, Algorithmic, and Automation Incidents and Cont
 
 | Característica | Descripción |
 |----------------|-------------|
-| **Extracción LLM** | Usa Ollama (llama3.2:3b) o Anthropic para extraer datos estructurados |
+| **Extracción LLM** | Usa Ollama (llama3.2:3b) local para extraer datos estructurados (integración con Anthropic Claude prevista en el roadmap, aún no integrada) |
 | **Análisis Multi-Framework** | EU AI Act + ISO 42001 (15 mappings) + NIST AI RMF (18 mappings) + DPV 2.2 |
 | **Clasificación de Riesgo** | Categorización automática según 8 categorías del Anexo III + GPAI |
 | **Clasificación de Incidentes Graves** | Taxonomía Art. 3(49): muerte/salud, infraestructura crítica, derechos fundamentales, propiedad/medio ambiente |
@@ -377,7 +378,7 @@ curl -X POST http://localhost:8002/forensic/analyze \
 
 ## 6. Ontología
 
-### 6.0 Versión: 0.41.0
+### 6.0 Versión: 1.0.0
 
 | Propiedad | Valor |
 |-----------|-------|
@@ -438,7 +439,7 @@ ai:requiresFRIA         # Context → boolean (Art. 27)
 
 ### 6.2 Taxonomía de Incidentes Graves (Art. 3(49))
 
-La ontología v0.41.0 modela la definición de **incidente grave** según el Artículo 3(49) del EU AI Act, permitiendo la clasificación automática de incidentes y la determinación de obligaciones de notificación según el Artículo 73.
+La ontología v1.0.0 modela la definición de **incidente grave** según el Artículo 3(49) del EU AI Act, permitiendo la clasificación automática de incidentes y la determinación de obligaciones de notificación según el Artículo 73.
 
 #### 6.2.1 Jerarquía de Clases de Incidente Grave
 
@@ -806,7 +807,8 @@ seramis/
 ├── reasoner_service/          # Microservicio de razonamiento SWRL (8001)
 ├── ontologias/                # Archivos de ontología
 │   ├── versions/
-│   │   ├── 0.41.0/            # Versión actual con Art. 3(49) taxonomy
+│   │   ├── 1.0.0/             # Versión estable actual (promovida desde 0.41.0)
+│   │   ├── 0.41.0/            # Versión previa (Art. 3(49) taxonomy)
 │   │   └── ...
 │   ├── queries/               # Consultas SPARQL (ver README)
 │   │   ├── README.md          # Catálogo de 15 queries forenses
@@ -869,7 +871,41 @@ get_ontology_stats()            # Estadísticas de la ontología
 
 ---
 
-## 11. Referencias
+## 11. Limitaciones Conocidas y Métricas
+
+SERAMIS v1.0 es un proyecto de investigación (Trabajo Fin de Máster). Documentamos de forma transparente su alcance y limitaciones actuales:
+
+### Métricas del Agente Forense (benchmark)
+
+Evaluado sobre un benchmark sintético de 50 incidentes con distribución alineada al [AIAAIC Repository](https://www.aiaaic.org/):
+
+| Métrica | Resultado |
+|---------|-----------|
+| Accuracy en nivel de riesgo (EU AI Act) | **91.7%** |
+| Accuracy en tipo de incidente | **75.0%** (modo flexible) / 69.4% (estricto) |
+| Tasa de éxito del pipeline (sin errores) | **72%** (36/50) |
+| Latencia media por incidente | ~66 s |
+
+Estas cifras dependen del modelo LLM local (`llama3.2:3b`); un modelo mayor mejoraría la fiabilidad.
+
+### Limitaciones actuales
+
+- **LLM local únicamente:** el agente forense usa Ollama con `llama3.2:3b`. La integración con Anthropic Claude está prevista en el roadmap pero **aún no está implementada**.
+- **Fiabilidad de extracción:** ~28% de los casos del benchmark fallan la validación estructurada. El análisis no debe usarse como dictamen legal: es una herramienta de apoyo a la evaluación de cumplimiento.
+- **Cobertura de tests:** la suite de pruebas automatizadas está planificada para la v1.1 y aún no forma parte de este release.
+- **Credenciales por defecto:** la configuración incluye credenciales `admin/admin` y orígenes CORS de desarrollo. **Deben cambiarse** (`FUSEKI_PASSWORD`, `ALLOWED_ORIGINS`, etc.) antes de cualquier despliegue accesible en red.
+- **Validación de la ontología:** validada con OOPS! (0 pitfalls críticos); las advertencias menores están documentadas en `ontologias/docs/OOPSevaluation/`.
+
+### Roadmap (v1.1)
+
+- Suite de tests automatizados (backend, reasoner, reglas, agente) + CI/CD
+- Integración opcional con Anthropic Claude como proveedor LLM
+- Reintentos con backoff en llamadas LLM y circuit breaker para el servidor MCP
+- Internacionalización (i18n) consistente de la interfaz
+
+---
+
+## 12. Referencias
 
 - **EU AI Act:** https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689
 - **W3C Data Privacy Vocabulary (DPV) 2.2:** https://w3c.github.io/dpv/
@@ -885,7 +921,7 @@ get_ontology_stats()            # Estadísticas de la ontología
 
 ---
 
-## 12. Licencia
+## 13. Licencia
 
 Este proyecto utiliza la ontología EU AI Act licenciada bajo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
 
@@ -904,5 +940,5 @@ El código fuente está disponible bajo los términos definidos por UNIR para Tr
 </p>
 
 <p align="center">
-  <sub>Versión 1.2.0 | Enero 2026</sub>
+  <sub>Versión 1.0.0 | Junio 2026</sub>
 </p>

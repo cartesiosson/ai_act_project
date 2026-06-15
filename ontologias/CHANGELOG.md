@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.0] - 2026-06-15
+
+### 🎉 FIRST STABLE RELEASE
+
+Primera versión estable de la ontología, **promovida desde la 0.41.0 sin cambios semánticos**. La estructura de clases y propiedades se considera ahora estable para citación y reutilización (compromiso de compatibilidad bajo Semantic Versioning: cambios compatibles → 1.x, cambios incompatibles → 2.0.0).
+
+#### ✅ Cambios
+
+- **`owl:versionIRI`**: `http://ai-act.eu/ai-act/1.0.0`
+- **`owl:priorVersion`**: `http://ai-act.eu/ai-act/0.41.0`
+- `owl:versionInfo` y `dct:title` actualizados a 1.0.0
+- La versión `0.41.0` se conserva en `versions/0.41.0/` para trazabilidad
+
+#### 📦 Cobertura (heredada de 0.41.0)
+
+EU AI Act: prácticas prohibidas (Artículo 5) con inferencia de `UnacceptableRisk`, excepciones del Artículo 5.2, jerarquía de niveles de riesgo, GPAI (Artículos 51-55), taxonomía de incidentes graves (Artículo 3(49)), exclusiones de ámbito (Artículo 2). Mapeos a ISO/IEC 42001, NIST AI RMF 1.0, W3C DPV 2.2 y ELI. Validada con OOPS! (0 pitfalls críticos).
+
+---
+
 ## [0.37.5] - 2025-12-23
 
 ### 🔗 EUROPEAN LEGISLATION IDENTIFIER (ELI) INTEGRATION

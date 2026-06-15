@@ -47,6 +47,7 @@ services:
       - FUSEKI_GRAPH_DATA=${FUSEKI_GRAPH_DATA}
       - ONTOLOGY_PATH=${ONTOLOGY_PATH}
       - REASONER_SERVICE_URL=${REASONER_SERVICE_URL}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
     ports:
       - "${BACKEND_PORT}:8000"
     volumes:
@@ -158,6 +159,7 @@ services:
       - VITE_FUSEKI_USER=${VITE_FUSEKI_USER}
       - VITE_FUSEKI_PASSWORD=${VITE_FUSEKI_PASSWORD}
       - VITE_API_URL=${VITE_API_URL}
+      - VITE_DOCS_URL=${VITE_DOCS_URL}
       
 volumes:
   fuseki_data:

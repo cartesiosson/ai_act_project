@@ -49,7 +49,7 @@ frontend/
 | `/` | Dashboard | Bienvenida y documentación del proyecto |
 | `/systems` | AI Systems DB | Registro de sistemas de IA con metadatos EU AI Act |
 | `/graph` | AI Knowledge Graph | Visualización 3D del grafo semántico |
-| `/ontology` | Ontology Docs | Documentación de la ontología v0.41.0 |
+| `/ontology` | Ontology Docs | Documentación de la ontología v1.0.0 |
 | `/reasoning` | AI Symbolic Reasoning | Ejecución de inferencia SWRL |
 | `/forensic` | Forensic AI Agent | Análisis forense de incidentes AIAAIC |
 | `/dpv` | DPV Browser | Navegador de Evidence Plans |
@@ -177,6 +177,6 @@ La aplicación soporta dark mode mediante clases de Tailwind CSS (`dark:*`). El 
 ---
 
 **Versión:** 1.0.0
-**Compatibilidad:** Ontología EU AI Act v0.41.0
+**Compatibilidad:** Ontología EU AI Act v1.0.0
 **Puerto por defecto:** 3003
 **Última Actualización:** Enero 2026

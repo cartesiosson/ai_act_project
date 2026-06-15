@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version"/>
-  <img src="https://img.shields.io/badge/EU%20AI%20Act-v0.41.0-green.svg" alt="EU AI Act"/>
+  <img src="https://img.shields.io/badge/EU%20AI%20Act-v1.0.0-green.svg" alt="EU AI Act"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
   <img src="https://img.shields.io/badge/Llama-3.2:3B-purple.svg" alt="Llama"/>
 </p>
@@ -31,7 +31,7 @@
 El **Forensic Compliance Agent** realiza análisis automatizado post-incidente de sistemas de IA utilizando:
 
 - **Extracción estructurada con LLM** (Llama 3.2:3B vía Ollama)
-- **Razonamiento semántico** (SPARQL vía MCP) sobre la ontología EU AI Act v0.41.0
+- **Razonamiento semántico** (SPARQL vía MCP) sobre la ontología EU AI Act v1.0.0
 - **Análisis multi-framework** (EU AI Act + ISO 42001 + NIST AI RMF + DPV 2.2)
 - **Detección automática de gaps** de cumplimiento
 - **Evidence Planner** con integración W3C DPV para generación de planes de evidencia
@@ -302,7 +302,7 @@ sequenceDiagram
 
     IE->>PB: _build_extraction_prompt(narrative)
     PB->>PB: Construir system prompt
-    PB->>PB: Añadir ontology context (v0.41.0)
+    PB->>PB: Añadir ontology context (v1.0.0)
     PB->>PB: Definir JSON schema
     PB->>PB: Incluir Art. 3(49) taxonomy
     PB->>PB: Incluir Art. 5 prohibited practices
@@ -604,7 +604,7 @@ MONGODB_URI=mongodb://mongo:27017
 FUSEKI_ENDPOINT=http://fuseki:3030
 
 # Ontología
-ONTOLOGY_PATH=/ontologias/versions/0.41.0/ontologia-v0.41.0.ttl
+ONTOLOGY_PATH=/ontologias/versions/1.0.0/ontologia-v1.0.0.ttl
 MAPPINGS_PATH=/ontologias/mappings
 ```
 
@@ -631,7 +631,7 @@ MAPPINGS_PATH=/ontologias/mappings
 
 ### 2. Análisis EU AI Act
 
-- Clasificación de riesgo automática (v0.41.0)
+- Clasificación de riesgo automática (v1.0.0)
 - Identificación de criterios Anexo III
 - Requisitos obligatorios por nivel de riesgo
 - Detección de gaps de compliance
@@ -779,7 +779,7 @@ pytest tests/ -v --cov=app --cov-report=html
 
 ## Recursos
 
-- **Ontología EU AI Act:** `/ontologias/versions/0.41.0/`
+- **Ontología EU AI Act:** `/ontologias/versions/1.0.0/`
 - **ISO 42001 Mappings:** `/ontologias/mappings/iso-42001-mappings.ttl`
 - **NIST AI RMF Mappings:** `/ontologias/mappings/nist-ai-rmf-mappings.ttl`
 - **DPV Integration:** `/ontologias/mappings/dpv-integration.ttl`

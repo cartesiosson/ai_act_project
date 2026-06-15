@@ -2,7 +2,7 @@
 
 **SERAMIS** (**Semantic Regulation Intelligence System**) is a comprehensive platform designed to support organizations in achieving **compliance** with the **EU AI Act** ([Regulation (EU) 2024/1689](http://data.europa.eu/eli/reg/2024/1689)) through intelligent **semantic analysis**.
 
-> **Current Version:** Ontology v0.41.0 (January 2026) - Full support for Article 3(49) Serious Incident Taxonomy and Article 73 Notification Obligations.
+> **Current Version:** Ontology v1.0.0 (June 2026) - First stable release. Full support for Article 3(49) Serious Incident Taxonomy and Article 73 Notification Obligations.
 
 ### Key Features
 
@@ -71,7 +71,7 @@ SERAMIS integrates multiple components:
 
 ### Regulatory Coverage
 
-SERAMIS v0.41.0 ontology provides comprehensive coverage of key EU AI Act provisions:
+SERAMIS v1.0.0 ontology provides comprehensive coverage of key EU AI Act provisions:
 
 | Provision | Coverage | Description |
 |-----------|----------|-------------|
@@ -93,4 +93,4 @@ SERAMIS v0.41.0 ontology provides comprehensive coverage of key EU AI Act provis
 
 ---
 
-**Last Updated:** January 2026 | **Ontology Version:** 0.41.0 | **Status:** Operational
+**Last Updated:** June 2026 | **Ontology Version:** 1.0.0 | **Status:** Operational

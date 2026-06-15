@@ -3,7 +3,7 @@ import { fetchSystems } from "../lib/api";
 import { getForensicSystems } from "../lib/forensicApi";
 import type { ForensicSystem } from "../lib/forensicApi";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const REASONING_URL = `${API_BASE}/reasoning`;
 
 interface ReasoningResult {

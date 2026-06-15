@@ -6,7 +6,7 @@ Servidor MCP usando FastMCP 2.0 para consultar la ontología EU AI Act y los res
 
 Este servidor implementa el **Model Context Protocol (MCP)** para exponer herramientas de consulta SPARQL y análisis forense a clientes LLM. Permite:
 
-- Consultas SPARQL personalizadas sobre la ontología EU AI Act v0.41.0
+- Consultas SPARQL personalizadas sobre la ontología EU AI Act v1.0.0
 - Determinación de nivel de riesgo según Anexo III
 - Clasificación de incidentes graves según Art. 3(49)
 - Mappings multi-framework (ISO 42001, NIST AI RMF)
@@ -159,13 +159,13 @@ query_nist_mappings("HumanOversightRequirement")
                                       ▼
                             ┌─────────────────────┐
                             │   Ontología         │
-                            │   EU AI Act v0.41.0 │
+                            │   EU AI Act v1.0.0 │
                             │   + Mappings        │
                             │   ISO/NIST/DPV      │
                             └─────────────────────┘
 ```
 
-## Características de la Ontología v0.41.0
+## Características de la Ontología v1.0.0
 
 El servidor proporciona acceso a las siguientes características de la ontología:
 
@@ -264,7 +264,7 @@ async with Client("http://localhost:8080") as client:
 - **FastMCP 2.0:** https://github.com/jlowin/fastmcp
 - **Model Context Protocol:** https://modelcontextprotocol.io/
 - **Apache Jena Fuseki:** https://jena.apache.org/documentation/fuseki2/
-- **Ontología EU AI Act:** [/ontologias/versions/0.41.0/](../../ontologias/versions/0.41.0/)
+- **Ontología EU AI Act:** [/ontologias/versions/1.0.0/](../../ontologias/versions/1.0.0/)
 - **Mappings Multi-Framework:** [/ontologias/mappings/](../../ontologias/mappings/)
 
 ---
@@ -272,4 +272,4 @@ async with Client("http://localhost:8080") as client:
 **Versión:** 1.1.0
 **Estado:** Operacional
 **Última Actualización:** Enero 2026
-**Compatibilidad:** Ontología EU AI Act v0.41.0
+**Compatibilidad:** Ontología EU AI Act v1.0.0

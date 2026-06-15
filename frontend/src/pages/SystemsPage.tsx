@@ -333,7 +333,7 @@ export default function SystemsPage() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const apiBase = (window as any).VITE_API_URL || "http://localhost:8000";
+      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:8000";
       const [
         purposesData,
         risksData,

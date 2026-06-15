@@ -134,7 +134,7 @@ async def root():
     """Root endpoint"""
     return {
         "service": "Forensic Compliance Agent",
-        "version": "1.1.0",
+        "version": "1.0.0",
         "status": "operational",
         "endpoints": {
             "health": "/health",

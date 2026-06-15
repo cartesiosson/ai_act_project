@@ -17,7 +17,7 @@ from routers.systems_fuseki import router as fuseki_router
 from routers.reasoning import router as reasoning_router
 from typing import List, Dict
 
-app = FastAPI(title="AI Act Backend")
+app = FastAPI(title="AI Act Backend", version="1.0.0")
 
 
 
@@ -46,9 +46,17 @@ def test_superprimario():
     return {"status": "ok"}
 
 
+# CORS: configurable por entorno. En desarrollo se permite el frontend local;
+# en producción define ALLOWED_ORIGINS con la lista de dominios separados por comas.
+_allowed_origins = [
+    o.strip()
+    for o in (os.environ.get("ALLOWED_ORIGINS") or "http://localhost:5173").split(",")
+    if o.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permitir cualquier origen para desarrollo
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -135,7 +135,8 @@ export default function GraphView() {
         { ?s ?p ?o }
       }
     `;
-    const response = await fetch("http://localhost:3030/ds/sparql", {
+    const fusekiUrl = import.meta.env.VITE_FUSEKI_URL || "http://localhost:3030/ds/sparql";
+    const response = await fetch(fusekiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/sparql-query",
