@@ -16,7 +16,9 @@
   <img src="https://img.shields.io/badge/ontology-v1.0.0-purple.svg" alt="Ontology"/>
   <img src="https://img.shields.io/badge/DPV-2.2-orange.svg" alt="DPV 2.2"/>
   <img src="https://img.shields.io/badge/ELI-EUR--Lex-blue.svg" alt="ELI"/>
-  <img src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg" alt="License"/>
+  <img src="https://img.shields.io/badge/code%20license-MIT-green.svg" alt="Code License: MIT"/>
+  <img src="https://img.shields.io/badge/ontology%20license-CC%20BY%204.0-lightgrey.svg" alt="Ontology License: CC BY 4.0"/>
+  <img src="https://github.com/cartesiosson/ai_act_project/actions/workflows/ci.yml/badge.svg" alt="CI"/>
 </p>
 
 ---
@@ -923,9 +925,14 @@ Estas cifras dependen del modelo LLM local (`llama3.2:3b`); un modelo mayor mejo
 
 ## 13. Licencia
 
-Este proyecto utiliza la ontología EU AI Act licenciada bajo **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+Este proyecto se publica bajo un esquema de **licencia dual**:
 
-El código fuente está disponible bajo los términos definidos por UNIR para Trabajos Fin de Máster.
+- **Código fuente** — [MIT License](LICENSE).
+- **Ontología y recursos semánticos** (directorio `ontologias/`) — **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+
+Las licencias de las dependencias de terceros se documentan en [LICENSES](LICENSES).
+
+Si utilizas SERAMIS en tu investigación, por favor cítalo según [CITATION.cff](CITATION.cff).
 
 ---
 

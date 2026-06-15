@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use SERAMIS in your research, please cite it as below."
+title: "SERAMIS — Semantic Reasoning and AI Management Intelligent System"
+abstract: >-
+  SERAMIS is an automated semantic assessment platform for compliance with the
+  European Union Artificial Intelligence Act (EU AI Act). It combines a formal
+  OWL ontology with SWRL/SHACL inference rules to automatically derive
+  compliance requirements, risk classifications and regulatory obligations,
+  with multi-framework mappings to ISO/IEC 42001, NIST AI RMF and W3C DPV.
+type: software
+version: 1.0.0
+date-released: 2026-06-16
+license: MIT
+repository-code: "https://github.com/cartesiosson/ai_act_project"
+url: "https://github.com/cartesiosson/ai_act_project"
+keywords:
+  - EU AI Act
+  - ontology
+  - semantic reasoning
+  - SWRL
+  - SHACL
+  - regulatory compliance
+  - knowledge graph
+  - DPV
+  - ISO 42001
+  - NIST AI RMF
+authors:
+  - family-names: "Fernández González"
+    given-names: "David"
+  - family-names: "Ortega de Mues"
+    given-names: "Mariano"
+    affiliation: "Universidad Internacional de La Rioja (UNIR)"
